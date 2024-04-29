@@ -41,7 +41,8 @@
     text-align: center;
     letter-spacing: -6px;
     position: fixed;
-    top: 50vh;
+    top: 50%;
+    transform: translateY(-50%);
   }
   
   .loading span {
