@@ -38,11 +38,12 @@
     color: #e74c3c;
     font-size: 48px; /* Taille de police des lettres */
     font-weight: 900;
+    text-align: center;
   }
   
   #loading span {
     display: inline-block;
-    animation: wave 0.5s ease-in-out infinite alternate, rainbow 8s linear infinite; /* Animation en forme de vague et arc-en-ciel */
+    animation: wave 0.5s ease-in-out infinite alternate, rainbow 4s linear infinite; /* Animation en forme de vague et arc-en-ciel */
   }
   
   #loading span:nth-child(1) {
