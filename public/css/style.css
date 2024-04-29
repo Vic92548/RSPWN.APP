@@ -33,8 +33,9 @@ body.background {
 .discord_login {
     position: fixed;
     display: block;
-    bottom: 15px;
-    left: 5%;
+    bottom: 20px;
+    left: 0;
+    right: 0;
     margin: auto;
     text-align: center;
     width: 90%;
