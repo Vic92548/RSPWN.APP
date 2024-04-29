@@ -65,5 +65,6 @@ function showLoading(){
 }
 
 function hideLoading(){
-    document.getElementById('loading').style.display = "none";
+    document.getElementById('loading').className = "title";
+    document.getElementsByTagName("MAIN")[0].style.opacity = "1";
 }

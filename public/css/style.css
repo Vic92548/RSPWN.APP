@@ -12,10 +12,19 @@ body {
     height: 100vh; /* Pour couvrir toute la hauteur de la fenêtre */
 }
 
-h1 {
+.title {
     margin: 0;
     font-family: "Poppins", sans-serif;
     font-weight: 900;
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
+}
+
+.title span{
+    animation: none;
+}
+
+main {
+    opacity: 0;
+    transition: all 1s;
 }
