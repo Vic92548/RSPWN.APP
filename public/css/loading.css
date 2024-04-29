@@ -40,6 +40,8 @@
     font-weight: 900;
     text-align: center;
     letter-spacing: -6px;
+    display: fixed;
+    top: 50vh;
   }
   
   .loading span {
