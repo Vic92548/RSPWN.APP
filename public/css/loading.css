@@ -30,13 +30,14 @@
       color: #3498db;
     }
     100% {
-      color: #3498db;
+      color: #e74c3c;
     }
   }
   
   #loading {
     font-size: 36px; /* Taille de police des lettres */
-    font-weight: 900; /* Gras */
+    font-weight: 900;
+    opacity: 0.8;
   }
   
   #loading span {
