@@ -20,6 +20,7 @@ function makeApiRequest(path) {
         })
         .then(response => {
             if (!response.ok) {
+                console.log(response);
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
             return response.json();  // Assuming the server responds with JSON
