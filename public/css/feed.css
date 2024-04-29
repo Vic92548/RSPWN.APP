@@ -12,6 +12,8 @@
     margin: 20px;
     padding: 20px;
     color: #fff;
+    transform: translateY(-100vh);
+    transition: transform 0.5s;
 }
 
 .user-info {
