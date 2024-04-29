@@ -18,7 +18,7 @@ body {
     font-weight: 900;
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
-    display: fixed;
+    position: fixed;
     top: 50px;
     transition: all 1s;
 }

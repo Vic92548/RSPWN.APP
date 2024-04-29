@@ -40,7 +40,7 @@
     font-weight: 900;
     text-align: center;
     letter-spacing: -6px;
-    display: fixed;
+    position: fixed;
     top: 50vh;
   }
   
