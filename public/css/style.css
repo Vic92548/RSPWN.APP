@@ -33,6 +33,9 @@ body.background {
 .discord_login {
     position: fixed;
     display: block;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
 }
 
 .discord_login:hover{
