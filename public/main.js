@@ -61,6 +61,6 @@ function loadUserData(){
 loadUserData();
 
 function hideLoading(){
-    document.getElementsByName('H1')[0].className = "title";
+    document.getElementsByTagName('H1')[0].className = "title";
     document.getElementsByTagName("MAIN")[0].style.opacity = "1";
 }
