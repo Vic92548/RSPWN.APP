@@ -41,11 +41,20 @@ function makeApiRequest(path) {
     });
 }
 
+function isUserLoggedIn(){
+    if(window.user){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 function loadUserData(){
     makeApiRequest("/me").then(data => {
         window.user = data;
+        document.getElementById("sign_in").style.display = "block";
     }).catch( error => {
-        console.log("DISPLAY LOGIN BT");
+        document.getElementById("sign_in").style.display = "none";
     })
 }
 
