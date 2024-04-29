@@ -91,7 +91,7 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
     await kv.set(["discordUser", userData.id], userData);
 
     const secret_key = generateSecretKey();
-    await kv.set(["secret_keys", secret_key]);
+    await kv.set(["secret_keys", secret_key], userData);
 
     // Read and prepare the HTML response
     const htmlTemplate = await Deno.readTextFile("discord_callback.html");
