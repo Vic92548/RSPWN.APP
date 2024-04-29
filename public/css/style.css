@@ -37,7 +37,7 @@ body.background {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
     position: fixed;
-    top: 20px;
+    top: 15px;
     left: 0;
     right: 0;
     transition: all 1s;

@@ -5,8 +5,10 @@
     color: #fff;
     border: none;
     cursor: pointer;
+    transition: all 0.4s;
 }
 
 .create-post-btn:hover {
-    background-color: #0d8eff;
+    background-color: #0d8eff83;
+    box-shadow: 0 0 10px #0d8eff83;
 }
