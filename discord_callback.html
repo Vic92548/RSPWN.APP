@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Successful</title>
+</head>
+<body>
+<h1>Authentication Successful!</h1>
+<p>You can now close this window or tab.</p>
+<script>
+    // Assuming the JWT and user data are passed as JSON in a script tag
+    const jwt = "{{jwt}}";
+    const userData = JSON.parse('{{userData}}');
+
+    if (jwt && userData) {
+        localStorage.setItem('jwt', jwt);
+        localStorage.setItem('user', JSON.stringify(userData));
+    }
+
+    // Redirect or handle post-login experience
+    window.location.href = "/dashboard"; // Change this to your preferred URL
+</script>
+</body>
+</html>

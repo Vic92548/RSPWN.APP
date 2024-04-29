@@ -1,4 +1,5 @@
 import { create, getNumericDate } from "https://deno.land/x/djwt/mod.ts";
+import { readFileStr } from "https://deno.land/std/fs/mod.ts";
 
 // Discord OAuth settings from environment variables
 const clientId = Deno.env.get("DISCORD_ClientID"); // Discord client ID from environment
@@ -91,14 +92,16 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
     const kv = await Deno.openKv();
     await kv.set(["discordUser", userData.id], { ...userData, jwt });
 
-    // Return the JWT and user data in the response
-    return new Response(JSON.stringify({
-        jwt: jwt,
-        user: userData
-    }), {
+    // Read the HTML file
+    const htmlTemplate = await Deno.readTextFile("auth_success.html");
+    // Replace placeholders with actual data
+    const htmlContent = htmlTemplate.replace('{{jwt}}', jwt).replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
+
+    // Return the modified HTML as response
+    return new Response(htmlContent, {
         status: 200,
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "text/html"
         }
     });
 }
