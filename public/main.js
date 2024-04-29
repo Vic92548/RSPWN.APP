@@ -53,8 +53,11 @@ function loadUserData(){
     makeApiRequest("/me").then(data => {
         window.user = data;
         document.getElementById("sign_in").style.display = "none";
+
+        hideLoading();
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
+        hideLoading();
     })
 }
 
