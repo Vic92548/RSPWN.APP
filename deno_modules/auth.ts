@@ -1,11 +1,24 @@
-import { create, verify, getNumericDate } from "https://deno.land/x/jwt/mod.ts";
-
 // Environment variable-based configuration
 const clientId = Deno.env.get("DISCORD_ClientID");
 const clientSecret = Deno.env.get("DISCORD_ClientSecret");
 const DOMAIN = Deno.env.get("DOMAIN");
 const redirectUri = `https://${DOMAIN}/auth/discord/callback`;
-const jwtSecret = "YOUR_SECRET_KEY";  // This should be replaced with a secure key and stored securely
+
+/**
+ * Generates a unique secret key using cryptographic randomness.
+ * @returns {string} A unique secret key encoded in base64.
+ */
+function generateSecretKey(): string {
+    // Define the byte length for the secret key
+    const byteLength = 32;  // This length is typically sufficient for most security needs
+
+    // Generate cryptographically secure random bytes
+    const bytes = new Uint8Array(byteLength);
+    crypto.getRandomValues(bytes);
+
+    return btoa(String.fromCharCode(...bytes));
+}
+
 
 /**
  * Authenticate requests by verifying the JWT token.
@@ -18,19 +31,13 @@ export async function authenticateRequest(request: Request): Promise<{isValid: b
         return { isValid: false };
     }
 
-    const token = authHeader.slice(7);  // Remove "Bearer " from the start
+    const kv = await Deno.openKv();
+    const secret_key = authHeader.slice(7);  // Remove "Bearer " from the start
+    const userData = await kv.get(["secret_keys", secret_key]);
+    console.log(userData);
 
-    try {
-        const payload = await verify(token, jwtSecret, "HS512");
-        // Optionally, fetch user data from storage if needed
-        const kv = await Deno.openKv();
-        const userData = await kv.get(["discordUser", payload.sub]);
-
-        return { isValid: true, userData: userData ? userData.value : null };
-    } catch (error) {
-        console.error("Failed to verify JWT:", error);
-        return { isValid: false };
-    }
+    return { isValid: true, userData: userData ? userData.value : null };
+    return { isValid: false };
 }
 
 
@@ -71,27 +78,19 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
     }
 
     const userData = await userResponse.json();
-    const jwtPayload = {
-        iss: `https://${DOMAIN}`,
-        sub: userData.id,
-        exp: getNumericDate(3600),  // JWT with 1 hour expiration
-        data: {
-            username: userData.username,
-            avatar: userData.avatar,
-            email: userData.email  // Assuming 'email' scope is granted
-        }
-    };
 
-    const jwt = await create({ alg: "HS512", typ: "JWT" }, jwtPayload, jwtSecret);
 
     // Optionally store user data and JWT in Deno KV
     const kv = await Deno.openKv();
-    await kv.set(["discordUser", userData.id], { ...userData, jwt });
+    await kv.set(["discordUser", userData.id], userData);
+
+    const secret_key = generateSecretKey();
+    await kv.set(["secret_keys", secret_key]);
 
     // Read and prepare the HTML response
     const htmlTemplate = await Deno.readTextFile("discord_callback.html");
     const htmlContent = htmlTemplate
-        .replace('{{jwt}}', jwt)
+        .replace('{{jwt}}', secret_key)
         .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
     return new Response(htmlContent, {
