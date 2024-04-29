@@ -1,11 +1,41 @@
-// Discord OAuth settings
-const clientId = "1234541478374539396"; // Replace with your Discord client ID
-const clientSecret = "WbiP8yIaG-LVPaxizSGuBkL__REuQ756"; // Replace with your Discord client secret
-const redirectUri = "https://vapr.deno.dev/auth/discord/callback";
+import { create, getNumericDate } from "https://deno.land/x/djwt/mod.ts";
+
+// Discord OAuth settings from environment variables
+const clientId = Deno.env.get("DISCORD_ClientID"); // Discord client ID from environment
+const clientSecret = Deno.env.get("DISCORD_ClientSecret"); // Discord client secret from environment
+const DOMAIN = Deno.env.get("DOMAIN");
+const redirectUri = "https://" + DOMAIN + "/auth/discord/callback";
+const jwtSecret = "YOUR_SECRET_KEY";  // This should be a secure, secret key stored safely
+
+/**
+ * Authenticate requests by verifying the JWT token.
+ * @param {Request} request The incoming HTTP request.
+ * @returns {Promise<{isValid: boolean, userData?: any}>} The authentication status and user data if valid.
+ */
+export async function authenticateRequest(request: Request): Promise<{isValid: boolean, userData?: any}> {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return { isValid: false };
+    }
+
+    const token = authHeader.slice(7);  // Remove "Bearer " from the start
+
+    try {
+        const payload = await verify(token, jwtSecret, "HS512");
+        // Optionally, fetch user data from storage if needed
+        const kv = await Deno.openKv();
+        const userData = await kv.get(["discordUser", payload.sub]);
+
+        return { isValid: true, userData: userData ? userData.value : null };
+    } catch (error) {
+        console.error("Failed to verify JWT:", error);
+        return { isValid: false };
+    }
+}
 
 // Function to handle the OAuth callback
 export async function handleOAuthCallback(request: Request): Promise<Response> {
-    const url = new URL(request.url, `https://vapr.deno.dev/`);
+    const url = new URL(request.url, "https://" + DOMAIN + "/");
     const code = url.searchParams.get("code");
     if (!code) return new Response("Authorization code not found", { status: 400 });
 
@@ -43,11 +73,34 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
 
     const userData = await userResponse.json();
 
-    // Optionally store user data in Deno KV
-    const kv = await Deno.openKv();
-    await kv.set(["discordUser", userData.id], userData);
+    // Create JWT for the user
+    const jwtPayload = {
+        iss: "https://" + DOMAIN,
+        sub: userData.id,
+        exp: getNumericDate(3600),  // JWT with 1 hour expiration
+        data: {
+            username: userData.username,
+            avatar: userData.avatar,
+            email: userData.email  // Assuming 'email' scope is granted
+        }
+    };
 
-    return new Response(`Hello, ${userData.username}!`, { status: 200 });
+    const jwt = await create({ alg: "HS512", typ: "JWT" }, jwtPayload, jwtSecret);
+
+    // Optionally store user data and JWT in Deno KV
+    const kv = await Deno.openKv();
+    await kv.set(["discordUser", userData.id], { ...userData, jwt });
+
+    // Return the JWT and user data in the response
+    return new Response(JSON.stringify({
+        jwt: jwt,
+        user: userData
+    }), {
+        status: 200,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
 }
 
 // Function to redirect to Discord login
