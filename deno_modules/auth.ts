@@ -1,42 +1,23 @@
 import { create, getNumericDate } from "https://deno.land/x/djwt/mod.ts";
-import { readFileStr } from "https://deno.land/std/fs/mod.ts";
+import { crypto } from "https://deno.land/std/crypto/mod.ts";
 
-// Discord OAuth settings from environment variables
-const clientId = Deno.env.get("DISCORD_ClientID"); // Discord client ID from environment
-const clientSecret = Deno.env.get("DISCORD_ClientSecret"); // Discord client secret from environment
+// Environment variable-based configuration
+const clientId = Deno.env.get("DISCORD_ClientID");
+const clientSecret = Deno.env.get("DISCORD_ClientSecret");
 const DOMAIN = Deno.env.get("DOMAIN");
-const redirectUri = "https://" + DOMAIN + "/auth/discord/callback";
-const jwtSecret = "YOUR_SECRET_KEY";  // This should be a secure, secret key stored safely
+const redirectUri = `https://${DOMAIN}/auth/discord/callback`;
+const jwtSecret = "YOUR_SECRET_KEY"; // This should be replaced with a secure key and stored securely
 
-/**
- * Authenticate requests by verifying the JWT token.
- * @param {Request} request The incoming HTTP request.
- * @returns {Promise<{isValid: boolean, userData?: any}>} The authentication status and user data if valid.
- */
-export async function authenticateRequest(request: Request): Promise<{isValid: boolean, userData?: any}> {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return { isValid: false };
-    }
-
-    const token = authHeader.slice(7);  // Remove "Bearer " from the start
-
-    try {
-        const payload = await verify(token, jwtSecret, "HS512");
-        // Optionally, fetch user data from storage if needed
-        const kv = await Deno.openKv();
-        const userData = await kv.get(["discordUser", payload.sub]);
-
-        return { isValid: true, userData: userData ? userData.value : null };
-    } catch (error) {
-        console.error("Failed to verify JWT:", error);
-        return { isValid: false };
-    }
-}
+// Generate a CryptoKey for HMAC SHA-512
+const key = await crypto.subtle.generateKey(
+    { name: "HMAC", hash: "SHA-512" },
+    true, // whether the key is extractable (i.e., can be used in exportKey)
+    ["sign", "verify"] // can be used to sign and verify
+);
 
 // Function to handle the OAuth callback
 export async function handleOAuthCallback(request: Request): Promise<Response> {
-    const url = new URL(request.url, "https://" + DOMAIN + "/");
+    const url = new URL(request.url, `https://${DOMAIN}/`);
     const code = url.searchParams.get("code");
     if (!code) return new Response("Authorization code not found", { status: 400 });
 
@@ -63,9 +44,7 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
 
     // Fetch user data from Discord API
     const userResponse = await fetch("https://discord.com/api/users/@me", {
-        headers: {
-            Authorization: `Bearer ${accessToken}`
-        }
+        headers: { Authorization: `Bearer ${accessToken}` }
     });
 
     if (!userResponse.ok) {
@@ -73,10 +52,8 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
     }
 
     const userData = await userResponse.json();
-
-    // Create JWT for the user
     const jwtPayload = {
-        iss: "https://" + DOMAIN,
+        iss: `https://${DOMAIN}`,
         sub: userData.id,
         exp: getNumericDate(3600),  // JWT with 1 hour expiration
         data: {
@@ -86,25 +63,21 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
         }
     };
 
-    console.log(jwtPayload);
-
-    const jwt = await create({ alg: "HS512", typ: "JWT" }, jwtPayload, jwtSecret);
+    const jwt = await create({ alg: "HS512", typ: "JWT" }, jwtPayload, key);
 
     // Optionally store user data and JWT in Deno KV
     const kv = await Deno.openKv();
     await kv.set(["discordUser", userData.id], { ...userData, jwt });
 
-    // Read the HTML file
+    // Read and prepare the HTML response
     const htmlTemplate = await Deno.readTextFile("discord_callback.html");
-    // Replace placeholders with actual data
-    const htmlContent = htmlTemplate.replace('{{jwt}}', jwt).replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
+    const htmlContent = htmlTemplate
+        .replace('{{jwt}}', jwt)
+        .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
-    // Return the modified HTML as response
     return new Response(htmlContent, {
         status: 200,
-        headers: {
-            "Content-Type": "text/html"
-        }
+        headers: { "Content-Type": "text/html" }
     });
 }
 
