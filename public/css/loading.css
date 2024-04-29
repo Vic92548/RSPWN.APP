@@ -11,7 +11,10 @@
   }
   
   @keyframes rainbow {
-    0% {
+    0%{
+        color: #fff;
+    }
+    5% {
       color: #e74c3c;
     }
     16.666% {
@@ -29,13 +32,16 @@
     83.333% {
       color: #3498db;
     }
-    100% {
+    95% {
       color: #e74c3c;
+    }
+    100% {
+        color: #fff;
     }
   }
   
   .loading {
-    color: #e74c3c;
+    color: #fff;
     font-size: 48px; /* Taille de police des lettres */
     font-weight: 900;
     text-align: center;
