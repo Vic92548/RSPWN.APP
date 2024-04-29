@@ -12,36 +12,36 @@
   
   @keyframes rainbow {
     0% {
-      color: red;
+      color: #e74c3c;
     }
     16.666% {
-      color: orange;
+      color: #e67e22;
     }
     33.333% {
-      color: yellow;
+      color: #f1c40f;
     }
     50% {
-      color: green;
+      color: #2ecc71;
     }
     66.666% {
-      color: blue;
+      color: #1abc9c;
     }
     83.333% {
-      color: indigo;
+      color: #3498db;
     }
     100% {
-      color: violet;
+      color: #3498db;
     }
   }
   
   #loading {
     font-size: 36px; /* Taille de police des lettres */
-    font-weight: bold; /* Gras */
+    font-weight: 900; /* Gras */
   }
   
   #loading span {
     display: inline-block;
-    animation: wave 0.5s ease-in-out infinite alternate, rainbow 2s linear infinite; /* Animation en forme de vague et arc-en-ciel */
+    animation: wave 0.5s ease-in-out infinite alternate, rainbow 8s linear infinite; /* Animation en forme de vague et arc-en-ciel */
   }
   
   #loading span:nth-child(1) {
