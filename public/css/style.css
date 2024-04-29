@@ -23,11 +23,16 @@ body.background {
     padding: 10px;
     text-decoration: none;
     font-weight: 700;
-    transition: opacity 1s;
+    transition: all 0.4s;
 }
 
 .glass_bt i{
     margin-right: 5px;
+}
+
+.discord_login:hover{
+    background-color: #5865f294;
+    box-shadow: 0 0 10px #5865f294;
 }
 
 .title {
