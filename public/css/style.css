@@ -1,5 +1,5 @@
 .background {
-    background-image: url('images/bg_2.webp');
+    background-image: url('/images/bg_2.webp');
     background-size: cover;
     background-position: center;
     width: 100%;
