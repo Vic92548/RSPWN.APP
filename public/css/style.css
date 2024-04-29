@@ -21,6 +21,7 @@ body.background {
     border-radius: 7px;
     box-shadow: 0 0 10px rgba(255,255,255,0.4);
     padding: 5px;
+    text-decoration: none;
 }
 
 .title {
@@ -30,7 +31,7 @@ body.background {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
     position: fixed;
-    top: 50px;
+    top: 30px;
     left: 0;
     right: 0;
     transition: all 1s;

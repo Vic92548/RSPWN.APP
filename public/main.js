@@ -56,7 +56,7 @@ function loadUserData(){
 
         hideLoading();
     }).catch( error => {
-        document.getElementById("sign_in").style.display = "block";
+        document.getElementById("sign_in").style.display = "inline-block";
         hideLoading();
     })
 }
