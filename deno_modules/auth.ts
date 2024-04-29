@@ -52,6 +52,6 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
 
 // Function to redirect to Discord login
 export function redirectToDiscordLogin(): Response {
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify`;
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify;email;guilds.join`;
     return Response.redirect(authUrl);
 }
