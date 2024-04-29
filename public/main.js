@@ -60,11 +60,7 @@ function loadUserData(){
 
 loadUserData();
 
-function showLoading(){
-    document.getElementById('loading').style.display = "block";
-}
-
 function hideLoading(){
-    document.getElementById('loading').className = "title";
+    document.getElementsByName('H1')[0].className = "title";
     document.getElementsByTagName("MAIN")[0].style.opacity = "1";
 }
