@@ -2,13 +2,9 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #1da1f2;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .create-post-btn:hover {
