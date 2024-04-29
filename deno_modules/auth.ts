@@ -93,7 +93,7 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
     await kv.set(["discordUser", userData.id], { ...userData, jwt });
 
     // Read the HTML file
-    const htmlTemplate = await Deno.readTextFile("auth_success.html");
+    const htmlTemplate = await Deno.readTextFile("discord_callback.html");
     // Replace placeholders with actual data
     const htmlContent = htmlTemplate.replace('{{jwt}}', jwt).replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
