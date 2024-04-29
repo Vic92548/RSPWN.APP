@@ -64,7 +64,6 @@ body.background {
 }
 
 main {
-    display: none;
     transition: all 1s;
     height: 100%;
 }
