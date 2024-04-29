@@ -41,6 +41,16 @@ function makeApiRequest(path) {
     });
 }
 
+function loadUserData(){
+    makeApiRequest("/me").then(data => {
+        window.user = data;
+    }).catch( error => {
+        console.log("DISPLAY LOGIN BT");
+    })
+}
+
+loadUserData();
+
 function showLoading(){
     document.getElementById('loading').style.display = "block";
 }
