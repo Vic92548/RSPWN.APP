@@ -15,6 +15,9 @@ async function handleRequest(request: Request): Promise<Response> {
         return redirectToDiscordLogin();
     }else if (url.pathname.startsWith("/protected")) {
         const authResult = await authenticateRequest(request);
+
+        console.log(authResult);
+
         if (!authResult.isValid) {
             return new Response(JSON.stringify({"Error": "Unauthorized"}), { status: 401 });
         }
