@@ -86,6 +86,8 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
         }
     };
 
+    console.log(jwtPayload);
+
     const jwt = await create({ alg: "HS512", typ: "JWT" }, jwtPayload, jwtSecret);
 
     // Optionally store user data and JWT in Deno KV
