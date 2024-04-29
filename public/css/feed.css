@@ -1,3 +1,7 @@
+#feed {
+    position: relative;
+}
+
 .post {
     background-color: #fff;
     border-radius: 8px;
