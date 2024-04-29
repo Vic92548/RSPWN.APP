@@ -11,6 +11,7 @@ body.background {
     background-position: center;
     width: 100%;
     height: 100vh; /* Pour couvrir toute la hauteur de la fenêtre */
+    text-align: center;
 }
 
 .glass_bt{
