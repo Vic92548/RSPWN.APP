@@ -52,9 +52,9 @@ function isUserLoggedIn(){
 function loadUserData(){
     makeApiRequest("/me").then(data => {
         window.user = data;
-        document.getElementById("sign_in").style.display = "block";
-    }).catch( error => {
         document.getElementById("sign_in").style.display = "none";
+    }).catch( error => {
+        document.getElementById("sign_in").style.display = "block";
     })
 }
 
