@@ -1,10 +1,11 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
     margin: 0;
     padding: 0;
 }
 
-.background {
+body.background {
     background-image: url('/images/bg_2.webp');
     background-size: cover;
     background-position: center;
@@ -12,8 +13,17 @@ body {
     height: 100vh; /* Pour couvrir toute la hauteur de la fenêtre */
 }
 
+.glass_bt{
+    background-color: rgba(0,0,0,0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    padding: 5px;
+}
+
 .title {
-    margin: 0;
+    margin: 0 auto;
     font-family: "Poppins", sans-serif;
     font-weight: 900;
     text-align: center;
