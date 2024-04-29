@@ -22,7 +22,7 @@ function makeApiRequest(path) {
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
-            return response.json();  // Assuming the server responds with JSON
+            return response.text();  // Assuming the server responds with JSON
         })
         .then(data => {
             resolve(data);  // Resolve the promise with the response data
