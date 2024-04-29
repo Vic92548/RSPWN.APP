@@ -30,6 +30,10 @@ body.background {
     margin-right: 5px;
 }
 
+.discord_login {
+    
+}
+
 .discord_login:hover{
     background-color: #5865f294;
     box-shadow: 0 0 10px #5865f294;
