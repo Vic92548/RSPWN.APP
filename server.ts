@@ -11,7 +11,7 @@ async function handleRequest(request: Request): Promise<Response> {
         return serveFile(request, "index.html");
     } else if (url.pathname.startsWith("/public")) {
         try {
-            const filePath = `.${url.pathname}`;
+            const filePath = `./public${url.pathname}`;
             return await serveFile(request, filePath);
         } catch (error) {
             console.error(error);
