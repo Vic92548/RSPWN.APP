@@ -9,21 +9,11 @@ async function handleRequest(request: Request): Promise<Response> {
 
     if (url.pathname === "/") {
         return serveFile(request, "index.html");
-    } else if (url.pathname.startsWith("/public")) {
-        try {
-            const filePath = `./public${url.pathname}`;
-            return await serveFile(request, filePath);
-        } catch (error) {
-            console.error(error);
-            return new Response("Not Found", { status: 404 });
-        }
     } else if (url.pathname === "/auth/discord/callback") {
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {
         return redirectToDiscordLogin();
-    }
-
-    if (url.pathname.startsWith("/protected")) {
+    }else if (url.pathname.startsWith("/protected")) {
         const authResult = await authenticateRequest(request);
         if (!authResult.isValid) {
             return new Response("Unauthorized", { status: 401 });
@@ -36,9 +26,15 @@ async function handleRequest(request: Request): Promise<Response> {
                 "Content-Type": "application/json"
             }
         });
+    }else{
+        try {
+            const filePath = `./public${url.pathname}`;
+            return await serveFile(request, filePath);
+        } catch (error) {
+            console.error(error);
+            return new Response("Not Found", { status: 404 });
+        }
     }
-
-    return new Response("Not Found", { status: 404 });
 }
 
 console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
