@@ -36,8 +36,14 @@ export async function authenticateRequest(request: Request): Promise<{isValid: b
     const userData = await kv.get(["secret_keys", secret_key]);
     console.log(userData);
 
-    return { isValid: true, userData: userData ? userData.value : null };
-    return { isValid: false };
+    if(userData.value){
+        return { isValid: true, userData: userData ? userData.value : null };
+    }else{
+        return { isValid: false };
+    }
+
+    
+    
 }
 
 
