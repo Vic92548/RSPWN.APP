@@ -4,13 +4,14 @@
 }
 
 .post {
-    background-color: rgba(255,255,255,0.33);
+    background-color: rgba(255,255,255,0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
     margin: 20px;
     padding: 20px;
+    color: #fff;
 }
 
 .user-info {
