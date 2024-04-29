@@ -13,7 +13,7 @@ async function handleRequest(request: Request): Promise<Response> {
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {
         return redirectToDiscordLogin();
-    }else if (url.pathname.startsWith("/protected")) {
+    }else if (url.pathname.startsWith("/me")) {
         const authResult = await authenticateRequest(request);
 
         console.log(authResult);
