@@ -52,7 +52,7 @@ body.background {
     font-weight: 900;
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
-    position: fixed;
+    position: absolute;
     top: 15px;
     left: 0;
     right: 0;

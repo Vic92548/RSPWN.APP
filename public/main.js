@@ -66,5 +66,5 @@ loadUserData();
 
 function hideLoading(){
     document.getElementsByTagName('H1')[0].className = "title";
-    document.getElementsByTagName("MAIN")[0].style.display = "block";
+    document.getElementsByTagName("MAIN")[0].style.display = "inline-block";
 }
