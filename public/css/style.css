@@ -20,8 +20,13 @@ body.background {
     -webkit-backdrop-filter: blur(20px);
     border-radius: 7px;
     box-shadow: 0 0 10px rgba(255,255,255,0.4);
-    padding: 5px;
+    padding: 10px;
     text-decoration: none;
+    font-weight: 700;
+}
+
+.glass_bt i{
+    margin-right: 5px;
 }
 
 .title {
@@ -31,7 +36,7 @@ body.background {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
     position: fixed;
-    top: 30px;
+    top: 20px;
     left: 0;
     right: 0;
     transition: all 1s;
