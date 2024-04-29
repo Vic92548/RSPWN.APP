@@ -67,4 +67,5 @@ body.background {
 main {
     transition: all 1s;
     height: 100%;
+    overflow: none;
 }
