@@ -16,4 +16,6 @@ h1 {
     margin: 0;
     font-family: "Poppins", sans-serif;
     font-weight: 900;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
 }

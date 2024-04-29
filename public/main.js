@@ -21,7 +21,14 @@ function makeApiRequest(path) {
         .then(response => {
             if (!response.ok) {
                 console.log(response);
-                throw new Error('Network response was not ok: ' + response.statusText);
+
+                if(response.status === 401){
+                    reject("Unauthorized");
+                }else{
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                
             }
             return response.json();  // Assuming the server responds with JSON
         })
@@ -32,4 +39,12 @@ function makeApiRequest(path) {
             reject(error);  // Reject the promise if there's an error
         });
     });
+}
+
+function showLoading(){
+    document.getElementById('loading').style.display = "block";
+}
+
+function hideLoading(){
+    document.getElementById('loading').style.display = "none";
 }
