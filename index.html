@@ -54,7 +54,7 @@
             </article>
 
             <!-- Formulaire de commentaire -->
-            <div id="comment-form" class="hidden"> <!-- La classe "hidden" est utilisée pour cacher le formulaire par défaut -->
+            <div id="comment-form" class="hidden" style="display: none"> <!-- La classe "hidden" est utilisée pour cacher le formulaire par défaut -->
                 <h3>Répondre au post</h3>
                 <div class="comment-content">
                     <img class="profile-img" src="profil.jpg">
@@ -65,7 +65,7 @@
             </div>
 
             <!-- Comments -->
-            <div id="comments">
+            <div id="comments" style="display: none">
                 <div class="comment">
                     <div class="user-details">
                         <h3 class="username">@Jane Doe</h3>
@@ -88,7 +88,7 @@
         </section>
 
         <!-- Add Post -->
-        <section id="add-post" class="hidden">
+        <section id="add-post" class="hidden" style="display:none;">
             <h3>Ecrire un post</h3>
             <form id="postForm">
                 <label for="title">Title:</label>
@@ -108,7 +108,7 @@
         <a id="sign_in" class="discord_login glass_bt" href="/login"><i class="fa-brands fa-discord"></i> Login with discord</a>
     </main>
 
-    <aside class="character-sheet">
+    <aside class="character-sheet" style="display: none">
         <h2>Fiche de personnage</h2>
         <div class="character-details">
             <div class="attribute">
@@ -150,7 +150,7 @@
     </aside>
 
     <!-- Barre de progression d'expérience -->
-    <footer id="experience-bar">
+    <footer id="experience-bar" style="display: none">
         <progress id="progress-bar" max="750" value="1000">
             <span class="progress-text">750/1000 XP></span>
         </progress>
