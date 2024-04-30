@@ -101,5 +101,7 @@ async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
     }
 
     const data = await response.json();
+    console.log("POST UPLOADED IMAGE");
+    console.log(data);
     return data.HttpPath; // Adjust according to Bunny CDN response
 }
