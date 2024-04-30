@@ -74,6 +74,15 @@ function opeNewPostModel() {
     document.getElementById("add-post").className = "";
 }
 
+function getPostById(postId){
+    makeApiRequest("/posts/"+postId).then(data => {
+        console.log("Post DATA:");
+        console.log(data);
+    }).catch(error => {
+        console.log(error);
+    })
+}
+
 document.getElementById('postForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
