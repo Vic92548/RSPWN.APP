@@ -35,9 +35,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
         const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
 
-        if(mediaUrl){
-            content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
-        }
+        content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
     }
 
 
