@@ -1,6 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.ts";
+import { createPost, getPost } from "./deno_modules/post.ts";
 
 const port = 8080;
 
@@ -29,7 +30,22 @@ async function handleRequest(request: Request): Promise<Response> {
                 "Content-Type": "application/json"
             }
         });
-    }else{
+    }// Create a new post
+    else if (request.method === "POST" && url.pathname === "/posts") {
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        // Continue with the request handling for authenticated users
+        return createPost(request, authResult.userData);
+
+    }
+    // Retrieve a post by ID
+    else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
+        const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
+        return getPost(id);
+    } else{
         try {
             const filePath = `./public${url.pathname}`;
             return await serveFile(request, filePath);
