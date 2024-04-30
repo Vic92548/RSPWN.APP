@@ -74,14 +74,29 @@ function opeNewPostModel() {
     document.getElementById("add-post").className = "";
 }
 
-function getPostById(postId){
+function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
     makeApiRequest("/posts/"+postId).then(data => {
         console.log("Post DATA:");
         console.log(data);
+
+        document.getElementById("post_title").textContent = data.title;
+
+        if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net/"){
+            document.getElementById("post_image").src = data.content;
+            document.getElementById("post_image").style.display = "block";
+            document.getElementById("post_content")
+                .style.display = "none";
+        }else{
+            document.getElementById("post_content").textContent = data.content;
+            document.getElementById("post_content").style.display = "block";
+            document.getElementById("post_image").style.display = "none";
+        }
     }).catch(error => {
         console.log(error);
     })
 }
+
+displayPost();
 
 document.getElementById('postForm').addEventListener('submit', async function(event) {
     event.preventDefault();
