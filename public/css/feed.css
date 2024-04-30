@@ -60,8 +60,8 @@
     border-radius: 0;
     font-weight: 900;
     box-shadow: none;
-    padding: 15px;
-    font-size: 16px;
+    padding: 20px;
+    font-size: 20px;
 }
 
 .actions .dislike{
@@ -71,6 +71,7 @@
 
 .actions .neutral{
     background-color: rgba(52, 73, 94, 0.24);
+    padding: 20px 30px 20px 30px;
 }
 
 .actions .like{
