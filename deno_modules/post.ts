@@ -93,6 +93,7 @@ async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
     });
 
     if (!response.ok) {
+        console.log(response);
         throw new Error("Failed to upload media.");
     }
 
