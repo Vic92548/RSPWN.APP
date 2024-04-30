@@ -85,7 +85,8 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     formData.append('title', title);
     formData.append('content', content);
     if (file) {
-        formData.append('file', file);
+        const fileContentType = file.type || 'application/octet-stream'; // Default to a binary type if unknown
+        formData.append("file", file, { type: fileContentType, filename: fileName });
     }
 
     const jwt = localStorage.getItem('jwt');
