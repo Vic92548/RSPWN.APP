@@ -69,7 +69,7 @@ export async function getPost(id: string): Promise<Response> {
         return new Response("Post not found", { status: 404 });
     }
 
-    return new Response(JSON.stringify(postData), {
+    return new Response(JSON.stringify(postData.value), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
