@@ -28,11 +28,19 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
     const postId = crypto.randomUUID();
 
-    const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
+    let fileExtension = "";
+    if (file) {
+        const parts = file.name.split('.');
+        fileExtension = parts.length > 1 ? parts.pop() : ""; // Safely extract the extension if present
 
-    if(mediaUrl){
-        content = mediaUrl;
+        const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
+
+        if(mediaUrl){
+            content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
+        }
     }
+
+
 
     const kv = await Deno.openKv();
     const post: Post = {
