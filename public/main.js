@@ -84,7 +84,10 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
+    
     if (file) {
+        const fileExtension = file.name.split('.').pop(); // Extract the file extension
+        const fileName = `${new Date().getTime()}.${fileExtension}`; // Create a unique file name using a timestamp
         const fileContentType = file.type || 'application/octet-stream'; // Default to a binary type if unknown
         formData.append("file", file, { type: fileContentType, filename: fileName });
     }
