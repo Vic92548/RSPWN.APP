@@ -69,6 +69,9 @@ export async function getPost(id: string): Promise<Response> {
         return new Response("Post not found", { status: 404 });
     }
 
+    const userData = await kv.get(["discordUser",postData.value.id]);
+    postData.value.username = userData.value.username;
+
     return new Response(JSON.stringify(postData.value), {
         status: 200,
         headers: { "Content-Type": "application/json" }
