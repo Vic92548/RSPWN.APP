@@ -73,3 +73,38 @@ function hideLoading(){
 function opeNewPostModel() {
     document.getElementById("add-post").className = "";
 }
+
+document.getElementById('postForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const userId = document.getElementById('userId').value;
+    const title = document.getElementById('title').value;
+    const content = document.getElementById('content').value;
+    const file = document.getElementById('file').files[0];
+
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('title', title);
+    formData.append('content', content);
+    if (file) {
+        formData.append('file', file);
+    }
+
+    try {
+        const response = await fetch('/posts', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Post created successfully! Post ID: ' + result.id);
+            // Optionally clear the form or handle according to your needs
+        } else {
+            alert('Failed to create post. Status: ' + response.status);
+        }
+    } catch (error) {
+        console.error('Failed to submit post:', error);
+        alert('Error submitting post.');
+    }
+});
