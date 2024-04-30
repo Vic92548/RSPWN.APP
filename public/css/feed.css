@@ -54,7 +54,8 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-    margin-right: 10px;
+    border-radius: 0;
+    font-weight: 900;
 }
 
 .actions button:hover {
