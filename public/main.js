@@ -1,11 +1,13 @@
-function makeApiRequest(path) {
+function makeApiRequest(path, requireAuth = true) {
     return new Promise((resolve, reject) => {
         // Retrieve the JWT from local storage
-        const jwt = localStorage.getItem('jwt');
-        if (!jwt) {
+        let jwt = localStorage.getItem('jwt');
+        if (!jwt && requireAuth) {
             reject("No JWT found in local storage.");
             return;
         }
+
+        jwt = "";
 
         // Prepare the request headers
         const headers = new Headers({
