@@ -89,8 +89,14 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         const fileExtension = file.name.split('.').pop(); // Extract the file extension
         const fileName = `${new Date().getTime()}.${fileExtension}`; // Create a unique file name using a timestamp
         const fileContentType = file.type || 'application/octet-stream'; // Default to a binary type if unknown
-        formData.append("file", file, { type: fileContentType, filename: fileName });
+    
+        // Create a new Blob from the file with the specified content type
+        const blob = new Blob([file], { type: fileContentType });
+    
+        // Append the blob to formData with the custom filename
+        formData.append("file", blob, fileName);
     }
+    
 
     const jwt = localStorage.getItem('jwt');
 
