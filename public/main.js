@@ -81,7 +81,7 @@ function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
 
         document.getElementById("post_title").textContent = data.title;
 
-        if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net/"){
+        if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
             document.getElementById("post_image").src = data.content;
             document.getElementById("post_image").style.display = "block";
             document.getElementById("post_content")
