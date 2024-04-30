@@ -70,11 +70,8 @@ export async function getPost(id: string): Promise<Response> {
 }
 
 async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
-    const formData = new FormData();
     const fileExtension = file.name.split('.').pop();  // Extract the file extension
     const fileName = `${postId}.${fileExtension}`;     // Construct the file name using the post ID and the extension
-    formData.append("file", file, fileName);
-
     const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
     const storageZoneUrl = Deno.env.get("BUNNY_CDN_STORAGE_URL");
 
@@ -84,16 +81,22 @@ async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
 
     const uploadUrl = `${storageZoneUrl}/vapr/posts/${fileName}`;  // Updated to use the new file name with extension
 
+    // Read the file as an ArrayBuffer and convert to a Blob
+    const arrayBuffer = await file.arrayBuffer();
+    const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+
     const response = await fetch(uploadUrl, {
         method: "PUT",
         headers: {
-            "AccessKey": accessKey
+            "AccessKey": accessKey,
+            "Content-Type": "application/octet-stream",  // Setting the content type as required
+            "accept": "application/json"
         },
-        body: formData
+        body: blob  // Send the blob directly as binary data
     });
 
     if (!response.ok) {
-        console.log(response);
+        console.error("Failed to upload media. Response:", await response.text());
         throw new Error("Failed to upload media.");
     }
 
