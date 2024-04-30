@@ -88,10 +88,18 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         formData.append('file', file);
     }
 
+    const jwt = localStorage.getItem('jwt');
+
+    // Prepare the request headers
+    const headers = new Headers({
+        "Authorization": `Bearer ${jwt}`
+    });
+
     try {
         const response = await fetch('/posts', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: headers
         });
 
         const result = await response.json();
