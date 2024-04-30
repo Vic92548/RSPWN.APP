@@ -25,3 +25,44 @@
     transform: translateY(100vh);
     transition: transform 1s ease-out;
 }
+
+#add-post {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#add-post .profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#add-post textarea {
+    width: calc(100% - 70px);
+    height: 100px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+#add-post button#publish {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#add-post button#publish:hover {
+    background-color: #0d8bf0;
+}

@@ -7,6 +7,9 @@
     <link href="/css/feed.css" rel="stylesheet" type="text/css" />
     <link href="/css/post.css" rel="stylesheet" type="text/css" />
     <link href="/css/loading.css" rel="stylesheet" type="text/css" />
+    <link href="/css/comment.css" rel="stylesheet" type="text/css" />
+    <link href="/css/character.css" rel="stylesheet" type="text/css" />
+    <link href="/css/progress.css" rel="stylesheet" type="text/css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
     </style>
@@ -24,13 +27,20 @@
     </h1>
     
     <main>
+        <!-- The Feed -->
         <section id="feed">
+
+            <button id="add_post" class="create-post-btn glass_bt"><i class="fa-solid fa-plus"></i> Add post</button>
+            <button id="reply" class="reply-btn glass_bt"><i class="fa-solid fa-reply"></i> Reply</button>
+
+            <!-- Post -->
             <article class="post">
                 <div class="post-info">
                     <h2>Article title</h2>
                     <div class="user-details">
+                        <!-- <img class="profile-img" src="profil.jpg"> -->
                         <h3 class="username">@John Doe</h3>
-                        <time datetime="2024-04-29T16:29:11.000Z">2gh</time>
+                        <time datetime="2024-04-29T16:29:11.000Z">2h</time>
                     </div>
                 </div>
                 <div class="post-content">
@@ -43,11 +53,100 @@
                 </div>
             </article>
 
-            <button id="add_post" class="create-post-btn glass_bt"><i class="fa-solid fa-plus"></i>Add post</button>
+            <!-- Formulaire de commentaire -->
+            <div id="comment-form" class="hidden"> <!-- La classe "hidden" est utilisée pour cacher le formulaire par défaut -->
+                <h3>Répondre au post</h3>
+                <div class="comment-content">
+                    <img class="profile-img" src="profil.jpg">
+                    <!-- <label for="comment-text">Commentaire :</label> -->
+                    <textarea id="comment-text" name="comment-text" placeholder="Entrez votre commentaire"></textarea>
+                </div>
+                <button id="submit-comment">Reply</button>
+            </div>
+
+            <!-- Comments -->
+            <div id="comments">
+                <div class="comment">
+                    <div class="user-details">
+                        <h3 class="username">@Jane Doe</h3>
+                        <time datetime="2024-04-29T17:30:00.000Z">1h</time>
+                    </div>
+                    <p class="desc">Super article ! Merci pour le partage.</p>
+                </div>
+
+                <hr />
+
+                <div class="comment">
+                    <div class="user-details">
+                        <h3 class="username">@Alice</h3>
+                        <time datetime="2024-04-29T18:00:00.000Z">30m</time>
+                    </div>
+                    <p class="desc">Je suis totalement d'accord avec toi.</p>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- Add Post -->
+        <section id="add-post" class="hidden">
+            <h3>Ecrire un post</h3>
+            <div>
+                <img class="profile-img" src="profil.jpg">
+                <textarea id="post-text" placeholder="Lorem ipsum dolor sit amet"></textarea>
+            </div>
+            <button id="publish">Publish</button>
         </section>
 
         <a id="sign_in" class="discord_login glass_bt" href="/login"><i class="fa-brands fa-discord"></i> Login with discord</a>
     </main>
+
+    <aside class="character-sheet">
+        <h2>Fiche de personnage</h2>
+        <div class="character-details">
+            <div class="attribute">
+                <img src="strength_icon.png" alt="Icone strength">
+                <h3>Strength :</h3>
+                <button class="minus-btn">-</button>
+                <p>80</p>
+                <button class="plus-btn">+</button>
+            </div>
+            <div class="attribute">
+                <img src="dexterite_icon.png" alt="Icone dextérité">
+                <h3>Dextérité :</h3>
+                <button class="minus-btn">-</button>
+                <p>85</p>
+                <button class="plus-btn">+</button>
+            </div>
+            <div class="attribute">
+                <img src="intelligence_icon.png" alt="Icone intelligence">
+                <h3>Intelligence :</h3>
+                <button class="minus-btn">-</button>
+                <p>90</p>
+                <button class="plus-btn">+</button>
+            </div>
+            <div class="attribute">
+                <img src="luck_icon.png" alt="Icone luck">
+                <h3>Luck :</h3>
+                <button class="minus-btn">-</button>
+                <p>60</p>
+                <button class="plus-btn">+</button>
+            </div>
+            <div class="attribute">
+                <img src="charisme_icon.png" alt="Icone charisme">
+                <h3>Charisme :</h3>
+                <button class="minus-btn">-</button>
+                <p>70</p>
+                <button class="plus-btn">+</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Barre de progression d'expérience -->
+    <footer id="experience-bar">
+        <progress id="progress-bar" max="750" value="1000">
+            <span class="progress-text">750/1000 XP></span>
+        </progress>
+    </footer>
 
     <script src="/main.js"></script>
 </body>

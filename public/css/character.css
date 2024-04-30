@@ -1,0 +1,55 @@
+.character-sheet {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.character-details {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.attribute {
+    flex: 0 0 calc(50% - 20px);
+    margin: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.attribute img {
+    width: 30px; /* Taille de l'icône */
+    height: 30px;
+    margin-right: 10px;
+}
+
+.attribute h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.attribute p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.plus-btn,
+.minus-btn {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.plus-btn:hover,
+.minus-btn:hover {
+    background-color: #0d8bf0;
+}
