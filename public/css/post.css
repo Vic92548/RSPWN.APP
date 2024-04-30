@@ -71,7 +71,8 @@
     background-color: #0d8bf0;
 }
 
-#post_username{
+#post_username,
+#post_time{
     font-size: 14px;
     color: rgba(255,255,255,0.6);
 }
