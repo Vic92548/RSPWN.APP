@@ -69,3 +69,7 @@ function hideLoading(){
 
     document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
+
+function opeNewPostModel() {
+    document.getElementById("add-post").className = "";
+}
