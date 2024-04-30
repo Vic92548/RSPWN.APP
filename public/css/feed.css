@@ -3,10 +3,9 @@
     margin-top: 80px;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+.post-info h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
 }
 
 .profile-pic {
@@ -18,6 +17,13 @@
 
 .user-details {
     flex-grow: 1;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-details time{
+    float: right;
 }
 
 .username {
