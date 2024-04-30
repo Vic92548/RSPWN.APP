@@ -13,6 +13,7 @@ function makeApiRequest(path, requireAuth = true) {
 
 
 
+        console.log("JWT:" + jwt);
         // Prepare the request headers
         const headers = new Headers({
             "Authorization": `Bearer ${jwt}`,
