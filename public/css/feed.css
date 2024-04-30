@@ -47,7 +47,7 @@
 }
 
 .actions {
-    display: flex;
+    display: inline-block;
     box-shadow: 0 0 10px rgba(255,255,255,0.4);
 }
 
@@ -62,10 +62,12 @@
 
 .actions .dislike{
     border-radius: 8px 0 0 8px;
+    background-color: rgba(231, 76, 60, 0.64);
 }
 
 .actions .like{
     border-radius: 0 8px 8px 0;
+    background-color: rgba(46, 204, 113, 0.65);
 }
 
 .actions button:hover {
