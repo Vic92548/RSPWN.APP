@@ -82,10 +82,10 @@ async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
         throw new Error("Bunny CDN configuration is missing from environment variables.");
     }
 
-    const uploadUrl = `${storageZoneUrl}/posts/${fileName}`;  // Updated to use the new file name with extension
+    const uploadUrl = `${storageZoneUrl}/vapr/posts/${fileName}`;  // Updated to use the new file name with extension
 
     const response = await fetch(uploadUrl, {
-        method: "POST",
+        method: "PUT",
         headers: {
             "AccessKey": accessKey
         },
