@@ -77,13 +77,11 @@ function opeNewPostModel() {
 document.getElementById('postForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    const userId = document.getElementById('userId').value;
     const title = document.getElementById('title').value;
     const content = document.getElementById('content').value;
     const file = document.getElementById('file').files[0];
 
     const formData = new FormData();
-    formData.append('userId', userId);
     formData.append('title', title);
     formData.append('content', content);
     if (file) {
