@@ -2,7 +2,6 @@ interface Post {
     id: string;
     title: string;
     content: string;
-    mediaUrl?: string;
     userId: string;
     timestamp: number;
     likes: string[];
@@ -18,7 +17,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
     const formData = await request.formData();
     const title = formData.get("title");
-    const content = formData.get("content");
+    let content = formData.get("content");
     const file = formData.get("file") as File;
 
     const userId = userData.id;
@@ -31,12 +30,15 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
     const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
 
+    if(mediaUrl){
+        content = mediaUrl;
+    }
+
     const kv = await Deno.openKv();
     const post: Post = {
         id: postId,
         title,
         content,
-        mediaUrl,
         userId,
         timestamp: Date.now(),
         likes: [],
