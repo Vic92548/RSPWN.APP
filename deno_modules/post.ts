@@ -47,7 +47,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
         comments: []
     };
 
-    await kv.set(["posts", post.id], JSON.stringify(post));
+    await kv.set(["posts", post.id], post);
 
     return new Response(JSON.stringify({ id: post.id }), {
         status: 201,
