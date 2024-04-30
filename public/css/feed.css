@@ -24,6 +24,8 @@
 
 .user-details time{
     float: right;
+    position: relative;
+    right: 0;
 }
 
 .username {
