@@ -107,7 +107,7 @@ function timeAgo(dateParam) {
 
 
 function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
-    makeApiRequest("/posts/"+postId).then(data => {
+    makeApiRequest("/posts/"+postId, false).then(data => {
         console.log("Post DATA:");
         console.log(data);
 
