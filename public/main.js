@@ -74,6 +74,36 @@ function opeNewPostModel() {
     document.getElementById("add-post").className = "";
 }
 
+function timeAgo(dateParam) {
+    if (!dateParam) {
+        return null;
+    }
+
+    const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
+    const today = new Date();
+    const seconds = Math.round((today - date) / 1000);
+    const minutes = Math.round(seconds / 60);
+    const hours = Math.round(minutes / 60);
+    const days = Math.round(hours / 24);
+    const months = Math.round(days / 30.4); // average number of days in month
+    const years = Math.round(days / 365);
+
+    if (seconds < 60) {
+        return `${seconds} seconds ago`;
+    } else if (minutes < 60) {
+        return `${minutes} minutes ago`;
+    } else if (hours < 24) {
+        return `${hours} hours ago`;
+    } else if (days < 30) {
+        return `${days} days ago`;
+    } else if (months < 12) {
+        return `${months} months ago`;
+    } else {
+        return `${years} years ago`;
+    }
+}
+
+
 function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
     makeApiRequest("/posts/"+postId).then(data => {
         console.log("Post DATA:");
@@ -81,6 +111,7 @@ function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
 
         document.getElementById("post_title").textContent = data.title;
         document.getElementById("post_username").textContent = "@" + data.username;
+        document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
         if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
             document.getElementById("post_image").src = data.content;
