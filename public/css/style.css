@@ -13,6 +13,16 @@ body.background {
     height: 100vh; /* Pour couvrir toute la hauteur de la fenêtre */
 }
 
+main {
+    transition: all 1s;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
 .glass_bt{
     background-color: rgba(255,255,255,0.3);
     color: #fff;
@@ -62,10 +72,4 @@ body.background {
 
 .title span{
     animation: none;
-}
-
-main {
-    transition: all 1s;
-    height: 100%;
-    overflow: hidden;
 }

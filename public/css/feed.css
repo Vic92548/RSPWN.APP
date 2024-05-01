@@ -62,6 +62,7 @@
     box-shadow: none;
     padding: 20px;
     font-size: 20px;
+    margin: 0;
 }
 
 .actions .dislike{
