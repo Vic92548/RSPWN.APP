@@ -70,7 +70,8 @@
 #postForm h3{
     margin-top: 0;
     font-weight: 900;
-    font-size: 20px;
+    font-size: 28px;
+    text-align: center;
 }
 
 #add-post .profile-img {
