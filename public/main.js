@@ -121,6 +121,8 @@ function displayPost(postId = "bb80daba-c5a5-4448-8a16-d1d005367fec"){
         document.getElementById("post_username").textContent = "@" + data.username;
         document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
+        document.getElementById("post_views").textContent = data.views;
+
         if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
             document.getElementById("post_image").src = data.content;
             document.getElementById("post_image").style.display = "block";

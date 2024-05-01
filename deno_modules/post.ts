@@ -1,16 +1,3 @@
-interface Post {
-    id: string;
-    title: string;
-    content: string;
-    userId: string;
-    timestamp: number;
-    likes: string[];
-    dislikes: string[];
-    neutral: string[];
-    comments: string[];
-    link: string;
-}
-
 export async function createPost(request: Request, userData): Promise<Response> {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
         return new Response("Invalid content type", { status: 400 });
@@ -53,7 +40,8 @@ export async function createPost(request: Request, userData): Promise<Response> 
         dislikes: [],
         neutral: [],
         comments: [],
-        link
+        link,
+        views: 0
     };
 
     await kv.set(["posts", post.id], post);
@@ -74,6 +62,14 @@ export async function getPost(id: string): Promise<Response> {
 
     const userData = await kv.get(["discordUser",postData.value.userId]);
     postData.value.username = userData.value.username;
+
+    if(!postData.value.views){
+        postData.value.views = 0;
+    }
+
+    postData.value.views ++;
+
+    await kv.set(["posts", postData.value.id], postData.value);
 
     return new Response(JSON.stringify(postData.value), {
         status: 200,
