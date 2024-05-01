@@ -9,7 +9,6 @@ async function handleRequest(request){
     const url = new URL(request.url);
 
     if (url.pathname === "/") {
-        await kv.delete(["users", "alex"]);
         return serveFile(request, "index.html");
     } else if (url.pathname === "/auth/discord/callback") {
         return handleOAuthCallback(request);

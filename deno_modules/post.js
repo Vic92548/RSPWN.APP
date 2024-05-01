@@ -141,8 +141,8 @@ export async function getNextFeedPost(userid) {
 
     const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
-    while(selected_post){
-        
+    while(trending_posts.includes(selected_post)){
+
     }
 
     return new Response(JSON.stringify({success: true}), {
