@@ -99,6 +99,7 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease;
+    padding-bottom: 10px;
 }
 
 .upload-card:hover {
@@ -115,6 +116,7 @@
 .upload-card i {
     font-size: 40px;
     color: #555;
+    margin-top: 10px;
 }
 
 .upload-text {
