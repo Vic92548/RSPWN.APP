@@ -36,10 +36,6 @@ export async function createPost(request, userData) {
         content,
         userId,
         timestamp: Date.now(),
-        likes: [],
-        dislikes: [],
-        neutral: [],
-        comments: [],
         link,
         views: 0
     };
@@ -85,8 +81,11 @@ export async function likePost(id, userid) {
         return new Response("Post not found", { status: 404 });
     }
 
-    const userData = await kv.get(["discordUser",postData.value.userId]);
-    postData.value.username = userData.value.username;
+    await kv.set(["posts_stats", id, "likes", userid], Date.now());
+    await kv.set(["users_stats", userid, "likes", id], Date.now());
+    await kv.set(["users_stats", userid, "likes", id], Date.now());
+
+
 
     if(!postData.value.views){
         postData.value.views = 0;

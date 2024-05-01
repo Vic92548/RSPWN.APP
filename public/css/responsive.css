@@ -4,6 +4,14 @@
         margin: 0 auto;
     }
 
+    #feed {
+        display: flex; /* Utilisation de flexbox pour ajuster la disposition */
+        flex-direction: column; /* Empile les éléments verticalement */
+        justify-content: flex-start; /* Alignement au début de la section */
+        align-items: center; /* Centrage horizontal des éléments */
+        min-height: 100vh; /* Définit une hauteur minimale pour la section pour couvrir au moins la hauteur de l'écran */
+    }
+
     /* Autres ajustements pour les écrans de bureau */
     .profile-img {
         width: 70px;
