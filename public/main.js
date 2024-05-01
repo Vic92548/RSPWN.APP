@@ -358,7 +358,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             document.getElementById('preview').style.display = 'none';
             
         } else {
-            alert('Failed to create post. Status: ' + response.status);
+            alert('Failed to create post. Please try again with an other image.');
         }
     } catch (error) {
         console.error('Failed to submit post:', error);

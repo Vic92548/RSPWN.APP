@@ -40,16 +40,25 @@ export async function createPost(request, userData) {
         views: 0
     };
 
-    await kv.set(["posts", post.id], post);
-    await kv.set(["trend", "posts", post.id], {
-        timestamp: Date.now(),
-        score: 0
-    });
+    if(content){
+        await kv.set(["posts", post.id], post);
+        await kv.set(["trend", "posts", post.id], {
+            timestamp: Date.now(),
+            score: 0
+        });
 
-    return new Response(JSON.stringify({ id: post.id }), {
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-    });
+        return new Response(JSON.stringify({ id: post.id }), {
+            status: 201,
+            headers: { "Content-Type": "application/json" }
+        });
+    }else{
+        return new Response(JSON.stringify({ error: "Unable to create post, please try again with an other image." }), {
+            status: 501,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+
+
 }
 
 export async function getPost(id) {
