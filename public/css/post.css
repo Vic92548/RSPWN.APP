@@ -160,3 +160,8 @@ input:focus {
     color: #555;
     font-size: 16px;
 }
+
+#postForm button{
+    color: #555;
+    background-color: rgba(255,255,255,0.6);
+}
