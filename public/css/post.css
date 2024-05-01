@@ -179,6 +179,11 @@ input:focus {
     align-items: center;
 }
 
+#post_views{
+    font-weight: 900;
+    font-size: 18px;
+}
+
 #post_link a{
     float: right;
 }
