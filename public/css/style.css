@@ -68,6 +68,7 @@ main {
     top: 15px;
     left: 0;
     right: 0;
+    text-shadow: 0 0 5px rgba(0,0,0,0.2);
     transition: all 1s;
     font-size: 28px;
 }
