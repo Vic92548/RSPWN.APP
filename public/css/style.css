@@ -20,7 +20,7 @@ main {
 }
 
 .hidden {
-    display: none;
+    opacity: 0;
 }
 
 .glass_bt{
