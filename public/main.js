@@ -157,12 +157,10 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     event.preventDefault();
 
     const title = document.getElementById('title').value;
-    const content = document.getElementById('content').value;
     const file = document.getElementById('file').files[0];
 
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('content', content);
     
     if (file) {
         const fileExtension = file.name.split('.').pop(); // Extract the file extension
