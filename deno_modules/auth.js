@@ -8,7 +8,7 @@ const redirectUri = `https://${DOMAIN}/auth/discord/callback`;
  * Generates a unique secret key using cryptographic randomness.
  * @returns {string} A unique secret key encoded in base64.
  */
-function generateSecretKey(): string {
+function generateSecretKey() {
     // Define the byte length for the secret key
     const byteLength = 32;  // This length is typically sufficient for most security needs
 
@@ -25,7 +25,7 @@ function generateSecretKey(): string {
  * @param {Request} request The incoming HTTP request.
  * @returns {Promise<{isValid: boolean, userData?: any}>} The authentication status and user data if valid.
  */
-export async function authenticateRequest(request: Request): Promise<{isValid: boolean, userData?: any}> {
+export async function authenticateRequest(request) {
     const authHeader = request.headers.get("Authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return { isValid: false };
@@ -48,7 +48,7 @@ export async function authenticateRequest(request: Request): Promise<{isValid: b
 
 
 // Function to handle the OAuth callback
-export async function handleOAuthCallback(request: Request): Promise<Response> {
+export async function handleOAuthCallback(request) {
     const url = new URL(request.url, `https://${DOMAIN}/`);
     const code = url.searchParams.get("code");
     if (!code) return new Response("Authorization code not found", { status: 400 });
@@ -106,7 +106,7 @@ export async function handleOAuthCallback(request: Request): Promise<Response> {
 }
 
 // Function to redirect to Discord login
-export function redirectToDiscordLogin(): Response {
+export function redirectToDiscordLogin() {
     const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email`;
     return Response.redirect(authUrl);
 }

@@ -1,11 +1,11 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
-import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.ts";
-import { createPost, getPost } from "./deno_modules/post.ts";
+import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
+import { createPost, getPost } from "./deno_modules/post.js";
 
 const port = 8080;
 
-async function handleRequest(request: Request): Promise<Response> {
+async function handleRequest(request){
     const url = new URL(request.url);
 
     if (url.pathname === "/") {

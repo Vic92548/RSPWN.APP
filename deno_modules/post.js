@@ -1,4 +1,4 @@
-export async function createPost(request: Request, userData): Promise<Response> {
+export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
         return new Response("Invalid content type", { status: 400 });
     }
@@ -7,7 +7,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
     const title = formData.get("title");
     let content = formData.get("content");
     let link = formData.get("link");
-    const file = formData.get("file") as File;
+    const file = formData.get("file");
 
     const userId = userData.id;
 
@@ -30,7 +30,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
 
     const kv = await Deno.openKv();
-    const post: Post = {
+    const post = {
         id: postId,
         title,
         content,
@@ -52,7 +52,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
     });
 }
 
-export async function getPost(id: string): Promise<Response> {
+export async function getPost(id) {
     const kv = await Deno.openKv();
     const postData = await kv.get(["posts",id]);
 
@@ -77,7 +77,32 @@ export async function getPost(id: string): Promise<Response> {
     });
 }
 
-async function uploadToBunnyCDN(file: File, postId: string): Promise<string> {
+export async function likePost(id, userid) {
+    const kv = await Deno.openKv();
+    const postData = await kv.get(["posts",id]);
+
+    if (!postData) {
+        return new Response("Post not found", { status: 404 });
+    }
+
+    const userData = await kv.get(["discordUser",postData.value.userId]);
+    postData.value.username = userData.value.username;
+
+    if(!postData.value.views){
+        postData.value.views = 0;
+    }
+
+    postData.value.views ++;
+
+    await kv.set(["posts", postData.value.id], postData.value);
+
+    return new Response(JSON.stringify(postData.value), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
+
+async function uploadToBunnyCDN(file, postId){
     const fileExtension = file.name.split('.').pop();  // Extract the file extension
     const fileName = `${postId}.${fileExtension}`;     // Construct the file name using the post ID and the extension
     const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
