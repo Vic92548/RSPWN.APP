@@ -62,6 +62,11 @@ function loadUserData(){
         document.getElementById("sign_in").style.display = "none";
 
         hideLoading();
+
+        window.analytics.identify(data.id, {
+            email: data.email,
+            name: data.username
+        });
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         document.getElementById("add_post").style.display = "none";
@@ -122,6 +127,10 @@ function drawPost(data){
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
     document.getElementById("post_views").textContent = data.views;
+
+    if(!data.content){
+        data.content = "https://vapr.b-cdn.net/posts/200w.gif";
+    }
 
     if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
         document.getElementById("post_image").src = data.content;
@@ -218,6 +227,9 @@ function likePost() {
     if(isUserLoggedIn()){
         hidePost();
         makeApiRequest("/like/" + current_post_id).then(data => {
+
+            window.analytics.track('like', {postId: current_post_id});
+
             confetti({
                 particleCount: 100,
                 spread: 70,
@@ -225,6 +237,8 @@ function likePost() {
             });
 
             displayPost();
+
+
         }).catch(error => {
             console.log(error);
         });
@@ -238,6 +252,7 @@ function skipPost() {
     if(isUserLoggedIn()){
         hidePost();
         makeApiRequest("/skip/" + current_post_id).then(data => {
+            window.analytics.track('skip', {postId: current_post_id});
             displayPost();
         }).catch(error => {
             console.log(error);
@@ -252,6 +267,7 @@ function dislikePost() {
     if(isUserLoggedIn()){
         hidePost();
         makeApiRequest("/dislike/" + current_post_id).then(data => {
+            window.analytics.track('dislike', {postId: current_post_id});
             displayPost();
         }).catch(error => {
             console.log(error);
@@ -323,6 +339,9 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
 
         const result = await response.json();
         if (response.ok) {
+
+            window.analytics.track('new_post_uploaded', {postId: current_post_id});
+
             document.getElementById("add-post").style.display = "none";
             confetti({
                 particleCount: 100,
