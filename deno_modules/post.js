@@ -155,6 +155,9 @@ export async function getNextFeedPost(userid) {
         const interacted_posts = [];
         for await (const res of iter2) interacted_posts.push(res.key.pop());
 
+        console.log("INTERACTED POSTS");
+        console.log(interacted_posts);
+
         let selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
         let retries = 100;
