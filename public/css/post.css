@@ -39,12 +39,12 @@
 }
 
 #postForm{
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(251, 188, 255, 1);
+    box-shadow: 0 0 30px rgb(154, 172, 255);
     width: 80%;
     margin-left: calc(10% - 20px);
     margin-top: 30vh;
