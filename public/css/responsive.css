@@ -4,12 +4,6 @@
         margin: 0 auto;
     }
 
-    .create-post-btn {
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-    }
-
     /* Autres ajustements pour les écrans de bureau */
     .profile-img {
         width: 70px;

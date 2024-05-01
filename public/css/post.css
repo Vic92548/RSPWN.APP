@@ -172,6 +172,14 @@ input:focus {
     margin-left: auto;
 }
 
+.post_stat{
+    margin-top: 15px;
+}
+
+#post_link a{
+    float: right;
+}
+
 #post_steam{
     background-color: #1b2838;
     box-shadow: 0 0 5px #1b2838;
