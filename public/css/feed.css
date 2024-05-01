@@ -65,6 +65,10 @@
     margin: 0;
 }
 
+.actions button i{
+    margin: 0;
+}
+
 .actions .dislike{
     border-radius: 8px 0 0 8px;
     background-color: rgba(231, 76, 60, 0.64);
