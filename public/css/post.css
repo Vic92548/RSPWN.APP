@@ -81,3 +81,7 @@
     width: 100%;
     border-radius: 8px;
 }
+
+#post_link a{
+    display: none;
+}

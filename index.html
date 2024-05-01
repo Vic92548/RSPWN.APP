@@ -10,6 +10,8 @@
     <link href="/css/comment.css" rel="stylesheet" type="text/css" />
     <link href="/css/character.css" rel="stylesheet" type="text/css" />
     <link href="/css/progress.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
     </style>
@@ -46,6 +48,22 @@
                 <div class="post-content">
                     <p id="post_content" class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et lorem vel lorem sollicitudin vestibulum ac non libero.</p>
                     <img id="post_image">
+                    <div>
+                        <span id="post_stats"></span>
+
+                        <span id="post_link">
+                            <a id="post_discord" class="glass_bt"><i class="fa-brands fa-discord"></i>Discord</a>
+                            <a id="post_reddit" class="glass_bt"><i class="fa-brands fa-reddit"></i>Reddit</a>
+                            <a id="post_itch" class="glass_bt"><i class="fa-brands fa-itch-io"></i>Itch.io</a>
+                            <a id="post_steam" class="glass_bt"><i class="fa-brands fa-steam"></i>Steam</a>
+                            <a id="post_x" class="glass_bt"><i class="fa-brands fa-x-twitter"></i>X</a>
+                            <a id="post_pinterest" class="glass_bt"><i class="fa-brands fa-pinterest"></i>Pinterest</a>
+                            <a id="post_twitch" class="glass_bt"><i class="fa-brands fa-twitch"></i>Twitch</a>
+                            <a id="post_youtube" class="glass_bt"><i class="fa-brands fa-youtube"></i>Youtube</a>
+                            <a id="post_instagram" class="glass_bt"><i class="fa-brands fa-instagram"></i>Instagram</a>
+                        </span>
+
+                    </div>
                     <div class="actions">
                         <button class="dislike glass_bt"><i class="fa-solid fa-heart-crack"></i></button>
                         <button class="neutral glass_bt"><i class="fa-solid fa-forward"></i></button>
@@ -100,6 +118,10 @@
 
                 <label for="file">Upload Image/Video:</label>
                 <input type="file" id="file" name="file"><br><br>
+
+
+                <label for="link">Link:</label>
+                <input id="link" type="url" name="link"></input><br><br>
 
                 <button type="submit">Submit Post</button>
             </form>

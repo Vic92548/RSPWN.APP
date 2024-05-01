@@ -1,3 +1,5 @@
+import {getPost} from "../deno_modules/post";
+
 function makeApiRequest(path, requireAuth = true) {
     return new Promise((resolve, reject) => {
         // Retrieve the JWT from local storage
@@ -77,10 +79,6 @@ function hideLoading(){
     document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
-function opeNewPostModel() {
-    document.getElementById("add-post").className = "";
-}
-
 function timeAgo(dateParam) {
     if (!dateParam) {
         return null;
@@ -136,6 +134,10 @@ function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
 
 displayPost();
 
+function opeNewPostModel() {
+    document.getElementById("add-post").style.display = "block";
+}
+
 document.getElementById('postForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -176,7 +178,13 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
 
         const result = await response.json();
         if (response.ok) {
-            alert('Post created successfully! Post ID: ' + result.id);
+            document.getElementById("add-post").style.display = "none";
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            displayPost(result.id);
             // Optionally clear the form or handle according to your needs
         } else {
             alert('Failed to create post. Status: ' + response.status);

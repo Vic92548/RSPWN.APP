@@ -8,6 +8,7 @@ interface Post {
     dislikes: string[];
     neutral: string[];
     comments: string[];
+    link: string;
 }
 
 export async function createPost(request: Request, userData): Promise<Response> {
@@ -18,6 +19,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
     const formData = await request.formData();
     const title = formData.get("title");
     let content = formData.get("content");
+    let link = formData.get("link");
     const file = formData.get("file") as File;
 
     const userId = userData.id;
@@ -50,7 +52,8 @@ export async function createPost(request: Request, userData): Promise<Response> 
         likes: [],
         dislikes: [],
         neutral: [],
-        comments: []
+        comments: [],
+        link
     };
 
     await kv.set(["posts", post.id], post);
