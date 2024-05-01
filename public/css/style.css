@@ -79,6 +79,11 @@ main {
     right: 10px;
     background-color: #5865F2;
     border-radius: 7px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 28px;
+    padding: 20px;
 }
 
 title span{
