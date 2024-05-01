@@ -1,5 +1,3 @@
-import {getPost} from "../deno_modules/post";
-
 function makeApiRequest(path, requireAuth = true) {
     return new Promise((resolve, reject) => {
         // Retrieve the JWT from local storage
