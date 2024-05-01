@@ -106,7 +106,6 @@ function timeAgo(dateParam) {
     }
 }
 
-
 function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
     makeApiRequest("/posts/"+postId, false).then(data => {
         console.log("Post DATA:");
@@ -125,6 +124,31 @@ function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
             document.getElementById("post_content").style.display = "block";
             document.getElementById("post_image").style.display = "none";
         }
+
+        const links = document.getElementById("post_link").children;
+        for(let i = 0; i < links.length;i++){
+            links[i].style.display = "none";
+        }
+
+        //https://store.steampowered.com/app/2542010/Only_Wish/
+        if(data.link){
+            const url = new URL(data.link);
+            switch(url.hostname){
+                case 'discord.gg':
+                    document.getElementById('post_discord').style.display = "inline-block";
+                    break;
+                case 'www.reddit.com':
+                    document.getElementById('post_reddit').style.display = "inline-block";
+                    break;    
+                case 'store.steampowered.com':
+                    document.getElementById('post_steam').style.display = "inline-block";
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+
     }).catch(error => {
         console.log(error);
     })

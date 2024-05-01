@@ -1,0 +1,23 @@
+@media only screen and (min-width: 768px) {
+    main {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .create-post-btn {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+    }
+
+    /* Autres ajustements pour les écrans de bureau */
+    .profile-img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .attribute {
+        flex: 0 0 calc(33.33% - 20px); /* Ajustement de la largeur des attributs dans la fiche de personnage */
+        margin: 10px;
+    }
+}
