@@ -149,6 +149,9 @@ document.getElementById('file').addEventListener('change', function() {
 function opeNewPostModel() {
     document.getElementById("add-post").style.display = "flex";
 }
+function closeNewPostModel() {
+    document.getElementById("add-post").style.display = "none";
+}
 
 document.getElementById('postForm').addEventListener('submit', async function(event) {
     event.preventDefault();

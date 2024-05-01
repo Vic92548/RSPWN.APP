@@ -166,8 +166,8 @@ input:focus {
     box-shadow: 0 0 5px rgba(46, 46, 46, 0.3);
     background-color: rgba(255,255,255,0.1);
     font-weight: 900;
-    font-size: 16px;
-    padding: 10px;
+    font-size: 17px;
+    padding: 14px;
     font-family: "Poppins", sans-serif;
     margin-left: auto;
 }
