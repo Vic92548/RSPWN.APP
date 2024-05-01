@@ -23,7 +23,7 @@
     }
 
     .post {
-        width: 70%; /* Ajustez la largeur de l'article selon vos besoins */
-        margin: 0 auto; /* Centrez l'article horizontalement */
+        width: 500px;
+        margin: 0 auto;
     }
 }

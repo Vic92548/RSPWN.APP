@@ -148,7 +148,8 @@ input:focus {
 
 .upload-card img {
     width: 100%;
-    object-fit: cover;
+    max-height: 300px;
+    object-fit: contain; /*cover*/
     display: block;
 }
 
