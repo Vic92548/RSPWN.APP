@@ -150,6 +150,9 @@ export async function getNextFeedPost(userid) {
 
         return getPost(selected_post);
     }else{
+
+        console.log("Like user id " + userid);
+
         const iter2 = kv.list({prefix: ["users_stats", userid, "interacted_posts"]});
 
         const interacted_posts = [];
