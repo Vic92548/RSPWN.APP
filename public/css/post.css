@@ -47,7 +47,8 @@
     box-shadow: 0 0 30px rgba(251, 188, 255, 1);
     width: 80%;
     margin-left: calc(10% - 20px);
-    margin-top: 40vh;
+    margin-top: 30vh;
+    color: #555;
 }
 
 #add-post .profile-img {
