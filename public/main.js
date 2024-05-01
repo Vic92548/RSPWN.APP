@@ -113,6 +113,7 @@ function setupSocialLink(id, link){
 }
 
 function drawPost(data){
+    showPost();
     console.log("Post DATA:");
     console.log(data);
 
@@ -177,9 +178,18 @@ function displayPost(postId = undefined){
 
 }
 
+function hidePost() {
+    document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
+}
+
+function showPost() {
+    document.getElementsByClassName("post")[0].style.transform = "translateY(0vh)";
+}
+
 displayPost();
 
 function likePost() {
+    hidePost();
     makeApiRequest("/like/" + current_post_id).then(data => {
         confetti({
             particleCount: 100,
@@ -194,6 +204,7 @@ function likePost() {
 }
 
 function skipPost() {
+    hidePost();
     makeApiRequest("/skip/" + current_post_id).then(data => {
         displayPost();
     }).catch(error => {
@@ -202,6 +213,7 @@ function skipPost() {
 }
 
 function dislikePost() {
+    hidePost();
     makeApiRequest("/dislike/" + current_post_id).then(data => {
         displayPost();
     }).catch(error => {
