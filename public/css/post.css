@@ -77,7 +77,7 @@
 
 #postForm #title,
 #postForm #link{
-    display: block;
+    display: inline-block;
     width: calc(100% - 20px);
     border: none;
     border-radius: 5px;
