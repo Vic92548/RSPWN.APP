@@ -70,6 +70,7 @@
 
 #postForm h3{
     margin-top: 0;
+    margin-bottom: 20px;
     font-weight: 900;
     font-size: 38px;
     text-align: center;
@@ -155,6 +156,7 @@ input:focus {
     overflow: hidden;
     transition: transform 0.3s ease;
     padding-bottom: 4px;
+    margin-bottom: 10px;
 }
 
 .upload-card:hover {
