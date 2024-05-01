@@ -290,6 +290,12 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             });
             displayPost(result.id);
             // Optionally clear the form or handle according to your needs
+
+            // Clear post
+            document.getElementById('title').value = '';
+            document.getElementById('file').value = '';
+            document.getElementById('link').value = '';
+            
         } else {
             alert('Failed to create post. Status: ' + response.status);
         }

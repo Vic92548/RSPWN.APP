@@ -1,7 +1,12 @@
 .create-post-btn {
     position: fixed;
-    /*bottom: 20px;*/
-    right: 20px;
+    display: block;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    width: 90%;
     color: #fff;
     border: none;
     cursor: pointer;
