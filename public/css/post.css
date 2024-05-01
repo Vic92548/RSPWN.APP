@@ -39,7 +39,7 @@
 }
 
 #postForm{
-    background-color: rgba(251, 188, 255, 0.2);
+    background-color: #fff;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 20px;
@@ -47,6 +47,7 @@
     box-shadow: 0 0 30px rgba(251, 188, 255, 1);
     width: 80%;
     margin-left: calc(10% - 20px);
+    margin-top: 40vh;
 }
 
 #add-post .profile-img {
