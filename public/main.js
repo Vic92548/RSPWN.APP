@@ -215,36 +215,51 @@ function showPost() {
 displayPost();
 
 function likePost() {
-    hidePost();
-    makeApiRequest("/like/" + current_post_id).then(data => {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
+    if(isUserLoggedIn()){
+        hidePost();
+        makeApiRequest("/like/" + current_post_id).then(data => {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
 
-        displayPost();
-    }).catch(error => {
-        console.log(error);
-    });
+            displayPost();
+        }).catch(error => {
+            console.log(error);
+        });
+    }else{
+        window.location.replace('/login');
+    }
+
 }
 
 function skipPost() {
-    hidePost();
-    makeApiRequest("/skip/" + current_post_id).then(data => {
+    if(isUserLoggedIn()){
+        hidePost();
+        makeApiRequest("/skip/" + current_post_id).then(data => {
+            displayPost();
+        }).catch(error => {
+            console.log(error);
+        });
+    }else{
         displayPost();
-    }).catch(error => {
-        console.log(error);
-    });
+    }
+
 }
 
 function dislikePost() {
-    hidePost();
-    makeApiRequest("/dislike/" + current_post_id).then(data => {
-        displayPost();
-    }).catch(error => {
-        console.log(error);
-    });
+    if(isUserLoggedIn()){
+        hidePost();
+        makeApiRequest("/dislike/" + current_post_id).then(data => {
+            displayPost();
+        }).catch(error => {
+            console.log(error);
+        });
+    }else{
+        window.location.replace('/login');
+    }
+
 }
 
 document.getElementById('file').addEventListener('change', function() {
