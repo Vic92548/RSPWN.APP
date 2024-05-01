@@ -65,7 +65,6 @@
     box-shadow: 0 0 30px rgb(154, 172, 255);
     width: 80%;
     margin-left: calc(10% - 20px);
-    margin-top: 20vh;
     color: #555;
     animation: glowing-shadow 8s infinite;
 }
