@@ -6,6 +6,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.4s;
+    font-size: 16px;
 }
 
 .create-post-btn:hover {
@@ -115,6 +116,7 @@ input:focus {
 
 #post_image{
     width: 100%;
+    max-height: 300px;
     border-radius: 8px;
 }
 

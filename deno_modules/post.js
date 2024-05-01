@@ -41,6 +41,10 @@ export async function createPost(request, userData) {
     };
 
     await kv.set(["posts", post.id], post);
+    await kv.set(["trend", "posts", post.id], {
+        timestamp: Date.now(),
+        score: 0
+    });
 
     return new Response(JSON.stringify({ id: post.id }), {
         status: 201,
@@ -83,19 +87,63 @@ export async function likePost(id, userid) {
 
     await kv.set(["posts_stats", id, "likes", userid], Date.now());
     await kv.set(["users_stats", userid, "likes", id], Date.now());
-    await kv.set(["users_stats", userid, "likes", id], Date.now());
+    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
 
+    return new Response(JSON.stringify({success: true}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
 
+export async function dislikePost(id, userid) {
+    const kv = await Deno.openKv();
+    const postData = await kv.get(["posts",id]);
 
-    if(!postData.value.views){
-        postData.value.views = 0;
+    if (!postData) {
+        return new Response("Post not found", { status: 404 });
     }
 
-    postData.value.views ++;
+    await kv.set(["posts_stats", id, "dislikes", userid], Date.now());
+    await kv.set(["users_stats", userid, "dislikes", id], Date.now());
+    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
 
-    await kv.set(["posts", postData.value.id], postData.value);
+    return new Response(JSON.stringify({success: true}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
 
-    return new Response(JSON.stringify(postData.value), {
+export async function skipPost(id, userid) {
+    const kv = await Deno.openKv();
+    const postData = await kv.get(["posts",id]);
+
+    if (!postData) {
+        return new Response("Post not found", { status: 404 });
+    }
+
+    await kv.set(["posts_stats", id, "skip", userid], Date.now());
+    await kv.set(["users_stats", userid, "skip", id], Date.now());
+    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
+
+    return new Response(JSON.stringify({success: true}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
+
+export async function getNextFeedPost(userid) {
+    const kv = await Deno.openKv();
+
+    const iter = kv.list({prefix: ["trend", "posts"]});
+
+    const trending_posts = [];
+    for await (const res of iter) trending_posts.push(res.key);
+
+    const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+
+    while(selected_post)
+
+    return new Response(JSON.stringify({success: true}), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });

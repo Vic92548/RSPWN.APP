@@ -1,15 +1,15 @@
 @media only screen and (min-width: 768px) {
     main {
-        width: 80%;
+        /*width: 80%;*/
         margin: 0 auto;
     }
 
     #feed {
-        display: flex; /* Utilisation de flexbox pour ajuster la disposition */
-        flex-direction: column; /* Empile les éléments verticalement */
-        justify-content: flex-start; /* Alignement au début de la section */
-        align-items: center; /* Centrage horizontal des éléments */
-        min-height: 100vh; /* Définit une hauteur minimale pour la section pour couvrir au moins la hauteur de l'écran */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 100vh;
     }
 
     /* Autres ajustements pour les écrans de bureau */
@@ -36,4 +36,6 @@
     .actions button {
         margin-left: 10px; /* Ajoutez un espace entre les boutons */
     }
+
+
 }
