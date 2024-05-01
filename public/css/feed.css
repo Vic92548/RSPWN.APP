@@ -87,6 +87,18 @@
     background-color: rgba(46, 204, 113, 0.65);
 }
 
+.actions .dislike:hover{
+    background-color: rgba(199, 35, 17, 0.64);
+}
+
+.actions .neutral:hover{
+    background-color: rgba(33, 43, 53, 0.24);
+}
+
+.actions .like:hover{
+    background-color: rgba(16, 214, 98, 0.65);
+}
+
 .actions button:hover {
     text-decoration: underline;
 }

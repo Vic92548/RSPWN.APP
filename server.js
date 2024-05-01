@@ -91,5 +91,8 @@ async function handleRequest(request){
     }
 }
 
+const kv = await Deno.openKv();
+kv.delete(["discordUser"]);
+
 console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
 Deno.serve({ port }, handleRequest);

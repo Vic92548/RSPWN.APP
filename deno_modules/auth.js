@@ -1,3 +1,5 @@
+import { sendMessageToDiscordWebhook } from './discord.js';
+
 // Environment variable-based configuration
 const clientId = Deno.env.get("DISCORD_ClientID");
 const clientSecret = Deno.env.get("DISCORD_ClientSecret");
@@ -88,6 +90,27 @@ export async function handleOAuthCallback(request) {
 
     // Optionally store user data and JWT in Deno KV
     const kv = await Deno.openKv();
+
+    const oldUserData = await kv.get(["discordUser", userData.id]);
+
+    const user_count = await kv.get(["web_stats", "users"]);
+
+    if(!user_count.value){
+        user_count.value = 0;
+    }
+
+    if(!oldUserData.value){
+
+        const total_users = ++user_count.value;
+
+        await kv.set(["web_stats", "users"], total_users);
+
+        sendMessageToDiscordWebhook(
+            "https://discord.com/api/webhooks/1235274235438436413/wIBKtVBz9QvyqqUN8Fu4jSoKfXsQn-ior-92FzPNPKxbDrI2i1VhzV4ps_XqzdjPlb9q",
+            userData.username + " joined VAPR we are now " + total_users + " members!");
+    }
+
+
     await kv.set(["discordUser", userData.id], userData);
 
     const secret_key = generateSecretKey();
