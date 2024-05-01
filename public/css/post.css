@@ -38,6 +38,25 @@
     z-index: 100;
 }
 
+@keyframes glowing-shadow {
+    0% {
+        box-shadow: 0 0 30px rgb(154, 172, 255); /* Initial blue shadow */
+        transform: scale(1.0);
+    }
+    33% {
+        box-shadow: 0 0 35px rgb(200, 100, 255); /* Purple shadow */
+        transform: scale(1.05);
+    }
+    66% {
+        box-shadow: 0 0 40px rgb(100, 255, 150); /* Green shadow */
+        transform: scale(1.1);
+    }
+    100% {
+        box-shadow: 0 0 30px rgb(154, 172, 255); /* Back to blue shadow */
+        transform: scale(1.0);
+    }
+}
+
 #postForm{
     background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(20px);
@@ -47,8 +66,9 @@
     box-shadow: 0 0 30px rgb(154, 172, 255);
     width: 80%;
     margin-left: calc(10% - 20px);
-    margin-top: 30vh;
+    margin-top: 20vh;
     color: #555;
+    animation: glowing-shadow 5s infinite;
 }
 
 #add-post .profile-img {
