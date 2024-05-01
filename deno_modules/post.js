@@ -150,7 +150,7 @@ export async function getNextFeedPost(userid) {
         const iter2 = kv.list({prefix: ["users_stats", userid, "interacted_posts"]});
 
         const interacted_posts = [];
-        for await (const res of iter2) interacted_posts.push(res.key);
+        for await (const res of iter2) interacted_posts.push(res.key.pop());
 
         let selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
