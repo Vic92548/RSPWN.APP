@@ -24,7 +24,7 @@ export async function createPost(request: Request, userData): Promise<Response> 
 
     const userId = userData.id;
 
-    if (typeof title !== "string" || typeof content !== "string" || typeof userId !== "string") {
+    if (typeof title !== "string" || typeof userId !== "string") {
         return new Response("Missing or invalid fields", { status: 400 });
     }
 

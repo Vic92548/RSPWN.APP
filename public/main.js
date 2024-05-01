@@ -132,6 +132,20 @@ function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
 
 displayPost();
 
+document.getElementById('file').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview').src = e.target.result;
+            document.getElementById('preview').hidden = false;
+            document.getElementById('upload-icon').hidden = true;
+            document.querySelector('.upload-text').textContent = 'Click to replace the image';
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+
 function opeNewPostModel() {
     document.getElementById("add-post").style.display = "block";
 }
