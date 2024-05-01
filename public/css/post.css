@@ -102,26 +102,6 @@ input:focus {
     margin-right: 10px;
 }
 
-#add-post textarea {
-    width: calc(100% - 70px);
-    height: 100px;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    resize: none;
-}
-
-#add-post button#publish {
-    background-color: #1da1f2;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
 #add-post button#publish:hover {
     background-color: #0d8bf0;
