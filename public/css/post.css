@@ -78,12 +78,14 @@
 #postForm #title,
 #postForm #link{
     display: block;
-    width: 100%;
+    width: calc(100% - 20px);
     border: none;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
     box-shadow: 0 0 5px rgba(46, 46, 46, 0.3);
     background-color: rgba(255,255,255,0.1);
+    color: #555;
+    font-size: 14px;
 }
 
 #add-post .profile-img {
