@@ -147,7 +147,7 @@ document.getElementById('file').addEventListener('change', function() {
 
 
 function opeNewPostModel() {
-    document.getElementById("add-post").style.display = "block";
+    document.getElementById("add-post").style.display = "flex";
 }
 
 document.getElementById('postForm').addEventListener('submit', async function(event) {
