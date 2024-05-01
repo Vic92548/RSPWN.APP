@@ -70,16 +70,19 @@
 }
 
 .actions .dislike{
+    width: 100%;
     border-radius: 8px 0 0 8px;
     background-color: rgba(231, 76, 60, 0.64);
 }
 
 .actions .neutral{
+    width: 100%;
     background-color: rgba(52, 73, 94, 0.24);
     padding: 20px 30px 20px 30px;
 }
 
 .actions .like{
+    width: 100%;
     border-radius: 0 8px 8px 0;
     background-color: rgba(46, 204, 113, 0.65);
 }
