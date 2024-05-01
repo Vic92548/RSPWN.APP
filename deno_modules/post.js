@@ -85,9 +85,11 @@ export async function likePost(id, userid) {
         return new Response("Post not found", { status: 404 });
     }
 
-    await kv.set(["posts_stats", id, "likes", userid], Date.now());
-    await kv.set(["users_stats", userid, "likes", id], Date.now());
-    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
+    await Promise.all([
+        kv.set(["posts_stats", id, "likes", userid], Date.now()),
+        kv.set(["users_stats", userid, "likes", id], Date.now()),
+        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+    ]);
 
     return new Response(JSON.stringify({success: true}), {
         status: 200,
@@ -103,9 +105,11 @@ export async function dislikePost(id, userid) {
         return new Response("Post not found", { status: 404 });
     }
 
-    await kv.set(["posts_stats", id, "dislikes", userid], Date.now());
-    await kv.set(["users_stats", userid, "dislikes", id], Date.now());
-    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
+    await Promise.all([
+        kv.set(["posts_stats", id, "dislikes", userid], Date.now()),
+        kv.set(["users_stats", userid, "dislikes", id], Date.now()),
+        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+    ]);
 
     return new Response(JSON.stringify({success: true}), {
         status: 200,
@@ -121,9 +125,11 @@ export async function skipPost(id, userid) {
         return new Response("Post not found", { status: 404 });
     }
 
-    await kv.set(["posts_stats", id, "skip", userid], Date.now());
-    await kv.set(["users_stats", userid, "skip", id], Date.now());
-    await kv.set(["users_stats", userid, "interacted_posts", id], Date.now());
+    await Promise.all([
+        kv.set(["posts_stats", id, "skip", userid], Date.now()),
+        kv.set(["users_stats", userid, "skip", id], Date.now()),
+        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+    ]);
 
     return new Response(JSON.stringify({success: true}), {
         status: 200,

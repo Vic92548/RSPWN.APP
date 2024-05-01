@@ -4,6 +4,10 @@
         margin: 0 auto;
     }
 
+    h1 {
+        font-size: 3em;
+    }
+
     #feed {
         display: flex;
         flex-direction: column;

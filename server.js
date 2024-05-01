@@ -37,7 +37,7 @@ async function handleRequest(request){
             return getNextFeedPost("anonymous");
         }
 
-        return getNextFeedPost(authResult.userData.username);
+        return getNextFeedPost(authResult.userData.id);
     }// Create a new post
     else if (request.method === "POST" && url.pathname === "/posts") {
         const authResult = await authenticateRequest(request);
