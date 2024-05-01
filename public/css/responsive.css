@@ -26,4 +26,8 @@
         width: 500px;
         margin: 0 auto;
     }
+
+    #postForm {
+        width: 500px;
+    }
 }
