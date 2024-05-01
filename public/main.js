@@ -141,15 +141,41 @@ function drawPost(data){
     //https://store.steampowered.com/app/2542010/Only_Wish/
     if(data.link){
         const url = new URL(data.link);
+
+        if(url.hostname.includes("itch.io")){
+            setupSocialLink("post_itch", data.link);
+        }
+
         switch(url.hostname){
             case 'discord.gg':
-                document.getElementById('post_discord').style.display = "inline-block";
+                setupSocialLink("post_discord", data.link);
                 break;
             case 'www.reddit.com':
-                document.getElementById('post_reddit').style.display = "inline-block";
+                setupSocialLink("post_reddit", data.link);
                 break;
             case 'store.steampowered.com':
                 setupSocialLink("post_steam", data.link);
+                break;
+            case 'x.com':
+                setupSocialLink("post_x", data.link);
+                break;
+            case 'twitter.com':
+                setupSocialLink("post_x", data.link);
+                break;
+            case 'www.threads.net':
+                setupSocialLink("post_threads", data.link);
+                break;
+            case 'www.pinterest.fr':
+                setupSocialLink("post_pinterest", data.link);
+                break;
+            case 'www.twitch.tv':
+                setupSocialLink("post_twitch", data.link);
+                break;
+            case 'www.youtube.com':
+                setupSocialLink("post_youtube", data.link);
+                break;
+            case 'www.instagram.com':
+                setupSocialLink("post_instagram", data.link);
                 break;
             default:
                 break;
@@ -295,6 +321,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             document.getElementById('title').value = '';
             document.getElementById('file').value = '';
             document.getElementById('link').value = '';
+            document.getElementById('preview').style.display = 'none';
             
         } else {
             alert('Failed to create post. Status: ' + response.status);

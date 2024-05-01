@@ -207,3 +207,48 @@ input:focus {
     background-color: #1b2838;
     box-shadow: 0 0 5px #1b2838;
 }
+
+#post_itch{
+    background-color: #fa5c5c;
+    box-shadow: 0 0 5px #fa5c5c;
+}
+
+#post_discord{
+    background-color: #5865F2;
+    box-shadow: 0 0 5px #5865F2;
+}
+
+#post_reddit{
+    background-color: #ff6314;
+    box-shadow: 0 0 5px #ff6314;
+}
+
+#post_x{
+    background-color: #000000;
+    box-shadow: 0 0 5px #000000;
+}
+
+#post_threads{
+    background-color: #111;
+    box-shadow: 0 0 5px #111;
+}
+
+#post_pinterest{
+    background-color: #E60023;
+    box-shadow: 0 0 5px #E60023;
+}
+
+#post_twitch{
+    background-color: #6441a5 ;
+    box-shadow: 0 0 5px #6441a5 ;
+}
+
+#post_youtube{
+    background-color: #FF0000 ;
+    box-shadow: 0 0 5px #FF0000 ;
+}
+
+#post_instagram{
+    background-color: #5B51D8 ;
+    box-shadow: 0 0 5px #5B51D8 ;
+}

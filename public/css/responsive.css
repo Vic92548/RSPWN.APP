@@ -33,4 +33,8 @@
     #postForm {
         width: 500px;
     }
+
+    .discord_login, .create-post-btn {
+        width: 440px;
+    }
 }
