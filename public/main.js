@@ -137,7 +137,7 @@ document.getElementById('file').addEventListener('change', function() {
         var reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('preview').src = e.target.result;
-            document.getElementById('preview').hidden = false;
+            document.getElementById('preview').style.display = "block";
             document.getElementById('upload-icon').hidden = true;
             document.querySelector('.upload-text').textContent = 'Click to replace the image';
         };
