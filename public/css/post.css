@@ -64,7 +64,13 @@
     margin-left: calc(10% - 20px);
     margin-top: 20vh;
     color: #555;
-    animation: glowing-shadow 15s infinite;
+    animation: glowing-shadow 8s infinite;
+}
+
+#postForm h3{
+    margin-top: 0;
+    font-weight: 900;
+    font-size: 20px;
 }
 
 #add-post .profile-img {
