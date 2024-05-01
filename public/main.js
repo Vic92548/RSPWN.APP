@@ -112,57 +112,102 @@ function setupSocialLink(id, link){
     link_bt.href = link;
 }
 
-function displayPost(postId = "bb80daba-c5a5-4448-8a16-d1d005367fec"){
-    makeApiRequest("/posts/"+postId, false).then(data => {
-        console.log("Post DATA:");
-        console.log(data);
+function drawPost(data){
+    console.log("Post DATA:");
+    console.log(data);
 
-        document.getElementById("post_title").textContent = data.title;
-        document.getElementById("post_username").textContent = "@" + data.username;
-        document.getElementById("post_time").textContent = timeAgo(data.timestamp);
+    document.getElementById("post_title").textContent = data.title;
+    document.getElementById("post_username").textContent = "@" + data.username;
+    document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
-        document.getElementById("post_views").textContent = data.views;
+    document.getElementById("post_views").textContent = data.views;
 
-        if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
-            document.getElementById("post_image").src = data.content;
-            document.getElementById("post_image").style.display = "block";
-            document.getElementById("post_content").style.display = "none";
-        }else{
-            document.getElementById("post_content").textContent = data.content;
-            document.getElementById("post_content").style.display = "block";
-            document.getElementById("post_image").style.display = "none";
+    if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
+        document.getElementById("post_image").src = data.content;
+        document.getElementById("post_image").style.display = "block";
+        document.getElementById("post_content").style.display = "none";
+    }else{
+        document.getElementById("post_content").textContent = data.content;
+        document.getElementById("post_content").style.display = "block";
+        document.getElementById("post_image").style.display = "none";
+    }
+
+    const links = document.getElementById("post_link").children;
+    for(let i = 0; i < links.length;i++){
+        links[i].style.display = "none";
+    }
+
+    //https://store.steampowered.com/app/2542010/Only_Wish/
+    if(data.link){
+        const url = new URL(data.link);
+        switch(url.hostname){
+            case 'discord.gg':
+                document.getElementById('post_discord').style.display = "inline-block";
+                break;
+            case 'www.reddit.com':
+                document.getElementById('post_reddit').style.display = "inline-block";
+                break;
+            case 'store.steampowered.com':
+                setupSocialLink("post_steam", data.link);
+                break;
+            default:
+                break;
         }
+    }
+}
 
-        const links = document.getElementById("post_link").children;
-        for(let i = 0; i < links.length;i++){
-            links[i].style.display = "none";
-        }
+let current_post_id = undefined;
 
-        //https://store.steampowered.com/app/2542010/Only_Wish/
-        if(data.link){
-            const url = new URL(data.link);
-            switch(url.hostname){
-                case 'discord.gg':
-                    document.getElementById('post_discord').style.display = "inline-block";
-                    break;
-                case 'www.reddit.com':
-                    document.getElementById('post_reddit').style.display = "inline-block";
-                    break;    
-                case 'store.steampowered.com':
-                    setupSocialLink("post_steam", data.link);
-                    break;
-                default:
-                    break;
-            }
-        }
-        
+function displayPost(postId = undefined){
+    if(!postId){
+        makeApiRequest("/feed", false).then(data => {
+            drawPost(data);
+            current_post_id = data.id;
+        }).catch(error => {
+            console.log(error);
+        });
+    }else{
+        makeApiRequest("/posts/"+postId, false).then(data => {
+            drawPost(data);
+            current_post_id = data.id;
+        }).catch(error => {
+            console.log(error);
+        });
+    }
 
-    }).catch(error => {
-        console.log(error);
-    })
 }
 
 displayPost();
+
+function likePost() {
+    makeApiRequest("/like/" + current_post_id).then(data => {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        displayPost();
+    }).catch(error => {
+        console.log(error);
+    });
+}
+
+function skipPost() {
+    makeApiRequest("/skip/" + current_post_id).then(data => {
+        displayPost();
+    }).catch(error => {
+        console.log(error);
+    });
+}
+
+function dislikePost() {
+    makeApiRequest("/dislike/" + current_post_id).then(data => {
+        displayPost();
+    }).catch(error => {
+        console.log(error);
+    });
+}
 
 document.getElementById('file').addEventListener('change', function() {
     if (this.files && this.files[0]) {

@@ -14,7 +14,6 @@
 
     /* Autres ajustements pour les écrans de bureau */
     .profile-img {
-        width: 70px;
         height: 70px;
     }
 
@@ -27,15 +26,4 @@
         width: 70%; /* Ajustez la largeur de l'article selon vos besoins */
         margin: 0 auto; /* Centrez l'article horizontalement */
     }
-
-    /* Ajustez les boutons du bas */
-    .actions {
-        justify-content: flex-end; /* Alignez les boutons à droite */
-    }
-
-    .actions button {
-        margin-left: 10px; /* Ajoutez un espace entre les boutons */
-    }
-
-
 }

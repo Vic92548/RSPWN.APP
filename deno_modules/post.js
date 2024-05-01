@@ -139,16 +139,29 @@ export async function getNextFeedPost(userid) {
     const trending_posts = [];
     for await (const res of iter) trending_posts.push(res.key);
 
-    const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+    if(userid === "anonymous"){
+        const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
-    while(trending_posts.includes(selected_post)){
+        return getPost(selected_post);
+    }else{
+        const iter2 = kv.list({prefix: ["users_stats", userid, "interacted_posts"]});
 
+        const interacted_posts = [];
+        for await (const res of iter2) interacted_posts.push(res.key);
+
+        let selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+
+        let retries = 100;
+
+        while(interacted_posts.includes(selected_post) && retries > 0){
+            selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+            retries--;
+        }
+
+        return getPost(selected_post);
     }
 
-    return new Response(JSON.stringify({success: true}), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-    });
+
 }
 
 async function uploadToBunnyCDN(file, postId){

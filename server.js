@@ -1,7 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost } from "./deno_modules/post.js";
+import { createPost, getPost, getNextFeedPost, likePost, dislikePost, skipPost } from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -30,6 +30,14 @@ async function handleRequest(request){
                 "Content-Type": "application/json"
             }
         });
+    }else if (url.pathname.startsWith("/feed")) {
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return getNextFeedPost("anonymous");
+        }
+
+        return getNextFeedPost(authResult.userData.username);
     }// Create a new post
     else if (request.method === "POST" && url.pathname === "/posts") {
         const authResult = await authenticateRequest(request);
@@ -45,6 +53,33 @@ async function handleRequest(request){
     else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
         return getPost(id);
+    }else if (url.pathname.startsWith("/like/")) {
+        const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
+
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return likePost(id, authResult.userData.id);
+    }else if (url.pathname.startsWith("/dislike/")) {
+        const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
+
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return dislikePost(id, authResult.userData.id);
+    }else if (url.pathname.startsWith("/skip/")) {
+        const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
+
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return skipPost(id, authResult.userData.id);
     } else{
         try {
             const filePath = `./public${url.pathname}`;
