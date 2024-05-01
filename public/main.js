@@ -106,7 +106,7 @@ function timeAgo(dateParam) {
     }
 }
 
-function displayPost(postId = "6a64874b-677f-4026-ace8-0bd2bbffd274"){
+function displayPost(postId = "bb80daba-c5a5-4448-8a16-d1d005367fec"){
     makeApiRequest("/posts/"+postId, false).then(data => {
         console.log("Post DATA:");
         console.log(data);
