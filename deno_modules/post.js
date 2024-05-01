@@ -139,6 +139,9 @@ export async function getNextFeedPost(userid) {
     const trending_posts = [];
     for await (const res of iter) trending_posts.push(res.key);
 
+    console.log("Trending posts:");
+    console.log(trending_posts);
+
     if(userid === "anonymous"){
         const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
@@ -153,10 +156,15 @@ export async function getNextFeedPost(userid) {
 
         let retries = 100;
 
-        while(interacted_posts.includes(selected_post) && retries > 0){
+        while(interacted_posts.includes(selected_post)){
+            if(retries < 0){
+                break;
+            }
             selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
             retries--;
         }
+
+        console.log("Selected post:", selected_post);
 
         return getPost(selected_post);
     }
