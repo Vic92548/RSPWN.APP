@@ -20,4 +20,18 @@
         flex: 0 0 calc(33.33% - 20px); /* Ajustement de la largeur des attributs dans la fiche de personnage */
         margin: 10px;
     }
+
+    .post {
+        width: 70%; /* Ajustez la largeur de l'article selon vos besoins */
+        margin: 0 auto; /* Centrez l'article horizontalement */
+    }
+
+    /* Ajustez les boutons du bas */
+    .actions {
+        justify-content: flex-end; /* Alignez les boutons à droite */
+    }
+
+    .actions button {
+        margin-left: 10px; /* Ajoutez un espace entre les boutons */
+    }
 }

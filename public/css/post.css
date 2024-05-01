@@ -174,4 +174,5 @@ input:focus {
 
 #post_steam{
     background-color: #1b2838;
+    box-shadow: 0 0 5px #1b2838;
 }

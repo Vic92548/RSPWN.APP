@@ -106,6 +106,12 @@ function timeAgo(dateParam) {
     }
 }
 
+function setupSocialLink(id, link){
+    const link_bt = document.getElementById(id);
+    link_bt.style.display = "inline-block";
+    link_bt.href = link;
+}
+
 function displayPost(postId = "bb80daba-c5a5-4448-8a16-d1d005367fec"){
     makeApiRequest("/posts/"+postId, false).then(data => {
         console.log("Post DATA:");
@@ -141,7 +147,7 @@ function displayPost(postId = "bb80daba-c5a5-4448-8a16-d1d005367fec"){
                     document.getElementById('post_reddit').style.display = "inline-block";
                     break;    
                 case 'store.steampowered.com':
-                    document.getElementById('post_steam').style.display = "inline-block";
+                    setupSocialLink("post_steam", data.link);
                     break;
                 default:
                     break;
