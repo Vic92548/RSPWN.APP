@@ -27,14 +27,14 @@
 }
 
 #add-post {
-    width: 80%;
-    margin-left: calc(10% - 20px);
+    width: 70%;
+    margin-left: calc(15% - 20px);
     background-color: rgba(251, 188, 255, 0.2);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 30px rgba(0,0,0,1);
     color: #fff;
     position: fixed;
     top: 100px;
