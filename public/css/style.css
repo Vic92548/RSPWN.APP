@@ -63,12 +63,13 @@ main {
     font-family: "Poppins", sans-serif;
     font-weight: 900;
     text-align: center;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 1);
     position: absolute;
     top: 15px;
     left: 0;
     right: 0;
     transition: all 1s;
+    font-size: 28px;
 }
 
 .title span{
