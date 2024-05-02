@@ -91,6 +91,7 @@ title span{
 }
 
 #user_account_bt{
+    cursor: pointer;
     background-color: rgba(52, 73, 94, 0.19);
     box-shadow: 0 0 10px rgba(52, 73, 94, 0.19);
     padding: 10px;

@@ -382,4 +382,8 @@ function openRegisterModal() {
     document.getElementById("register").style.display = "flex";
 }
 
+function openUserAccountModel() {
+    document.getElementById("account").style.display = "flex";
+}
+
 showInitialPost();
