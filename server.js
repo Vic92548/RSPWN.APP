@@ -14,6 +14,17 @@ async function handleRequest(request){
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {
         return redirectToDiscordLogin();
+    }else if (url.pathname.startsWith("/me/posts")) {
+        const authResult = await authenticateRequest(request);
+
+        console.log(authResult);
+
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        // Continue with the request handling for authenticated users
+        return getPostList(authResult.userData.id);
     }else if (url.pathname.startsWith("/me")) {
         const authResult = await authenticateRequest(request);
 
@@ -30,17 +41,6 @@ async function handleRequest(request){
                 "Content-Type": "application/json"
             }
         });
-    }else if (url.pathname.startsWith("/me/posts")) {
-        const authResult = await authenticateRequest(request);
-
-        console.log(authResult);
-
-        if (!authResult.isValid) {
-            return new Response("Unauthorized", { status: 401 });
-        }
-
-        // Continue with the request handling for authenticated users
-        return getPostList(authResult.userData.id);
     }else if (url.pathname.startsWith("/feed")) {
         const authResult = await authenticateRequest(request);
 
