@@ -243,7 +243,7 @@ function likePost() {
             console.log(error);
         });
     }else{
-        window.location.replace('/login');
+        openRegisterModal();
     }
 
 }
@@ -258,7 +258,7 @@ function skipPost() {
             console.log(error);
         });
     }else{
-        displayPost();
+        openRegisterModal();
     }
 
 }
@@ -273,7 +273,7 @@ function dislikePost() {
             console.log(error);
         });
     }else{
-        window.location.replace('/login');
+        openRegisterModal();
     }
 
 }
@@ -365,3 +365,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         alert('Error submitting post.');
     }
 });
+
+function openRegisterModal() {
+    document.getElementById("register").style.display = "flex";
+}
