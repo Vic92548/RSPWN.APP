@@ -106,7 +106,7 @@ export async function getPostList(userId) {
     const kv = await Deno.openKv();
     const postList = await kv.get(["users",userId, "posts"]);
 
-    if (!postList) {
+    if (!postList.value) {
         return new Response("no post found", { status: 404 });
     }
 
