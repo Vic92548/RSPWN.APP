@@ -209,6 +209,8 @@ function displayPost(postId = undefined){
         makeApiRequest("/feed", false).then(data => {
             drawPost(data);
             current_post_id = data.id;
+
+            history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
             console.log(error);
         });
@@ -216,6 +218,8 @@ function displayPost(postId = undefined){
         makeApiRequest("/posts/"+postId, false).then(data => {
             drawPost(data);
             current_post_id = data.id;
+
+            history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
             console.log(error);
         });
