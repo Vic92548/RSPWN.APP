@@ -386,6 +386,10 @@ function openUserAccountModel() {
     document.getElementById("account").style.display = "flex";
 
     makeApiRequest("/me/posts").then(data => {
+
+        console.log("Coucou");
+        console.log(data);
+
         const old_posts = document.getElementById("old-posts");
         old_posts.innerHTML = "";
 
