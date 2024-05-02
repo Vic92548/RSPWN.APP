@@ -1,7 +1,7 @@
 function showInitialPost() {
     const path = window.location.pathname.split('/');
 
-    if(path.length < 2){
+    if(path.length < 3){
         displayPost();
     }else if(path[1] === "post"){
         displayPost(path[2]);
