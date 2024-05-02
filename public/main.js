@@ -157,7 +157,7 @@ function drawPost(data){
         links[i].style.display = "none";
     }
 
-    //https://store.steampowered.com/app/2542010/Only_Wish/
+
     if(data.link){
         const url = new URL(data.link);
 
@@ -195,6 +195,9 @@ function drawPost(data){
                 break;
             case 'www.instagram.com':
                 setupSocialLink("post_instagram", data.link);
+                break;
+            case 'store.epicgames.com':
+                setupSocialLink("post_epic", data.link);
                 break;
             default:
                 break;
