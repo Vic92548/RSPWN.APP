@@ -22,6 +22,11 @@
 </head>
 <body class="background">
 
+    <!--<a id="user_account_bt" onclick="openUserAccountModel()">
+        <i class="fa-solid fa-user-astronaut"></i>
+        ME
+    </a>-->
+
     <h1 class="loading">
         <span>V</span>
         <span>A</span>
@@ -146,6 +151,20 @@
                 <h3>Join VAPR now!</h3>
                 <p>Please register to VAPR using discord to interact and see more content!</p>
                 <a href="/login" class="discord-link"><i class="fa-brands fa-discord"></i> Register with discord</a>
+            </form>
+        </section>
+
+        <section id="account" class="glass_modal" style="display:none;">
+            <form style="text-align: center">
+                <h3>YOUR ACCOUNT</h3>
+                <p>Welcome back, <span class="username">username</span>!</p>
+                <p style="text-align: left">Previous publications:</p>
+                <div id="old-posts">
+
+                </div>
+
+
+                <a onclick="document.getElementById('account').style.display = 'none';" class="discord-link" style="text-align: center;cursor: pointer"> GO BACK TO VAPR</a>
             </form>
         </section>
 

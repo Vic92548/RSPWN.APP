@@ -382,4 +382,32 @@ function openRegisterModal() {
     document.getElementById("register").style.display = "flex";
 }
 
+function openUserAccountModel() {
+    document.getElementById("account").style.display = "flex";
+
+    makeApiRequest("/me/posts").then(data => {
+
+        console.log("Coucou");
+        console.log(data);
+
+        const old_posts = document.getElementById("old-posts");
+        old_posts.innerHTML = "";
+
+        for (let i = 0; i < data.length; i++) {
+            old_posts.innerHTML += '<div class="post-card">\n' +
+                '                    <h4>' + data[i].title + '</h4>\n' +
+                '                    <div style="display: flex; justify-content: space-between">\n' +
+                '                        <span><i class="fa-solid fa-eye"></i> <span>loading...</span></span>\n' +
+                '                        <span><i class="fa-solid fa-heart"></i> <span>loading...</span></span>\n' +
+                '                        <span><i class="fa-solid fa-heart-crack"></i> <span>loading...</span></span>\n' +
+                '                        <span><i class="fa-solid fa-forward"></i> <span>loading...</span></span>\n' +
+                '                    </div>\n' +
+                '                </div>'
+        }
+    }).catch( () => {
+        const old_posts = document.getElementById("old-posts");
+        old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
+    })
+}
+
 showInitialPost();
