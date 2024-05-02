@@ -104,7 +104,7 @@ title span{
     color: #fff;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 200;
+    z-index: 10;
 }
 
 #user_account_bt i{
