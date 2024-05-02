@@ -402,7 +402,7 @@ function openUserAccountModel() {
         }
     }).catch( () => {
         const old_posts = document.getElementById("old-posts");
-        old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)";
+        old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
     })
 }
 
