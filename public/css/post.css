@@ -83,10 +83,22 @@
     color: #444;
 }
 
+.glass_modal form p{
+    text-align: center;
+}
+
 .glass_modal form .discord-link{
     position: relative;
     margin-top: 20px;
     font-weight: 700;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    font-size: 22px;
+}
+
+.glass_modal form .discord-link i{
+    margin-right: 5px;
 }
 
 #postForm #title,
