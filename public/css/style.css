@@ -91,11 +91,15 @@ title span{
 }
 
 #user_account_bt{
-    background-color: #3498db;
-    padding: 15px;
+    background-color: rgba(52, 73, 94, 0.59);
+    padding: 10px;
     font-size: 20px;
     font-weight: 900;
     position: fixed;
     top: 15px;
-    right: 10px;
+    left: 10px;
+    border-radius: 7px;
+    color: #fff;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
