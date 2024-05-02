@@ -53,6 +53,9 @@ async function handleRequest(request){
     else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
         return getPost(id);
+    }else if (request.method === "GET" && url.pathname.startsWith("/post/")) {
+        const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
+        return serveFile(request, "index.html");
     }else if (url.pathname.startsWith("/like/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 

@@ -1,3 +1,13 @@
+function showInitialPost() {
+    const path = window.location.pathname.split('/');
+
+    if(path.length < 2){
+        displayPost();
+    }else if(path[1] === "post"){
+        displayPost(path[2]);
+    }
+}
+
 function makeApiRequest(path, requireAuth = true) {
     return new Promise((resolve, reject) => {
         // Retrieve the JWT from local storage
@@ -199,6 +209,8 @@ function displayPost(postId = undefined){
         makeApiRequest("/feed", false).then(data => {
             drawPost(data);
             current_post_id = data.id;
+
+            history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
             console.log(error);
         });
@@ -206,6 +218,8 @@ function displayPost(postId = undefined){
         makeApiRequest("/posts/"+postId, false).then(data => {
             drawPost(data);
             current_post_id = data.id;
+
+            history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
             console.log(error);
         });
@@ -220,8 +234,6 @@ function hidePost() {
 function showPost() {
     document.getElementsByClassName("post")[0].style.transform = "translateY(0vh)";
 }
-
-displayPost();
 
 function likePost() {
     if(isUserLoggedIn()){
@@ -369,3 +381,5 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
 function openRegisterModal() {
     document.getElementById("register").style.display = "flex";
 }
+
+showInitialPost();
