@@ -41,11 +41,27 @@ export async function createPost(request, userData) {
     };
 
     if(content){
-        await kv.set(["posts", post.id], post);
-        await kv.set(["trend", "posts", post.id], {
-            timestamp: Date.now(),
-            score: 0
+
+        const userPosts = await kv.get(["users",userId, "posts"]);
+
+        if(!userPosts.value){
+            userPosts.value = [];
+        }
+
+        userPosts.value.push({
+            id: post.id,
+            title,
+            timestamp: post.timestamp,
         });
+
+        await Promise.all([
+            await kv.set(["posts", post.id], post),
+            await kv.set(["users",userId, "posts"], userPosts.value),
+            await kv.set(["trend", "posts", post.id], {
+                timestamp: Date.now(),
+                score: 0
+            })
+        ]);
 
         return new Response(JSON.stringify({ id: post.id }), {
             status: 201,
@@ -81,6 +97,20 @@ export async function getPost(id) {
     await kv.set(["posts", postData.value.id], postData.value);
 
     return new Response(JSON.stringify(postData.value), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
+
+export async function getPostList(userId) {
+    const kv = await Deno.openKv();
+    const postList = await kv.get(["users",userId, "posts"]);
+
+    if (!postList) {
+        return new Response("no post found", { status: 404 });
+    }
+
+    return new Response(JSON.stringify(postList.value), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
