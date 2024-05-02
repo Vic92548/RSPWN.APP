@@ -89,3 +89,13 @@ main {
 title span{
     animation: none;
 }
+
+#user_account_bt{
+    background-color: #3498db;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: 900;
+    position: fixed;
+    top: 15px;
+    right: 10px;
+}
