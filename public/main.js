@@ -396,7 +396,7 @@ function openUserAccountModel() {
         for (let i = 0; i < data.length; i++) {
             old_posts.innerHTML += '<div class="post-card">\n' +
                 '                    <h4>' + data[i].title + '</h4>\n' +
-                '                    <div style="display: flex">\n' +
+                '                    <div style="display: flex; justify-content: space-between">\n' +
                 '                        <span><i class="fa-solid fa-eye"></i> <span>loading...</span></span>\n' +
                 '                        <span><i class="fa-solid fa-heart"></i> <span>loading...</span></span>\n' +
                 '                        <span><i class="fa-solid fa-heart-crack"></i> <span>loading...</span></span>\n' +
