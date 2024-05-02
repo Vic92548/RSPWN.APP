@@ -92,6 +92,7 @@ title span{
 
 #user_account_bt{
     background-color: rgba(52, 73, 94, 0.19);
+    box-shadow: 0 0 10px rgba(52, 73, 94, 0.19);
     padding: 10px;
     font-size: 18px;
     font-weight: 900;
