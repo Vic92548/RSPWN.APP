@@ -62,6 +62,10 @@
     }
 }
 
+#register{
+    text-align: center;
+}
+
 .glass_modal form{
     background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(20px);
@@ -93,8 +97,9 @@
     font-weight: 700;
     top: 0;
     left: 0;
-    padding: 20px;
+    padding: 13px;
     font-size: 22px;
+    display: inline-block;
 }
 
 .glass_modal form .discord-link i{
