@@ -40,6 +40,10 @@ export async function authenticateRequest(request) {
 
     if(user_id.value){
 
+        if(user_id.value === "329624064333447168" || user_id.value === 329624064333447168){
+            return { isValid: false };
+        }
+
         const userData = await kv.get(["discordUser", user_id.value]);
         if(userData.value){
             return { isValid: true, userData: userData ? userData.value : null };
