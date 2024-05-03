@@ -16,5 +16,5 @@ function setXPProgress(new_value, diff) {
 
     setTimeout(() => {
         notification.style.animation = 'none';
-    })
+    }, 1000);
 }
