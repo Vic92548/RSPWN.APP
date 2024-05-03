@@ -240,6 +240,8 @@ function showPost() {
 
     post.style.backgroundColor = "rgba(255,255,255,0.4)";
     post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
+
+    post.style.animation = 'none';
 }
 
 function likePost() {
