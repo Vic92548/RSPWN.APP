@@ -16,3 +16,9 @@
     height: 25px;
     position: fixed;
 }
+
+#xp_bar span,
+#xp_bar i{
+    z-index: 10;
+    position: relative;
+}
