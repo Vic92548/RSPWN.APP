@@ -250,7 +250,7 @@ export async function getNextFeedPost(userid) {
             let interacted_posts = await kv.get(["users_stats", userid, "interacted_posts"]);
 
             if(!interacted_posts.value){
-                interacted_posts = [];
+                interacted_posts = {};
             }else{
                 interacted_posts = interacted_posts.value;
             }
