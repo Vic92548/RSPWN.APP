@@ -1,3 +1,6 @@
+import {addXP, EXPERIENCE_TABLE} from "./rpg.js";
+
+
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
         return new Response("Invalid content type", { status: 400 });
@@ -55,15 +58,16 @@ export async function createPost(request, userData) {
         });
 
         await Promise.all([
-            await kv.set(["posts", post.id], post),
-            await kv.set(["users",userId, "posts"], userPosts.value),
-            await kv.set(["trend", "posts", post.id], {
+            kv.set(["posts", post.id], post),
+            kv.set(["users",userId, "posts"], userPosts.value),
+            kv.set(["trend", "posts", post.id], {
                 timestamp: Date.now(),
                 score: 0
-            })
+            }),
+            addXP(userData, EXPERIENCE_TABLE.POST)
         ]);
 
-        return new Response(JSON.stringify({ id: post.id }), {
+        return new Response(JSON.stringify({ id: post.id,user: userData }), {
             status: 201,
             headers: { "Content-Type": "application/json" }
         });
@@ -116,7 +120,7 @@ export async function getPostList(userId) {
     });
 }
 
-export async function likePost(id, userid) {
+export async function likePost(id, userData) {
     const kv = await Deno.openKv();
     const postData = await kv.get(["posts",id]);
 
@@ -125,18 +129,19 @@ export async function likePost(id, userid) {
     }
 
     await Promise.all([
-        kv.set(["posts_stats", id, "likes", userid], Date.now()),
-        kv.set(["users_stats", userid, "likes", id], Date.now()),
-        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+        kv.set(["posts_stats", id, "likes", userData.id], Date.now()),
+        kv.set(["users_stats", userData.id, "likes", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        addXP(userData, EXPERIENCE_TABLE.LIKE)
     ]);
 
-    return new Response(JSON.stringify({success: true}), {
+    return new Response(JSON.stringify({user: userData}), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
 }
 
-export async function dislikePost(id, userid) {
+export async function dislikePost(id, userData) {
     const kv = await Deno.openKv();
     const postData = await kv.get(["posts",id]);
 
@@ -145,18 +150,19 @@ export async function dislikePost(id, userid) {
     }
 
     await Promise.all([
-        kv.set(["posts_stats", id, "dislikes", userid], Date.now()),
-        kv.set(["users_stats", userid, "dislikes", id], Date.now()),
-        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+        kv.set(["posts_stats", id, "dislikes", userData.id], Date.now()),
+        kv.set(["users_stats", userData.id, "dislikes", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        await addXP(userData, EXPERIENCE_TABLE.DISLIKE)
     ]);
 
-    return new Response(JSON.stringify({success: true}), {
+    return new Response(JSON.stringify({user: userData}), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
 }
 
-export async function skipPost(id, userid) {
+export async function skipPost(id, userData) {
     const kv = await Deno.openKv();
     const postData = await kv.get(["posts",id]);
 
@@ -165,12 +171,13 @@ export async function skipPost(id, userid) {
     }
 
     await Promise.all([
-        kv.set(["posts_stats", id, "skip", userid], Date.now()),
-        kv.set(["users_stats", userid, "skip", id], Date.now()),
-        kv.set(["users_stats", userid, "interacted_posts", id], Date.now())
+        kv.set(["posts_stats", id, "skip", userData.id], Date.now()),
+        kv.set(["users_stats", userData.id, "skip", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        await addXP(userData, EXPERIENCE_TABLE.SKIP)
     ]);
 
-    return new Response(JSON.stringify({success: true}), {
+    return new Response(JSON.stringify({user: userData}), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });

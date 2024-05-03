@@ -66,14 +66,36 @@ function isUserLoggedIn(){
     }
 }
 
+function updateUsername() {
+    const level_elements = document.getElementsByClassName("username");
+    for (let i = 0; i < level_elements.length; i++) {
+        level_elements[i].textContent = user.username;
+        console.log("updated username : " + user.username);
+    }
+}
+
 function loadUserData(){
     document.getElementById("sign_in").style.display = "none";
     document.getElementById("add_post").style.display = "none";
 
     makeApiRequest("/me").then(data => {
         window.user = data;
+        updateUsername();
+        updateLevel();
+
+        const oldUser = {
+            xp: 0,
+            level: window.user.level,
+            xp_required: window.user.xp_required
+        };
+
+        setXPProgress(oldUser, true);
+
         document.getElementById("sign_in").style.display = "none";
         document.getElementById("add_post").style.display = "block";
+        document.getElementById("xp_bar").style.display = "block";
+
+
 
         hideLoading();
 
@@ -248,55 +270,6 @@ function showPost() {
     post.style.animation = 'none';
 }
 
-function likePost() {
-    if(isUserLoggedIn()){
-        displayLikeAnimation();
-        makeApiRequest("/like/" + current_post_id).then(data => {
-
-            window.analytics.track('like', {postId: current_post_id});
-
-            displayPost();
-
-
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
-function skipPost() {
-    if(isUserLoggedIn()){
-        displaySkipAnimation();
-        makeApiRequest("/skip/" + current_post_id).then(data => {
-            window.analytics.track('skip', {postId: current_post_id});
-            displayPost();
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
-function dislikePost() {
-    if(isUserLoggedIn()){
-        displayDislikeAnimation();
-        makeApiRequest("/dislike/" + current_post_id).then(data => {
-            window.analytics.track('dislike', {postId: current_post_id});
-            displayPost();
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
 document.getElementById('file').addEventListener('change', function() {
     if (this.files && this.files[0]) {
         var reader = new FileReader();
@@ -350,6 +323,9 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     });
 
     try {
+        document.getElementById("add-post").style.display = "none";
+        hidePost();
+
         const response = await fetch('/posts', {
             method: 'POST',
             body: formData,
@@ -359,7 +335,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         const result = await response.json();
         if (response.ok) {
 
-            window.analytics.track('new_post_uploaded', {postId: current_post_id});
+            window.analytics.track('new_post_uploaded', {postId: result.id});
 
             document.getElementById("add-post").style.display = "none";
             confetti({
@@ -375,9 +351,20 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             document.getElementById('file').value = '';
             document.getElementById('link').value = '';
             document.getElementById('preview').style.display = 'none';
+
+            const oldUser = {
+                xp: window.user.xp,
+                level: window.user.level,
+                xp_required: window.user.xp_required
+            };
+
+            window.user = result.user;
+
+            setXPProgress(oldUser);
             
         } else {
             alert('Failed to create post. Please try again with an other image.');
+            displayPost();
         }
     } catch (error) {
         console.error('Failed to submit post:', error);

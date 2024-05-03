@@ -27,16 +27,17 @@
         ME
     </a>-->
 
-    <h1 class="loading">
-        <span>V</span>
-        <span>A</span>
-        <span>P</span>
-        <span>R</span>
-    </h1>
+    <a href="/">
+        <h1 class="loading">
+            <span>V</span>
+            <span>A</span>
+            <span>P</span>
+            <span>R</span>
+        </h1>
+    </a>
 
     <a href="https://discord.gg/vtsnj3zphd" class="discord-link">
         <i class="fa-brands fa-discord"></i>
-        Discord
     </a>
     
     <main>
@@ -44,6 +45,14 @@
         <section id="feed">
 
             <button id="add_post" class="create-post-btn glass_bt" onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</button>
+
+            <div id="xp_bar" class="glass_bt" style="display: none">
+                <div id="xp_bar_progress"></div>
+                <div id="xp_bar_progress_visual"></div>
+                <span class="xp_level">10</span>
+                <span id="xp-notification">+120 xp</span>
+                <span class="username">username</span>
+            </div>
             <button id="reply" class="reply-btn glass_bt hidden"><i class="fa-solid fa-reply"></i> Reply</button>
 
             <!-- Post -->
@@ -222,6 +231,7 @@
 
     <script src="/js/main.js"></script>
     <script src="/js/tinder.js"></script>
+    <script src="/js/rpg.js"></script>
 
     <script>
         window.analytics = {};
