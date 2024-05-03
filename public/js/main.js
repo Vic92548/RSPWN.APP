@@ -67,9 +67,13 @@ function isUserLoggedIn(){
 }
 
 function loadUserData(){
+    document.getElementById("sign_in").style.display = "none";
+    document.getElementById("add_post").style.display = "none";
+
     makeApiRequest("/me").then(data => {
         window.user = data;
         document.getElementById("sign_in").style.display = "none";
+        document.getElementById("add_post").style.display = "block";
 
         hideLoading();
 
@@ -235,21 +239,21 @@ function hidePost() {
 }
 
 function showPost() {
-    document.getElementsByClassName("post")[0].style.transform = "translateY(0vh)";
+    const post = document.getElementsByClassName("post")[0];
+    post.style.transform = "translateY(0vh) translateX(0vw)";
+
+    post.style.backgroundColor = "rgba(255,255,255,0.4)";
+    post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
+
+    post.style.animation = 'none';
 }
 
 function likePost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displayLikeAnimation();
         makeApiRequest("/like/" + current_post_id).then(data => {
 
             window.analytics.track('like', {postId: current_post_id});
-
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
 
             displayPost();
 
@@ -265,7 +269,7 @@ function likePost() {
 
 function skipPost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displaySkipAnimation();
         makeApiRequest("/skip/" + current_post_id).then(data => {
             window.analytics.track('skip', {postId: current_post_id});
             displayPost();
@@ -280,7 +284,7 @@ function skipPost() {
 
 function dislikePost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displayDislikeAnimation();
         makeApiRequest("/dislike/" + current_post_id).then(data => {
             window.analytics.track('dislike', {postId: current_post_id});
             displayPost();
