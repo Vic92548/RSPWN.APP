@@ -265,7 +265,7 @@ function likePost() {
 
 function skipPost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displaySkipAnimation();
         makeApiRequest("/skip/" + current_post_id).then(data => {
             window.analytics.track('skip', {postId: current_post_id});
             displayPost();

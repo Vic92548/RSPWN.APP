@@ -10,9 +10,17 @@ function displayLikeAnimation() {
         origin: { y: 0.6 }
     });
 }
+
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translateY(100vh)";
 
     post.style.animation = 'swipeLeft 0.7s';
+}
+
+function displaySkipAnimation() {
+    const post = document.getElementsByClassName("post")[0];
+    post.style.transform = "translateY(100vh)";
+
+    post.style.animation = 'skip 0.7s';
 }
