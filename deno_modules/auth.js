@@ -43,7 +43,8 @@ export async function authenticateRequest(request) {
         if(user_id.value === "329624064333447168" || user_id.value === 329624064333447168){
             return { isValid: false };
         }
-        if(user_id.value === "204619144358789122" || user_id.value === 204619144358789122){
+
+        if(user_id.value === "291632996962926592" || user_id.value === 291632996962926592){
             return { isValid: false };
         }
 
