@@ -32,6 +32,17 @@
     transition: all 1s ease-in-out;
 }
 
+@keyframes swipeRight {
+    0% {
+        transform: rotate(0deg) translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(20deg) translate(100px, -50px);
+        opacity: 0;
+    }
+}
+
 .glass_modal {
     width: 100%;
     height: 100vh;
