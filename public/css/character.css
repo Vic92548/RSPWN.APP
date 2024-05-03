@@ -30,6 +30,13 @@
     position: absolute;
 }
 
+#xp_bar_progress_visual{
+    width: 60%;
+    background-color: rgba(0, 51, 143, 0.62);
+    height: 25px;
+    position: absolute;
+}
+
 #xp_bar span,
 #xp_bar i{
     z-index: 10;
