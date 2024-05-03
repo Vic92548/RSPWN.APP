@@ -1,4 +1,4 @@
-function setXPProgress(old_user, disable_xp_notif = false) {
+function setXPProgress(old_user, disable_xp_notif = false, force_update = false) {
 
     if(!user.xp){
         user.xp = 0;
@@ -13,7 +13,7 @@ function setXPProgress(old_user, disable_xp_notif = false) {
 
     updateLevel();
 
-    if(xp > 0){
+    if(xp > 0 || force_update){
         const diff = (xp / old_user.xp_required) * 100;
         const new_value = (total_xp / old_user.xp_required) * 100;
 
@@ -32,7 +32,7 @@ function setXPProgress(old_user, disable_xp_notif = false) {
                 notification.style.animation = 'none';
 
                 if(old_user.level < user.level){
-                    setXPProgress(window.user);
+                    setXPProgress(window.user, true, true);
                 }
 
             }, 1500);
