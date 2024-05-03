@@ -234,7 +234,7 @@ export async function getNextFeedPost(userid) {
 
     if(trending_posts.value){
 
-        trending_posts = trending_posts.value;
+        trending_posts = Object.keys(trending_posts.value);
 
         if(userid === "anonymous"){
 
@@ -250,9 +250,9 @@ export async function getNextFeedPost(userid) {
             let interacted_posts = await kv.get(["users_stats", userid, "interacted_posts"]);
 
             if(!interacted_posts.value){
-                interacted_posts = {};
+                interacted_posts = [];
             }else{
-                interacted_posts = interacted_posts.value;
+                interacted_posts = Object.keys(interacted_posts.value);
             }
 
             console.log("INTERACTED POSTS");
