@@ -67,9 +67,13 @@ function isUserLoggedIn(){
 }
 
 function loadUserData(){
+    document.getElementById("sign_in").style.display = "none";
+    document.getElementById("add_post").style.display = "none";
+
     makeApiRequest("/me").then(data => {
         window.user = data;
         document.getElementById("sign_in").style.display = "none";
+        document.getElementById("add_post").style.display = "block";
 
         hideLoading();
 
