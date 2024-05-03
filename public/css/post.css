@@ -72,7 +72,7 @@
         opacity: 1;
     }
     100% {
-        transform: translate(-100px);
+        transform: translate(0px,-100px);
         opacity: 0;
     }
 }
