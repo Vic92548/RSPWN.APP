@@ -1,6 +1,14 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 
-const prisma = new PrismaClient();
+const databaseUrl = Deno.env.get("DATABASE_URL");
+
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: databaseUrl,
+        },
+    },
+});
 
 /**
  * Adds XP to the user's data and handles leveling up if necessary.

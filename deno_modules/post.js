@@ -1,7 +1,15 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
 
-const prisma = new PrismaClient();
+const databaseUrl = Deno.env.get("DATABASE_URL");
+
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: databaseUrl,
+        },
+    },
+});
 
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {

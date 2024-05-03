@@ -1,7 +1,16 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
 
-const prisma = new PrismaClient();
+const databaseUrl = Deno.env.get("DATABASE_URL");
+
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: databaseUrl,
+        },
+    },
+});
+
 
 // Environment variable-based configuration
 const clientId = Deno.env.get("DISCORD_ClientID");
