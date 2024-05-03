@@ -1,4 +1,4 @@
-import { PrismaClient } from './generated/client/deno/edge.ts';
+import { PrismaClient } from '../generated/client/deno/edge.js';
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
 
 const prisma = new PrismaClient();
