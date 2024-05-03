@@ -70,6 +70,7 @@ function updateUsername() {
     const level_elements = document.getElementsByName("username");
     for (let i = 0; i < level_elements.length; i++) {
         level_elements[i].textContent = user.username;
+        console.log("updated username : " + user.username);
     }
 }
 
@@ -80,7 +81,8 @@ function loadUserData(){
     makeApiRequest("/me").then(data => {
         window.user = data;
         updateUsername();
-        
+        updateLevel();
+
         document.getElementById("sign_in").style.display = "none";
         document.getElementById("add_post").style.display = "block";
         document.getElementById("xp_bar").style.display = "block";
