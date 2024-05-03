@@ -1,4 +1,4 @@
-function setXPProgress(xp, required_for_next_level) {
+function setXPProgress(old_user) {
 
     if(!user.xp){
         user.xp = 0;
@@ -9,26 +9,38 @@ function setXPProgress(xp, required_for_next_level) {
     }
 
     const total_xp = user.xp;
+    const xp = total_xp - old_user.xp;
 
-    const diff = (xp / required_for_next_level) * 100;
-    const new_value = (total_xp / required_for_next_level) * 100;
+    updateLevel();
 
-    const xp_bar_progress_visual = document.getElementById("xp_bar_progress_visual");
-    const xp_bar_progress = document.getElementById("xp_bar_progress");
-    const notification = document.getElementById('xp-notification');
+    if(xp > 0){
+        const diff = (xp / old_user.xp_required) * 100;
+        const new_value = (total_xp / old_user.xp_required) * 100;
 
-    xp_bar_progress_visual.style.width = diff + "%";
-    xp_bar_progress_visual.style.left = (new_value - diff) + "%";
-    notification.style.animation = 'xpNotificationAnimation 1.5s';
-    notification.textContent = "+" + xp + "xp";
+        const xp_bar_progress_visual = document.getElementById("xp_bar_progress_visual");
+        const xp_bar_progress = document.getElementById("xp_bar_progress");
+        const notification = document.getElementById('xp-notification');
 
-    setTimeout(() => {
-        xp_bar_progress.style.width = new_value + "%";
-        xp_bar_progress_visual.style.width = "0%";
-        xp_bar_progress_visual.style.left = new_value + "%";
-    }, 500);
+        xp_bar_progress_visual.style.width = diff + "%";
+        xp_bar_progress_visual.style.left = (new_value - diff) + "%";
+        notification.style.animation = 'xpNotificationAnimation 1.5s';
+        notification.textContent = "+" + xp + "xp";
 
-    setTimeout(() => {
-        notification.style.animation = 'none';
-    }, 1500);
+        setTimeout(() => {
+            xp_bar_progress.style.width = new_value + "%";
+            xp_bar_progress_visual.style.width = "0%";
+            xp_bar_progress_visual.style.left = new_value + "%";
+        }, 500);
+
+        setTimeout(() => {
+            notification.style.animation = 'none';
+        }, 1500);
+    }
+}
+
+function updateLevel() {
+    const level_elements = document.getElementsByName("xp_level");
+    for (let i = 0; i < level_elements.length; i++) {
+        level_elements[i].textContent = user.level;
+    }
 }

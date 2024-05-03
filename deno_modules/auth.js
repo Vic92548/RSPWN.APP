@@ -35,11 +35,19 @@ export async function authenticateRequest(request) {
 
     const kv = await Deno.openKv();
     const secret_key = authHeader.slice(7);  // Remove "Bearer " from the start
-    const userData = await kv.get(["secret_keys", secret_key]);
-    console.log(userData);
+    const user_id = await kv.get(["secret_keys", secret_key]);
+    console.log(user_id);
 
-    if(userData.value){
-        return { isValid: true, userData: userData ? userData.value : null };
+    if(user_id.value){
+
+        const userData = await kv.get(["discordUser", user_id.value]);
+        if(userData.value){
+            return { isValid: true, userData: userData ? userData.value : null };
+        }else {
+            return { isValid: false };
+        }
+
+
     }else{
         return { isValid: false };
     }
@@ -108,13 +116,18 @@ export async function handleOAuthCallback(request) {
         sendMessageToDiscordWebhook(
             "https://discord.com/api/webhooks/1235274235438436413/wIBKtVBz9QvyqqUN8Fu4jSoKfXsQn-ior-92FzPNPKxbDrI2i1VhzV4ps_XqzdjPlb9q",
             userData.username + " joined VAPR we are now " + total_users + " members!");
+
+        await kv.set(["discordUser", userData.id], userData);
     }
 
+    if(oldUserData.value.username !== userData.username){
+        oldUserData.value.username = userData.username;
 
-    await kv.set(["discordUser", userData.id], userData);
+        await kv.set(["discordUser", userData.id], oldUserData);
+    }
 
     const secret_key = generateSecretKey();
-    await kv.set(["secret_keys", secret_key], userData);
+    await kv.set(["secret_keys", secret_key], userData.id);
 
     // Read and prepare the HTML response
     const htmlTemplate = await Deno.readTextFile("discord_callback.html");

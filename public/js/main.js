@@ -248,55 +248,6 @@ function showPost() {
     post.style.animation = 'none';
 }
 
-function likePost() {
-    if(isUserLoggedIn()){
-        displayLikeAnimation();
-        makeApiRequest("/like/" + current_post_id).then(data => {
-
-            window.analytics.track('like', {postId: current_post_id});
-
-            displayPost();
-
-
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
-function skipPost() {
-    if(isUserLoggedIn()){
-        displaySkipAnimation();
-        makeApiRequest("/skip/" + current_post_id).then(data => {
-            window.analytics.track('skip', {postId: current_post_id});
-            displayPost();
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
-function dislikePost() {
-    if(isUserLoggedIn()){
-        displayDislikeAnimation();
-        makeApiRequest("/dislike/" + current_post_id).then(data => {
-            window.analytics.track('dislike', {postId: current_post_id});
-            displayPost();
-        }).catch(error => {
-            console.log(error);
-        });
-    }else{
-        openRegisterModal();
-    }
-
-}
-
 document.getElementById('file').addEventListener('change', function() {
     if (this.files && this.files[0]) {
         var reader = new FileReader();

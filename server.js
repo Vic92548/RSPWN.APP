@@ -34,6 +34,18 @@ async function handleRequest(request){
             return new Response("Unauthorized", { status: 401 });
         }
 
+        if(!authResult.userData.level){
+            authResult.userData.level = 0;
+        }
+
+        if(!authResult.userData.xp){
+            authResult.userData.xp = 0;
+        }
+
+        if(!authResult.userData.xp_required){
+            authResult.userData.xp_required = 700;
+        }
+
         // Continue with the request handling for authenticated users
         return new Response(JSON.stringify(authResult.userData), {
             status: 200,
@@ -75,7 +87,7 @@ async function handleRequest(request){
             return new Response("Unauthorized", { status: 401 });
         }
 
-        return likePost(id, authResult.userData.id);
+        return likePost(id, authResult.userData);
     }else if (url.pathname.startsWith("/dislike/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
@@ -84,7 +96,7 @@ async function handleRequest(request){
             return new Response("Unauthorized", { status: 401 });
         }
 
-        return dislikePost(id, authResult.userData.id);
+        return dislikePost(id, authResult.userData);
     }else if (url.pathname.startsWith("/skip/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
@@ -93,7 +105,7 @@ async function handleRequest(request){
             return new Response("Unauthorized", { status: 401 });
         }
 
-        return skipPost(id, authResult.userData.id);
+        return skipPost(id, authResult.userData);
     } else{
         try {
             const filePath = `./public${url.pathname}`;
