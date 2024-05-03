@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["deno"]
+  output          = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode = "prisma"
+}
+
+
+model User {
+  id          String    @id
+  username    String
+  email       String    @unique
+  provider    String
+  level       Int
+  xp          Int
+  xp_required Int
+}
+
+model SecretKey {
+  key      String   @id
+  userId   String
+  createdAt DateTime @default(now())
+}
+
+
+model Post {
+  id        String    @id
+  content   String
+  userId    String
+  title     String
+  link     String
+  timestamp DateTime
+}
+
+model Like {
+  postId    String
+  userId    String
+  timestamp DateTime
+
+  @@id([postId, userId])
+}
+
+model Dislike {
+  postId    String
+  userId    String
+  timestamp DateTime
+
+  @@id([postId, userId])
+}
+
+model Skip {
+  postId    String
+  userId    String
+  timestamp DateTime
+
+  @@id([postId, userId])
+}
+
+model ShadowBan {
+  userId    String
+  timestamp DateTime
+  reason    String
+
+  @@id([userId, timestamp])
+}
+
+model Comment {
+  postId    String
+  userId    String
+  timestamp DateTime
+
+  @@id([postId, userId, timestamp])
+}
+
+model View {
+  postId    String
+  userId    String
+  timestamp DateTime
+
+  @@id([postId, userId])
+}
