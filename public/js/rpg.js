@@ -5,7 +5,7 @@ function setXPProgress(new_value, diff) {
 
     xp_bar_progress_visual.style.width = diff + "%";
     xp_bar_progress_visual.style.left = (new_value - diff) + "%";
-    notification.style.animation = 'xpNotificationAnimation 1s';
+    notification.style.animation = 'xpNotificationAnimation 2s';
     notification.textContent = "+" + diff + "xp";
 
     setTimeout(() => {
@@ -16,5 +16,5 @@ function setXPProgress(new_value, diff) {
 
     setTimeout(() => {
         notification.style.animation = 'none';
-    }, 1000);
+    }, 2000);
 }
