@@ -235,12 +235,17 @@ function hidePost() {
 }
 
 function showPost() {
-    document.getElementsByClassName("post")[0].style.transform = "translateY(0vh)";
+    const post = document.getElementsByClassName("post")[0];
+    post.style.transform = "translateY(0vh)";
+    post.style.transform = "translateX(0vw)";
+
+    post.style.backgroundColor = "rgba(255,255,255,0.4)";
+    post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
 }
 
 function likePost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displayLikeAnimation();
         makeApiRequest("/like/" + current_post_id).then(data => {
 
             window.analytics.track('like', {postId: current_post_id});
@@ -250,6 +255,7 @@ function likePost() {
                 spread: 70,
                 origin: { y: 0.6 }
             });
+
 
             displayPost();
 
