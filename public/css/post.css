@@ -39,7 +39,7 @@
         box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
         opacity: 1;
     }
-    50%{
+    25%{
         background-color: rgba(46, 204, 113, 0.4);
         box-shadow: 0 0px 15px rgba(46, 204, 113, 0.3);
     }
