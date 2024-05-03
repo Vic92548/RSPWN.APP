@@ -24,6 +24,7 @@
 }
 
 #xp_bar_progress{
+    width: 0%;
     background-color: rgba(13, 99, 255, 0.48);
     height: 25px;
     position: absolute;
@@ -31,6 +32,8 @@
 }
 
 #xp_bar_progress_visual{
+    width: 0%;
+    left: 0;
     background-color: rgba(0, 51, 143, 0.62);
     height: 25px;
     position: absolute;
