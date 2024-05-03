@@ -329,10 +329,13 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             headers: headers
         });
 
+        document.getElementById("add-post").style.display = "none";
+        hidePost();
+
         const result = await response.json();
         if (response.ok) {
 
-            window.analytics.track('new_post_uploaded', {postId: current_post_id});
+            window.analytics.track('new_post_uploaded', {postId: result.id});
 
             document.getElementById("add-post").style.display = "none";
             confetti({
@@ -348,9 +351,20 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
             document.getElementById('file').value = '';
             document.getElementById('link').value = '';
             document.getElementById('preview').style.display = 'none';
+
+            const oldUser = {
+                xp: window.user.xp,
+                level: window.user.level,
+                xp_required: window.user.xp_required
+            };
+
+            window.user = result.user;
+
+            setXPProgress(oldUser);
             
         } else {
             alert('Failed to create post. Please try again with an other image.');
+            displayPost();
         }
     } catch (error) {
         console.error('Failed to submit post:', error);
