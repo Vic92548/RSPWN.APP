@@ -9,7 +9,7 @@ function setXPProgress(old_user, disable_xp_notif = false) {
     }
 
     const total_xp = user.xp;
-    const xp = total_xp - old_user.xp;
+    const xp = Math.min(total_xp - old_user.xp, old_user.xp_required);
 
     updateLevel();
 
@@ -30,6 +30,11 @@ function setXPProgress(old_user, disable_xp_notif = false) {
 
             setTimeout(() => {
                 notification.style.animation = 'none';
+
+                if(old_user.level < user.level){
+                    setXPProgress(window.user);
+                }
+
             }, 1500);
         }
 

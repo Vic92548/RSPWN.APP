@@ -325,7 +325,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     try {
         document.getElementById("add-post").style.display = "none";
         hidePost();
-        
+
         const response = await fetch('/posts', {
             method: 'POST',
             body: formData,
