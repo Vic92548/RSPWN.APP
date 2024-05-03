@@ -1,4 +1,4 @@
-import {addXP, EXPERIENCE_TABLE} from "./rpg";
+import {addXP, EXPERIENCE_TABLE} from "./rpg.js";
 
 
 export async function createPost(request, userData) {
