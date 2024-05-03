@@ -85,11 +85,12 @@ export async function getPost(id) {
     const kv = await Deno.openKv();
     const postData = await kv.get(["posts",id]);
 
-    if (!postData) {
+    if (!postData.value) {
         return new Response("Post not found", { status: 404 });
     }
 
     const userData = await kv.get(["discordUser",postData.value.userId]);
+
     postData.value.username = userData.value.username;
 
     if(!postData.value.views){
