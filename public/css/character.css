@@ -37,11 +37,11 @@
         opacity: 0;
         top: 20px;
     }
-    20% {
+    25% {
         opacity: 1;
         top: 0px;
     }
-    80% {
+    75% {
         opacity: 1;
         top: 0px;
     }
