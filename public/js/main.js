@@ -74,6 +74,7 @@ function loadUserData(){
         window.user = data;
         document.getElementById("sign_in").style.display = "none";
         document.getElementById("add_post").style.display = "block";
+        document.getElementById("xp_bar").style.display = "block";
 
         hideLoading();
 
