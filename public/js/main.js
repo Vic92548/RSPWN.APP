@@ -83,6 +83,14 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
+        const oldUser = {
+            xp: 0,
+            level: window.user.level,
+            xp_required: window.user.xp_required
+        };
+
+        setXPProgress(oldUser, true);
+
         document.getElementById("sign_in").style.display = "none";
         document.getElementById("add_post").style.display = "block";
         document.getElementById("xp_bar").style.display = "block";
