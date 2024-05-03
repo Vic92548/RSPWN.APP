@@ -66,15 +66,26 @@ function isUserLoggedIn(){
     }
 }
 
+function updateUsername() {
+    const level_elements = document.getElementsByName("username");
+    for (let i = 0; i < level_elements.length; i++) {
+        level_elements[i].textContent = user.username;
+    }
+}
+
 function loadUserData(){
     document.getElementById("sign_in").style.display = "none";
     document.getElementById("add_post").style.display = "none";
 
     makeApiRequest("/me").then(data => {
         window.user = data;
+        updateUsername();
+        
         document.getElementById("sign_in").style.display = "none";
         document.getElementById("add_post").style.display = "block";
         document.getElementById("xp_bar").style.display = "block";
+
+
 
         hideLoading();
 
