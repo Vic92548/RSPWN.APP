@@ -36,8 +36,6 @@ function likePost() {
                 xp_required: window.user.xp_required
             };
 
-            setXPProgress(oldUser);
-
             window.user = data.user;
 
             window.analytics.track('like', {postId: current_post_id});
@@ -67,9 +65,9 @@ function skipPost() {
                 xp_required: window.user.xp_required
             };
 
-            setXPProgress(oldUser);
-
             window.user = data.user;
+
+            setXPProgress(oldUser);
 
             window.analytics.track('skip', {postId: current_post_id});
             displayPost();
@@ -93,9 +91,11 @@ function dislikePost() {
                 xp_required: window.user.xp_required
             };
 
+            window.user = data.user;
+
             setXPProgress(oldUser);
 
-            window.user = data.user;
+
 
             window.analytics.track('dislike', {postId: current_post_id});
             displayPost();
