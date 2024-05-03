@@ -185,6 +185,9 @@ export async function skipPost(id, userData) {
 }
 
 export async function getNextFeedPost(userid) {
+
+    console.log("FEED START");
+
     const kv = await Deno.openKv();
 
     const iter = kv.list({prefix: ["trend", "posts"]});
