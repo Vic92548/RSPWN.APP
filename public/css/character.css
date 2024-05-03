@@ -24,18 +24,17 @@
 }
 
 #xp_bar_progress{
-    width: 50%;
     background-color: rgba(13, 99, 255, 0.48);
     height: 25px;
     position: absolute;
+    transition: all 0.5s ease-in-out;
 }
 
 #xp_bar_progress_visual{
-    width: 10%;
     background-color: rgba(0, 51, 143, 0.62);
-    left: 50%;
     height: 25px;
     position: absolute;
+    transition: all 0.5s ease-in-out;
 }
 
 #xp_bar span,
