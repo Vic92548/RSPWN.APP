@@ -13,4 +13,6 @@
 #xp_bar_progress{
     width: 50%;
     background-color: rgba(13, 99, 255, 0.48);
+    height: 25px;
+    position: fixed;
 }
