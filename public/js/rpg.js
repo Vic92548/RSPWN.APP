@@ -1,4 +1,4 @@
-function setXPProgress(old_user) {
+function setXPProgress(old_user, disable_xp_notif = false) {
 
     if(!user.xp){
         user.xp = 0;
@@ -23,8 +23,15 @@ function setXPProgress(old_user) {
 
         xp_bar_progress_visual.style.width = diff + "%";
         xp_bar_progress_visual.style.left = (new_value - diff) + "%";
-        notification.style.animation = 'xpNotificationAnimation 1.5s';
-        notification.textContent = "+" + xp + "xp";
+
+        if(!disable_xp_notif){
+            notification.style.animation = 'xpNotificationAnimation 1.5s';
+            notification.textContent = "+" + xp + "xp";
+
+            setTimeout(() => {
+                notification.style.animation = 'none';
+            }, 1500);
+        }
 
         setTimeout(() => {
             xp_bar_progress.style.width = new_value + "%";
@@ -32,9 +39,7 @@ function setXPProgress(old_user) {
             xp_bar_progress_visual.style.left = new_value + "%";
         }, 500);
 
-        setTimeout(() => {
-            notification.style.animation = 'none';
-        }, 1500);
+
     }
 }
 
