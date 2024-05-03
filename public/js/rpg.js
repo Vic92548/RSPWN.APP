@@ -32,6 +32,9 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
                 notification.style.animation = 'none';
 
                 if(old_user.level < user.level){
+                    console.log("Forcing xp")
+                    console.log(old_user);
+                    console.log(user);
                     setXPProgress(window.user, true, true);
                 }
 
