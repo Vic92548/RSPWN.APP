@@ -8,7 +8,7 @@ generator client {
   provider = "prisma-client-js"
   previewFeatures = ["deno"]
   output          = "../generated/client"
-  engineType = "binary"
+  engineType = "library"
 }
 
 datasource db {
