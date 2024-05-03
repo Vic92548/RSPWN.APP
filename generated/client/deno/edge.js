@@ -203,6 +203,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -211,9 +212,9 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  previewFeatures = [\"deno\"]\n  output          = \"../generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n  relationMode = \"prisma\"\n}\n\n\nmodel User {\n  id          String    @id\n  username    String\n  email       String    @unique\n  provider    String\n  level       Int\n  xp          Int\n  xp_required Int\n}\n\nmodel SecretKey {\n  key      String   @id\n  userId   String\n  createdAt DateTime @default(now())\n}\n\n\nmodel Post {\n  id        String    @id\n  content   String\n  userId    String\n  title     String\n  link     String\n  timestamp DateTime\n}\n\nmodel Like {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel Dislike {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel Skip {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel ShadowBan {\n  userId    String\n  timestamp DateTime\n  reason    String\n\n  @@id([userId, timestamp])\n}\n\nmodel Comment {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId, timestamp])\n}\n\nmodel View {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}",
-  "inlineSchemaHash": "85c4292333f8c41d2291f77c9cac66546a16847bc40fe69810817d6f61b0bba4",
-  "copyEngine": true
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  previewFeatures = [\"deno\"]\n  output          = \"../generated/client\"\n  engineType = \"library\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n  relationMode = \"prisma\"\n}\n\n\nmodel User {\n  id          String    @id\n  username    String\n  email       String    @unique\n  provider    String\n  level       Int\n  xp          Int\n  xp_required Int\n}\n\nmodel SecretKey {\n  key      String   @id\n  userId   String\n  createdAt DateTime @default(now())\n}\n\n\nmodel Post {\n  id        String    @id\n  content   String\n  userId    String\n  title     String\n  link     String\n  timestamp DateTime\n}\n\nmodel Like {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel Dislike {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel Skip {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}\n\nmodel ShadowBan {\n  userId    String\n  timestamp DateTime\n  reason    String\n\n  @@id([userId, timestamp])\n}\n\nmodel Comment {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId, timestamp])\n}\n\nmodel View {\n  postId    String\n  userId    String\n  timestamp DateTime\n\n  @@id([postId, userId])\n}",
+  "inlineSchemaHash": "6acfd114fee22a9fe6b8e7c09acaee0280aba1099daad4628b3eb1bab27a541e",
+  "copyEngine": false
 }
 config.dirname = '/'
 
