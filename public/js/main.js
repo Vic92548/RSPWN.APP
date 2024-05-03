@@ -67,7 +67,7 @@ function isUserLoggedIn(){
 }
 
 function updateUsername() {
-    const level_elements = document.getElementsByName("username");
+    const level_elements = document.getElementsByClassName("username");
     for (let i = 0; i < level_elements.length; i++) {
         level_elements[i].textContent = user.username;
         console.log("updated username : " + user.username);
