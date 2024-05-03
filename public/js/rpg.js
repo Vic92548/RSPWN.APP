@@ -39,7 +39,7 @@ function setXPProgress(old_user) {
 }
 
 function updateLevel() {
-    const level_elements = document.getElementsByName("xp_level");
+    const level_elements = document.getElementsByClassName("xp_level");
     for (let i = 0; i < level_elements.length; i++) {
         level_elements[i].textContent = user.level;
     }
