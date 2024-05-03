@@ -33,16 +33,20 @@
 }
 
 @keyframes xpNotificationAnimation {
-    0%, 100% {
+    0% {
         opacity: 0;
-        top: 0px;
-    }
-    30% {
-        opacity: 1;
         top: 20px;
     }
-    60% {
+    20% {
         opacity: 1;
+        top: 0px;
+    }
+    80% {
+        opacity: 1;
+        top: 0px;
+    }
+    100% {
+        opacity: 0;
         top: 20px;
     }
 }
