@@ -28,6 +28,23 @@
     padding-right: 0;
     padding-left: 0;
     font-size: 13px;
+    opacity: 0;
+    top: 20px;
+}
+
+@keyframes xpNotificationAnimation {
+    0%, 100% {
+        opacity: 0;
+        top: 0px;
+    }
+    30% {
+        opacity: 1;
+        top: 20px;
+    }
+    60% {
+        opacity: 1;
+        top: 20px;
+    }
 }
 
 #xp_bar_progress{
