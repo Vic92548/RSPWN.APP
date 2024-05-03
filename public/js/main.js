@@ -323,14 +323,14 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     });
 
     try {
+        document.getElementById("add-post").style.display = "none";
+        hidePost();
+        
         const response = await fetch('/posts', {
             method: 'POST',
             body: formData,
             headers: headers
         });
-
-        document.getElementById("add-post").style.display = "none";
-        hidePost();
 
         const result = await response.json();
         if (response.ok) {
