@@ -280,7 +280,7 @@ function skipPost() {
 
 function dislikePost() {
     if(isUserLoggedIn()){
-        hidePost();
+        displayLikeAnimation();
         makeApiRequest("/dislike/" + current_post_id).then(data => {
             window.analytics.track('dislike', {postId: current_post_id});
             displayPost();
