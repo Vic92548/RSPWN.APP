@@ -251,13 +251,6 @@ function likePost() {
 
             window.analytics.track('like', {postId: current_post_id});
 
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-
-
             displayPost();
 
 
