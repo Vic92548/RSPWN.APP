@@ -7,4 +7,10 @@
     margin: auto;
     display: block;
     width: 90%;
+    overflow: hidden;
+}
+
+#xp_bar_progress{
+    width: 50%;
+    background-color: rgba(13, 99, 255, 0.48);
 }
