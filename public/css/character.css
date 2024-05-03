@@ -10,6 +10,10 @@
     margin-top: 20px;
 }
 
+#xp_bar span{
+    font-size: 14px;
+}
+
 #xp_bar .username{
     float: right;
 }
@@ -18,7 +22,7 @@
     width: 50%;
     background-color: rgba(13, 99, 255, 0.48);
     height: 25px;
-    position: relative;
+    position: absolute;
 }
 
 #xp_bar span,
