@@ -57,13 +57,23 @@ export async function createPost(request, userData) {
             timestamp: post.timestamp,
         });
 
+        let trend_posts = await kv.get(["trend","posts","new"]);
+
+        if(!trend_posts.value){
+            trend_posts.value = {};
+        }
+
+        trend_posts = trend_posts.value;
+
+        trend_posts[post.id] = {
+            timestamp: Date.now(),
+            score: 0
+        };
+
         await Promise.all([
             kv.set(["posts", post.id], post),
             kv.set(["users",userId, "posts"], userPosts.value),
-            kv.set(["trend", "posts", post.id], {
-                timestamp: Date.now(),
-                score: 0
-            }),
+            kv.set(["trend","posts","new"], trend_posts),
             addXP(userData, EXPERIENCE_TABLE.POST)
         ]);
 
@@ -129,10 +139,20 @@ export async function likePost(id, userData) {
         return new Response("Post not found", { status: 404 });
     }
 
+    let interacted_posts = await kv.get(["users_stats", userData.id, "interacted_posts"]);
+
+    if(!interacted_posts.value){
+        interacted_posts = {};
+    }else{
+        interacted_posts = interacted_posts.value;
+    }
+
+    interacted_posts[id] = Date.now();
+
     await Promise.all([
         kv.set(["posts_stats", id, "likes", userData.id], Date.now()),
         kv.set(["users_stats", userData.id, "likes", id], Date.now()),
-        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts"], interacted_posts),
         addXP(userData, EXPERIENCE_TABLE.LIKE)
     ]);
 
@@ -150,10 +170,20 @@ export async function dislikePost(id, userData) {
         return new Response("Post not found", { status: 404 });
     }
 
+    let interacted_posts = await kv.get(["users_stats", userData.id, "interacted_posts"]);
+
+    if(!interacted_posts.value){
+        interacted_posts = {};
+    }else{
+        interacted_posts = interacted_posts.value;
+    }
+
+    interacted_posts[id] = Date.now();
+
     await Promise.all([
         kv.set(["posts_stats", id, "dislikes", userData.id], Date.now()),
         kv.set(["users_stats", userData.id, "dislikes", id], Date.now()),
-        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts"], interacted_posts),
         await addXP(userData, EXPERIENCE_TABLE.DISLIKE)
     ]);
 
@@ -171,10 +201,20 @@ export async function skipPost(id, userData) {
         return new Response("Post not found", { status: 404 });
     }
 
+    let interacted_posts = await kv.get(["users_stats", userData.id, "interacted_posts"]);
+
+    if(!interacted_posts.value){
+        interacted_posts = {};
+    }else{
+        interacted_posts = interacted_posts.value;
+    }
+
+    interacted_posts[id] = Date.now();
+
     await Promise.all([
         kv.set(["posts_stats", id, "skip", userData.id], Date.now()),
         kv.set(["users_stats", userData.id, "skip", id], Date.now()),
-        kv.set(["users_stats", userData.id, "interacted_posts", id], Date.now()),
+        kv.set(["users_stats", userData.id, "interacted_posts"], interacted_posts),
         await addXP(userData, EXPERIENCE_TABLE.SKIP)
     ]);
 
@@ -190,54 +230,53 @@ export async function getNextFeedPost(userid) {
 
     const kv = await Deno.openKv();
 
-    const iter = kv.list({prefix: ["trend", "posts"]});
+    let trending_posts = await kv.get(["trend","posts","new"]);
 
-    const trending_posts = [];
-    let result = await iter.next();
-    while (!result.done) {
-        const key = result.value.key.pop();
-        console.log("Processing key:", key);
-        result = await iter.next();
-    }
+    if(trending_posts.value){
 
-    console.log("Trending posts:");
-    console.log(trending_posts);
+        trending_posts = trending_posts.value;
 
-    if(userid === "anonymous"){
+        if(userid === "anonymous"){
 
-        console.log("Sending feed as anonymous");
+            console.log("Sending feed as anonymous");
 
-        const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+            const selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
 
-        return getPost(selected_post);
-    }else{
+            return getPost(selected_post);
+        }else{
 
-        console.log("Like user id " + userid);
+            console.log("Like user id " + userid);
 
-        const iter2 = kv.list({prefix: ["users_stats", userid, "interacted_posts"]});
+            let interacted_posts = await kv.get(["users_stats", userid, "interacted_posts"]);
 
-        const interacted_posts = [];
-        for await (const res of iter2) interacted_posts.push(res.key.pop());
-
-        console.log("INTERACTED POSTS");
-        console.log(interacted_posts);
-
-        let selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
-
-        let retries = 100;
-
-        while(interacted_posts.includes(selected_post)){
-            if(retries < 0){
-                break;
+            if(!interacted_posts.value){
+                interacted_posts = {};
+            }else{
+                interacted_posts = interacted_posts.value;
             }
-            selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
-            retries--;
+
+            console.log("INTERACTED POSTS");
+            console.log(interacted_posts);
+
+            let selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+
+            let retries = 100;
+
+            while(interacted_posts.includes(selected_post)){
+                if(retries < 0){
+                    break;
+                }
+                selected_post = trending_posts[Math.floor(Math.random()*trending_posts.length)];
+                retries--;
+            }
+
+            console.log("Selected post:", selected_post);
+
+            return getPost(selected_post);
         }
-
-        console.log("Selected post:", selected_post);
-
-        return getPost(selected_post);
     }
+
+
 
 
 }
