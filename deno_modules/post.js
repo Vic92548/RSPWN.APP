@@ -193,7 +193,12 @@ export async function getNextFeedPost(userid) {
     const iter = kv.list({prefix: ["trend", "posts"]});
 
     const trending_posts = [];
-    for await (const res of iter) trending_posts.push(res.key.pop());
+    let result = await iter.next();
+    while (!result.done) {
+        const key = result.value.key.pop();
+        console.log("Processing key:", key);
+        result = await iter.next();
+    }
 
     console.log("Trending posts:");
     console.log(trending_posts);
