@@ -1,5 +1,4 @@
 #xp_bar{
-    bottom: 10px;
     position: fixed;
     padding: 0;
     left: 0;
@@ -8,13 +7,14 @@
     display: block;
     width: 90%;
     overflow: hidden;
+    margin-top: 20px;
 }
 
 #xp_bar_progress{
     width: 50%;
     background-color: rgba(13, 99, 255, 0.48);
     height: 25px;
-    position: fixed;
+    position: relative;
 }
 
 #xp_bar span,
