@@ -31,8 +31,9 @@
 }
 
 #xp_bar_progress_visual{
-    width: 60%;
+    width: 10%;
     background-color: rgba(0, 51, 143, 0.62);
+    left: 50%;
     height: 25px;
     position: absolute;
 }
