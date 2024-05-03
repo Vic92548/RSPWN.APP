@@ -12,9 +12,11 @@
 
 #xp_bar span{
     font-size: 15px;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.85);
     height: 25px;
     line-height: 25px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #xp_bar .username{
