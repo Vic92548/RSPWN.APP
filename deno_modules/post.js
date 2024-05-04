@@ -18,9 +18,10 @@ export async function createPost(request, userData) {
 
     const formData = await request.formData();
     const title = formData.get("title");
-    let content = formData.get("content");
     const link = formData.get("link");
     const file = formData.get("file");
+
+    let content = "";
 
     if (typeof title !== "string" || typeof userData.id !== "string") {
         return new Response("Missing or invalid fields", { status: 400 });
