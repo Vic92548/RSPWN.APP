@@ -199,7 +199,7 @@ input:focus {
 #follow{
     border: 1px solid rgba(13, 99, 255, 0.48);
     background-color: rgba(13, 99, 255, 0.3);
-    padding: 5px;
+    padding: 5px 8px 5px 8px;
     border-radius: 7px;
 }
 
