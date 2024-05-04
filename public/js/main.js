@@ -118,6 +118,12 @@ function hideLoading(){
     document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
+function showLoading(){
+    document.getElementsByTagName('H1')[0].className = "loading";
+
+    document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
+}
+
 function timeAgo(dateParam) {
     if (!dateParam) {
         return null;
@@ -257,6 +263,7 @@ function displayPost(postId = undefined){
 }
 
 function hidePost() {
+    showLoading();
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
