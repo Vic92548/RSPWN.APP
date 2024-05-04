@@ -69,7 +69,7 @@ export async function createPost(request, userData) {
 
     sendMessageToDiscordWebhook(
         "https://discord.com/api/webhooks/1236284348244955137/7b-J6UW1knzJhhFIY9AyplZAvKNF9F897oUsRqOPjJJZrCRmcW2A9QTOPWnL7UhD2-YI",
-        "New post made by @*" + userData.username + "* available on **VAPR** : https://vapr.gg/post/" + postId);
+        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId);
 
     return new Response(JSON.stringify(post), {
         status: 201,
