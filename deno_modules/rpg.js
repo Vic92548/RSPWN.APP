@@ -19,11 +19,13 @@ const prisma = new PrismaClient({
 export async function addXP(userId, amount) {
     // Retrieve the user data from the database
 
-    console.log("Finding user to add xp to...");
+    console.log("Finding user with id : " + userId + " to add xp to...");
 
     let user = await prisma.user.findUnique({
         where: { id: userId }
     });
+
+    console.log(user);
 
     // Initialize user data if not already set
     user.level = user.level ?? 0;
