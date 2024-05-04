@@ -132,6 +132,10 @@ export async function likePost(postId, userData) {
         });
 
         await addXP(userData.id, EXPERIENCE_TABLE.LIKE);
+
+        userData = await prisma.user.findUnique({
+            where: { id: userData.id }
+        });
     }catch{
 
     }
@@ -155,6 +159,10 @@ export async function dislikePost(postId, userData) {
         });
 
         await addXP(userData.id, EXPERIENCE_TABLE.DISLIKE);
+
+        userData = await prisma.user.findUnique({
+            where: { id: userData.id }
+        });
     }catch{
 
     }
@@ -176,6 +184,10 @@ export async function skipPost(postId, userData) {
         });
 
         await addXP(userData.id, EXPERIENCE_TABLE.SKIP);
+
+        userData = await prisma.user.findUnique({
+            where: { id: userData.id }
+        });
     }catch{
 
     }
