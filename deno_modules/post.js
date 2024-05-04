@@ -158,32 +158,32 @@ export async function skipPost(postId, userData) {
 export async function getNextFeedPost(userid) {
     console.log("FEED START");
 
+    // Fetch IDs from likes, dislikes, and skips
+    const likes = await prisma.like.findMany({
+        where: { userId : userid },
+        select: { postId: true }
+    });
+    const dislikes = await prisma.dislike.findMany({
+        where: { userId: userid },
+        select: { postId: true }
+    });
+    const skips = await prisma.skip.findMany({
+        where: { userId: userid },
+        select: { postId: true }
+    });
+
+// Combine all post IDs in a single array
+    const interactedPostIds = [...likes, ...dislikes, ...skips].map(interaction => interaction.postId);
+
+
     const posts = await prisma.post.findUnique({
         where: {
-            AND: [
-                {
-                    likes: {
-                        none: {
-                            userId: userid
-                        }
-                    }
-                },
-                {
-                    dislikes: {
-                        none: {
-                            userId: userid
-                        }
-                    }
-                },
-                {
-                    skips: {
-                        none: {
-                            userId: userid
-                        }
-                    }
+            NOT: {
+                id: {
+                    in: interactedPostIds
                 }
-            ]
-        }
+            }
+        },
     });
 
     console.log(posts);
