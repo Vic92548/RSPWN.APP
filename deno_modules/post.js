@@ -183,9 +183,6 @@ export async function getNextFeedPost(userid) {
                     }
                 }
             ]
-        },
-        orderBy: {
-            createdAt: 'desc'
         }
     });
 
