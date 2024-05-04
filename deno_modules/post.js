@@ -57,7 +57,7 @@ export async function createPost(request, userData) {
     });
 }
 
-export async function getPost(id) {
+export async function getPost(id, userId = "anonymous") {
     const post = await prisma.post.findUnique({
         where: { id }
     });
@@ -66,9 +66,18 @@ export async function getPost(id) {
         return new Response("Post not found", { status: 404 });
     }
 
-    await prisma.post.update({
-        where: { id },
-        data: { views: { increment: 1 } }
+    const view = await prisma.view.create({
+        data: {
+            postId: id,
+            userId: userId,
+            timestamp: new Date(), // Assuming your schema has a timestamp field
+        }
+    });
+
+    post.views = await prisma.view.count({
+        where: {
+            postId: post.id
+        }
     });
 
     return new Response(JSON.stringify(post), {
