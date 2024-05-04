@@ -190,9 +190,15 @@ input:focus {
 }
 
 #post_username,
-#post_time{
+#post_time,
+#follow{
     font-size: 14px;
     color: rgba(255,255,255,0.6);
+}
+
+#follow{
+    border: 1px solid rgba(13, 99, 255, 0.48);
+    padding: 5px;
 }
 
 #post_image{
