@@ -185,7 +185,7 @@ export async function getNextFeedPost(userid) {
             }
         },
         orderBy: {
-            createdAt: 'desc'
+            timestamp: 'desc'
         },
         take: 1 // Limit the number of posts fetched
     });
