@@ -231,6 +231,12 @@ function drawPost(data){
             case 'store.epicgames.com':
                 setupSocialLink("post_epic", data.link);
                 break;
+            case 'www.kickstarter.com':
+                setupSocialLink("post_kickstarter", data.link);
+                break;
+            case 'kick.com':
+                setupSocialLink("post_kick", data.link);
+                break;
             default:
                 break;
         }

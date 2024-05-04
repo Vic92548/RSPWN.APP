@@ -333,3 +333,13 @@ input:focus {
     background-color: #2F2D2E ;
     box-shadow: 0 0 5px #2F2D2E ;
 }
+
+#post_kick{
+    background-color: #00e701 ;
+    box-shadow: 0 0 5px #00e701 ;
+}
+
+#post_kickstarter{
+    background-color: #05ce78 ;
+    box-shadow: 0 0 5px #05ce78 ;
+}
