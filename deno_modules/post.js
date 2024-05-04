@@ -1,6 +1,6 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
-import {sendMessageToDiscordWebhook} from "./discord";
+import {sendMessageToDiscordWebhook} from "./discord.js";
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
