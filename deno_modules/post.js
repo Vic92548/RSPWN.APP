@@ -75,7 +75,7 @@ export async function getPost(id, userId = "anonymous") {
             }
         });
     }catch{
-        
+
     }
 
     post.views = await prisma.view.count({
@@ -83,6 +83,16 @@ export async function getPost(id, userId = "anonymous") {
             postId: post.id
         }
     });
+
+    const postOwner = await prisma.user.findUnique({
+        where: { id: post.userId },
+        select: {
+            id: true,
+            username: true
+        }
+    });
+
+    post.username = postOwner.username;
 
     return new Response(JSON.stringify(post), {
         status: 200,
