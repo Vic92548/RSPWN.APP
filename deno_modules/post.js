@@ -66,13 +66,17 @@ export async function getPost(id, userId = "anonymous") {
         return new Response("Post not found", { status: 404 });
     }
 
-    const view = await prisma.view.create({
-        data: {
-            postId: id,
-            userId: userId,
-            timestamp: new Date(), // Assuming your schema has a timestamp field
-        }
-    });
+    try{
+        const view = await prisma.view.create({
+            data: {
+                postId: id,
+                userId: userId,
+                timestamp: new Date(), // Assuming your schema has a timestamp field
+            }
+        });
+    }catch{
+        
+    }
 
     post.views = await prisma.view.count({
         where: {
