@@ -41,7 +41,7 @@ export async function createPost(request, userData) {
             id: postId,
             title,
             content,
-            user: { connect: { id: userData.id } },
+            userId: userData.id,
             timestamp: new Date(),
             link
         }
