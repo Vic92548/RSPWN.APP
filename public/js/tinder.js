@@ -28,6 +28,7 @@ function displaySkipAnimation() {
 function likePost() {
     if(isUserLoggedIn()){
         displayLikeAnimation();
+        showLoading();
         makeApiRequest("/like/" + current_post_id).then(data => {
 
             const oldUser = {
@@ -57,6 +58,7 @@ function likePost() {
 function skipPost() {
     if(isUserLoggedIn()){
         displaySkipAnimation();
+        showLoading();
         makeApiRequest("/skip/" + current_post_id).then(data => {
 
             const oldUser = {
@@ -83,6 +85,7 @@ function skipPost() {
 function dislikePost() {
     if(isUserLoggedIn()){
         displayDislikeAnimation();
+        showLoading();
         makeApiRequest("/dislike/" + current_post_id).then(data => {
 
             const oldUser = {
