@@ -186,6 +186,8 @@ export async function getNextFeedPost(userid) {
         }
     });
 
+    console.log(posts);
+
 
     if (userid === "anonymous") {
         console.log("Sending feed as anonymous or no posts available");
