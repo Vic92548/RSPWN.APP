@@ -51,6 +51,8 @@ export async function createPost(request, userData) {
 
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
+    post.user = userData;
+
     return new Response(JSON.stringify(post), {
         status: 201,
         headers: { "Content-Type": "application/json" }
