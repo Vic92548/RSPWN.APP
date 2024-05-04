@@ -94,7 +94,7 @@ export async function handleOAuthCallback(request) {
                 provider: 'discord',
                 level: 0,
                 xp: 0,
-                xp_required: 0
+                xp_required: 700
             }
         });
 
