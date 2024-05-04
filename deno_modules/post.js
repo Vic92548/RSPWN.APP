@@ -176,7 +176,7 @@ export async function getNextFeedPost(userid) {
     const interactedPostIds = [...likes, ...dislikes, ...skips].map(interaction => interaction.postId);
 
 
-    const posts = await prisma.post.findUnique({
+    const posts = await prisma.post.findMany({
         where: {
             NOT: {
                 id: {
@@ -184,24 +184,31 @@ export async function getNextFeedPost(userid) {
                 }
             }
         },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        take: 1 // Limit the number of posts fetched
     });
+
+    const post = posts[0];
+
 
     console.log(posts);
 
 
     if (userid === "anonymous") {
         console.log("Sending feed as anonymous or no posts available");
-        return new Response(JSON.stringify(posts), {
+        return new Response(JSON.stringify(post), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
     }
 
 
-    if (posts) {
-        console.log("Selected post:", posts.id);
+    if (post) {
+        console.log("Selected post:", post.id);
 
-        return new Response(JSON.stringify(posts), {
+        return new Response(JSON.stringify(post), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
