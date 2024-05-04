@@ -132,3 +132,7 @@ title span{
 .post-card:hover {
     transform: translateY(-5px);
 }
+
+.hidden_on_mobile{
+    opacity: 0;
+}
