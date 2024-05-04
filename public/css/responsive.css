@@ -27,7 +27,8 @@
 
     .post {
         width: 400px;
-        margin: 0 auto;
+        margin: auto;
+        margin-top: 20px;
     }
 
     #postForm {
@@ -35,6 +36,10 @@
     }
 
     .discord_login, .create-post-btn {
+        width: 440px;
+    }
+
+    #xp_bar{
         width: 440px;
     }
 }
