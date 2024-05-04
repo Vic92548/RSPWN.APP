@@ -9,6 +9,8 @@
     cursor: pointer;
     transition: all 0.4s;
     font-size: 18px;
+    background-color: #5865F2;
+    box-shadow: 0 0 10px #5865F2;
 }
 
 .create-post-btn:hover {
