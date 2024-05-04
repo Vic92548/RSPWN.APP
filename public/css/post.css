@@ -16,6 +16,10 @@
     box-shadow: 0 0 10px #0d8eff83;
 }
 
+.create-post-btn i{
+    margin: 0;
+}
+
 .post {
     background-color: rgba(255,255,255,0.4);
     backdrop-filter: blur(20px);
