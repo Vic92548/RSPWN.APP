@@ -158,23 +158,39 @@ export async function skipPost(postId, userData) {
 export async function getNextFeedPost(userid) {
     console.log("FEED START");
 
-    const posts = await prisma.post.findMany({
+    const posts = await prisma.post.findUnique({
         where: {
-            NOT: {
-                interactions: {
-                    some: {
-                        userId: userid
+            AND: [
+                {
+                    likes: {
+                        none: {
+                            userId: userid
+                        }
+                    }
+                },
+                {
+                    dislikes: {
+                        none: {
+                            userId: userid
+                        }
+                    }
+                },
+                {
+                    skips: {
+                        none: {
+                            userId: userid
+                        }
                     }
                 }
-            },
+            ]
         },
         orderBy: {
             createdAt: 'desc'
-        },
-        take: 20 // adjust as needed to limit the number of posts fetched
+        }
     });
 
-    if (userid === "anonymous" || posts.length === 0) {
+
+    if (userid === "anonymous") {
         console.log("Sending feed as anonymous or no posts available");
         return new Response(JSON.stringify(posts), {
             status: 200,
@@ -182,26 +198,15 @@ export async function getNextFeedPost(userid) {
         });
     }
 
-    // Filtering out posts already interacted with by the user
-    const interactedPosts = await prisma.interaction.findMany({
-        where: {
-            userId: userid
-        },
-        select: {
-            postId: true
-        }
-    });
-    const interactedPostIds = interactedPosts.map(interaction => interaction.postId);
-    const filteredPosts = posts.filter(post => !interactedPostIds.includes(post.id));
 
-    const selectedPost = filteredPosts.length > 0 ? filteredPosts[0] : null;
+    if (posts) {
+        console.log("Selected post:", posts.id);
 
-    if (selectedPost) {
-        console.log("Selected post:", selectedPost.id);
-        return new Response(JSON.stringify(selectedPost), {
+        return new Response(JSON.stringify(posts), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
+
     } else {
         return new Response("No new posts to display", { status: 404 });
     }
