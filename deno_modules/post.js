@@ -192,6 +192,22 @@ export async function getNextFeedPost(userid) {
 
     const post = posts[0];
 
+    post.views = await prisma.view.count({
+        where: {
+            postId: post.id
+        }
+    });
+
+    const postOwner = await prisma.user.findUnique({
+        where: { id: post.userId },
+        select: {
+            id: true,
+            username: true
+        }
+    });
+
+    post.username = postOwner.username;
+
 
     console.log(posts);
 
