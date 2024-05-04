@@ -33,7 +33,7 @@ export async function createPost(request, userData) {
         const parts = file.name.split('.');
         fileExtension = parts.length > 1 ? parts.pop() : "";
         const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
-        content = mediaUrl;
+        content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
     }
 
     const post = await prisma.post.create({
