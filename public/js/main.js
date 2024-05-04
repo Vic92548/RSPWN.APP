@@ -240,6 +240,7 @@ function drawPost(data){
 let current_post_id = undefined;
 
 function displayPost(postId = undefined){
+    hidePost();
     if(!postId){
         makeApiRequest("/feed", false).then(data => {
 
