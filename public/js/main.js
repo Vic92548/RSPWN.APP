@@ -242,6 +242,9 @@ let current_post_id = undefined;
 function displayPost(postId = undefined){
     if(!postId){
         makeApiRequest("/feed", false).then(data => {
+
+            hideLoading();
+
             drawPost(data);
             current_post_id = data.id;
 
@@ -251,6 +254,9 @@ function displayPost(postId = undefined){
         });
     }else{
         makeApiRequest("/posts/"+postId, false).then(data => {
+
+            hideLoading();
+
             drawPost(data);
             current_post_id = data.id;
 
