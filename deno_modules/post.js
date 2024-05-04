@@ -1,5 +1,6 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
+import {sendMessageToDiscordWebhook} from "./discord.js";
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
@@ -32,8 +33,16 @@ export async function createPost(request, userData) {
     if (file) {
         const parts = file.name.split('.');
         fileExtension = parts.length > 1 ? parts.pop() : "";
-        const mediaUrl = file ? await uploadToBunnyCDN(file, postId) : null;
-        content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
+        const mediaResult = file ? await uploadToBunnyCDN(file, postId) : null;
+        if(mediaResult.success){
+            content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
+        }else{
+            return new Response(JSON.stringify(mediaResult), {
+                status: 201,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
     }
 
     const post = await prisma.post.create({
@@ -56,6 +65,11 @@ export async function createPost(request, userData) {
     });
 
     post.user = userData;
+    post.success = true;
+
+    sendMessageToDiscordWebhook(
+        "https://discord.com/api/webhooks/1236284348244955137/7b-J6UW1knzJhhFIY9AyplZAvKNF9F897oUsRqOPjJJZrCRmcW2A9QTOPWnL7UhD2-YI",
+        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId);
 
     return new Response(JSON.stringify(post), {
         status: 201,
@@ -304,11 +318,11 @@ async function uploadToBunnyCDN(file, postId) {
 
     if (!response.ok) {
         console.error("Failed to upload media. Response:", await response.text());
-        throw new Error("Failed to upload media.");
+        return {success: false, msg: await response.text()};
     }
 
     const data = await response.json();
     console.log("POST UPLOADED IMAGE");
     console.log(data);
-    return data.HttpPath; // Adjust according to Bunny CDN response
+    return {success: true}; // Adjust according to Bunny CDN response
 }

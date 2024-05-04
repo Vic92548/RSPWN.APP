@@ -42,4 +42,8 @@
     #xp_bar{
         width: 440px;
     }
+
+    .hidden_on_mobile{
+        opacity: 1;
+    }
 }

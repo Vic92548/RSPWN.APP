@@ -75,9 +75,10 @@ main {
 
 .discord-link {
     position: absolute;
-    top: 15px;
+    top: 20px;
     right: 20px;
-    background-color: #5865F2;
+    background-color: #17212b;
+    box-shadow: 0 0 10px #17212b;
     border-radius: 7px;
     color: #fff;
     text-decoration: none;
@@ -130,4 +131,8 @@ title span{
 
 .post-card:hover {
     transform: translateY(-5px);
+}
+
+.hidden_on_mobile{
+    opacity: 0;
 }

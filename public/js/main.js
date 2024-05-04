@@ -118,6 +118,12 @@ function hideLoading(){
     document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
+function showLoading(){
+    document.getElementsByTagName('H1')[0].className = "loading";
+
+    document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
+}
+
 function timeAgo(dateParam) {
     if (!dateParam) {
         return null;
@@ -234,8 +240,12 @@ function drawPost(data){
 let current_post_id = undefined;
 
 function displayPost(postId = undefined){
+    hidePost();
     if(!postId){
         makeApiRequest("/feed", false).then(data => {
+
+            hideLoading();
+
             drawPost(data);
             current_post_id = data.id;
 
@@ -245,6 +255,9 @@ function displayPost(postId = undefined){
         });
     }else{
         makeApiRequest("/posts/"+postId, false).then(data => {
+
+            hideLoading();
+
             drawPost(data);
             current_post_id = data.id;
 
@@ -257,6 +270,7 @@ function displayPost(postId = undefined){
 }
 
 function hidePost() {
+    showLoading();
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
@@ -335,32 +349,38 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         const result = await response.json();
         if (response.ok) {
 
-            window.analytics.track('new_post_uploaded', {postId: result.id});
+            if(result.success){
+                window.analytics.track('new_post_uploaded', {postId: result.id});
 
-            document.getElementById("add-post").style.display = "none";
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-            displayPost(result.id);
-            // Optionally clear the form or handle according to your needs
+                document.getElementById("add-post").style.display = "none";
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                displayPost(result.id);
+                // Optionally clear the form or handle according to your needs
 
-            // Clear post
-            document.getElementById('title').value = '';
-            document.getElementById('file').value = '';
-            document.getElementById('link').value = '';
-            document.getElementById('preview').style.display = 'none';
+                // Clear post
+                document.getElementById('title').value = '';
+                document.getElementById('file').value = '';
+                document.getElementById('link').value = '';
+                document.getElementById('preview').style.display = 'none';
 
-            const oldUser = {
-                xp: window.user.xp,
-                level: window.user.level,
-                xp_required: window.user.xp_required
-            };
+                const oldUser = {
+                    xp: window.user.xp,
+                    level: window.user.level,
+                    xp_required: window.user.xp_required
+                };
 
-            window.user = result.user;
+                window.user = result.user;
 
-            setXPProgress(oldUser);
+                setXPProgress(oldUser);
+            }else{
+                alert(result.msg);
+            }
+
+
             
         } else {
             alert('Failed to create post. Please try again with an other image.');
