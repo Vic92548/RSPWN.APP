@@ -237,6 +237,9 @@ function drawPost(data){
             case 'kick.com':
                 setupSocialLink("post_kick", data.link);
                 break;
+            case 'www.patreon.com':
+                setupSocialLink("post_patreon", data.link);
+                break;
             default:
                 break;
         }
