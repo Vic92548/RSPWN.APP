@@ -47,6 +47,8 @@ export async function createPost(request, userData) {
         }
     });
 
+    console.log("Post created!");
+
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
     return new Response(JSON.stringify(post), {
