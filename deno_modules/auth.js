@@ -91,7 +91,10 @@ export async function handleOAuthCallback(request) {
                 id: userData.id,
                 username: userData.username,
                 email: userData.email,
-                provider: 'discord'
+                provider: 'discord',
+                level: 0,
+                xp: 0,
+                xp_required: 0
             }
         });
 
