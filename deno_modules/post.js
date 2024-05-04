@@ -51,6 +51,10 @@ export async function createPost(request, userData) {
 
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
+    userData = await prisma.user.findUnique({
+        where: { id: userData.id }
+    });
+
     post.user = userData;
 
     return new Response(JSON.stringify(post), {
