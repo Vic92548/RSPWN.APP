@@ -8,6 +8,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.4s;
+    width: 16px;
     font-size: 18px;
     background-color: #17212b;
     box-shadow: 0 0 10px #17212b;
