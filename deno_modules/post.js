@@ -132,7 +132,7 @@ export async function likePost(postId, userData) {
 
 
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, user: userData }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
@@ -153,7 +153,7 @@ export async function dislikePost(postId, userData) {
 
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, user: userData }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
@@ -174,7 +174,7 @@ export async function skipPost(postId, userData) {
 
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, user: userData }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
