@@ -116,19 +116,21 @@ export async function getPostList(userId) {
 }
 
 export async function likePost(postId, userData) {
-    await prisma.post.update({
-        where: { id: postId },
-        data: {
-            likes: {
-                create: {
-                    userId: userData.id,
-                    timestamp: new Date()
-                }
+    try{
+        const view = await prisma.like.create({
+            data: {
+                postId: postId,
+                userId: userData.id,
+                timestamp: new Date(), // Assuming your schema has a timestamp field
             }
-        }
-    });
+        });
 
-    await addXP(userData.id, EXPERIENCE_TABLE.LIKE);
+        await addXP(userData.id, EXPERIENCE_TABLE.LIKE);
+    }catch{
+
+    }
+
+
 
     return new Response(JSON.stringify({ success: true }), {
         status: 200,
@@ -137,19 +139,19 @@ export async function likePost(postId, userData) {
 }
 
 export async function dislikePost(postId, userData) {
-    await prisma.post.update({
-        where: { id: postId },
-        data: {
-            dislikes: {
-                create: {
-                    userId: userData.id,
-                    timestamp: new Date()
-                }
+    try{
+        const view = await prisma.dislike.create({
+            data: {
+                postId: postId,
+                userId: userData.id,
+                timestamp: new Date(), // Assuming your schema has a timestamp field
             }
-        }
-    });
+        });
 
-    await addXP(userData.id, EXPERIENCE_TABLE.DISLIKE);
+        await addXP(userData.id, EXPERIENCE_TABLE.DISLIKE);
+    }catch{
+
+    }
 
     return new Response(JSON.stringify({ success: true }), {
         status: 200,
@@ -158,19 +160,19 @@ export async function dislikePost(postId, userData) {
 }
 
 export async function skipPost(postId, userData) {
-    await prisma.post.update({
-        where: { id: postId },
-        data: {
-            skips: {
-                create: {
-                    userId: userData.id,
-                    timestamp: new Date()
-                }
+    try{
+        const view = await prisma.like.create({
+            data: {
+                postId: postId,
+                userId: userData.id,
+                timestamp: new Date(), // Assuming your schema has a timestamp field
             }
-        }
-    });
+        });
 
-    await addXP(userData.id, EXPERIENCE_TABLE.SKIP);
+        await addXP(userData.id, EXPERIENCE_TABLE.SKIP);
+    }catch{
+
+    }
 
     return new Response(JSON.stringify({ success: true }), {
         status: 200,
