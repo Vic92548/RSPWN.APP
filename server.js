@@ -75,7 +75,16 @@ async function handleRequest(request){
     // Retrieve a post by ID
     else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
-        return getPost(id);
+
+        const authResult = await authenticateRequest(request);
+
+        console.log(authResult);
+
+        if (!authResult.isValid) {
+            return getPost(id);
+        }
+
+        return getPost(id, authResult.userData.id);
     }else if (request.method === "GET" && url.pathname.startsWith("/post/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
         return serveFile(request, "index.html");
