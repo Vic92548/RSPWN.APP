@@ -92,3 +92,12 @@ model View {
 
   @@id([postId, userId])
 }
+
+model Follow {
+  postId    String
+  followerId    String
+  creatorId    String
+  timestamp DateTime
+
+  @@id([postId, followerId])
+}

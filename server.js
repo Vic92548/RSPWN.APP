@@ -1,7 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost, getNextFeedPost, likePost, dislikePost, skipPost, getPostList } from "./deno_modules/post.js";
+import { createPost, getPost, getNextFeedPost, likePost, dislikePost, skipPost, getPostList, getPostData } from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -87,7 +87,20 @@ async function handleRequest(request){
         return getPost(id, authResult.userData.id);
     }else if (request.method === "GET" && url.pathname.startsWith("/post/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
-        return serveFile(request, "index.html");
+
+        const post = await getPostData(id);
+
+        const htmlTemplate = await Deno.readTextFile("index.html");
+        const htmlContent = htmlTemplate
+            .replace('{{meta_description}}', post.title)
+            .replace('{{meta_author}}', post.username)
+            .replace('{{meta_image}}', post.content)
+            .replace('{{meta_url}}', "https://vapr.gg/" + url.pathname);
+
+        return new Response(htmlContent, {
+            status: 200,
+            headers: { "Content-Type": "text/html" }
+        });
     }else if (url.pathname.startsWith("/like/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 

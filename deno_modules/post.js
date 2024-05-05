@@ -77,6 +77,28 @@ export async function createPost(request, userData) {
     });
 }
 
+export async function getPostData(id) {
+    const post = await prisma.post.findUnique({
+        where: { id }
+    });
+
+    if (!post) {
+        return {title: "not found", content: "", userId: "unknown"};
+    }
+
+    const postOwner = await prisma.user.findUnique({
+        where: { id: post.userId },
+        select: {
+            id: true,
+            username: true
+        }
+    });
+
+    post.username = postOwner.username;
+
+    return post;
+}
+
 export async function getPost(id, userId = "anonymous") {
     const post = await prisma.post.findUnique({
         where: { id }

@@ -180,6 +180,13 @@ exports.Prisma.ViewScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
+exports.Prisma.FollowScalarFieldEnum = {
+  postId: 'postId',
+  followerId: 'followerId',
+  creatorId: 'creatorId',
+  timestamp: 'timestamp'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -195,7 +202,8 @@ exports.Prisma.ModelName = {
   Skip: 'Skip',
   ShadowBan: 'ShadowBan',
   Comment: 'Comment',
-  View: 'View'
+  View: 'View',
+  Follow: 'Follow'
 };
 
 /**
