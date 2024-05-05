@@ -119,6 +119,7 @@ loadUserData();
 
 function hideLoading(){
 
+    console.log("steps:"+loading_steps);
     if(loading_steps === 0){
         document.getElementsByTagName('H1')[0].className = "title";
     }
