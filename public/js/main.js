@@ -274,7 +274,7 @@ function displayPost(postId = undefined){
                 feed_posts = data.sort((a, b) => 0.5 - Math.random());
 
                 console.log(data);
-                
+
             }).catch(error => {
                 console.log(error);
             });
