@@ -92,10 +92,10 @@ async function handleRequest(request){
 
         const htmlTemplate = await Deno.readTextFile("index.html");
         const htmlContent = htmlTemplate
-            .replace('{{meta_description}}', post.title)
-            .replace('{{meta_author}}', post.username)
-            .replace('{{meta_image}}', post.content)
-            .replace('{{meta_url}}', "https://vapr.gg/" + url.pathname);
+            .replaceAll('{{meta_description}}', post.title)
+            .replaceAll('{{meta_author}}', post.username)
+            .replaceAll('{{meta_image}}', post.content)
+            .replaceAll('{{meta_url}}', "https://vapr.gg/" + url.pathname);
 
         return new Response(htmlContent, {
             status: 200,
