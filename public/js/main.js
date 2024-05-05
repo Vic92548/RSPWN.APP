@@ -1,3 +1,7 @@
+let feed_posts = [];
+let loading_steps = 2;
+let post_seen = 0;
+
 function showInitialPost() {
     const path = window.location.pathname.split('/');
 
@@ -97,6 +101,7 @@ function loadUserData(){
 
 
 
+        loading_steps--;
         hideLoading();
 
         window.analytics.identify(data.id, {
@@ -106,6 +111,7 @@ function loadUserData(){
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         document.getElementById("add_post").style.display = "none";
+        loading_steps--;
         hideLoading();
     })
 }
@@ -113,9 +119,14 @@ function loadUserData(){
 loadUserData();
 
 function hideLoading(){
-    document.getElementsByTagName('H1')[0].className = "title";
 
-    document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
+    console.log("steps:"+loading_steps);
+    if(loading_steps <= 0){
+        document.getElementsByTagName('H1')[0].className = "title";
+    }
+
+
+    //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function showLoading(){
@@ -160,6 +171,7 @@ function setupSocialLink(id, link){
 }
 
 function drawPost(data){
+    post_seen++;
     showPost();
     console.log("Post DATA:");
     console.log(data);
@@ -251,20 +263,42 @@ let current_post_id = undefined;
 function displayPost(postId = undefined){
     hidePost();
     if(!postId){
-        makeApiRequest("/feed", false).then(data => {
 
+        if(feed_posts.length > 0){
+            const data = feed_posts.shift();
+
+            loading_steps--;
             hideLoading();
 
-            drawPost(data);
             current_post_id = data.id;
+            drawPost(data);
+
 
             history.pushState(null, null, "/post/" + data.id);
-        }).catch(error => {
-            console.log(error);
-        });
+
+
+        }else{
+            makeApiRequest("/feed", false).then(data => {
+
+                console.log(data);
+
+                feed_posts = data.sort((a, b) => 0.5 - Math.random());
+
+                console.log(data);
+
+                displayPost();
+
+            }).catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
     }else{
         makeApiRequest("/posts/"+postId, false).then(data => {
 
+            loading_steps--;
             hideLoading();
 
             drawPost(data);

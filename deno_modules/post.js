@@ -234,84 +234,85 @@ export async function skipPost(postId, userData) {
     });
 }
 
-export async function getNextFeedPost(userid) {
-    console.log("FEED START");
-
-    // Fetch IDs from likes, dislikes, and skips
-    const likes = await prisma.like.findMany({
-        where: { userId : userid },
-        select: { postId: true }
-    });
-    const dislikes = await prisma.dislike.findMany({
-        where: { userId: userid },
-        select: { postId: true }
-    });
-    const skips = await prisma.skip.findMany({
-        where: { userId: userid },
-        select: { postId: true }
-    });
-
-// Combine all post IDs in a single array
-    const interactedPostIds = [...likes, ...dislikes, ...skips].map(interaction => interaction.postId);
-
-
-    const posts = await prisma.post.findMany({
-        where: {
-            NOT: {
-                id: {
-                    in: interactedPostIds
-                }
-            }
-        },
-        orderBy: {
-            timestamp: 'desc'
-        },
-        take: 1 // Limit the number of posts fetched
-    });
-
-    const post = posts[0];
-
-    post.views = await prisma.view.count({
-        where: {
-            postId: post.id
-        }
-    });
-
-    const postOwner = await prisma.user.findUnique({
-        where: { id: post.userId },
-        select: {
-            id: true,
-            username: true
-        }
-    });
-
-    post.username = postOwner.username;
-
-
-    console.log(posts);
-
+export async function getNextFeedPosts(userid) {
+    let posts = [];
 
     if (userid === "anonymous") {
-        console.log("Sending feed as anonymous or no posts available");
-        return new Response(JSON.stringify(post), {
-            status: 200,
-            headers: { "Content-Type": "application/json" }
+        // Fetch a random post if the user is anonymous
+        posts = await prisma.post.findMany({
+            take: 10, // Only fetch one random post
+            orderBy: {
+                id: 'desc' // This orders by the post ID, adjust if you have another preference for randomness
+            }
+        });
+    } else {
+        // Fetch IDs from likes, dislikes, and skips for a known user
+        const likes = await prisma.like.findMany({
+            where: { userId: userid },
+            select: { postId: true }
+        });
+        const dislikes = await prisma.dislike.findMany({
+            where: { userId: userid },
+            select: { postId: true }
+        });
+        const skips = await prisma.skip.findMany({
+            where: { userId: userid },
+            select: { postId: true }
+        });
+
+        // Combine all post IDs in a single array
+        const interactedPostIds = [...likes, ...dislikes, ...skips].map(interaction => interaction.postId);
+
+        // Fetch posts that have not been interacted with by the user
+        posts = await prisma.post.findMany({
+            where: {
+                NOT: {
+                    id: {
+                        in: interactedPostIds
+                    }
+                }
+            },
+            orderBy: {
+                timestamp: 'desc'
+            },
+            take: 10 // Adjust this number based on the desired number of posts to fetch
         });
     }
 
+    // Fetch additional details for each post
+    const detailedPosts = await Promise.all(posts.map(async post => {
+        post.views = await prisma.view.count({
+            where: {
+                postId: post.id
+            }
+        });
 
-    if (post) {
-        console.log("Selected post:", post.id);
+        const postOwner = await prisma.user.findUnique({
+            where: { id: post.userId },
+            select: {
+                id: true,
+                username: true
+            }
+        });
 
-        return new Response(JSON.stringify(post), {
+        post.username = postOwner.username;
+
+        return post;
+    }));
+
+    console.log(detailedPosts);
+
+    // Return the (batch of) posts
+    if (detailedPosts.length === 0) {
+        return new Response("No new posts to display", { status: 404 });
+    } else {
+        return new Response(JSON.stringify(detailedPosts), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
-
-    } else {
-        return new Response("No new posts to display", { status: 404 });
     }
 }
+
 
 async function uploadToBunnyCDN(file, postId) {
     const fileExtension = file.name.split('.').pop();

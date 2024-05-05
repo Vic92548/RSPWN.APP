@@ -1,7 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost, getNextFeedPost, likePost, dislikePost, skipPost, getPostList, getPostData } from "./deno_modules/post.js";
+import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData } from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -67,10 +67,10 @@ async function handleRequest(request){
         const authResult = await authenticateRequest(request);
 
         if (!authResult.isValid) {
-            return getNextFeedPost("anonymous");
+            return getNextFeedPosts("anonymous");
         }
 
-        return getNextFeedPost(authResult.userData.id);
+        return getNextFeedPosts(authResult.userData.id);
     }// Create a new post
     else if (request.method === "POST" && url.pathname === "/posts") {
         const authResult = await authenticateRequest(request);

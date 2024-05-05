@@ -49,7 +49,15 @@ function likePost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displayLikeAnimation();
+            setTimeout(() => {
+                displayPost();
+            }, 700);
+        }
+
     }
 
 }
@@ -75,7 +83,14 @@ function skipPost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displaySkipAnimation();
+            setTimeout(() => {
+                displayPost();
+            }, 700);
+        }
     }
 
 }
@@ -103,7 +118,16 @@ function dislikePost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displayDislikeAnimation();
+
+            setTimeout(() => {
+                displayPost();
+            }, 700);
+
+        }
     }
 
 }
