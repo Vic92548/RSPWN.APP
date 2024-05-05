@@ -53,7 +53,9 @@ function likePost() {
             openRegisterModal();
         }else{
             displayLikeAnimation();
-            displayPost();
+            setTimeout(() => {
+                displayPost();
+            }, 700);
         }
 
     }
@@ -85,7 +87,9 @@ function skipPost() {
             openRegisterModal();
         }else{
             displaySkipAnimation();
-            displayPost();
+            setTimeout(() => {
+                displayPost();
+            }, 700);
         }
     }
 
@@ -118,7 +122,11 @@ function dislikePost() {
             openRegisterModal();
         }else{
             displayDislikeAnimation();
-            displayPost();
+
+            setTimeout(() => {
+                displayPost();
+            }, 700);
+
         }
     }
 
