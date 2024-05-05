@@ -253,6 +253,7 @@ function displayPost(postId = undefined){
     if(!postId){
         makeApiRequest("/feed", false).then(data => {
 
+            console.log(data);
             hideLoading();
 
             drawPost(data);
