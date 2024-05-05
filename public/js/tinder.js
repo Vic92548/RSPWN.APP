@@ -49,7 +49,13 @@ function likePost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displayLikeAnimation();
+            displayPost();
+        }
+
     }
 
 }
@@ -75,7 +81,12 @@ function skipPost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displaySkipAnimation();
+            displayPost();
+        }
     }
 
 }
@@ -103,7 +114,12 @@ function dislikePost() {
             console.log(error);
         });
     }else{
-        openRegisterModal();
+        if(post_seen > 7){
+            openRegisterModal();
+        }else{
+            displayDislikeAnimation();
+            displayPost();
+        }
     }
 
 }

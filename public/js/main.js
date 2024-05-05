@@ -1,5 +1,6 @@
 let feed_posts = [];
 let loading_steps = 2;
+let post_seen = 0;
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
@@ -170,6 +171,7 @@ function setupSocialLink(id, link){
 }
 
 function drawPost(data){
+    post_seen++;
     showPost();
     console.log("Post DATA:");
     console.log(data);
