@@ -264,6 +264,8 @@ function displayPost(postId = undefined){
 
 
             history.pushState(null, null, "/post/" + data.id);
+
+            displayPost();
         }else{
             makeApiRequest("/feed", false).then(data => {
 
@@ -272,8 +274,7 @@ function displayPost(postId = undefined){
                 feed_posts = data.sort((a, b) => 0.5 - Math.random());
 
                 console.log(data);
-
-                displayPost();
+                
             }).catch(error => {
                 console.log(error);
             });
