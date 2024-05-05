@@ -255,25 +255,29 @@ function displayPost(postId = undefined){
     if(!postId){
 
         if(feed_posts.length > 0){
+            const data = feed_posts.shift();
+
+            hideLoading();
+
+            current_post_id = data.id;
+            drawPost(data);
+
+
+            history.pushState(null, null, "/post/" + data.id);
+        }else{
             makeApiRequest("/feed", false).then(data => {
 
                 console.log(data);
 
                 feed_posts = data.sort((a, b) => 0.5 - Math.random());
 
+                console.log(data);
+
                 displayPost();
             }).catch(error => {
                 console.log(error);
             });
-        }else{
-            const data = feed_posts.shift();
 
-            hideLoading();
-
-            drawPost(data);
-            current_post_id = data.id;
-
-            history.pushState(null, null, "/post/" + data.id);
         }
 
 
