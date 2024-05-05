@@ -1,4 +1,5 @@
 let feed_posts = [];
+let loading_steps = 2;
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
@@ -99,6 +100,7 @@ function loadUserData(){
 
 
 
+        loading_steps--;
         hideLoading();
 
         window.analytics.identify(data.id, {
@@ -108,6 +110,7 @@ function loadUserData(){
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         document.getElementById("add_post").style.display = "none";
+        loading_steps--;
         hideLoading();
     })
 }
@@ -115,7 +118,11 @@ function loadUserData(){
 loadUserData();
 
 function hideLoading(){
-    document.getElementsByTagName('H1')[0].className = "title";
+
+    if(loading_steps === 0){
+        document.getElementsByTagName('H1')[0].className = "title";
+    }
+
 
     //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
@@ -257,6 +264,7 @@ function displayPost(postId = undefined){
         if(feed_posts.length > 0){
             const data = feed_posts.shift();
 
+            loading_steps--;
             hideLoading();
 
             current_post_id = data.id;
@@ -287,6 +295,7 @@ function displayPost(postId = undefined){
     }else{
         makeApiRequest("/posts/"+postId, false).then(data => {
 
+            loading_steps--;
             hideLoading();
 
             drawPost(data);
