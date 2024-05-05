@@ -9,7 +9,17 @@ async function handleRequest(request){
     const url = new URL(request.url);
 
     if (url.pathname === "/") {
-        return serveFile(request, "index.html");
+        const htmlTemplate = await Deno.readTextFile("index.html");
+        const htmlContent = htmlTemplate
+            .replaceAll('{{meta_description}}', "The place to share gaming content")
+            .replaceAll('{{meta_author}}', "VAPR")
+            .replaceAll('{{meta_image}}', "https://vapr.b-cdn.net/VLTRXN_3.webp")
+            .replaceAll('{{meta_url}}', "https://vapr.gg/");
+
+        return new Response(htmlContent, {
+            status: 200,
+            headers: { "Content-Type": "text/html" }
+        });
     } else if (url.pathname === "/auth/discord/callback") {
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {
