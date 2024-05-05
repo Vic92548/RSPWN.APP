@@ -1,3 +1,5 @@
+let feed_posts = [];
+
 function showInitialPost() {
     const path = window.location.pathname.split('/');
 
@@ -251,18 +253,30 @@ let current_post_id = undefined;
 function displayPost(postId = undefined){
     hidePost();
     if(!postId){
-        makeApiRequest("/feed", false).then(data => {
 
-            console.log(data);
+        if(feed_posts.length > 0){
+            makeApiRequest("/feed", false).then(data => {
+
+                console.log(data);
+
+                feed_posts = data.sort((a, b) => 0.5 - Math.random());
+
+                displayPost();
+            }).catch(error => {
+                console.log(error);
+            });
+        }else{
+            const data = feed_posts.shift();
+
             hideLoading();
 
             drawPost(data);
             current_post_id = data.id;
 
             history.pushState(null, null, "/post/" + data.id);
-        }).catch(error => {
-            console.log(error);
-        });
+        }
+
+
     }else{
         makeApiRequest("/posts/"+postId, false).then(data => {
 
