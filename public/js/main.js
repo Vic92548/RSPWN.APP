@@ -117,7 +117,7 @@ loadUserData();
 function hideLoading(){
     document.getElementsByTagName('H1')[0].className = "title";
 
-    document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
+    //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function showLoading(){
