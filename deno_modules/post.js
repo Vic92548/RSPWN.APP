@@ -120,11 +120,17 @@ export async function getPost(id, userId = "anonymous") {
 
     }
 
-    post.views = await prisma.view.count({
-        where: {
-            postId: post.id
-        }
-    });
+    if(userId === "anonymous"){
+        post.views = await getRandomViews();
+    }else{
+        post.views = await prisma.view.count({
+            where: {
+                postId: post.id
+            }
+        });
+    }
+
+
 
     const postOwner = await prisma.user.findUnique({
         where: { id: post.userId },
@@ -234,6 +240,12 @@ export async function skipPost(postId, userData) {
     });
 }
 
+async function getRandomViews(){
+    return new Promise((resolve, reject) => {
+        resolve(Math.floor(Math.random() * (Math.random() * 100000)) + 30);
+    })
+}
+
 export async function getNextFeedPosts(userid) {
     let posts = [];
 
@@ -250,6 +262,24 @@ export async function getNextFeedPosts(userid) {
         posts = posts.map(post => ({
             ...post,
             views: Math.floor(Math.random() * 50000) + 30,  // Random views between 100 and 1100
+        }));
+
+        posts = await Promise.all(posts.map(async post => {
+            const views = await getRandomViews();
+
+            const postOwner = await prisma.user.findUnique({
+                where: { id: post.userId },
+                select: {
+                    id: true,
+                    username: true
+                }
+            });
+
+            return {
+                ...post,
+                views: views,
+                username: postOwner.username
+            };
         }));
     } else {
         // Fetch IDs from likes, dislikes, and skips for a known user
