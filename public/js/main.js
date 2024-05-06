@@ -483,6 +483,10 @@ async function updateFollowButton() {
 
     if(creators[current_post.userId]){
         following = creators[current_post.userId].following;
+    }else{
+        creators[current_post.userId] = {
+            following: false
+        }
     }
 
     if(following === undefined){
@@ -496,10 +500,10 @@ async function updateFollowButton() {
 
     if(following){
         follow_bt.textContent = '<i class="fa-solid fa-user-minus"></i>';
-        follow_bt.onclick = () => {followPost(current_post_id)};
+        follow_bt.onclick = followPost;
     }else{
         follow_bt.textContent = '<i class="fa-solid fa-user-plus"></i>';
-        follow_bt.onclick = () => {unfollowPost(current_post_id)}
+        follow_bt.onclick = unfollowPost;
     }
 
     follow_bt.style.opacity = "1";
@@ -510,14 +514,16 @@ async function updateFollowButton() {
     }
 }
 
-function followPost(postId) {
+function followPost() {
+    creators[current_post.userId].following = true;
+    updateFollowButton();
     if(isUserLoggedIn()){
-        makeApiRequest(`/manage-follow?action=follow&postId=${postId}`).then(data => {
+        makeApiRequest(`/manage-follow?action=follow&postId=${current_post.id}`).then(data => {
             console.log('Followed successfully:', data);
-            alert('You are now following this post.');
+
         }).catch(error => {
             console.error('Error following post:', error);
-            alert('Error following post. Please try again.');
+            alert('Error when trying to follow. Please try again.');
         });
     }else{
         openRegisterModal();
@@ -525,9 +531,10 @@ function followPost(postId) {
 
 }
 
-function unfollowPost(postId) {
+function unfollowPost() {
+    creators[current_post.userId].following = false;
     if(isUserLoggedIn()){
-        makeApiRequest(`/manage-follow?action=unfollow&postId=${postId}`).then(data => {
+        makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
             console.log('Unfollowed successfully:', data);
             alert('You have unfollowed this post.');
         }).catch(error => {
