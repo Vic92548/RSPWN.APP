@@ -477,6 +477,9 @@ async function updateFollowButton() {
 
     let following;
 
+    console.log("CURRENT POST");
+    console.log(current_post);
+
     if(creators[current_post.userId]){
         following = creators[current_post.userId].following;
     }
