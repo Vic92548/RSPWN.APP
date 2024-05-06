@@ -476,46 +476,53 @@ function openUserAccountModel() {
 
 async function updateFollowButton() {
 
-    let following;
-
-    console.log("CURRENT POST");
-    console.log(current_post);
-
-    if(creators[current_post.userId]){
-        following = creators[current_post.userId].following;
-    }else{
-        creators[current_post.userId] = {
-            following: false
-        }
-    }
-
-    if(following === undefined){
-        following = await checkUserFollowsCreator(current_post.userId);
-        creators[current_post.userId].following = following;
-    }
-
     const follow_bt = document.getElementById("follow");
-    follow_bt.style.opacity = "0";
-    follow_bt.style.display = "inline-block";
 
-    if(following){
-        follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
-        follow_bt.onclick = unfollowPost;
-        follow_bt.style.border = "1px solid rgb(206 220 247 / 42%)";
-        follow_bt.style.backgroundColor = "rgb(190 213 255 / 40%)";
-    }else{
-        follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
-        follow_bt.onclick = followPost;
-        follow_bt.style.border = "1px solid rgb(77 137 245)";
-        follow_bt.style.backgroundColor = "rgb(95 148 243)";
-    }
+    if(isUserLoggedIn()){
+        let following;
 
-    follow_bt.style.opacity = "1";
+        console.log("CURRENT POST");
+        console.log(current_post);
 
-    if(current_post.userId === user.id){
+        if(creators[current_post.userId]){
+            following = creators[current_post.userId].following;
+        }else{
+            creators[current_post.userId] = {
+                following: false
+            }
+        }
+
+        if(following === undefined){
+            following = await checkUserFollowsCreator(current_post.userId);
+            creators[current_post.userId].following = following;
+        }
+
+
         follow_bt.style.opacity = "0";
-        follow_bt.style.display = "none";
+        follow_bt.style.display = "inline-block";
+
+        if(following){
+            follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
+            follow_bt.onclick = unfollowPost;
+            follow_bt.style.border = "1px solid rgb(206 220 247 / 42%)";
+            follow_bt.style.backgroundColor = "rgb(190 213 255 / 40%)";
+        }else{
+            follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
+            follow_bt.onclick = followPost;
+            follow_bt.style.border = "1px solid rgb(77 137 245)";
+            follow_bt.style.backgroundColor = "rgb(95 148 243)";
+        }
+
+        follow_bt.style.opacity = "1";
+
+        if(current_post.userId === user.id){
+            follow_bt.style.opacity = "0";
+            follow_bt.style.display = "none";
+        }
+    }else{
+        follow_bt.onclick = openRegisterModal;
     }
+
 }
 
 function followPost() {
