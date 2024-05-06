@@ -111,7 +111,8 @@ function loadUserData(){
         });
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
-        document.getElementById("add_post").style.display = "none";
+        document.getElementById("add_post").style.display = "block";
+        document.getElementById("add_post").onclick = openRegisterModal();
         loading_steps--;
         hideLoading();
     })
