@@ -422,7 +422,7 @@ export async function followPost(postId, followerId) {
         ]);
 
         sendMessageToDiscordWebhook("https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
-            ":incoming_envelope: **@" + follower.username + "**(lvl " + follower.level + ") is now following :arrow_right: **@" + creator.username + "(lvl " + creator.level + "), followers: **" + followerCount + "**");
+            ":incoming_envelope: **@" + follower.username + "**(lvl " + follower.level + ") is now following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**");
 
         console.log("Followed post successfully.");
         return new Response(JSON.stringify({ success: true, follow }), {
@@ -467,7 +467,7 @@ export async function unfollowPost(postId, followerId) {
         ]);
 
         sendMessageToDiscordWebhook("https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
-            ":broken_heart:  **@" + follower.username + "**(lvl " + follower.level + ") stopped following :arrow_right: **@" + creator.username + "(lvl " + creator.level + "), followers: **" + followerCount + "**");
+            ":broken_heart:  **@" + follower.username + "**(lvl " + follower.level + ") stopped following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**");
 
 
         console.log("Unfollowed post successfully.");

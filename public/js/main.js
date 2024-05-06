@@ -537,6 +537,7 @@ function followPost() {
 
 function unfollowPost() {
     creators[current_post.userId].following = false;
+    updateFollowButton();
     if(isUserLoggedIn()){
         makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
             console.log('Unfollowed successfully:', data);
