@@ -500,10 +500,10 @@ async function updateFollowButton() {
 
     if(following){
         follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
-        follow_bt.onclick = followPost;
+        follow_bt.onclick = unfollowPost;
     }else{
         follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
-        follow_bt.onclick = unfollowPost;
+        follow_bt.onclick = followPost;
     }
 
     follow_bt.style.opacity = "1";
