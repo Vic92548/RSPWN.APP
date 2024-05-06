@@ -527,9 +527,17 @@ async function updateFollowButton() {
 }
 
 function followPost() {
+
     creators[current_post.userId].following = true;
     updateFollowButton();
     if(isUserLoggedIn()){
+
+        window.analytics.track('Follow', {
+            creatorId: current_post.id,
+            followerId: user.id,
+            postId: current_post_id,
+        });
+
         makeApiRequest(`/manage-follow?action=follow&postId=${current_post.id}`).then(data => {
             console.log('Followed successfully:', data);
 
@@ -547,6 +555,13 @@ function unfollowPost() {
     creators[current_post.userId].following = false;
     updateFollowButton();
     if(isUserLoggedIn()){
+
+        window.analytics.track('Unfollow', {
+            creatorId: current_post.id,
+            followerId: user.id,
+            postId: current_post_id,
+        });
+
         makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
             console.log('Unfollowed successfully:', data);
         }).catch(error => {
