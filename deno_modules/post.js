@@ -491,9 +491,7 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
             where: {
                 followerId: userId,
                 AND: {
-                    post: {
-                        userId: creatorId, // Assuming 'post' is correctly related in your schema to fetch this
-                    }
+                    creatorId
                 }
             }
         });
