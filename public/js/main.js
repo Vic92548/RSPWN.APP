@@ -541,7 +541,6 @@ function unfollowPost() {
     if(isUserLoggedIn()){
         makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
             console.log('Unfollowed successfully:', data);
-            alert('You have unfollowed this post.');
         }).catch(error => {
             console.error('Error unfollowing post:', error);
             alert('Error unfollowing post. Please try again.');
