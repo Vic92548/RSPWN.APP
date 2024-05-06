@@ -204,6 +204,7 @@ input:focus {
     border-radius: 7px;
     color: rgba(255, 255, 255, 0.75);
     font-size: 12px;
+    transition: all 0.5s;
 }
 
 #post_image{

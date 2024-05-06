@@ -501,9 +501,13 @@ async function updateFollowButton() {
     if(following){
         follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
         follow_bt.onclick = unfollowPost;
+        follow_bt.style.border = "1px solid rgb(206 220 247 / 42%)";
+        follow_bt.style.backgroundColor = "rgb(190 213 255 / 40%)";
     }else{
         follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
         follow_bt.onclick = followPost;
+        follow_bt.style.border = "1px solid rgb(77 137 245)";
+        follow_bt.style.backgroundColor = "rgb(95 148 243)";
     }
 
     follow_bt.style.opacity = "1";
