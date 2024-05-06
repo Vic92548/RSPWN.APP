@@ -242,7 +242,7 @@ export async function skipPost(postId, userData) {
 
 async function getRandomViews(){
     return new Promise((resolve, reject) => {
-        resolve(Math.floor(Math.random() * (Math.random() * 100000)) + 30);
+        resolve(Math.floor(Math.random() * (Math.random() * 10000)) + 30);
     })
 }
 
