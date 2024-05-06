@@ -499,10 +499,10 @@ async function updateFollowButton() {
     follow_bt.style.display = "inline-block";
 
     if(following){
-        follow_bt.textContent = '<i class="fa-solid fa-user-minus"></i>';
+        follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
         follow_bt.onclick = followPost;
     }else{
-        follow_bt.textContent = '<i class="fa-solid fa-user-plus"></i>';
+        follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
         follow_bt.onclick = unfollowPost;
     }
 
