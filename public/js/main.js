@@ -306,9 +306,10 @@ function displayPost(postId = undefined){
             loading_steps--;
             hideLoading();
 
-            drawPost(data);
             current_post_id = data.id;
             current_post = data;
+            drawPost(data);
+
 
             history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
