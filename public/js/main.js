@@ -183,7 +183,7 @@ function drawPost(data){
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
-    document.getElementById("post_views").textContent = data.views;
+    document.getElementById("post_views").textContent = formatViews(data.views);
 
     if(!data.content){
         data.content = "https://vapr.b-cdn.net/posts/200w.gif";
@@ -567,6 +567,17 @@ function checkUserFollowsCreator(creatorId) {
     });
 }
 
+function formatViews(viewCount) {
+    if (viewCount < 1000) {
+        return viewCount; // return the number as is if it's less than 1000
+    } else if (viewCount < 1000000) {
+        return (viewCount / 1000).toFixed(2) + 'K'; // return in 'K' format for thousands
+    } else if (viewCount < 1000000000) {
+        return (viewCount / 1000000).toFixed(2) + 'M'; // return in 'M' format for millions
+    } else {
+        return (viewCount / 1000000000).toFixed(2) + 'B'; // return in 'B' format for billions
+    }
+}
 
 
 

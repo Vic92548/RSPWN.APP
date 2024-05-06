@@ -240,11 +240,17 @@ export async function getNextFeedPosts(userid) {
     if (userid === "anonymous") {
         // Fetch a random post if the user is anonymous
         posts = await prisma.post.findMany({
-            take: 10, // Only fetch one random post
+            take: 10, // Fetch ten random posts
             orderBy: {
                 id: 'desc' // This orders by the post ID, adjust if you have another preference for randomness
             }
         });
+
+        // Apply fake views to each post to avoid database load and increase engagement
+        posts = posts.map(post => ({
+            ...post,
+            views: Math.floor(Math.random() * 50000) + 30,  // Random views between 100 and 1100
+        }));
     } else {
         // Fetch IDs from likes, dislikes, and skips for a known user
         const likes = await prisma.like.findMany({
@@ -277,36 +283,38 @@ export async function getNextFeedPosts(userid) {
             },
             take: 10 // Adjust this number based on the desired number of posts to fetch
         });
+
+        // Fetch real view counts and additional details for each post
+        posts = await Promise.all(posts.map(async post => {
+            const views = await prisma.view.count({
+                where: {
+                    postId: post.id
+                }
+            });
+
+            const postOwner = await prisma.user.findUnique({
+                where: { id: post.userId },
+                select: {
+                    id: true,
+                    username: true
+                }
+            });
+
+            return {
+                ...post,
+                views: views,
+                username: postOwner.username
+            };
+        }));
     }
 
-    // Fetch additional details for each post
-    const detailedPosts = await Promise.all(posts.map(async post => {
-        post.views = await prisma.view.count({
-            where: {
-                postId: post.id
-            }
-        });
-
-        const postOwner = await prisma.user.findUnique({
-            where: { id: post.userId },
-            select: {
-                id: true,
-                username: true
-            }
-        });
-
-        post.username = postOwner.username;
-
-        return post;
-    }));
-
-    console.log(detailedPosts);
+    console.log(posts);
 
     // Return the (batch of) posts
-    if (detailedPosts.length === 0) {
+    if (posts.length === 0) {
         return new Response("No new posts to display", { status: 404 });
     } else {
-        return new Response(JSON.stringify(detailedPosts), {
+        return new Response(JSON.stringify(posts), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
