@@ -192,17 +192,19 @@ input:focus {
 #post_username,
 #post_time,
 #follow{
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(255,255,255,0.6);
 }
 
 #follow{
     margin-left: 4px;
-    border: 1px solid rgba(13, 99, 255, 0.48);
-    background-color: rgba(13, 99, 255, 0.3);
-    padding: 5px 7px 5px 7px;
+    border: 1px solid rgb(77 137 245);
+    background-color: rgb(95 148 243);
+    padding: 4px 6px 4px 6px;
     border-radius: 7px;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 12px;
+    transition: all 0.5s;
 }
 
 #post_image{

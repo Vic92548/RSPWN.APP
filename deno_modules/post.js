@@ -120,11 +120,17 @@ export async function getPost(id, userId = "anonymous") {
 
     }
 
-    post.views = await prisma.view.count({
-        where: {
-            postId: post.id
-        }
-    });
+    if(userId === "anonymous"){
+        post.views = await getRandomViews();
+    }else{
+        post.views = await prisma.view.count({
+            where: {
+                postId: post.id
+            }
+        });
+    }
+
+
 
     const postOwner = await prisma.user.findUnique({
         where: { id: post.userId },
@@ -234,17 +240,47 @@ export async function skipPost(postId, userData) {
     });
 }
 
+async function getRandomViews(){
+    return new Promise((resolve, reject) => {
+        resolve(Math.floor(Math.random() * (Math.random() * 10000)) + 30);
+    })
+}
+
 export async function getNextFeedPosts(userid) {
     let posts = [];
 
     if (userid === "anonymous") {
         // Fetch a random post if the user is anonymous
         posts = await prisma.post.findMany({
-            take: 10, // Only fetch one random post
+            take: 10, // Fetch ten random posts
             orderBy: {
                 id: 'desc' // This orders by the post ID, adjust if you have another preference for randomness
             }
         });
+
+        // Apply fake views to each post to avoid database load and increase engagement
+        posts = posts.map(post => ({
+            ...post,
+            views: Math.floor(Math.random() * 50000) + 30,  // Random views between 100 and 1100
+        }));
+
+        posts = await Promise.all(posts.map(async post => {
+            const views = await getRandomViews();
+
+            const postOwner = await prisma.user.findUnique({
+                where: { id: post.userId },
+                select: {
+                    id: true,
+                    username: true
+                }
+            });
+
+            return {
+                ...post,
+                views: views,
+                username: postOwner.username
+            };
+        }));
     } else {
         // Fetch IDs from likes, dislikes, and skips for a known user
         const likes = await prisma.like.findMany({
@@ -277,36 +313,38 @@ export async function getNextFeedPosts(userid) {
             },
             take: 10 // Adjust this number based on the desired number of posts to fetch
         });
+
+        // Fetch real view counts and additional details for each post
+        posts = await Promise.all(posts.map(async post => {
+            const views = await prisma.view.count({
+                where: {
+                    postId: post.id
+                }
+            });
+
+            const postOwner = await prisma.user.findUnique({
+                where: { id: post.userId },
+                select: {
+                    id: true,
+                    username: true
+                }
+            });
+
+            return {
+                ...post,
+                views: views,
+                username: postOwner.username
+            };
+        }));
     }
 
-    // Fetch additional details for each post
-    const detailedPosts = await Promise.all(posts.map(async post => {
-        post.views = await prisma.view.count({
-            where: {
-                postId: post.id
-            }
-        });
-
-        const postOwner = await prisma.user.findUnique({
-            where: { id: post.userId },
-            select: {
-                id: true,
-                username: true
-            }
-        });
-
-        post.username = postOwner.username;
-
-        return post;
-    }));
-
-    console.log(detailedPosts);
+    console.log(posts);
 
     // Return the (batch of) posts
-    if (detailedPosts.length === 0) {
+    if (posts.length === 0) {
         return new Response("No new posts to display", { status: 404 });
     } else {
-        return new Response(JSON.stringify(detailedPosts), {
+        return new Response(JSON.stringify(posts), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
@@ -349,3 +387,174 @@ async function uploadToBunnyCDN(file, postId) {
     console.log(data);
     return {success: true}; // Adjust according to Bunny CDN response
 }
+
+export async function followPost(postId, followerId) {
+    try {
+        // Retrieve the post to get the creator's userId
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { userId: true } // Select only the userId
+        });
+
+        if (!post) {
+            console.log("Post not found.");
+            return new Response(JSON.stringify({ success: false, message: "Post not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const creatorId = post.userId;
+
+        // Prevent following your own post
+        if (followerId === creatorId) {
+            console.log("Cannot follow your own post.");
+            return new Response(JSON.stringify({ success: false, message: "Cannot follow your own post" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        // Check if the follow already exists
+        const existingFollow = await prisma.follow.findUnique({
+            where: {
+                postId_followerId: {
+                    postId,
+                    followerId,
+                }
+            }
+        });
+
+        if (existingFollow) {
+            console.log("Already following this post.");
+            return new Response(JSON.stringify({ success: false, message: "Already following this post" }), {
+                status: 409, // Conflict status code
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        // Create a new follow record
+        const follow = await prisma.follow.create({
+            data: {
+                postId,
+                followerId,
+                creatorId,
+                timestamp: new Date(),
+            }
+        });
+
+        const [follower, creator, followerCount] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: followerId },
+                select: { username: true, level: true }
+            }),
+            prisma.user.findUnique({
+                where: { id: creatorId },
+                select: { username: true, level: true }
+            }),
+            prisma.follow.count({
+                where: {
+                    creatorId: creatorId
+                }
+            })
+        ]);
+
+        sendMessageToDiscordWebhook("https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
+            ":incoming_envelope: **@" + follower.username + "**(lvl " + follower.level + ") is now following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**");
+
+        console.log("Followed post successfully.");
+        return new Response(JSON.stringify({ success: true, follow }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error("Error following post:", error);
+        return new Response(JSON.stringify({ success: false, message: "Failed to follow post" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+
+export async function unfollowPost(postId, followerId) {
+    try {
+        const follow = await prisma.follow.delete({
+            where: {
+                postId_followerId: {
+                    postId,
+                    followerId,
+                }
+            }
+        });
+
+        const [follower, creator, followerCount] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: followerId },
+                select: { username: true, level: true }
+            }),
+            prisma.user.findUnique({
+                where: { id: follow.creatorId },
+                select: { username: true, level: true }
+            }),
+            prisma.follow.count({
+                where: {
+                    creatorId: follow.creatorId
+                }
+            })
+        ]);
+
+        sendMessageToDiscordWebhook("https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
+            ":broken_heart:  **@" + follower.username + "**(lvl " + follower.level + ") stopped following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**");
+
+
+        console.log("Unfollowed post successfully.");
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error("Error unfollowing post:", error);
+        return new Response(JSON.stringify({ success: false, message: "Failed to unfollow post" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function checkIfUserFollowsCreator(userId, creatorId) {
+    try {
+        // Find any follows where the followerId is userId and the postId belongs to creatorId
+        const follows = await prisma.follow.findMany({
+            where: {
+                followerId: userId,
+                AND: {
+                    creatorId
+                }
+            }
+        });
+
+        // Check if any follows exist
+        if (follows.length > 0) {
+            console.log("User follows the creator.");
+            return new Response(JSON.stringify({ success: true, follows, message: "User follows the creator" }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        } else {
+            console.log("User does not follow the creator.");
+            return new Response(JSON.stringify({ success: false, message: "User does not follow the creator" }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+    } catch (error) {
+        console.error("Error checking if user follows creator:", error);
+        return new Response(JSON.stringify({ success: false, message: "Error checking follow status" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+

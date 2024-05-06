@@ -1,6 +1,7 @@
 let feed_posts = [];
 let loading_steps = 2;
 let post_seen = 0;
+let creators = {};
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
@@ -110,7 +111,8 @@ function loadUserData(){
         });
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
-        document.getElementById("add_post").style.display = "none";
+        document.getElementById("add_post").style.display = "block";
+        document.getElementById("add_post").onclick = openRegisterModal;
         loading_steps--;
         hideLoading();
     })
@@ -176,11 +178,13 @@ function drawPost(data){
     console.log("Post DATA:");
     console.log(data);
 
+    updateFollowButton();
+
     document.getElementById("post_title").textContent = data.title;
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
-    document.getElementById("post_views").textContent = data.views;
+    document.getElementById("post_views").textContent = formatViews(data.views);
 
     if(!data.content){
         data.content = "https://vapr.b-cdn.net/posts/200w.gif";
@@ -259,6 +263,7 @@ function drawPost(data){
 }
 
 let current_post_id = undefined;
+let current_post = undefined;
 
 function displayPost(postId = undefined){
     hidePost();
@@ -271,6 +276,7 @@ function displayPost(postId = undefined){
             hideLoading();
 
             current_post_id = data.id;
+            current_post = data;
             drawPost(data);
 
 
@@ -301,8 +307,10 @@ function displayPost(postId = undefined){
             loading_steps--;
             hideLoading();
 
-            drawPost(data);
             current_post_id = data.id;
+            current_post = data;
+            drawPost(data);
+
 
             history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
@@ -466,5 +474,119 @@ function openUserAccountModel() {
         old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
     })
 }
+
+async function updateFollowButton() {
+
+    const follow_bt = document.getElementById("follow");
+
+    if(isUserLoggedIn()){
+        let following;
+
+        console.log("CURRENT POST");
+        console.log(current_post);
+
+        if(creators[current_post.userId]){
+            following = creators[current_post.userId].following;
+        }else{
+            creators[current_post.userId] = {
+                following: false
+            }
+        }
+
+        if(following === undefined){
+            following = await checkUserFollowsCreator(current_post.userId);
+            creators[current_post.userId].following = following;
+        }
+
+
+        follow_bt.style.opacity = "0";
+        follow_bt.style.display = "inline-block";
+
+        if(following){
+            follow_bt.innerHTML = '<i class="fa-solid fa-user-minus"></i>';
+            follow_bt.onclick = unfollowPost;
+            follow_bt.style.border = "1px solid rgb(206 220 247 / 42%)";
+            follow_bt.style.backgroundColor = "rgb(190 213 255 / 40%)";
+        }else{
+            follow_bt.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
+            follow_bt.onclick = followPost;
+            follow_bt.style.border = "1px solid rgb(77 137 245)";
+            follow_bt.style.backgroundColor = "rgb(95 148 243)";
+        }
+
+        follow_bt.style.opacity = "1";
+
+        if(current_post.userId === user.id){
+            follow_bt.style.opacity = "0";
+            follow_bt.style.display = "none";
+        }
+    }else{
+        follow_bt.onclick = openRegisterModal;
+    }
+
+}
+
+function followPost() {
+    creators[current_post.userId].following = true;
+    updateFollowButton();
+    if(isUserLoggedIn()){
+        makeApiRequest(`/manage-follow?action=follow&postId=${current_post.id}`).then(data => {
+            console.log('Followed successfully:', data);
+
+        }).catch(error => {
+            console.error('Error following post:', error);
+            alert('Error when trying to follow. Please try again.');
+        });
+    }else{
+        openRegisterModal();
+    }
+
+}
+
+function unfollowPost() {
+    creators[current_post.userId].following = false;
+    updateFollowButton();
+    if(isUserLoggedIn()){
+        makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
+            console.log('Unfollowed successfully:', data);
+        }).catch(error => {
+            console.error('Error unfollowing post:', error);
+            alert('Error unfollowing post. Please try again.');
+        });
+    }else{
+        openRegisterModal();
+    }
+
+}
+
+function checkUserFollowsCreator(creatorId) {
+    return new Promise((resolve, reject) => {
+        makeApiRequest(`/check-follow/${creatorId}`).then(data => {
+            console.log('Check follow status:', data);
+            if (data.success) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }).catch(error => {
+            console.error('Error checking follow status:', error);
+            reject(false);  // You may also consider rejecting with the error message itself
+        });
+    });
+}
+
+function formatViews(viewCount) {
+    if (viewCount < 1000) {
+        return viewCount; // return the number as is if it's less than 1000
+    } else if (viewCount < 1000000) {
+        return (viewCount / 1000).toFixed(2) + 'K'; // return in 'K' format for thousands
+    } else if (viewCount < 1000000000) {
+        return (viewCount / 1000000).toFixed(2) + 'M'; // return in 'M' format for millions
+    } else {
+        return (viewCount / 1000000000).toFixed(2) + 'B'; // return in 'B' format for billions
+    }
+}
+
+
 
 showInitialPost();
