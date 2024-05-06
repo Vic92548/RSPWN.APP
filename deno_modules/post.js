@@ -506,7 +506,7 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
         } else {
             console.log("User does not follow the creator.");
             return new Response(JSON.stringify({ success: false, message: "User does not follow the creator" }), {
-                status: 404,
+                status: 200,
                 headers: { "Content-Type": "application/json" }
             });
         }
