@@ -1,7 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData } from "./deno_modules/post.js";
+import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData,  followPost, unfollowPost, checkIfUserFollowsCreator } from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -138,6 +138,35 @@ async function handleRequest(request){
         }
 
         return skipPost(id, authResult.userData);
+    }else if (url.pathname.startsWith("/manage-follow") && request.method === "GET") {
+        const postId = url.searchParams.get('postId');
+        const action = url.searchParams.get('action');  // Expected to be 'follow' or 'unfollow'
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        if (action === 'follow') {
+            return followPost(postId, authResult.userData.id);
+        } else if (action === 'unfollow') {
+            return unfollowPost(postId, authResult.userData.id);
+        } else {
+            return new Response(JSON.stringify({ success: false, message: "Invalid action specified" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+    }
+    else if (url.pathname.startsWith("/check-follow/") && request.method === "GET") {
+        const creatorId = url.pathname.split('/')[2];  // Extract the creator ID from the URL
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return checkIfUserFollowsCreator(authResult.userData.id, creatorId);
     } else{
         try {
             const filePath = `./public${url.pathname}`;

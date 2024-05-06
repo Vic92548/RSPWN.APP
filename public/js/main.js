@@ -1,6 +1,7 @@
 let feed_posts = [];
 let loading_steps = 2;
 let post_seen = 0;
+let creators = {};
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
@@ -176,6 +177,8 @@ function drawPost(data){
     console.log("Post DATA:");
     console.log(data);
 
+    updateFollowButton();
+
     document.getElementById("post_title").textContent = data.title;
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
@@ -259,6 +262,7 @@ function drawPost(data){
 }
 
 let current_post_id = undefined;
+let current_post = undefined;
 
 function displayPost(postId = undefined){
     hidePost();
@@ -271,6 +275,7 @@ function displayPost(postId = undefined){
             hideLoading();
 
             current_post_id = data.id;
+            current_post = data;
             drawPost(data);
 
 
@@ -303,6 +308,7 @@ function displayPost(postId = undefined){
 
             drawPost(data);
             current_post_id = data.id;
+            current_post = data;
 
             history.pushState(null, null, "/post/" + data.id);
         }).catch(error => {
@@ -466,5 +472,87 @@ function openUserAccountModel() {
         old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
     })
 }
+
+async function updateFollowButton() {
+
+    let following;
+
+    if(creators[current_post.userId]){
+        following = creators[current_post.userId].following;
+    }
+
+    if(following === undefined){
+        following = await checkUserFollowsCreator(current_post.userId);
+        creators[current_post.userId].following = following;
+    }
+
+    const follow_bt = document.getElementById("follow");
+    follow_bt.style.opacity = "0";
+    follow_bt.style.display = "inline-block";
+
+    if(following){
+        follow_bt.textContent = '<i class="fa-solid fa-user-minus"></i>';
+        follow_bt.onclick = () => {followPost(current_post_id)};
+    }else{
+        follow_bt.textContent = '<i class="fa-solid fa-user-plus"></i>';
+        follow_bt.onclick = () => {unfollowPost(current_post_id)}
+    }
+
+    follow_bt.style.opacity = "1";
+
+    if(current_post.userId === user.id){
+        follow_bt.style.opacity = "0";
+        follow_bt.style.display = "none";
+    }
+}
+
+function followPost(postId) {
+    if(isUserLoggedIn()){
+        makeApiRequest(`/manage-follow?action=follow&postId=${postId}`).then(data => {
+            console.log('Followed successfully:', data);
+            alert('You are now following this post.');
+        }).catch(error => {
+            console.error('Error following post:', error);
+            alert('Error following post. Please try again.');
+        });
+    }else{
+        openRegisterModal();
+    }
+
+}
+
+function unfollowPost(postId) {
+    if(isUserLoggedIn()){
+        makeApiRequest(`/manage-follow?action=unfollow&postId=${postId}`).then(data => {
+            console.log('Unfollowed successfully:', data);
+            alert('You have unfollowed this post.');
+        }).catch(error => {
+            console.error('Error unfollowing post:', error);
+            alert('Error unfollowing post. Please try again.');
+        });
+    }else{
+        openRegisterModal();
+    }
+
+}
+
+function checkUserFollowsCreator(creatorId) {
+    return new Promise((resolve, reject) => {
+        makeApiRequest(`/check-follow/${creatorId}`).then(data => {
+            console.log('Check follow status:', data);
+            if (data.success) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        }).catch(error => {
+            console.error('Error checking follow status:', error);
+            reject(false);  // You may also consider rejecting with the error message itself
+        });
+    });
+}
+
+
+
 
 showInitialPost();
