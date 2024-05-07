@@ -120,15 +120,11 @@ export async function getPost(id, userId = "anonymous") {
 
     }
 
-    if(userId === "anonymous"){
-        post.views = await getRandomViews();
-    }else{
-        post.views = await prisma.view.count({
-            where: {
-                postId: post.id
-            }
-        });
-    }
+    post.views = await prisma.view.count({
+        where: {
+            postId: post.id
+        }
+    });
 
 
 
@@ -258,14 +254,13 @@ export async function getNextFeedPosts(userid) {
             }
         });
 
-        // Apply fake views to each post to avoid database load and increase engagement
-        posts = posts.map(post => ({
-            ...post,
-            views: Math.floor(Math.random() * 50000) + 30,  // Random views between 100 and 1100
-        }));
-
+        // Fetch real view counts and additional details for each post
         posts = await Promise.all(posts.map(async post => {
-            const views = await getRandomViews();
+            const views = await prisma.view.count({
+                where: {
+                    postId: post.id
+                }
+            });
 
             const postOwner = await prisma.user.findUnique({
                 where: { id: post.userId },
