@@ -294,11 +294,12 @@ input:focus {
 .reactions{
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .reactions button{
-    background-color: rgba(27, 40, 56, 0.44);
+    background-color: rgb(95 148 243 / 45%);
+    box-shadow: 0 0 10px rgb(95 148 243 / 45%);
 }
 
 .reactions .reaction_icon{
