@@ -157,7 +157,7 @@
         <section id="menu" class="glass_modal" style="display:none;">
             <form>
                 <ul>
-                    <li><i class="fa-solid fa-image"></i> Backgrounds</li>
+                    <li onclick="openCustomizationMenu()"><i class="fa-solid fa-image"></i> Backgrounds</li>
                     <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
                     <li id="close_menu" onclick="hideMenu()">close</li>
                 </ul>
@@ -170,12 +170,22 @@
                     <li>
                         <h4>Level 0</h4>
                         <div>
-                            <img onclick="" src="https://vapr.b-cdn.net/background_images/ninja_1.webp">
+                            <div>
+                                <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/ninja_1.webp')" src="https://vapr.b-cdn.net/background_images/ninja_1.webp">
+                                <div class="background_image_overlay">
+                                    <h5>Image title</h5>
+                                </div>
+                            </div>
+                            <div>
+                                <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/anime_city_night.webp')" src="https://vapr.b-cdn.net/background_images/anime_city_night.webp">
+                                <div class="background_image_overlay">
+                                    <h5>Anime background</h5>
+                                </div>
+                            </div>
                         </div>
                     </li>
-                    <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
-                    <li id="close_menu" onclick="hideMenu()">close</li>
                 </ul>
+                <button class="glass_bt" onclick="closeCustomizationMenu()">close</button>
             </form>
         </section>
 
