@@ -15,6 +15,7 @@
     height: 137px;
     display: inline-block;
     margin-left: calc(50% - 120px);
+    position: relative;
 }
 
 
@@ -25,7 +26,7 @@
 }
 
 .background_image_overlay{
-    position: relative;
+    position: absolute;
     background-color: rgba(0, 0, 0, 0.1);
     width: 240px;
     height: 137px;
