@@ -14,7 +14,7 @@
     list-style: none;
     height: 137px;
     display: inline-block;
-    margin: auto;
+    margin-left: calc(50% - 120px);
 }
 
 
@@ -47,7 +47,7 @@
     position: absolute;
     margin: 0;
     z-index: 35;
-    height: 117px;
-    margin-top: 20px;
+    height: 107px;
+    margin-top: 30px;
     width: 240px;
 }
