@@ -47,4 +47,7 @@
     position: absolute;
     margin: 0;
     z-index: 35;
+    height: 117px;
+    margin-top: 20px;
+    width: 240px;
 }
