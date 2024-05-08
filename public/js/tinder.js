@@ -38,7 +38,7 @@ function likePost() {
 
             window.user = data.user;
 
-            window.analytics.track('like', {postId: current_post_id});
+            window.analytics.track('like', {post: current_post});
 
             setXPProgress(oldUser);
 
@@ -77,7 +77,7 @@ function skipPost() {
 
             setXPProgress(oldUser);
 
-            window.analytics.track('skip', {postId: current_post_id});
+            window.analytics.track('skip', {post: current_post});
             displayPost();
         }).catch(error => {
             console.log(error);
@@ -112,7 +112,7 @@ function dislikePost() {
 
 
 
-            window.analytics.track('dislike', {postId: current_post_id});
+            window.analytics.track('dislike', {post: current_post});
             displayPost();
         }).catch(error => {
             console.log(error);
