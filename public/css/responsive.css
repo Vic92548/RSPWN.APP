@@ -46,4 +46,9 @@
     .hidden_on_mobile{
         opacity: 1;
     }
+
+    #menu{
+        background: none;
+        width: 20%;
+    }
 }
