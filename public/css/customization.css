@@ -15,6 +15,8 @@
 
 .background_image_div img{
     width: 100%;
+    filter: blur(5px);
+    transition: all 0.5s;
 }
 
 .background_image_overlay{
@@ -27,11 +29,10 @@
     color: #fff;
     backdrop-filter: blur(5px);
     border-radius: 8px;
-    transition: all 0.5s;
 }
 
-.background_image_overlay:hover{
-    backdrop-filter: blur(1px);
+.background_image_div:hover img{
+    filter: blur(1px);
 }
 
 .background_image_overlay h5{
