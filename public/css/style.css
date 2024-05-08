@@ -152,4 +152,5 @@ title span{
     padding-bottom: 10px;
     font-size: 18px;
     margin-top: 10px;
+    z-index: 20;
 }
