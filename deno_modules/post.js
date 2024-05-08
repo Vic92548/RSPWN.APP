@@ -186,6 +186,27 @@ export async function likePost(postId, userData) {
     });
 }
 
+export async function viewPost(postId, userData) {
+    try{
+        const view = await prisma.view.create({
+            data: {
+                postId: postId,
+                userId: userData.id,
+                timestamp: new Date(), // Assuming your schema has a timestamp field
+            }
+        });
+    }catch{
+
+    }
+
+
+
+    return new Response(JSON.stringify({ success: true}), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+}
+
 export async function dislikePost(postId, userData) {
     try{
         const view = await prisma.dislike.create({

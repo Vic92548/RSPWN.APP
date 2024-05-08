@@ -175,6 +175,8 @@ function setupSocialLink(id, link){
 function drawPost(data){
     displayReactions();
 
+    makeApiRequest("/register-view");
+
     post_seen++;
     showPost();
     console.log("Post DATA:");

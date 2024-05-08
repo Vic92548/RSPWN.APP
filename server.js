@@ -1,7 +1,22 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData,  followPost, unfollowPost, checkIfUserFollowsCreator, addReaction, getReactionsByPostId } from "./deno_modules/post.js";
+import {
+    createPost,
+    getPost,
+    getNextFeedPosts,
+    likePost,
+    dislikePost,
+    skipPost,
+    getPostList,
+    getPostData,
+    followPost,
+    unfollowPost,
+    checkIfUserFollowsCreator,
+    addReaction,
+    getReactionsByPostId,
+    viewPost
+} from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -184,6 +199,19 @@ async function handleRequest(request){
         const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
 
         return getReactionsByPostId(postId);
+    }
+
+    // Route to get all reactions for a post using GET request
+    else if (url.pathname.startsWith("/register-view") && request.method === "GET") {
+        const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
+
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return viewPost(postId, authResult.userData);
     } else{
         try {
             const filePath = `./public${url.pathname}`;
