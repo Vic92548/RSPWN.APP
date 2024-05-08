@@ -61,7 +61,10 @@
         box-shadow: rgba(255, 255, 255, 0.3) 0px 0px 15px;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        font-size: 14px;
         animation: none;
+    }
+
+    #menu li{
+        font-size: 14px;
     }
 }
