@@ -176,7 +176,7 @@ function drawPost(data){
     displayReactions();
 
     makeApiRequest("/register-view").then(data => {
-        console.log("Views updated")
+        console.log("Views updated");
     });
 
     post_seen++;
