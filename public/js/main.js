@@ -648,6 +648,10 @@ function displayReactions() {
     const path = `/get-reactions?postId=${current_post_id}`;
     makeApiRequest(path).then(data => {
         console.log('Reactions received:', data);
+
+        for (let i = 0; i < data.reactions.length; i++) {
+            incrementEmoji(data.reactions[i].emoji);
+        }
     }).catch(error => {
         console.error('Error retrieving reactions:', error);
         alert('Error retrieving reactions. Please refresh the page.');
