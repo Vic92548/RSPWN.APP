@@ -25,7 +25,7 @@
 }
 
 .background_image_overlay{
-    position: absolute;
+    position: relative;
     background-color: rgba(0, 0, 0, 0.1);
     width: 240px;
     height: 137px;
@@ -44,7 +44,7 @@
 }
 
 .background_image_overlay p{
-    position: absolute;
+    position: relative;
     margin: 0;
     z-index: 35;
     height: 137px;
