@@ -624,13 +624,11 @@ function addReaction(emoji) {
         return;
     }
 
+    incrementEmoji(emoji);
+
     const path = `/add-reaction?postId=${current_post_id}&emoji=${encodeURIComponent(emoji)}`;
     makeApiRequest(path).then(data => {
         console.log('Reaction added:', data);
-
-        incrementEmoji(emoji);
-
-        console.log('Reaction added!');
     }).catch(error => {
         console.error('Error adding reaction:', error);
         alert('Error adding reaction. Please try again.');
