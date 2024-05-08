@@ -36,6 +36,7 @@ main {
     font-weight: 700;
     transition: all 0.4s;
     border: none;
+    cursor: pointer;
 }
 
 .glass_bt i{
