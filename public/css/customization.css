@@ -2,6 +2,9 @@
     max-height: 70vh;
     overflow-y: auto;
     list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
 }
 
 .background_image_div{
@@ -14,7 +17,7 @@
 
 
 .background_image_div img{
-    width: 100%;
+    width: 240px;
     filter: blur(5px);
     transition: all 0.5s;
 }
