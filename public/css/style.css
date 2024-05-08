@@ -150,6 +150,7 @@ title span{
     list-style: none;
     text-align: center;
     background-color: #1b2838;
+    box-shadow: 0 0 5px #1b2838;
     border-radius: 7px;
     color: #fff;
     padding-top: 10px;
@@ -161,6 +162,7 @@ title span{
 
 #menu li:hover {
     background-color: #0d8bf0;
+    box-shadow: 0 0 5px #0d8bf0;
 }
 
 #menu li i{
