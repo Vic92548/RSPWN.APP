@@ -16,13 +16,14 @@
     display: inline-block;
     margin-left: calc(50% - 120px);
     position: relative;
+    cursor: pointer;
 }
 
 
 .background_image_div img{
     width: 240px;
-    filter: blur(5px);
-    transition: all 0.5s;
+    filter: blur(3px);
+    transition: all 0.25s;
 }
 
 .background_image_overlay{
