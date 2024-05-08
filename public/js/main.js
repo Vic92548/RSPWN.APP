@@ -399,6 +399,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     try {
         document.getElementById("add-post").style.display = "none";
         hidePost();
+        hideMenu();
 
         const response = await fetch('/posts', {
             method: 'POST',
@@ -665,7 +666,10 @@ function openMenu() {
 }
 
 function hideMenu() {
-    document.getElementById("menu").style.display = 'none';
+    if(window.innerWidth >= window.innerWidth){
+        document.getElementById("menu").style.display = 'none';
+    }
+
 }
 
 showInitialPost();
