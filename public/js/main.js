@@ -634,6 +634,12 @@ function addReaction(emoji) {
         return;
     }
 
+    window.analytics.track('Add reaction',
+        {
+            post: current_post,
+            emoji,
+        });
+
     incrementEmoji(emoji);
 
     const path = `/add-reaction?postId=${current_post_id}&emoji=${encodeURIComponent(emoji)}`;
