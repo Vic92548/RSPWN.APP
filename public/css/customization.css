@@ -1,12 +1,14 @@
 #background_images_container{
     max-height: 70vh;
     overflow-y: auto;
+    list-style: none;
 }
 
 .background_image_div{
     width: 240px;
     border-radius: 8px;
-
+    overflow: hidden;
+    list-style: none;
 }
 
 
