@@ -660,5 +660,12 @@ function displayReactions() {
     });
 }
 
+function openMenu() {
+    document.getElementById("menu").style.display = 'block';
+}
+
+function hideMenu() {
+    document.getElementById("menu").style.display = 'none';
+}
 
 showInitialPost();

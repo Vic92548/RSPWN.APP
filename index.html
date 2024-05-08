@@ -62,7 +62,7 @@
         <!-- The Feed -->
         <section id="feed">
 
-            <button id="add_post" class="create-post-btn glass_bt" onclick="opeNewPostModel()"><i class="fa-solid fa-bars"></i></button>
+            <button id="add_post" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
 
             <div id="xp_bar" class="glass_bt" style="display: none">
                 <div id="xp_bar_progress"></div>
@@ -151,6 +151,15 @@
                 <button onclick="closeNewPostModel()" class="glass_bt" style="background-color: rgba(52,73,94,0.9);color:#fff;"> CLOSE</button>
                 <button type="submit" class="glass_bt" style="float: right;"><i class="fa-solid fa-paper-plane"></i> SUBMIT POST</button>
             </form>
+
+        </section>
+
+        <section id="menu" class="glass_modal" style="display:none;">
+            <ul>
+                <li><i class="fa-solid fa-image"></i> Backgrounds</li>
+                <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
+                <li onclick="hideMenu()">close</li>
+            </ul>
 
         </section>
 
