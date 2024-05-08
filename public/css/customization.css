@@ -9,6 +9,11 @@
 
 }
 
+
+.background_image_div img{
+    width: 100%;
+}
+
 .background_image_overlay{
     position: absolute;
     background-color: rgba(0, 0, 0, 0.1);
