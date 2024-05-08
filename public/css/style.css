@@ -138,9 +138,17 @@ title span{
     opacity: 0;
 }
 
+#menu ul{
+    padding: 0;
+}
+
 #menu li{
     list-style: none;
     text-align: center;
     background-color: #1b2838;
     border-radius: 7px;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
 }
