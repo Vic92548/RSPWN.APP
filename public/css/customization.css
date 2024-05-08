@@ -48,5 +48,7 @@
     margin: 0;
     z-index: 35;
     height: 137px;
+    line-height: 137px;
+    font-size: 26px;
     width: 240px;
 }
