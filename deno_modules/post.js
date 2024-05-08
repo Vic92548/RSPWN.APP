@@ -554,6 +554,15 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
 
 export async function addReaction(postId, userId, emoji) {
     try {
+        // First, delete all existing reactions for this user on the specified post
+        await prisma.reaction.deleteMany({
+            where: {
+                postId: postId,
+                userId: userId
+            }
+        });
+
+        // After deleting, add the new reaction
         const reaction = await prisma.reaction.create({
             data: {
                 postId,
@@ -562,6 +571,7 @@ export async function addReaction(postId, userId, emoji) {
                 emoji
             }
         });
+
         console.log("Reaction added successfully:", reaction);
         return new Response(JSON.stringify({ success: true, reaction }), {
             status: 200,
@@ -575,6 +585,7 @@ export async function addReaction(postId, userId, emoji) {
         });
     }
 }
+
 
 export async function getReactionsByPostId(postId) {
     try {
