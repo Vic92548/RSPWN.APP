@@ -187,6 +187,13 @@ exports.Prisma.FollowScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
+exports.Prisma.ReactionScalarFieldEnum = {
+  postId: 'postId',
+  userId: 'userId',
+  timestamp: 'timestamp',
+  emoji: 'emoji'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -203,7 +210,8 @@ exports.Prisma.ModelName = {
   ShadowBan: 'ShadowBan',
   Comment: 'Comment',
   View: 'View',
-  Follow: 'Follow'
+  Follow: 'Follow',
+  Reaction: 'Reaction'
 };
 
 /**

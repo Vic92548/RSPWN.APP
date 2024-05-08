@@ -101,3 +101,12 @@ model Follow {
 
   @@id([postId, followerId])
 }
+
+model Reaction {
+  postId    String
+  userId    String
+  timestamp DateTime
+  emoji     String
+
+  @@id([postId, userId, timestamp])
+}

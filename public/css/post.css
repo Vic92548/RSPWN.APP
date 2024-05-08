@@ -291,6 +291,26 @@ input:focus {
     float: right;
 }
 
+.reactions{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.reactions button{
+    background-color: rgb(95 148 243 / 45%);
+    box-shadow: 0 0 10px rgb(95 148 243 / 45%);
+}
+
+.reactions .reaction_icon{
+    display: block;
+    margin-bottom: 5px;
+}
+
+.reactions span{
+    font-size: 24px;
+}
+
 #post_steam{
     background-color: #1b2838;
     box-shadow: 0 0 5px #1b2838;

@@ -552,4 +552,61 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
     }
 }
 
+export async function addReaction(postId, userId, emoji) {
+    try {
+        // First, delete all existing reactions for this user on the specified post
+        await prisma.reaction.deleteMany({
+            where: {
+                postId: postId,
+                userId: userId
+            }
+        });
+
+        // After deleting, add the new reaction
+        const reaction = await prisma.reaction.create({
+            data: {
+                postId,
+                userId,
+                timestamp: new Date(),
+                emoji
+            }
+        });
+
+        console.log("Reaction added successfully:", reaction);
+        return new Response(JSON.stringify({ success: true, reaction }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error("Failed to add reaction:", error);
+        return new Response(JSON.stringify({ success: false, message: "Failed to add reaction" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+
+export async function getReactionsByPostId(postId) {
+    try {
+        const reactions = await prisma.reaction.findMany({
+            where: {
+                postId
+            }
+        });
+        console.log("Reactions retrieved successfully:", reactions);
+        return new Response(JSON.stringify({ success: true, reactions }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error("Failed to retrieve reactions:", error);
+        return new Response(JSON.stringify({ success: false, message: "Failed to retrieve reactions" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+
 
