@@ -657,7 +657,7 @@ function displayReactions() {
 
     console.log("Post id : " + current_post_id);
 
-    makeApiRequest(path).then(data => {
+    makeApiRequest(path, false).then(data => {
         console.log('Reactions received:', data);
 
         for (let i = 0; i < data.reactions.length; i++) {
