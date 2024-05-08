@@ -157,3 +157,7 @@ title span{
     font-size: 18px;
     margin-top: 10px;
 }
+
+#menu li i{
+    margin-right: 5px;
+}
