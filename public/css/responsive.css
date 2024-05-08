@@ -35,7 +35,7 @@
         width: 500px;
     }
 
-    .discord_login, .create-post-btn {
+    .discord_login {
         width: 440px;
     }
 
@@ -45,5 +45,34 @@
 
     .hidden_on_mobile{
         opacity: 1;
+    }
+
+    #menu{
+        width: calc(50% - 240px);
+        max-width: 300px;
+
+        margin-left: 20px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    #menu form{
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: rgba(255, 255, 255, 0.3) 0px 0px 15px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        animation: none;
+    }
+
+    #menu li{
+        font-size: 14px;
+        text-align: left;
+        font-weight: 500;
+        padding: 10px 20px 10px 20px;
+        cursor: pointer;
+    }
+
+    #close_menu{
+        display: none;
     }
 }

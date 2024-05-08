@@ -97,7 +97,10 @@ function loadUserData(){
         setXPProgress(oldUser, true);
 
         document.getElementById("sign_in").style.display = "none";
-        document.getElementById("add_post").style.display = "block";
+        if(window.innerWidth <= 768){
+            document.getElementById("add_post").style.display = "block";
+        }
+
         document.getElementById("xp_bar").style.display = "block";
 
 
@@ -111,7 +114,9 @@ function loadUserData(){
         });
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
-        document.getElementById("add_post").style.display = "block";
+        if(window.innerWidth <= 768){
+            document.getElementById("add_post").style.display = "block";
+        }
         document.getElementById("add_post").onclick = openRegisterModal;
         loading_steps--;
         hideLoading();
@@ -399,6 +404,7 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
     try {
         document.getElementById("add-post").style.display = "none";
         hidePost();
+        hideMenu();
 
         const response = await fetch('/posts', {
             method: 'POST',
@@ -648,7 +654,10 @@ function displayReactions() {
     resetEmoji('💯');
 
     const path = `/get-reactions?postId=${current_post_id}`;
-    makeApiRequest(path).then(data => {
+
+    console.log("Post id : " + current_post_id);
+
+    makeApiRequest(path, false).then(data => {
         console.log('Reactions received:', data);
 
         for (let i = 0; i < data.reactions.length; i++) {
@@ -660,5 +669,18 @@ function displayReactions() {
     });
 }
 
+function openMenu() {
+    document.getElementById("menu").style.display = 'flex';
+}
+
+function hideMenu() {
+    if(window.innerWidth <= 768){
+        document.getElementById("menu").style.display = 'none';
+    }
+}
+
+if(window.innerWidth >= 768){
+    document.getElementById("menu").style.display = 'flex';
+}
 
 showInitialPost();

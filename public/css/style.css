@@ -137,3 +137,34 @@ title span{
 .hidden_on_mobile{
     opacity: 0;
 }
+
+#menu{
+    z-index: 20;
+}
+
+#menu ul{
+    padding: 0;
+}
+
+#menu li{
+    list-style: none;
+    text-align: center;
+    background-color: #1b2838;
+    box-shadow: 0 0 5px #1b2838;
+    border-radius: 7px;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    transition: all 0.4s;
+}
+
+#menu li:hover {
+    background-color: #0d8bf0;
+    box-shadow: 0 0 5px #0d8bf0;
+}
+
+#menu li i{
+    margin-right: 5px;
+}
