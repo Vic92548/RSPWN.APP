@@ -173,6 +173,8 @@ function setupSocialLink(id, link){
 }
 
 function drawPost(data){
+    displayReactions();
+
     post_seen++;
     showPost();
     console.log("Post DATA:");
@@ -605,6 +607,52 @@ function formatViews(viewCount) {
     }
 }
 
+function incrementEmoji(emoji) {
+    const emoji_count = document.getElementById(emoji);
+
+    emoji_count.textContent = (parseInt(emoji_count.textContent) + 1).toString();
+}
+
+function resetEmoji(emoji) {
+    const emoji_count = document.getElementById(emoji);
+    emoji_count.textContent = "0";
+}
+
+function addReaction(emoji) {
+    if (!isUserLoggedIn()) {
+        openRegisterModal();  // Ensure the user is logged in before allowing a reaction
+        return;
+    }
+
+    const path = `/add-reaction?postId=${current_post_id}&emoji=${encodeURIComponent(emoji)}`;
+    makeApiRequest(path).then(data => {
+        console.log('Reaction added:', data);
+
+        incrementEmoji(emoji);
+
+        console.log('Reaction added!');
+    }).catch(error => {
+        console.error('Error adding reaction:', error);
+        alert('Error adding reaction. Please try again.');
+    });
+}
+
+
+function displayReactions() {
+    resetEmoji('💩');
+    resetEmoji('👀');
+    resetEmoji('😂');
+    resetEmoji('❤️');
+    resetEmoji('💯');
+
+    const path = `/get-reactions?postId=${current_post_id}`;
+    makeApiRequest(path).then(data => {
+        console.log('Reactions received:', data);
+    }).catch(error => {
+        console.error('Error retrieving reactions:', error);
+        alert('Error retrieving reactions. Please refresh the page.');
+    });
+}
 
 
 showInitialPost();
