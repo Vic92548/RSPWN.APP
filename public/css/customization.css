@@ -3,10 +3,6 @@
     overflow-y: auto;
 }
 
-#background_images_container li{
-    display: block;
-}
-
 .background_image_div{
     width: 240px;
     border-radius: 8px;
