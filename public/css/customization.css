@@ -4,7 +4,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
+    display: block;
 }
 
 .background_image_div{
@@ -13,6 +13,7 @@
     overflow: hidden;
     list-style: none;
     height: 137px;
+    display: inline-block;
 }
 
 
