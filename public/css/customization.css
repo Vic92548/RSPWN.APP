@@ -3,6 +3,10 @@
     overflow-y: auto;
 }
 
+#background_images_container li{
+    display: block;
+}
+
 .background_image_div{
     width: 240px;
     border-radius: 8px;
@@ -17,4 +21,9 @@
 .background_image_overlay{
     position: absolute;
     background-color: rgba(0, 0, 0, 0.1);
+    width: 240px;
+    height: 137px;
+    text-align: center;
+    line-height: 137px;
+    color: #fff;
 }
