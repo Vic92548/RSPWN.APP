@@ -48,7 +48,16 @@
     }
 
     #menu{
-        background: none;
         width: 20%;
+
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    #menu form{
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: rgba(255, 255, 255, 0.3) 0px 0px 15px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
     }
 }
