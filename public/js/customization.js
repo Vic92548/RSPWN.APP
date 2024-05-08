@@ -5,6 +5,9 @@ function equipBackground(url, save = true) {
 }
 
 function updateBackgroundId(newBackgroundId) {
+
+    window.analytics.track('update_background', {newBackground: background_images[newBackgroundId], newBackgroundId});
+
     if (!isUserLoggedIn()) {
         alert('You must be logged in to update your background.');
         return;
