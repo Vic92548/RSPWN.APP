@@ -97,7 +97,7 @@ function loadUserData(){
         setXPProgress(oldUser, true);
 
         document.getElementById("sign_in").style.display = "none";
-        if(window.innerWidth <= window.innerWidth){
+        if(window.innerWidth <= 768){
             document.getElementById("add_post").style.display = "block";
         }
 
@@ -114,7 +114,7 @@ function loadUserData(){
         });
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
-        if(window.innerWidth <= window.innerWidth){
+        if(window.innerWidth <= 768){
             document.getElementById("add_post").style.display = "block";
         }
         document.getElementById("add_post").onclick = openRegisterModal;
@@ -671,12 +671,12 @@ function openMenu() {
 }
 
 function hideMenu() {
-    if(window.innerWidth <= window.innerWidth){
+    if(window.innerWidth <= 768){
         document.getElementById("menu").style.display = 'none';
     }
 }
 
-if(window.innerWidth >= window.innerWidth){
+if(window.innerWidth >= 768){
     document.getElementById("menu").style.display = 'flex';
 }
 
