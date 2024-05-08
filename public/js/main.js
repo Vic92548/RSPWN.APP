@@ -654,6 +654,9 @@ function displayReactions() {
     resetEmoji('💯');
 
     const path = `/get-reactions?postId=${current_post_id}`;
+
+    console.log("Post id : " + current_post_id);
+
     makeApiRequest(path).then(data => {
         console.log('Reactions received:', data);
 
