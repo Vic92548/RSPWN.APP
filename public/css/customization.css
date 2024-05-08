@@ -46,7 +46,7 @@
 }
 
 .background_image_overlay p{
-    position: relative;
+    position: absolute;
     margin: 0;
     z-index: 35;
     height: 137px;
