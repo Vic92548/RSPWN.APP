@@ -594,15 +594,11 @@ export async function getReactionsByPostId(postId) {
                 postId
             }
         });
-        if (reactions.length > 0) {
-            console.log("Reactions retrieved successfully:", reactions);
-            return new Response(JSON.stringify({ success: true, reactions }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" }
-            });
-        } else {
-            return new Response("No reactions found for this post", { status: 404 });
-        }
+        console.log("Reactions retrieved successfully:", reactions);
+        return new Response(JSON.stringify({ success: true, reactions }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
     } catch (error) {
         console.error("Failed to retrieve reactions:", error);
         return new Response(JSON.stringify({ success: false, message: "Failed to retrieve reactions" }), {
