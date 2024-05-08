@@ -14,6 +14,7 @@
     list-style: none;
     height: 137px;
     display: inline-block;
+    margin: auto;
 }
 
 
@@ -31,6 +32,7 @@
     text-align: center;
     line-height: 137px;
     color: #fff;
+    z-index: 30;
 }
 
 .background_image_div:hover img{
