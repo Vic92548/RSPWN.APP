@@ -56,5 +56,7 @@
 }
 
 #background_images .glass_bt{
-    color: #151415;
+    background-color: #1b2838;
+    box-shadow: 0 0 5px #1b2838;
+    margin-top: 15px;
 }

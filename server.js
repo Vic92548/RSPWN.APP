@@ -1,6 +1,6 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
-import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
+import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from "./deno_modules/auth.js";
 import {
     createPost,
     getPost,
@@ -50,6 +50,35 @@ async function handleRequest(request){
 
         // Continue with the request handling for authenticated users
         return getPostList(authResult.userData.id);
+    }else if (url.pathname === "/me/update-background" && request.method === "GET") {
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        const backgroundId = url.searchParams.get('backgroundId');
+        if (!backgroundId) {
+            return new Response(JSON.stringify({ success: false, message: "backgroundId parameter is required" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        try {
+            // Assume updateBackgroundId is a function that updates the backgroundId in your database
+            const updateResult = await updateBackgroundId(authResult.userData.id, backgroundId);
+
+            return new Response(JSON.stringify({ success: true, message: "Background updated successfully" }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        } catch (error) {
+            console.error('Error updating background:', error);
+            return new Response(JSON.stringify({ success: false, message: "Failed to update background" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
     }else if (url.pathname.startsWith("/me")) {
         const authResult = await authenticateRequest(request);
 

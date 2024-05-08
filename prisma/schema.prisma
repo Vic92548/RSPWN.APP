@@ -24,6 +24,7 @@ model User {
   username    String
   email       String    @unique
   provider    String
+  backgroundId    String @default("bg_2")
   level       Int
   xp          Int
   xp_required Int
