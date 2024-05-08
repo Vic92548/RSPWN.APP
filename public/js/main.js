@@ -661,7 +661,7 @@ function displayReactions() {
 }
 
 function openMenu() {
-    document.getElementById("menu").style.display = 'block';
+    document.getElementById("menu").style.display = 'flex';
 }
 
 function hideMenu() {
