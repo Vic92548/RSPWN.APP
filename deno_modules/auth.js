@@ -18,6 +18,24 @@ const clientSecret = Deno.env.get("DISCORD_ClientSecret");
 const DOMAIN = Deno.env.get("DOMAIN");
 const redirectUri = `https://${DOMAIN}/auth/discord/callback`;
 
+export async function updateBackgroundId(userId, newBackgroundId) {
+    try {
+        // Update the user's backgroundId in the database
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { backgroundId: newBackgroundId }
+        });
+
+        // Optionally, log the success or return the updated user data
+        console.log(`Updated user ${userId} backgroundId to ${newBackgroundId}`);
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to update backgroundId for user:', userId, error);
+        // In production, consider handling specific errors and providing more detailed responses
+        return { success: false, message: "Failed to update backgroundId" };
+    }
+}
+
 function generateSecretKey() {
     const byteLength = 32;  // Typically sufficient for security needs
     const bytes = new Uint8Array(byteLength);

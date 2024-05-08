@@ -1,0 +1,62 @@
+#background_images_container{
+    max-height: 70vh;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+.background_image_div{
+    width: 240px;
+    border-radius: 8px;
+    overflow: hidden;
+    list-style: none;
+    height: 137px;
+    display: inline-block;
+    margin-left: calc(50% - 120px);
+    position: relative;
+    cursor: pointer;
+}
+
+
+.background_image_div img{
+    width: 240px;
+    filter: blur(3px);
+    transition: all 0.25s;
+}
+
+.background_image_overlay{
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 240px;
+    height: 137px;
+    text-align: center;
+    color: #fff;
+    z-index: 30;
+}
+
+.background_image_div:hover img{
+    filter: blur(1px);
+}
+
+.background_image_overlay h5{
+    margin: 0;
+    margin-top: 10px;
+}
+
+.background_image_overlay p{
+    position: absolute;
+    margin: 0;
+    z-index: 35;
+    height: 137px;
+    line-height: 137px;
+    font-size: 26px;
+    width: 240px;
+}
+
+#background_images .glass_bt{
+    background-color: #1b2838;
+    box-shadow: 0 0 5px #1b2838;
+    margin-top: 15px;
+}

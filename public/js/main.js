@@ -88,6 +88,13 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
+        for (let i = 0; i < background_images.length; i++) {
+            if(background_images[i].id === data.backgroundId){
+                equipBackground('https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp');
+                break;
+            }
+        }
+
         const oldUser = {
             xp: 0,
             level: window.user.level,

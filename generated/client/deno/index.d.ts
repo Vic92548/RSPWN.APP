@@ -1722,6 +1722,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     provider: string | null
+    backgroundId: string | null
     level: number | null
     xp: number | null
     xp_required: number | null
@@ -1732,6 +1733,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     provider: string | null
+    backgroundId: string | null
     level: number | null
     xp: number | null
     xp_required: number | null
@@ -1742,6 +1744,7 @@ export namespace Prisma {
     username: number
     email: number
     provider: number
+    backgroundId: number
     level: number
     xp: number
     xp_required: number
@@ -1766,6 +1769,7 @@ export namespace Prisma {
     username?: true
     email?: true
     provider?: true
+    backgroundId?: true
     level?: true
     xp?: true
     xp_required?: true
@@ -1776,6 +1780,7 @@ export namespace Prisma {
     username?: true
     email?: true
     provider?: true
+    backgroundId?: true
     level?: true
     xp?: true
     xp_required?: true
@@ -1786,6 +1791,7 @@ export namespace Prisma {
     username?: true
     email?: true
     provider?: true
+    backgroundId?: true
     level?: true
     xp?: true
     xp_required?: true
@@ -1883,6 +1889,7 @@ export namespace Prisma {
     username: string
     email: string
     provider: string
+    backgroundId: string
     level: number
     xp: number
     xp_required: number
@@ -1912,6 +1919,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     provider?: boolean
+    backgroundId?: boolean
     level?: boolean
     xp?: boolean
     xp_required?: boolean
@@ -1922,6 +1930,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     provider?: boolean
+    backgroundId?: boolean
     level?: boolean
     xp?: boolean
     xp_required?: boolean
@@ -1937,6 +1946,7 @@ export namespace Prisma {
       username: string
       email: string
       provider: string
+      backgroundId: string
       level: number
       xp: number
       xp_required: number
@@ -2338,6 +2348,7 @@ export namespace Prisma {
     readonly username: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly provider: FieldRef<"User", 'String'>
+    readonly backgroundId: FieldRef<"User", 'String'>
     readonly level: FieldRef<"User", 'Int'>
     readonly xp: FieldRef<"User", 'Int'>
     readonly xp_required: FieldRef<"User", 'Int'>
@@ -11038,6 +11049,7 @@ export namespace Prisma {
     username: 'username',
     email: 'email',
     provider: 'provider',
+    backgroundId: 'backgroundId',
     level: 'level',
     xp: 'xp',
     xp_required: 'xp_required'
@@ -11193,6 +11205,7 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     provider?: StringFilter<"User"> | string
+    backgroundId?: StringFilter<"User"> | string
     level?: IntFilter<"User"> | number
     xp?: IntFilter<"User"> | number
     xp_required?: IntFilter<"User"> | number
@@ -11203,6 +11216,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     provider?: SortOrder
+    backgroundId?: SortOrder
     level?: SortOrder
     xp?: SortOrder
     xp_required?: SortOrder
@@ -11216,6 +11230,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     username?: StringFilter<"User"> | string
     provider?: StringFilter<"User"> | string
+    backgroundId?: StringFilter<"User"> | string
     level?: IntFilter<"User"> | number
     xp?: IntFilter<"User"> | number
     xp_required?: IntFilter<"User"> | number
@@ -11226,6 +11241,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     provider?: SortOrder
+    backgroundId?: SortOrder
     level?: SortOrder
     xp?: SortOrder
     xp_required?: SortOrder
@@ -11244,6 +11260,7 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     provider?: StringWithAggregatesFilter<"User"> | string
+    backgroundId?: StringWithAggregatesFilter<"User"> | string
     level?: IntWithAggregatesFilter<"User"> | number
     xp?: IntWithAggregatesFilter<"User"> | number
     xp_required?: IntWithAggregatesFilter<"User"> | number
@@ -11707,6 +11724,7 @@ export namespace Prisma {
     username: string
     email: string
     provider: string
+    backgroundId?: string
     level: number
     xp: number
     xp_required: number
@@ -11717,6 +11735,7 @@ export namespace Prisma {
     username: string
     email: string
     provider: string
+    backgroundId?: string
     level: number
     xp: number
     xp_required: number
@@ -11727,6 +11746,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
+    backgroundId?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
     xp?: IntFieldUpdateOperationsInput | number
     xp_required?: IntFieldUpdateOperationsInput | number
@@ -11737,6 +11757,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
+    backgroundId?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
     xp?: IntFieldUpdateOperationsInput | number
     xp_required?: IntFieldUpdateOperationsInput | number
@@ -11747,6 +11768,7 @@ export namespace Prisma {
     username: string
     email: string
     provider: string
+    backgroundId?: string
     level: number
     xp: number
     xp_required: number
@@ -11757,6 +11779,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
+    backgroundId?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
     xp?: IntFieldUpdateOperationsInput | number
     xp_required?: IntFieldUpdateOperationsInput | number
@@ -11767,6 +11790,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     provider?: StringFieldUpdateOperationsInput | string
+    backgroundId?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
     xp?: IntFieldUpdateOperationsInput | number
     xp_required?: IntFieldUpdateOperationsInput | number
@@ -12257,6 +12281,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     provider?: SortOrder
+    backgroundId?: SortOrder
     level?: SortOrder
     xp?: SortOrder
     xp_required?: SortOrder
@@ -12273,6 +12298,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     provider?: SortOrder
+    backgroundId?: SortOrder
     level?: SortOrder
     xp?: SortOrder
     xp_required?: SortOrder
@@ -12283,6 +12309,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     provider?: SortOrder
+    backgroundId?: SortOrder
     level?: SortOrder
     xp?: SortOrder
     xp_required?: SortOrder

@@ -26,6 +26,7 @@
     <link href="/css/comment.css" rel="stylesheet" type="text/css" />
     <link href="/css/character.css" rel="stylesheet" type="text/css" />
     <link href="/css/progress.css" rel="stylesheet" type="text/css" />
+    <link href="/css/customization.css" rel="stylesheet" type="text/css" />
     <link href="/css/responsive.css" rel="stylesheet" type="text/css" />
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -157,10 +158,32 @@
         <section id="menu" class="glass_modal" style="display:none;">
             <form>
                 <ul>
-                    <!--<li><i class="fa-solid fa-image"></i> Backgrounds</li>-->
+                    <li onclick="openCustomizationMenu()"><i class="fa-solid fa-image"></i> Backgrounds</li>
                     <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
                     <li id="close_menu" onclick="hideMenu()">close</li>
                 </ul>
+            </form>
+        </section>
+
+        <section id="background_images" class="glass_modal" style="display:none;">
+            <form>
+                <ul id="background_images_container">
+                    <li class="background_image_div">
+                        <div class="background_image_overlay">
+                            <h5>Image title</h5>
+                        </div>
+                        <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/ninja_1.webp')" src="https://vapr.b-cdn.net/background_images/ninja_1.webp">
+                    </li>
+                    <li class="background_image_div">
+                        <div class="background_image_overlay">
+                            <p><i class="fa-solid fa-lock"></i></p>
+                            <h5>Unlock at level 1</h5>
+                        </div>
+                        <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/anime_city_night.webp')" src="https://vapr.b-cdn.net/background_images/anime_city_night.webp">
+
+                    </li>
+                </ul>
+                <div class="glass_bt" onclick="closeCustomizationMenu()"><i class="fa-solid fa-xmark"></i> Close</div>
             </form>
         </section>
 
@@ -240,6 +263,8 @@
     <script src="/js/main.js"></script>
     <script src="/js/tinder.js"></script>
     <script src="/js/rpg.js"></script>
+    <script src="/js/background_images.js"></script>
+    <script src="/js/customization.js"></script>
 
     <script>
         window.analytics = {};
