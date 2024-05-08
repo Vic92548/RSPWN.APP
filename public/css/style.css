@@ -137,3 +137,10 @@ title span{
 .hidden_on_mobile{
     opacity: 0;
 }
+
+#menu li{
+    list-style: none;
+    text-align: center;
+    background-color: #1b2838;
+    border-radius: 7px;
+}
