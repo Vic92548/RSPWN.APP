@@ -156,6 +156,11 @@ title span{
     padding-bottom: 10px;
     font-size: 18px;
     margin-top: 10px;
+    transition: all 0.4s;
+}
+
+#menu li:hover {
+    background-color: #0d8bf0;
 }
 
 #menu li i{
