@@ -70,4 +70,8 @@
         font-weight: 500;
         padding: 10px;
     }
+
+    #close_menu{
+        display: none;
+    }
 }
