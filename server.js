@@ -1,7 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest } from "./deno_modules/auth.js";
-import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData,  followPost, unfollowPost, checkIfUserFollowsCreator } from "./deno_modules/post.js";
+import { createPost, getPost, getNextFeedPosts, likePost, dislikePost, skipPost, getPostList, getPostData,  followPost, unfollowPost, checkIfUserFollowsCreator, addReaction, getReactionsByPostId } from "./deno_modules/post.js";
 
 const port = 8080;
 
@@ -167,6 +167,23 @@ async function handleRequest(request){
         }
 
         return checkIfUserFollowsCreator(authResult.userData.id, creatorId);
+    }else if (url.pathname.startsWith("/add-reaction") && request.method === "GET") {
+        const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
+        const emoji = url.searchParams.get('emoji'); // Get the emoji from URL query parameter
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        return addReaction(postId, authResult.userData.id, emoji);
+    }
+
+    // Route to get all reactions for a post using GET request
+    else if (url.pathname.startsWith("/get-reactions") && request.method === "GET") {
+        const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
+
+        return getReactionsByPostId(postId);
     } else{
         try {
             const filePath = `./public${url.pathname}`;
