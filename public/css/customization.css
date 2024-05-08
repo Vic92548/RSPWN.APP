@@ -27,8 +27,6 @@
     text-align: center;
     line-height: 137px;
     color: #fff;
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
 }
 
 .background_image_div:hover img{
