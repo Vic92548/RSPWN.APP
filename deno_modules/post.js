@@ -434,8 +434,7 @@ export async function followPost(postId, followerId) {
         // Check if the follow already exists
         const existingFollow = await prisma.follow.findUnique({
             where: {
-                postId_followerId: {
-                    postId,
+                followerId: {
                     followerId,
                 }
             }
