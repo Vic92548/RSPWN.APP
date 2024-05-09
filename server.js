@@ -1,5 +1,6 @@
 // server.ts
-import { serveFile, serve } from "https://deno.land/std@0.224.0/http/file_server.ts";
+import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
+import {serve} from "https://deno.land/std@0.224.0/http/server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin } from "./deno_modules/auth.js";
 import * as postController from "./controllers/postController.js";
 import { authenticateMiddleware } from "./middlewares/authenticateMiddleware.js";
