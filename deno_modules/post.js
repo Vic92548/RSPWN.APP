@@ -482,15 +482,14 @@ export async function followPost(postId, followerId) {
         }
 
         // Check if the follow already exists
-        const existingFollow = await prisma.follow.findUnique({
+        const existingFollows = await prisma.follow.findMany({
             where: {
-                followerId: {
-                    equals: followerId,
-                }
+                followerId: followerId
             }
         });
 
-        if (existingFollow) {
+
+        if (existingFollows.length > 0) {
             console.log("Already following this post.");
             return new Response(JSON.stringify({ success: false, message: "Already following this post" }), {
                 status: 409, // Conflict status code
