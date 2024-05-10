@@ -213,15 +213,38 @@ export async function likePost(postId, userData) {
     });
 }
 
-export async function viewPost(postId, userData) {
+function generateRandomId(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+export async function viewPost(postId, userId) {
+
     try{
-        const view = await prisma.view.create({
-            data: {
-                postId: postId,
-                userId: userData.id,
-                timestamp: new Date(), // Assuming your schema has a timestamp field
-            }
-        });
+        if(userId === "anonymous"){
+
+            const view = await prisma.view.create({
+                data: {
+                    postId: postId,
+                    userId: "anonymous_" + crypto.randomUUID(),
+                    timestamp: new Date(), // Assuming your schema has a timestamp field
+                }
+            });
+        }else{
+            const view = await prisma.view.create({
+                data: {
+                    postId: postId,
+                    userId: userId,
+                    timestamp: new Date(), // Assuming your schema has a timestamp field
+                }
+            });
+        }
+
     }catch{
 
     }

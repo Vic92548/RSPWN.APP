@@ -237,10 +237,10 @@ async function handleRequest(request){
         const authResult = await authenticateRequest(request);
 
         if (!authResult.isValid) {
-            return new Response("Unauthorized", { status: 401 });
+            return viewPost(postId, "anonymous");
         }
 
-        return viewPost(postId, authResult.userData);
+        return viewPost(postId, authResult.userData.id);
     } else{
         try {
             const filePath = `./public${url.pathname}`;
