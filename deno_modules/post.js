@@ -148,7 +148,16 @@ export async function getPostList(userId) {
     const posts = await prisma.post.findMany({
         where: { userId },
         orderBy: {
-            timestamp: 'desc' // This orders by the post ID, adjust if you have another preference for randomness
+            timestamp: 'desc'
+        },
+        include: {
+            _count: {
+                select: {
+                    view: true,   // Assuming there's a 'views' table with a 'postId' column
+                    like: true,   // Assuming there's a 'likes' table with a 'postId' column
+                    dislike: true // Assuming there's a 'dislikes' table with a 'postId' column
+                }
+            }
         }
     });
 
@@ -156,11 +165,20 @@ export async function getPostList(userId) {
         return new Response("No posts found", { status: 404 });
     }
 
-    return new Response(JSON.stringify(posts), {
+    // Transform posts to include view, like, and dislike counts directly
+    const transformedPosts = posts.map(post => ({
+        ...post,
+        view: post._count.view,
+        like: post._count.like,
+        dislike: post._count.dislike
+    }));
+
+    return new Response(JSON.stringify(transformedPosts), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
 }
+
 
 export async function likePost(postId, userData) {
     try{
