@@ -146,7 +146,10 @@ export async function getPost(id, userId = "anonymous") {
 
 export async function getPostList(userId) {
     const posts = await prisma.post.findMany({
-        where: { userId }
+        where: { userId },
+        orderBy: {
+            timestamp: 'desc' // This orders by the post ID, adjust if you have another preference for randomness
+        }
     });
 
     if (!posts.length) {

@@ -159,7 +159,7 @@
             <form>
                 <ul>
                     <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
-                    <li onclick="opeNewPostModel()"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
+                    <li onclick="openAnalytics()"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
                     <li onclick="openCustomizationMenu()"><i class="fa-solid fa-image"></i> Backgrounds</li>
                     <li onclick="window.open('https://trello.com/b/uBKKZ7ix/vapr', '_blank');"><i class="fa-solid fa-map"></i> Roadmap</li>
                     <li id="close_menu" onclick="hideMenu()">close</li>
@@ -186,6 +186,26 @@
                     </li>
                 </ul>
                 <div class="glass_bt" onclick="closeCustomizationMenu()"><i class="fa-solid fa-xmark"></i> Close</div>
+            </form>
+        </section>
+
+        <section id="old_posts" class="glass_modal" style="display:none;">
+            <form>
+                <ul id="old_posts_container">
+                    <li>
+                        <span>Post name</span>
+                        <div><span><i class="fa-solid fa-eye"></i> 22</span> <a>open</a></div>
+                    </li>
+                    <li class="background_image_div">
+                        <div class="background_image_overlay">
+                            <p><i class="fa-solid fa-lock"></i></p>
+                            <h5>Unlock at level 1</h5>
+                        </div>
+                        <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/anime_city_night.webp')" src="https://vapr.b-cdn.net/background_images/anime_city_night.webp">
+
+                    </li>
+                </ul>
+                <div class="glass_bt" onclick="closeAnalytics()"><i class="fa-solid fa-xmark"></i> Close</div>
             </form>
         </section>
 
