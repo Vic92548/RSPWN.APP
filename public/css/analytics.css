@@ -6,7 +6,9 @@
 }
 
 #old_posts_container li{
-    margin: 10px;
+    margin: 20px 10px 10px 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 #old_posts_container li a{
     float: right;
