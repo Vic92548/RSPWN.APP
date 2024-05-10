@@ -146,18 +146,45 @@ export async function getPost(id, userId = "anonymous") {
 
 export async function getPostList(userId) {
     const posts = await prisma.post.findMany({
-        where: { userId }
+        where: { userId },
+        orderBy: { timestamp: 'desc' }
     });
 
     if (!posts.length) {
         return new Response("No posts found", { status: 404 });
     }
 
-    return new Response(JSON.stringify(posts), {
+    // Map over the posts to include the counts of views, likes, dislikes, and followers
+    const postsWithCounts = await Promise.all(posts.map(async post => {
+        const viewsCount = await prisma.view.count({
+            where: { postId: post.id }
+        });
+        const likesCount = await prisma.like.count({
+            where: { postId: post.id }
+        });
+        const dislikesCount = await prisma.dislike.count({
+            where: { postId: post.id }
+        });
+        const followersCount = await prisma.follow.count({
+            where: { postId: post.id }
+        });
+
+        return {
+            ...post,
+            viewsCount,
+            likesCount,
+            dislikesCount,
+            followersCount
+        };
+    }));
+
+    return new Response(JSON.stringify(postsWithCounts), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
 }
+
+
 
 export async function likePost(postId, userData) {
     try{
@@ -186,15 +213,38 @@ export async function likePost(postId, userData) {
     });
 }
 
-export async function viewPost(postId, userData) {
+function generateRandomId(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+export async function viewPost(postId, userId) {
+
     try{
-        const view = await prisma.view.create({
-            data: {
-                postId: postId,
-                userId: userData.id,
-                timestamp: new Date(), // Assuming your schema has a timestamp field
-            }
-        });
+        if(userId === "anonymous"){
+
+            const view = await prisma.view.create({
+                data: {
+                    postId: postId,
+                    userId: "anonymous_" + crypto.randomUUID(),
+                    timestamp: new Date(), // Assuming your schema has a timestamp field
+                }
+            });
+        }else{
+            const view = await prisma.view.create({
+                data: {
+                    postId: postId,
+                    userId: userId,
+                    timestamp: new Date(), // Assuming your schema has a timestamp field
+                }
+            });
+        }
+
     }catch{
 
     }

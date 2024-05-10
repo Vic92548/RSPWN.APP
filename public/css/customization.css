@@ -55,7 +55,7 @@
     width: 240px;
 }
 
-#background_images .glass_bt{
+.close_bt{
     background-color: #1b2838;
     box-shadow: 0 0 5px #1b2838;
     margin-top: 15px;
