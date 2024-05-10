@@ -484,10 +484,12 @@ export async function followPost(postId, followerId) {
         // Check if the follow already exists
         const existingFollows = await prisma.follow.findMany({
             where: {
-                followerId: followerId
+                AND: [
+                    { followerId: followerId },
+                    { creatorId: creatorId } // Assuming 'creatorId' is also provided in the context
+                ]
             }
         });
-
 
         if (existingFollows.length > 0) {
             console.log("Already following this post.");
@@ -496,6 +498,7 @@ export async function followPost(postId, followerId) {
                 headers: { "Content-Type": "application/json" }
             });
         }
+
 
         // Create a new follow record
         const follow = await prisma.follow.create({
