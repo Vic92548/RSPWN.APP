@@ -1,0 +1,13 @@
+#old_posts_container{
+    max-height: 70vh;
+    overflow: auto;
+    list-style: none;
+    padding: 0;
+}
+
+#old_posts_container li{
+    margin: 10px;
+}
+#old_posts_container li a{
+    float: right;
+}
