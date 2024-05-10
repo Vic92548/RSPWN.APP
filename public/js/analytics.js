@@ -19,6 +19,8 @@ function openAnalytics() {
             stats.innerHTML = '<div><span><i class="fa-solid fa-eye"></i> 22</span> <a href="/post/' + post.id + '">open</a></div>';
 
             li.appendChild(stats);
+
+            old_posts_container.appendChild(li);
         }
     })
 
