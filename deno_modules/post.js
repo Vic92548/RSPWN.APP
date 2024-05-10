@@ -147,37 +147,43 @@ export async function getPost(id, userId = "anonymous") {
 export async function getPostList(userId) {
     const posts = await prisma.post.findMany({
         where: { userId },
-        orderBy: {
-            timestamp: 'desc'
-        },
-        include: {
-            _count: {
-                select: {
-                    view: true,   // Assuming there's a 'views' table with a 'postId' column
-                    like: true,   // Assuming there's a 'likes' table with a 'postId' column
-                    dislike: true // Assuming there's a 'dislikes' table with a 'postId' column
-                }
-            }
-        }
+        orderBy: { timestamp: 'desc' }
     });
 
     if (!posts.length) {
         return new Response("No posts found", { status: 404 });
     }
 
-    // Transform posts to include view, like, and dislike counts directly
-    const transformedPosts = posts.map(post => ({
-        ...post,
-        view: post._count.view,
-        like: post._count.like,
-        dislike: post._count.dislike
+    // Map over the posts to include the counts of views, likes, dislikes, and followers
+    const postsWithCounts = await Promise.all(posts.map(async post => {
+        const viewsCount = await prisma.view.count({
+            where: { postId: post.id }
+        });
+        const likesCount = await prisma.like.count({
+            where: { postId: post.id }
+        });
+        const dislikesCount = await prisma.dislike.count({
+            where: { postId: post.id }
+        });
+        const followersCount = await prisma.follow.count({
+            where: { postId: post.id }
+        });
+
+        return {
+            ...post,
+            viewsCount,
+            likesCount,
+            dislikesCount,
+            followersCount
+        };
     }));
 
-    return new Response(JSON.stringify(transformedPosts), {
+    return new Response(JSON.stringify(postsWithCounts), {
         status: 200,
         headers: { "Content-Type": "application/json" }
     });
 }
+
 
 
 export async function likePost(postId, userData) {
