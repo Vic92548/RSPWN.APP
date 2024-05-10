@@ -485,7 +485,7 @@ export async function followPost(postId, followerId) {
         const existingFollow = await prisma.follow.findUnique({
             where: {
                 followerId: {
-                    followerId,
+                    equals: followerId,
                 }
             }
         });
