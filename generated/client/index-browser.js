@@ -195,6 +195,13 @@ exports.Prisma.ReactionScalarFieldEnum = {
   emoji: 'emoji'
 };
 
+exports.Prisma.RegistrationReferralScalarFieldEnum = {
+  id: 'id',
+  invitedUserId: 'invitedUserId',
+  ambassadorUserId: 'ambassadorUserId',
+  timestamp: 'timestamp'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -212,7 +219,8 @@ exports.Prisma.ModelName = {
   Comment: 'Comment',
   View: 'View',
   Follow: 'Follow',
-  Reaction: 'Reaction'
+  Reaction: 'Reaction',
+  RegistrationReferral: 'RegistrationReferral'
 };
 
 /**

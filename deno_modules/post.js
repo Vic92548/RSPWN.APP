@@ -546,10 +546,24 @@ export async function followPost(postId, followerId) {
 
 export async function unfollowPost(postId, followerId) {
     try {
+        // Retrieve the post to get the creator's userId
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { userId: true } // Select only the userId
+        });
+
+        if (!post) {
+            console.log("Post not found.");
+            return new Response(JSON.stringify({ success: false, message: "Post not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
         const follow = await prisma.follow.delete({
             where: {
-                postId_followerId: {
-                    postId,
+                creatorId_followerId: {
+                    creatorId: post.userId,
                     followerId,
                 }
             }
@@ -680,5 +694,117 @@ export async function getReactionsByPostId(postId) {
     }
 }
 
+
+export async function acceptInvitation(invitedUserId, ambassadorUserId) {
+    try {
+
+        if(invitedUserId === ambassadorUserId){
+            return {success: false, message: "You can't invite yourself!"};
+        }
+
+        const invitee = await prisma.user.findUnique({
+            where: { id: invitedUserId }
+        });
+
+        if (!invitee) {
+            return { success: false, message: "Invitee user not found" };
+        }
+
+        // Verify if the invitation has already been made
+        const existingInvitation = await prisma.registrationReferral.findFirst({
+            where: {
+                invitedUserId: invitedUserId
+            }
+        });
+
+        if (existingInvitation) {
+            return { success: false, message: "Invitation already accepted by this user" };
+        }
+
+        // Check if the ambassadorUserId actually exists
+        const ambassador = await prisma.user.findUnique({
+            where: { id: ambassadorUserId }
+        });
+
+        if (!ambassador) {
+            return { success: false, message: "Ambassador user not found" };
+        }
+
+        // Create the referral entry
+        const referral = await prisma.registrationReferral.create({
+            data: {
+                invitedUserId: invitedUserId,
+                ambassadorUserId: ambassadorUserId,
+                timestamp: new Date(),
+            }
+        });
+
+        // Get the total number of successful referrals made by the ambassador
+        const totalInvitations = await prisma.registrationReferral.count({
+            where: {
+                ambassadorUserId: ambassadorUserId
+            }
+        });
+
+        // Assuming adding XP to the invited user's account as a reward for accepting the invitation
+        await addXP(ambassadorUserId, EXPERIENCE_TABLE.INVITE);
+
+        // Send a notification to Discord with the total number of invitations
+        sendMessageToDiscordWebhook(
+            "https://discord.com/api/webhooks/1238786271514595398/VTlL7WzN9mNYq-ebtpT0cINS54HLlGjVp9fZ5MvSHytRdI5QrJe7fbSXWfopz8tJ1drZ",
+            `@${invitee.username} accepted invitation from ${ambassador.username} 🥳 Total invitations accepted: ${totalInvitations}`
+        );
+
+        // Check if the follow already exists
+        const existingFollows = await prisma.follow.findMany({
+            where: {
+                AND: [
+                    { followerId: invitedUserId },
+                    { creatorId: ambassadorUserId } // Assuming 'creatorId' is also provided in the context
+                ]
+            }
+        });
+
+        if (existingFollows.length > 0) {
+            console.log("Already following this post.");
+            return { success: true, message: "User already following" };
+        }
+
+
+        // Create a new follow record
+        const follow = await prisma.follow.create({
+            data: {
+                postId: "invitation",
+                followerId: invitedUserId,
+                creatorId: ambassadorUserId,
+                timestamp: new Date(),
+            }
+        });
+
+        const [follower, creator, followerCount] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: invitedUserId },
+                select: { username: true, level: true }
+            }),
+            prisma.user.findUnique({
+                where: { id: ambassadorUserId },
+                select: { username: true, level: true }
+            }),
+            prisma.follow.count({
+                where: {
+                    creatorId: ambassadorUserId
+                }
+            })
+        ]);
+
+        sendMessageToDiscordWebhook("https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
+            ":incoming_envelope: **@" + follower.username + "**(lvl " + follower.level + ") is now following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**");
+
+        return { success: true, message: "Invitation accepted successfully", referral: referral, totalInvitations: totalInvitations };
+    } catch (error) {
+        console.error("Error accepting invitation:", error);
+        return { success: false, message: "Failed to accept invitation" };
+    }
+}
 
 

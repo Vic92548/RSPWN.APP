@@ -100,7 +100,7 @@ model Follow {
   creatorId    String
   timestamp DateTime
 
-  @@id([postId, followerId])
+  @@id([creatorId, followerId])
 }
 
 model Reaction {
@@ -110,4 +110,11 @@ model Reaction {
   emoji     String
 
   @@id([postId, userId, timestamp])
+}
+
+model RegistrationReferral {
+  id              String   @id @default(uuid())
+  invitedUserId   String
+  ambassadorUserId String
+  timestamp       DateTime @default(now())
 }

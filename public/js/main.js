@@ -115,6 +115,8 @@ function loadUserData(){
         loading_steps--;
         hideLoading();
 
+        handleReferral();
+
         window.analytics.identify(data.id, {
             email: data.email,
             name: data.username
@@ -695,5 +697,109 @@ function hideMenu() {
 if(window.innerWidth >= 768){
     document.getElementById("menu").style.display = 'flex';
 }
+
+function processJoinQueryParam() {
+    // Create a URL object based on the current location
+    const url = new URL(window.location.href);
+
+    // Access the URL's search parameters
+    const params = url.searchParams;
+
+    // Check if the 'join' query parameter exists
+    if (params.has('join')) {
+        // Retrieve the value of the 'join' parameter
+        const joinValue = params.get('join');
+
+        console.log("Join param found with value = " + joinValue);
+
+        // Store the value in local storage
+        localStorage.setItem('referrerId', joinValue);
+
+        // Remove the 'join' parameter from the URL
+        params.delete('join');
+
+        // Replace the state in history without reloading the page to reflect the new URL
+        window.history.replaceState({}, '', url.toString());
+    }
+}
+
+function handleReferral() {
+    // Check if 'referrerId' is stored in local storage
+    const referrerId = localStorage.getItem('referrerId');
+
+    if (referrerId) {
+
+        makeApiRequest("/accept-invitation?ambassadorUserId=" + referrerId).then(data => {
+            console.log('Invitation processed:', data);
+
+            window.analytics.track('invitation accepted', {ambassadorUserId: referrerId});
+
+            if(creators[referrerId]){
+                creators[referrerId].following = true;
+                updateFollowButton();
+            }
+
+
+            // Remove 'referrerId' from local storage after processing
+            localStorage.removeItem('referrerId');
+
+
+        }).catch(error => {
+            console.log("failed to accept invitation");
+        });
+
+    }
+}
+
+function copyReferrerId() {
+    // Construct the URL with the userId as a query parameter
+    if(isUserLoggedIn()){
+        const referralUrl = `https://vapr.gg?join=${user.id}`;
+
+        // Create a temporary text area to hold the URL
+        const textArea = document.createElement('textarea');
+        textArea.value = referralUrl;
+
+        // Avoid styling that would make the textarea visible
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+
+        // Append the textarea to the document
+        document.body.appendChild(textArea);
+
+        // Select the URL
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // For mobile devices
+
+        try {
+            // Copy the text inside the text area
+            const successful = document.execCommand('copy');
+
+            // Provide feedback on whether the URL was copied successfully
+            console.log(successful ? 'Referral URL copied to clipboard!' : 'Failed to copy the URL');
+
+            Swal.fire({
+                title: "Invitation copied to clipboard!",
+                text: "Your invitation link (" + referralUrl + "), has been copied to clipboard!",
+                icon: "success"
+            });
+        } catch (err) {
+            console.error('Error copying to clipboard: ', err);
+
+            Swal.fire({
+                title: "Failed to copy to clipboard!",
+                text: "Your invitation link (" + referralUrl + "), has failed to copy to clipboard!",
+                icon: "error"
+            });
+        }
+
+        // Remove the textarea element from the document after copying
+        document.body.removeChild(textArea);
+    }else{
+        openRegisterModal();
+    }
+}
+
+processJoinQueryParam();
 
 showInitialPost();

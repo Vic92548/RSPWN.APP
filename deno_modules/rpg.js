@@ -67,5 +67,6 @@ export const EXPERIENCE_TABLE = {
     POST: 450,
     LIKE: 20,
     DISLIKE: 20,
-    SKIP: 10
+    SKIP: 10,
+    INVITE : 650
 };
