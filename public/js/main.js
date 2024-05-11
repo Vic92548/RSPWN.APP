@@ -115,6 +115,8 @@ function loadUserData(){
         loading_steps--;
         hideLoading();
 
+        handleReferral();
+
         window.analytics.identify(data.id, {
             email: data.email,
             name: data.username
@@ -720,6 +722,29 @@ function processJoinQueryParam() {
         window.history.replaceState({}, '', url.toString());
     }
 }
+
+function handleReferral() {
+    // Check if 'referrerId' is stored in local storage
+    const referrerId = localStorage.getItem('referrerId');
+
+    if (referrerId) {
+
+        makeApiRequest("/accept-invitation?ambassadorUserId=" + referrerId).then(data => {
+            console.log('Invitation processed:', data);
+
+            window.analytics.track('invitation accepted', {ambassadorUserId: referrerId});
+
+            // Remove 'referrerId' from local storage after processing
+            localStorage.removeItem('referrerId');
+
+
+        }).catch(error => {
+            console.log("failed to accept invitation");
+        });
+
+    }
+}
+
 
 processJoinQueryParam();
 
