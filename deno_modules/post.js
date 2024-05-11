@@ -546,10 +546,24 @@ export async function followPost(postId, followerId) {
 
 export async function unfollowPost(postId, followerId) {
     try {
+        // Retrieve the post to get the creator's userId
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: { userId: true } // Select only the userId
+        });
+
+        if (!post) {
+            console.log("Post not found.");
+            return new Response(JSON.stringify({ success: false, message: "Post not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
         const follow = await prisma.follow.delete({
             where: {
-                postId_followerId: {
-                    postId,
+                creatorId_followerId: {
+                    creatorId: post.userId,
                     followerId,
                 }
             }
