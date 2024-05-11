@@ -734,6 +734,12 @@ function handleReferral() {
 
             window.analytics.track('invitation accepted', {ambassadorUserId: referrerId});
 
+            if(creators[referrerId]){
+                creators[referrerId].following = true;
+                updateFollowButton();
+            }
+
+
             // Remove 'referrerId' from local storage after processing
             localStorage.removeItem('referrerId');
 
@@ -745,6 +751,54 @@ function handleReferral() {
     }
 }
 
+function copyReferrerId() {
+    // Construct the URL with the userId as a query parameter
+    if(isUserLoggedIn()){
+        const referralUrl = `https://vapr.gg?join=${user.id}`;
+
+        // Create a temporary text area to hold the URL
+        const textArea = document.createElement('textarea');
+        textArea.value = referralUrl;
+
+        // Avoid styling that would make the textarea visible
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+
+        // Append the textarea to the document
+        document.body.appendChild(textArea);
+
+        // Select the URL
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // For mobile devices
+
+        try {
+            // Copy the text inside the text area
+            const successful = document.execCommand('copy');
+
+            // Provide feedback on whether the URL was copied successfully
+            console.log(successful ? 'Referral URL copied to clipboard!' : 'Failed to copy the URL');
+
+            Swal.fire({
+                title: "Invitation copied to clipboard!",
+                text: "Your invitation link (" + referralUrl + "), has been copied to clipboard!",
+                icon: "success"
+            });
+        } catch (err) {
+            console.error('Error copying to clipboard: ', err);
+
+            Swal.fire({
+                title: "Failed to copy to clipboard!",
+                text: "Your invitation link (" + referralUrl + "), has failed to copy to clipboard!",
+                icon: "error"
+            });
+        }
+
+        // Remove the textarea element from the document after copying
+        document.body.removeChild(textArea);
+    }else{
+        openRegisterModal();
+    }
+}
 
 processJoinQueryParam();
 
