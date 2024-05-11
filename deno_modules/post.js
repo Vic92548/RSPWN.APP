@@ -562,9 +562,11 @@ export async function unfollowPost(postId, followerId) {
 
         const follow = await prisma.follow.delete({
             where: {
-                creatorId_followerId: {
-                    creatorId: post.userId,
-                    followerId,
+                where: {
+                    AND: [
+                        { followerId: followerId },
+                        { creatorId: post.userId } // Assuming 'creatorId' is also provided in the context
+                    ]
                 }
             }
         });
