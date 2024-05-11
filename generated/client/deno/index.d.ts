@@ -12579,7 +12579,7 @@ export namespace Prisma {
   }
 
   export type FollowWhereUniqueInput = Prisma.AtLeast<{
-    postId_followerId?: FollowPostIdFollowerIdCompoundUniqueInput
+    creatorId_followerId?: FollowCreatorIdFollowerIdCompoundUniqueInput
     AND?: FollowWhereInput | FollowWhereInput[]
     OR?: FollowWhereInput[]
     NOT?: FollowWhereInput | FollowWhereInput[]
@@ -12587,7 +12587,7 @@ export namespace Prisma {
     followerId?: StringFilter<"Follow"> | string
     creatorId?: StringFilter<"Follow"> | string
     timestamp?: DateTimeFilter<"Follow"> | Date | string
-  }, "postId_followerId">
+  }, "creatorId_followerId">
 
   export type FollowOrderByWithAggregationInput = {
     postId?: SortOrder
@@ -13597,8 +13597,8 @@ export namespace Prisma {
     timestamp?: SortOrder
   }
 
-  export type FollowPostIdFollowerIdCompoundUniqueInput = {
-    postId: string
+  export type FollowCreatorIdFollowerIdCompoundUniqueInput = {
+    creatorId: string
     followerId: string
   }
 
