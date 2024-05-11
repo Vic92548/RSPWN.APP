@@ -696,4 +696,31 @@ if(window.innerWidth >= 768){
     document.getElementById("menu").style.display = 'flex';
 }
 
+function processJoinQueryParam() {
+    // Create a URL object based on the current location
+    const url = new URL(window.location.href);
+
+    // Access the URL's search parameters
+    const params = url.searchParams;
+
+    // Check if the 'join' query parameter exists
+    if (params.has('join')) {
+        // Retrieve the value of the 'join' parameter
+        const joinValue = params.get('join');
+
+        console.log("Join param found with value = " + joinValue);
+
+        // Store the value in local storage
+        localStorage.setItem('referrerId', joinValue);
+
+        // Remove the 'join' parameter from the URL
+        params.delete('join');
+
+        // Replace the state in history without reloading the page to reflect the new URL
+        window.history.replaceState({}, '', url.toString());
+    }
+}
+
+processJoinQueryParam();
+
 showInitialPost();

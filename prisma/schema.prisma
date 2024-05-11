@@ -111,3 +111,10 @@ model Reaction {
 
   @@id([postId, userId, timestamp])
 }
+
+model RegistrationReferral {
+  id              String   @id @default(uuid())
+  invitedUserId   String
+  ambassadorUserId String
+  timestamp       DateTime @default(now())
+}

@@ -15,7 +15,7 @@ import {
     checkIfUserFollowsCreator,
     addReaction,
     getReactionsByPostId,
-    viewPost
+    viewPost, acceptInvitation
 } from "./deno_modules/post.js";
 
 const port = 8080;
@@ -241,6 +241,39 @@ async function handleRequest(request){
         }
 
         return viewPost(postId, authResult.userData.id);
+    }else if (url.pathname.startsWith("/accept-invitation") && request.method === "GET") {
+        const ambassadorUserId = url.searchParams.get('ambassadorUserId');
+
+        // Authentication and user identification
+        const authResult = await authenticateRequest(request);
+        if (!authResult.isValid) {
+            return new Response("Unauthorized", { status: 401 });
+        }
+
+        // Assuming there's a function to handle accepting the invitation
+        try {
+            // This function should handle the logic of recording the acceptance of the invitation
+            // It might need to check if the invitation exists and then update the database accordingly
+            const acceptanceResult = await acceptInvitation(authResult.userData.id, ambassadorUserId);
+
+            if (acceptanceResult.success) {
+                return new Response(JSON.stringify({ success: true, message: "Invitation accepted successfully" }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" }
+                });
+            } else {
+                return new Response(JSON.stringify({ success: false, message: "Failed to accept invitation" }), {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
+        } catch (error) {
+            console.error('Error accepting invitation:', error);
+            return new Response(JSON.stringify({ success: false, message: "Error processing your request" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
     } else{
         try {
             const filePath = `./public${url.pathname}`;

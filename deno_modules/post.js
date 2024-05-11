@@ -681,4 +681,66 @@ export async function getReactionsByPostId(postId) {
 }
 
 
+export async function acceptInvitation(invitedUserId, ambassadorUserId) {
+    try {
+        const invitee = await prisma.user.findUnique({
+            where: { id: invitedUserId }
+        });
+
+        if (!invitee) {
+            return { success: false, message: "Invitee user not found" };
+        }
+
+        // Verify if the invitation has already been made
+        const existingInvitation = await prisma.registrationReferral.findFirst({
+            where: {
+                invitedUserId: invitedUserId
+            }
+        });
+
+        if (existingInvitation) {
+            return { success: false, message: "Invitation already accepted by this user" };
+        }
+
+        // Check if the ambassadorUserId actually exists
+        const ambassador = await prisma.user.findUnique({
+            where: { id: ambassadorUserId }
+        });
+
+        if (!ambassador) {
+            return { success: false, message: "Ambassador user not found" };
+        }
+
+        // Create the referral entry
+        const referral = await prisma.registrationReferral.create({
+            data: {
+                invitedUserId: invitedUserId,
+                ambassadorUserId: ambassadorUserId,
+                timestamp: new Date(),
+            }
+        });
+
+        // Get the total number of successful referrals made by the ambassador
+        const totalInvitations = await prisma.registrationReferral.count({
+            where: {
+                ambassadorUserId: ambassadorUserId
+            }
+        });
+
+        // Assuming adding XP to the invited user's account as a reward for accepting the invitation
+        await addXP(ambassadorUserId, EXPERIENCE_TABLE.INVITE);
+
+        // Send a notification to Discord with the total number of invitations
+        sendMessageToDiscordWebhook(
+            "https://discord.com/api/webhooks/1238786271514595398/VTlL7WzN9mNYq-ebtpT0cINS54HLlGjVp9fZ5MvSHytRdI5QrJe7fbSXWfopz8tJ1drZ",
+            `@${invitee.username} accepted invitation from ${ambassador.username} 🥳 Total invitations accepted: ${totalInvitations}`
+        );
+
+        return { success: true, message: "Invitation accepted successfully", referral: referral, totalInvitations: totalInvitations };
+    } catch (error) {
+        console.error("Error accepting invitation:", error);
+        return { success: false, message: "Failed to accept invitation" };
+    }
+}
+
 

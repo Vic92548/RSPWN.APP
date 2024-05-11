@@ -68,6 +68,11 @@ export type Follow = $Result.DefaultSelection<Prisma.$FollowPayload>
  * 
  */
 export type Reaction = $Result.DefaultSelection<Prisma.$ReactionPayload>
+/**
+ * Model RegistrationReferral
+ * 
+ */
+export type RegistrationReferral = $Result.DefaultSelection<Prisma.$RegistrationReferralPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -300,6 +305,16 @@ export class PrismaClient<
     * ```
     */
   get reaction(): Prisma.ReactionDelegate<ExtArgs>;
+
+  /**
+   * `prisma.registrationReferral`: Exposes CRUD operations for the **RegistrationReferral** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RegistrationReferrals
+    * const registrationReferrals = await prisma.registrationReferral.findMany()
+    * ```
+    */
+  get registrationReferral(): Prisma.RegistrationReferralDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -787,7 +802,8 @@ export namespace Prisma {
     Comment: 'Comment',
     View: 'View',
     Follow: 'Follow',
-    Reaction: 'Reaction'
+    Reaction: 'Reaction',
+    RegistrationReferral: 'RegistrationReferral'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -804,7 +820,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'user' | 'secretKey' | 'post' | 'like' | 'dislike' | 'skip' | 'shadowBan' | 'comment' | 'view' | 'follow' | 'reaction'
+      modelProps: 'user' | 'secretKey' | 'post' | 'like' | 'dislike' | 'skip' | 'shadowBan' | 'comment' | 'view' | 'follow' | 'reaction' | 'registrationReferral'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -1531,6 +1547,72 @@ export namespace Prisma {
           count: {
             args: Prisma.ReactionCountArgs<ExtArgs>,
             result: $Utils.Optional<ReactionCountAggregateOutputType> | number
+          }
+        }
+      }
+      RegistrationReferral: {
+        payload: Prisma.$RegistrationReferralPayload<ExtArgs>
+        fields: Prisma.RegistrationReferralFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RegistrationReferralFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RegistrationReferralFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          findFirst: {
+            args: Prisma.RegistrationReferralFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RegistrationReferralFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          findMany: {
+            args: Prisma.RegistrationReferralFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>[]
+          }
+          create: {
+            args: Prisma.RegistrationReferralCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          createMany: {
+            args: Prisma.RegistrationReferralCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.RegistrationReferralDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          update: {
+            args: Prisma.RegistrationReferralUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          deleteMany: {
+            args: Prisma.RegistrationReferralDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RegistrationReferralUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.RegistrationReferralUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$RegistrationReferralPayload>
+          }
+          aggregate: {
+            args: Prisma.RegistrationReferralAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateRegistrationReferral>
+          }
+          groupBy: {
+            args: Prisma.RegistrationReferralGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<RegistrationReferralGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RegistrationReferralCountArgs<ExtArgs>,
+            result: $Utils.Optional<RegistrationReferralCountAggregateOutputType> | number
           }
         }
       }
@@ -11031,6 +11113,852 @@ export namespace Prisma {
 
 
   /**
+   * Model RegistrationReferral
+   */
+
+  export type AggregateRegistrationReferral = {
+    _count: RegistrationReferralCountAggregateOutputType | null
+    _min: RegistrationReferralMinAggregateOutputType | null
+    _max: RegistrationReferralMaxAggregateOutputType | null
+  }
+
+  export type RegistrationReferralMinAggregateOutputType = {
+    id: string | null
+    invitedUserId: string | null
+    ambassadorUserId: string | null
+    timestamp: Date | null
+  }
+
+  export type RegistrationReferralMaxAggregateOutputType = {
+    id: string | null
+    invitedUserId: string | null
+    ambassadorUserId: string | null
+    timestamp: Date | null
+  }
+
+  export type RegistrationReferralCountAggregateOutputType = {
+    id: number
+    invitedUserId: number
+    ambassadorUserId: number
+    timestamp: number
+    _all: number
+  }
+
+
+  export type RegistrationReferralMinAggregateInputType = {
+    id?: true
+    invitedUserId?: true
+    ambassadorUserId?: true
+    timestamp?: true
+  }
+
+  export type RegistrationReferralMaxAggregateInputType = {
+    id?: true
+    invitedUserId?: true
+    ambassadorUserId?: true
+    timestamp?: true
+  }
+
+  export type RegistrationReferralCountAggregateInputType = {
+    id?: true
+    invitedUserId?: true
+    ambassadorUserId?: true
+    timestamp?: true
+    _all?: true
+  }
+
+  export type RegistrationReferralAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RegistrationReferral to aggregate.
+     */
+    where?: RegistrationReferralWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationReferrals to fetch.
+     */
+    orderBy?: RegistrationReferralOrderByWithRelationInput | RegistrationReferralOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RegistrationReferralWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationReferrals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationReferrals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RegistrationReferrals
+    **/
+    _count?: true | RegistrationReferralCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RegistrationReferralMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RegistrationReferralMaxAggregateInputType
+  }
+
+  export type GetRegistrationReferralAggregateType<T extends RegistrationReferralAggregateArgs> = {
+        [P in keyof T & keyof AggregateRegistrationReferral]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRegistrationReferral[P]>
+      : GetScalarType<T[P], AggregateRegistrationReferral[P]>
+  }
+
+
+
+
+  export type RegistrationReferralGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RegistrationReferralWhereInput
+    orderBy?: RegistrationReferralOrderByWithAggregationInput | RegistrationReferralOrderByWithAggregationInput[]
+    by: RegistrationReferralScalarFieldEnum[] | RegistrationReferralScalarFieldEnum
+    having?: RegistrationReferralScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RegistrationReferralCountAggregateInputType | true
+    _min?: RegistrationReferralMinAggregateInputType
+    _max?: RegistrationReferralMaxAggregateInputType
+  }
+
+  export type RegistrationReferralGroupByOutputType = {
+    id: string
+    invitedUserId: string
+    ambassadorUserId: string
+    timestamp: Date
+    _count: RegistrationReferralCountAggregateOutputType | null
+    _min: RegistrationReferralMinAggregateOutputType | null
+    _max: RegistrationReferralMaxAggregateOutputType | null
+  }
+
+  type GetRegistrationReferralGroupByPayload<T extends RegistrationReferralGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RegistrationReferralGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RegistrationReferralGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RegistrationReferralGroupByOutputType[P]>
+            : GetScalarType<T[P], RegistrationReferralGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RegistrationReferralSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    invitedUserId?: boolean
+    ambassadorUserId?: boolean
+    timestamp?: boolean
+  }, ExtArgs["result"]["registrationReferral"]>
+
+  export type RegistrationReferralSelectScalar = {
+    id?: boolean
+    invitedUserId?: boolean
+    ambassadorUserId?: boolean
+    timestamp?: boolean
+  }
+
+
+
+  export type $RegistrationReferralPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RegistrationReferral"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      invitedUserId: string
+      ambassadorUserId: string
+      timestamp: Date
+    }, ExtArgs["result"]["registrationReferral"]>
+    composites: {}
+  }
+
+
+  type RegistrationReferralGetPayload<S extends boolean | null | undefined | RegistrationReferralDefaultArgs> = $Result.GetResult<Prisma.$RegistrationReferralPayload, S>
+
+  type RegistrationReferralCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<RegistrationReferralFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: RegistrationReferralCountAggregateInputType | true
+    }
+
+  export interface RegistrationReferralDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RegistrationReferral'], meta: { name: 'RegistrationReferral' } }
+    /**
+     * Find zero or one RegistrationReferral that matches the filter.
+     * @param {RegistrationReferralFindUniqueArgs} args - Arguments to find a RegistrationReferral
+     * @example
+     * // Get one RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends RegistrationReferralFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralFindUniqueArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one RegistrationReferral that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {RegistrationReferralFindUniqueOrThrowArgs} args - Arguments to find a RegistrationReferral
+     * @example
+     * // Get one RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends RegistrationReferralFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first RegistrationReferral that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralFindFirstArgs} args - Arguments to find a RegistrationReferral
+     * @example
+     * // Get one RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends RegistrationReferralFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralFindFirstArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first RegistrationReferral that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralFindFirstOrThrowArgs} args - Arguments to find a RegistrationReferral
+     * @example
+     * // Get one RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends RegistrationReferralFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more RegistrationReferrals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RegistrationReferrals
+     * const registrationReferrals = await prisma.registrationReferral.findMany()
+     * 
+     * // Get first 10 RegistrationReferrals
+     * const registrationReferrals = await prisma.registrationReferral.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const registrationReferralWithIdOnly = await prisma.registrationReferral.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends RegistrationReferralFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a RegistrationReferral.
+     * @param {RegistrationReferralCreateArgs} args - Arguments to create a RegistrationReferral.
+     * @example
+     * // Create one RegistrationReferral
+     * const RegistrationReferral = await prisma.registrationReferral.create({
+     *   data: {
+     *     // ... data to create a RegistrationReferral
+     *   }
+     * })
+     * 
+    **/
+    create<T extends RegistrationReferralCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralCreateArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Create many RegistrationReferrals.
+     *     @param {RegistrationReferralCreateManyArgs} args - Arguments to create many RegistrationReferrals.
+     *     @example
+     *     // Create many RegistrationReferrals
+     *     const registrationReferral = await prisma.registrationReferral.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends RegistrationReferralCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a RegistrationReferral.
+     * @param {RegistrationReferralDeleteArgs} args - Arguments to delete one RegistrationReferral.
+     * @example
+     * // Delete one RegistrationReferral
+     * const RegistrationReferral = await prisma.registrationReferral.delete({
+     *   where: {
+     *     // ... filter to delete one RegistrationReferral
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends RegistrationReferralDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralDeleteArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one RegistrationReferral.
+     * @param {RegistrationReferralUpdateArgs} args - Arguments to update one RegistrationReferral.
+     * @example
+     * // Update one RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends RegistrationReferralUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralUpdateArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more RegistrationReferrals.
+     * @param {RegistrationReferralDeleteManyArgs} args - Arguments to filter RegistrationReferrals to delete.
+     * @example
+     * // Delete a few RegistrationReferrals
+     * const { count } = await prisma.registrationReferral.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends RegistrationReferralDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, RegistrationReferralDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RegistrationReferrals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RegistrationReferrals
+     * const registrationReferral = await prisma.registrationReferral.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends RegistrationReferralUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one RegistrationReferral.
+     * @param {RegistrationReferralUpsertArgs} args - Arguments to update or create a RegistrationReferral.
+     * @example
+     * // Update or create a RegistrationReferral
+     * const registrationReferral = await prisma.registrationReferral.upsert({
+     *   create: {
+     *     // ... data to create a RegistrationReferral
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RegistrationReferral we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends RegistrationReferralUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, RegistrationReferralUpsertArgs<ExtArgs>>
+    ): Prisma__RegistrationReferralClient<$Result.GetResult<Prisma.$RegistrationReferralPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of RegistrationReferrals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralCountArgs} args - Arguments to filter RegistrationReferrals to count.
+     * @example
+     * // Count the number of RegistrationReferrals
+     * const count = await prisma.registrationReferral.count({
+     *   where: {
+     *     // ... the filter for the RegistrationReferrals we want to count
+     *   }
+     * })
+    **/
+    count<T extends RegistrationReferralCountArgs>(
+      args?: Subset<T, RegistrationReferralCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RegistrationReferralCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RegistrationReferral.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RegistrationReferralAggregateArgs>(args: Subset<T, RegistrationReferralAggregateArgs>): Prisma.PrismaPromise<GetRegistrationReferralAggregateType<T>>
+
+    /**
+     * Group by RegistrationReferral.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RegistrationReferralGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RegistrationReferralGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RegistrationReferralGroupByArgs['orderBy'] }
+        : { orderBy?: RegistrationReferralGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RegistrationReferralGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRegistrationReferralGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RegistrationReferral model
+   */
+  readonly fields: RegistrationReferralFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RegistrationReferral.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RegistrationReferralClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the RegistrationReferral model
+   */ 
+  interface RegistrationReferralFieldRefs {
+    readonly id: FieldRef<"RegistrationReferral", 'String'>
+    readonly invitedUserId: FieldRef<"RegistrationReferral", 'String'>
+    readonly ambassadorUserId: FieldRef<"RegistrationReferral", 'String'>
+    readonly timestamp: FieldRef<"RegistrationReferral", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RegistrationReferral findUnique
+   */
+  export type RegistrationReferralFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter, which RegistrationReferral to fetch.
+     */
+    where: RegistrationReferralWhereUniqueInput
+  }
+
+  /**
+   * RegistrationReferral findUniqueOrThrow
+   */
+  export type RegistrationReferralFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter, which RegistrationReferral to fetch.
+     */
+    where: RegistrationReferralWhereUniqueInput
+  }
+
+  /**
+   * RegistrationReferral findFirst
+   */
+  export type RegistrationReferralFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter, which RegistrationReferral to fetch.
+     */
+    where?: RegistrationReferralWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationReferrals to fetch.
+     */
+    orderBy?: RegistrationReferralOrderByWithRelationInput | RegistrationReferralOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RegistrationReferrals.
+     */
+    cursor?: RegistrationReferralWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationReferrals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationReferrals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RegistrationReferrals.
+     */
+    distinct?: RegistrationReferralScalarFieldEnum | RegistrationReferralScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationReferral findFirstOrThrow
+   */
+  export type RegistrationReferralFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter, which RegistrationReferral to fetch.
+     */
+    where?: RegistrationReferralWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationReferrals to fetch.
+     */
+    orderBy?: RegistrationReferralOrderByWithRelationInput | RegistrationReferralOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RegistrationReferrals.
+     */
+    cursor?: RegistrationReferralWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationReferrals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationReferrals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RegistrationReferrals.
+     */
+    distinct?: RegistrationReferralScalarFieldEnum | RegistrationReferralScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationReferral findMany
+   */
+  export type RegistrationReferralFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter, which RegistrationReferrals to fetch.
+     */
+    where?: RegistrationReferralWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RegistrationReferrals to fetch.
+     */
+    orderBy?: RegistrationReferralOrderByWithRelationInput | RegistrationReferralOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RegistrationReferrals.
+     */
+    cursor?: RegistrationReferralWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RegistrationReferrals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RegistrationReferrals.
+     */
+    skip?: number
+    distinct?: RegistrationReferralScalarFieldEnum | RegistrationReferralScalarFieldEnum[]
+  }
+
+  /**
+   * RegistrationReferral create
+   */
+  export type RegistrationReferralCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * The data needed to create a RegistrationReferral.
+     */
+    data: XOR<RegistrationReferralCreateInput, RegistrationReferralUncheckedCreateInput>
+  }
+
+  /**
+   * RegistrationReferral createMany
+   */
+  export type RegistrationReferralCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RegistrationReferrals.
+     */
+    data: RegistrationReferralCreateManyInput | RegistrationReferralCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RegistrationReferral update
+   */
+  export type RegistrationReferralUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * The data needed to update a RegistrationReferral.
+     */
+    data: XOR<RegistrationReferralUpdateInput, RegistrationReferralUncheckedUpdateInput>
+    /**
+     * Choose, which RegistrationReferral to update.
+     */
+    where: RegistrationReferralWhereUniqueInput
+  }
+
+  /**
+   * RegistrationReferral updateMany
+   */
+  export type RegistrationReferralUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RegistrationReferrals.
+     */
+    data: XOR<RegistrationReferralUpdateManyMutationInput, RegistrationReferralUncheckedUpdateManyInput>
+    /**
+     * Filter which RegistrationReferrals to update
+     */
+    where?: RegistrationReferralWhereInput
+  }
+
+  /**
+   * RegistrationReferral upsert
+   */
+  export type RegistrationReferralUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * The filter to search for the RegistrationReferral to update in case it exists.
+     */
+    where: RegistrationReferralWhereUniqueInput
+    /**
+     * In case the RegistrationReferral found by the `where` argument doesn't exist, create a new RegistrationReferral with this data.
+     */
+    create: XOR<RegistrationReferralCreateInput, RegistrationReferralUncheckedCreateInput>
+    /**
+     * In case the RegistrationReferral was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RegistrationReferralUpdateInput, RegistrationReferralUncheckedUpdateInput>
+  }
+
+  /**
+   * RegistrationReferral delete
+   */
+  export type RegistrationReferralDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+    /**
+     * Filter which RegistrationReferral to delete.
+     */
+    where: RegistrationReferralWhereUniqueInput
+  }
+
+  /**
+   * RegistrationReferral deleteMany
+   */
+  export type RegistrationReferralDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RegistrationReferrals to delete
+     */
+    where?: RegistrationReferralWhereInput
+  }
+
+  /**
+   * RegistrationReferral without action
+   */
+  export type RegistrationReferralDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RegistrationReferral
+     */
+    select?: RegistrationReferralSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11151,6 +12079,16 @@ export namespace Prisma {
   };
 
   export type ReactionScalarFieldEnum = (typeof ReactionScalarFieldEnum)[keyof typeof ReactionScalarFieldEnum]
+
+
+  export const RegistrationReferralScalarFieldEnum: {
+    id: 'id',
+    invitedUserId: 'invitedUserId',
+    ambassadorUserId: 'ambassadorUserId',
+    timestamp: 'timestamp'
+  };
+
+  export type RegistrationReferralScalarFieldEnum = (typeof RegistrationReferralScalarFieldEnum)[keyof typeof RegistrationReferralScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -11719,6 +12657,53 @@ export namespace Prisma {
     emoji?: StringWithAggregatesFilter<"Reaction"> | string
   }
 
+  export type RegistrationReferralWhereInput = {
+    AND?: RegistrationReferralWhereInput | RegistrationReferralWhereInput[]
+    OR?: RegistrationReferralWhereInput[]
+    NOT?: RegistrationReferralWhereInput | RegistrationReferralWhereInput[]
+    id?: StringFilter<"RegistrationReferral"> | string
+    invitedUserId?: StringFilter<"RegistrationReferral"> | string
+    ambassadorUserId?: StringFilter<"RegistrationReferral"> | string
+    timestamp?: DateTimeFilter<"RegistrationReferral"> | Date | string
+  }
+
+  export type RegistrationReferralOrderByWithRelationInput = {
+    id?: SortOrder
+    invitedUserId?: SortOrder
+    ambassadorUserId?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type RegistrationReferralWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RegistrationReferralWhereInput | RegistrationReferralWhereInput[]
+    OR?: RegistrationReferralWhereInput[]
+    NOT?: RegistrationReferralWhereInput | RegistrationReferralWhereInput[]
+    invitedUserId?: StringFilter<"RegistrationReferral"> | string
+    ambassadorUserId?: StringFilter<"RegistrationReferral"> | string
+    timestamp?: DateTimeFilter<"RegistrationReferral"> | Date | string
+  }, "id">
+
+  export type RegistrationReferralOrderByWithAggregationInput = {
+    id?: SortOrder
+    invitedUserId?: SortOrder
+    ambassadorUserId?: SortOrder
+    timestamp?: SortOrder
+    _count?: RegistrationReferralCountOrderByAggregateInput
+    _max?: RegistrationReferralMaxOrderByAggregateInput
+    _min?: RegistrationReferralMinOrderByAggregateInput
+  }
+
+  export type RegistrationReferralScalarWhereWithAggregatesInput = {
+    AND?: RegistrationReferralScalarWhereWithAggregatesInput | RegistrationReferralScalarWhereWithAggregatesInput[]
+    OR?: RegistrationReferralScalarWhereWithAggregatesInput[]
+    NOT?: RegistrationReferralScalarWhereWithAggregatesInput | RegistrationReferralScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RegistrationReferral"> | string
+    invitedUserId?: StringWithAggregatesFilter<"RegistrationReferral"> | string
+    ambassadorUserId?: StringWithAggregatesFilter<"RegistrationReferral"> | string
+    timestamp?: DateTimeWithAggregatesFilter<"RegistrationReferral"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     username: string
@@ -12251,6 +13236,55 @@ export namespace Prisma {
     emoji?: StringFieldUpdateOperationsInput | string
   }
 
+  export type RegistrationReferralCreateInput = {
+    id?: string
+    invitedUserId: string
+    ambassadorUserId: string
+    timestamp?: Date | string
+  }
+
+  export type RegistrationReferralUncheckedCreateInput = {
+    id?: string
+    invitedUserId: string
+    ambassadorUserId: string
+    timestamp?: Date | string
+  }
+
+  export type RegistrationReferralUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invitedUserId?: StringFieldUpdateOperationsInput | string
+    ambassadorUserId?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationReferralUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invitedUserId?: StringFieldUpdateOperationsInput | string
+    ambassadorUserId?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationReferralCreateManyInput = {
+    id?: string
+    invitedUserId: string
+    ambassadorUserId: string
+    timestamp?: Date | string
+  }
+
+  export type RegistrationReferralUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invitedUserId?: StringFieldUpdateOperationsInput | string
+    ambassadorUserId?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RegistrationReferralUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invitedUserId?: StringFieldUpdateOperationsInput | string
+    ambassadorUserId?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -12616,6 +13650,27 @@ export namespace Prisma {
     emoji?: SortOrder
   }
 
+  export type RegistrationReferralCountOrderByAggregateInput = {
+    id?: SortOrder
+    invitedUserId?: SortOrder
+    ambassadorUserId?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type RegistrationReferralMaxOrderByAggregateInput = {
+    id?: SortOrder
+    invitedUserId?: SortOrder
+    ambassadorUserId?: SortOrder
+    timestamp?: SortOrder
+  }
+
+  export type RegistrationReferralMinOrderByAggregateInput = {
+    id?: SortOrder
+    invitedUserId?: SortOrder
+    ambassadorUserId?: SortOrder
+    timestamp?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -12775,6 +13830,10 @@ export namespace Prisma {
      * @deprecated Use ReactionDefaultArgs instead
      */
     export type ReactionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ReactionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use RegistrationReferralDefaultArgs instead
+     */
+    export type RegistrationReferralArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = RegistrationReferralDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany
