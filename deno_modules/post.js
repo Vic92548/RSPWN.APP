@@ -225,6 +225,7 @@ function generateRandomId(length) {
 
 export async function viewPost(postId, userId) {
 
+    console.log("Starting to record view for userId" + userId + " for post:" + postId);
     try{
         if(userId === "anonymous"){
 
