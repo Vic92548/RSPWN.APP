@@ -190,6 +190,7 @@ function drawPost(data){
     displayReactions();
 
     makeApiRequest("/register-view").then(data => {
+        console.log(data);
         console.log("Views updated");
     });
 
