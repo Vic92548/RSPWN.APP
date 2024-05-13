@@ -245,8 +245,8 @@ export async function viewPost(postId, userId) {
             });
         }
 
-    }catch{
-
+    }catch(error){
+        console.error(error);
     }
 
 
