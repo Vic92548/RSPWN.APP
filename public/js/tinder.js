@@ -59,6 +59,12 @@ function setInitialTransform(post) {
     translateY = parseInt(translateY[0]);
     translateX = parseInt(translateX[0]);
 
+    console.log({
+        translateX: translateX,
+        translateY: translateY,
+        rotate
+    })
+
     post.style.setProperty('--start-translate-x', `${translateX}px`);
     post.style.setProperty('--start-translate-y', `${translateY}px`);
     post.style.setProperty('--start-rotate', `${rotate}deg`);
