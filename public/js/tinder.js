@@ -33,12 +33,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         if (velocity > 0.3 || Math.abs(changeX) > 100) {
             if (changeX < -100) {
+                setInitialTransform(post);
                 dislikePost();
             } else if (changeX > 100) {
+                setInitialTransform(post);
                 likePost();
             }
         }else if (velocityy > 0.3 || Math.abs(changeY) > 100) {
             if (changeY < -100) {
+                setInitialTransform(post);
                 skipPost();
             }
         } else {
@@ -79,7 +82,6 @@ function setInitialTransform(post) {
 
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    setInitialTransform(post);
     post.style.animation = 'swipeRight 0.6s';
 
     confetti({
@@ -91,13 +93,11 @@ function displayLikeAnimation() {
 
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    setInitialTransform(post);
     post.style.animation = 'swipeLeft 0.6s';
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    setInitialTransform(post);
     post.style.animation = 'skip 0.6s';
 }
 
