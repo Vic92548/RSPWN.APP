@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function setInitialTransform(post) {
     const style = window.getComputedStyle(post);
     const matrix = new WebKitCSSMatrix(style.transform);
+
+    console.log(matrix);
+
     post.style.setProperty('--start-translate-x', `${matrix.m41}px`);
     post.style.setProperty('--start-translate-y', `${matrix.m42}px`);
     post.style.setProperty('--start-rotate', `0deg`); // Assuming initial rotation is always 0
