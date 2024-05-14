@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         currentY = startY;
         startTime = new Date().getTime();
         post.style.transition = 'none';
+        post.style.animation = 'none';
     });
 
     post.addEventListener('touchmove', (e) => {
