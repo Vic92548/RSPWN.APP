@@ -49,10 +49,34 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 });
 
+function setInitialTransform(post) {
+    const transform = post.style.transform;
+
+    console.log(transform);
+    let translateX = transform.split("translate(")[1].split("px,");
+    let translateY = translateX[1].split('px)')
+    const rotate = parseInt(translateY[1].split("rotate(")[1].split("deg)")[0]);
+    translateY = parseInt(translateY[0]);
+    translateX = parseInt(translateX[0]);
+
+    console.log({
+        translateX: translateX,
+        translateY: translateY,
+        rotate
+    })
+
+    post.style.setProperty('--start-translate-x', `${translateX}px`);
+    post.style.setProperty('--start-translate-y', `${translateY}px`);
+    post.style.setProperty('--start-rotate', `${rotate}deg`);
+
+    post.style.transform = "translateY(100vh)";
+    post.style.transition = 'all 1s ease-in-out';
+}
+
+
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'swipeRight 0.6s';
 
     confetti({
@@ -64,15 +88,13 @@ function displayLikeAnimation() {
 
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'swipeLeft 0.6s';
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'skip 0.6s';
 }
 

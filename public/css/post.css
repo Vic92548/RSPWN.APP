@@ -38,51 +38,51 @@
     transform: translateY(100vh);
     transition: all 1s ease-in-out;
 }
-
 @keyframes swipeRight {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
         background-color: rgba(255,255,255,0.4);
         box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
         opacity: 1;
     }
-    25%{
+    25% {
         background-color: rgba(46, 204, 113, 0.4);
         box-shadow: 0 0px 15px rgba(46, 204, 113, 0.3);
     }
     100% {
-        transform: rotate(20deg) translate(100px, -50px);
+        transform: rotate(20deg) translate(calc(var(--start-translate-x) + 100px), calc(var(--start-translate-y) - 50px));
         opacity: 0;
     }
 }
 
 @keyframes swipeLeft {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
         background-color: rgba(255,255,255,0.4);
         box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
         opacity: 1;
     }
-    25%{
+    25% {
         background-color: rgba(231, 76, 60, 0.4);
         box-shadow: 0 0px 15px rgba(231, 76, 60, 0.3);
     }
     100% {
-        transform: rotate(-20deg) translate(-100px, -50px);
+        transform: rotate(-20deg) translate(calc(var(--start-translate-x) - 100px), calc(var(--start-translate-y) - 50px));
         opacity: 0;
     }
 }
 
 @keyframes skip {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
         opacity: 1;
     }
     100% {
-        transform: translate(0px,-100px);
+        transform: translate(var(--start-translate-x), calc(var(--start-translate-y) - 100px));
         opacity: 0;
     }
 }
+
 
 .glass_modal {
     width: 100%;
