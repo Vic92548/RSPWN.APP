@@ -1,30 +1,53 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const post = document.getElementsByClassName("post")[0];
     let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let startTime = 0;
 
     post.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        currentX = startX;
+        currentY = startY;
+        startTime = new Date().getTime();
+        post.style.transition = 'none';
+        post.style.animation = 'none';
     });
 
     post.addEventListener('touchmove', (e) => {
-        let touch = e.touches[0];
-        let change = startX - touch.clientX;
-        post.style.transform = `translateX(${-change}px)`;
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+        let changeX = currentX - startX;
+        let changeY = currentY - startY;
+        post.style.transform = `translate(${changeX}px, ${changeY}px) rotate(${changeX * 0.1}deg)`;
     });
 
     post.addEventListener('touchend', (e) => {
-        let change = startX - e.changedTouches[0].clientX;
-        if (change < -50) {
-            likePost();
-        } else if (change > 50) {
-            dislikePost();
-        } else {
-            skipPost();
-        }
-        post.style.transform = '';
-    });
-});
+        let changeX = currentX - startX;
+        let changeY = currentY - startY;
+        let elapsedTime = new Date().getTime() - startTime;
+        let velocity = Math.abs(changeX) / elapsedTime;
 
+        if (velocity > 0.3 || Math.abs(changeX) > 100) {
+            if (changeX < -100) {
+                dislikePost();
+            } else if (changeX > 100) {
+                likePost();
+            } else {
+                skipPost();
+            }
+        } else {
+            resetPostPosition();
+        }
+    });
+
+    function resetPostPosition() {
+        post.style.transition = 'transform 0.3s ease';
+        post.style.transform = 'translate(0px, 0px) rotate(0deg)';
+    }
+});
 
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
@@ -53,109 +76,81 @@ function displaySkipAnimation() {
     post.style.animation = 'skip 0.6s';
 }
 
+
 function likePost() {
-    if(isUserLoggedIn()){
+    if (isUserLoggedIn()) {
         displayLikeAnimation();
         makeApiRequest("/like/" + current_post_id).then(data => {
-
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,
                 xp_required: window.user.xp_required
             };
-
             window.user = data.user;
-
-            window.analytics.track('like', {post: current_post});
-
+            window.analytics.track('like', { post: current_post });
             setXPProgress(oldUser);
-
-            displayPost();
-
-
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
             console.log(error);
         });
-    }else{
-        if(post_seen > 7){
+    } else {
+        if (post_seen > 7) {
             openRegisterModal();
-        }else{
+        } else {
             displayLikeAnimation();
-            setTimeout(() => {
-                displayPost();
-            }, 700);
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }
-
     }
-
 }
 
 function skipPost() {
-    if(isUserLoggedIn()){
+    if (isUserLoggedIn()) {
         displaySkipAnimation();
         makeApiRequest("/skip/" + current_post_id).then(data => {
-
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,
                 xp_required: window.user.xp_required
             };
-
             window.user = data.user;
-
             setXPProgress(oldUser);
-
-            window.analytics.track('skip', {post: current_post});
-            displayPost();
+            window.analytics.track('skip', { post: current_post });
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
             console.log(error);
         });
-    }else{
-        if(post_seen > 7){
+    } else {
+        if (post_seen > 7) {
             openRegisterModal();
-        }else{
+        } else {
             displaySkipAnimation();
-            setTimeout(() => {
-                displayPost();
-            }, 700);
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }
     }
-
 }
 
 function dislikePost() {
-    if(isUserLoggedIn()){
+    if (isUserLoggedIn()) {
         displayDislikeAnimation();
         makeApiRequest("/dislike/" + current_post_id).then(data => {
-
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,
                 xp_required: window.user.xp_required
             };
-
             window.user = data.user;
-
             setXPProgress(oldUser);
-
-
-
-            window.analytics.track('dislike', {post: current_post});
-            displayPost();
+            window.analytics.track('dislike', { post: current_post });
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
             console.log(error);
         });
-    }else{
-        if(post_seen > 7){
+    } else {
+        if (post_seen > 7) {
             openRegisterModal();
-        }else{
+        } else {
             displayDislikeAnimation();
-
-            setTimeout(() => {
-                displayPost();
-            }, 700);
-
+            setTimeout(displayPost, 600); // Wait for animation to complete
         }
     }
-
 }
