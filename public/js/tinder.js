@@ -51,15 +51,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transition = 'none';
-    post.style.transform = 'none';
-    post.style.animation = ''; // Reset animation
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            post.style.transition = 'transform 0.6s ease';
-            post.style.transform = "translateX(100vw) rotate(30deg)";
-        });
-    });
+    post.style.transform = "translateY(100vh)";
+
+    post.style.animation = 'swipeRight 0.6s';
 
     confetti({
         particleCount: 100,
@@ -70,29 +64,18 @@ function displayLikeAnimation() {
 
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transition = 'none';
-    post.style.transform = 'none';
-    post.style.animation = ''; // Reset animation
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            post.style.transition = 'transform 0.6s ease';
-            post.style.transform = "translateX(-100vw) rotate(-30deg)";
-        });
-    });
+    post.style.transform = "translateY(100vh)";
+
+    post.style.animation = 'swipeLeft 0.6s';
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transition = 'none';
-    post.style.transform = 'none';
-    post.style.animation = ''; // Reset animation
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            post.style.transition = 'transform 0.6s ease';
-            post.style.transform = "translateY(100vh) rotate(0deg)";
-        });
-    });
+    post.style.transform = "translateY(100vh)";
+
+    post.style.animation = 'skip 0.6s';
 }
+
 
 function likePost() {
     if (isUserLoggedIn()) {
