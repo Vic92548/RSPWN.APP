@@ -49,10 +49,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 });
 
+function setInitialTransform(post) {
+    const style = window.getComputedStyle(post);
+    const matrix = new WebKitCSSMatrix(style.transform);
+    post.style.setProperty('--start-translate-x', `${matrix.m41}px`);
+    post.style.setProperty('--start-translate-y', `${matrix.m42}px`);
+    post.style.setProperty('--start-rotate', `0deg`); // Assuming initial rotation is always 0
+}
+
+
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'swipeRight 0.6s';
 
     confetti({
@@ -65,14 +74,14 @@ function displayLikeAnimation() {
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'swipeLeft 0.6s';
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translateY(100vh)";
-
+    setInitialTransform(post);
     post.style.animation = 'skip 0.6s';
 }
 
