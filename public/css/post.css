@@ -41,7 +41,7 @@
 
 @keyframes swipeRight {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(0deg);
         background-color: rgba(255,255,255,0.4);
         box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
         opacity: 1;
@@ -58,7 +58,7 @@
 
 @keyframes swipeLeft {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(0deg);
         background-color: rgba(255,255,255,0.4);
         box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
         opacity: 1;
