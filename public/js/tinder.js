@@ -53,7 +53,7 @@ function setInitialTransform(post) {
     const style = window.getComputedStyle(post);
     const transform = style.transform;
 
-    let translateX = "0px, 0px) rotate(0deg)".split("translate(")[1].split("px,");
+    let translateX = transform.split("translate(")[1].split("px,");
     let translateY = translateX[1].split('px)')
     const rotate = parseInt(translateY[1].split("rotate(")[1].split("deg)")[0]);
     translateY = parseInt(translateY[0]);
