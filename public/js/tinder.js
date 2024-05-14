@@ -2,40 +2,50 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const post = document.getElementsByClassName("post")[0];
     let startX = 0;
     let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
     let startTime = 0;
 
     post.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
+        currentX = startX;
+        currentY = startY;
         startTime = new Date().getTime();
         post.style.transition = '';
     });
 
     post.addEventListener('touchmove', (e) => {
-        let touch = e.touches[0];
-        let changeX = touch.clientX - startX;
-        let changeY = touch.clientY - startY;
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+        let changeX = currentX - startX;
+        let changeY = currentY - startY;
         post.style.transform = `translate(${changeX}px, ${changeY}px) rotate(${changeX * 0.1}deg)`;
     });
 
     post.addEventListener('touchend', (e) => {
-        let changeX = e.changedTouches[0].clientX - startX;
-        let changeY = e.changedTouches[0].clientY - startY;
+        let changeX = currentX - startX;
+        let changeY = currentY - startY;
         let elapsedTime = new Date().getTime() - startTime;
         let velocity = Math.abs(changeX) / elapsedTime;
 
         if (velocity > 0.3 || Math.abs(changeX) > 100) {
-            if (changeX < 0) {
+            if (changeX < -100) {
                 dislikePost();
-            } else {
+            } else if (changeX > 100) {
                 likePost();
+            } else {
+                skipPost();
             }
         } else {
-            skipPost();
+            resetPostPosition();
         }
+    });
+
+    function resetPostPosition() {
         post.style.transition = 'transform 0.3s ease';
         post.style.transform = 'translate(0px, 0px) rotate(0deg)';
-    });
+    }
 });
 
 function displayLikeAnimation() {
