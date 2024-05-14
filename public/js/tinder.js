@@ -70,6 +70,7 @@ function setInitialTransform(post) {
     post.style.setProperty('--start-rotate', `${rotate}deg`);
 
     post.style.transform = "translateY(100vh)";
+    post.style.transition = 'all 1s ease-in-out';
 }
 
 
