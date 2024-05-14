@@ -68,6 +68,10 @@ function setInitialTransform(post) {
     post.style.setProperty('--start-translate-x', `${translateX}px`);
     post.style.setProperty('--start-translate-y', `${translateY}px`);
     post.style.setProperty('--start-rotate', `${rotate}deg`);
+
+    setTimeout(() => {
+        post.style.transform = "translateY(100vh)";
+    }, 600);
 }
 
 
