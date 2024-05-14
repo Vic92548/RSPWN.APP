@@ -73,7 +73,6 @@ function setInitialTransform(post) {
 
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
     setInitialTransform(post);
     post.style.animation = 'swipeRight 0.6s';
 
@@ -86,14 +85,12 @@ function displayLikeAnimation() {
 
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
     setInitialTransform(post);
     post.style.animation = 'swipeLeft 0.6s';
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(100vh)";
     setInitialTransform(post);
     post.style.animation = 'skip 0.6s';
 }
