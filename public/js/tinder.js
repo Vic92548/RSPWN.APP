@@ -50,8 +50,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function setInitialTransform(post) {
-    const style = window.getComputedStyle(post);
-    const transform = style.transform;
+    const transform = post.style.transform;
 
     let translateX = transform.split("translate(")[1].split("px,");
     let translateY = translateX[1].split('px)')
