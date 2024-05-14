@@ -29,13 +29,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let changeY = currentY - startY;
         let elapsedTime = new Date().getTime() - startTime;
         let velocity = Math.abs(changeX) / elapsedTime;
+        let velocityy = Math.abs(changeY) / elapsedTime;
 
         if (velocity > 0.3 || Math.abs(changeX) > 100) {
             if (changeX < -100) {
                 dislikePost();
             } else if (changeX > 100) {
                 likePost();
-            } else {
+            }
+        }else if (velocityy > 0.3 || Math.abs(changeY) > 100) {
+            if (changeY < -100) {
                 skipPost();
             }
         } else {
