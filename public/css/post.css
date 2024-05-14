@@ -51,7 +51,7 @@
         box-shadow: 0 0px 15px rgba(46, 204, 113, 0.3);
     }
     100% {
-        transform: rotate(20deg) translate(100px, -50px);
+        transform: rotate(20deg);
         opacity: 0;
     }
 }
@@ -68,18 +68,17 @@
         box-shadow: 0 0px 15px rgba(231, 76, 60, 0.3);
     }
     100% {
-        transform: rotate(-20deg) translate(-100px, -50px);
+        transform: rotate(-20deg);
         opacity: 0;
     }
 }
 
 @keyframes skip {
     0% {
-        transform: rotate(0deg) translate(0, 0);
+        transform: rotate(0deg);
         opacity: 1;
     }
     100% {
-        transform: translate(0px,-100px);
         opacity: 0;
     }
 }
