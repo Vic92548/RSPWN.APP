@@ -1,3 +1,31 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const post = document.getElementsByClassName("post")[0];
+    let startX = 0;
+
+    post.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    post.addEventListener('touchmove', (e) => {
+        let touch = e.touches[0];
+        let change = startX - touch.clientX;
+        post.style.transform = `translateX(${-change}px)`;
+    });
+
+    post.addEventListener('touchend', (e) => {
+        let change = startX - e.changedTouches[0].clientX;
+        if (change < -50) {
+            likePost();
+        } else if (change > 50) {
+            dislikePost();
+        } else {
+            skipPost();
+        }
+        post.style.transform = '';
+    });
+});
+
+
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translateY(100vh)";
