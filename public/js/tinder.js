@@ -84,6 +84,8 @@ function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'swipeRight 0.6s';
 
+    post.style.transform = "translateY(100vh)";
+
     confetti({
         particleCount: 100,
         spread: 70,
@@ -94,11 +96,15 @@ function displayLikeAnimation() {
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'swipeLeft 0.6s';
+
+    post.style.transform = "translateY(100vh)";
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'skip 0.6s';
+
+    post.style.transform = "translateY(100vh)";
 }
 
 
