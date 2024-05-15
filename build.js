@@ -51,7 +51,7 @@ function minifyAndObfuscateJS(content) {
     content = content.replace(/(^|\s)\/\/.*(?=[\n\r])/g, '');
 
     // Collapse whitespace
-    content = content.replace(/\s+/g, ' ').trim();
+    //content = content.replace(/\s+/g, ' ').trim();
 
     // Obfuscate variable and function names
     /*let variableCount = 0;
