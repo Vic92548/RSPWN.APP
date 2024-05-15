@@ -117,22 +117,6 @@
 
 <script src="/script.min.js"></script>
 
-<script>
-    window.analytics = {};
-    function juneify(writeKey) {
-        window.analytics._writeKey = writeKey;
-        var script = document.createElement("script");
-        script.type = "application/javascript";
-        script.onload = function () {
-            window.analytics.page();
-        }
-        script.src = "https://unpkg.com/@june-so/analytics-next/dist/umd/standalone.js";
-        var first = document.getElementsByTagName('script')[0];
-        first.parentNode.insertBefore(script, first);
-    }
-    juneify("4MLzqgiiNqYz3VVt");
-</script>
-
 <!-- 100% privacy-first analytics -->
 <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
