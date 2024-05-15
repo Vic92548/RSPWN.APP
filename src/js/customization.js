@@ -5,10 +5,8 @@ function equipBackground(url, save = true) {
 
     if(!saved_background){
         localStorage.setItem('background_url', url);
-    }else if(saved_background !== url){
+    }else if(saved_background !== url) {
         localStorage.setItem('background_url', url);
-    }else{
-        return;
     }
     document.body.style.backgroundImage = 'url(' + url + ')';
 
