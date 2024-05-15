@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="{{meta_description}}">
+    <meta name="keywords" content="VAPR, community, social media, interactive, posts, sharing, gaming, social platform">
+    <meta name="author" content="{{meta_author}}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://vapr.gg/">
+
+    <meta property="og:title" content="VAPR - The Gamer's social network" />
+    <meta property="og:description" content="{{meta_description}}" />
+    <meta property="og:image" content="{{meta_image}}" />
+    <meta property="og:url" content="{{meta_url}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="VAPR" />
+
+
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/css/feed.css" rel="stylesheet" type="text/css" />
+    <link href="/css/post.css" rel="stylesheet" type="text/css" />
+    <link href="/css/loading.css" rel="stylesheet" type="text/css" />
+    <link href="/css/comment.css" rel="stylesheet" type="text/css" />
+    <link href="/css/character.css" rel="stylesheet" type="text/css" />
+    <link href="/css/progress.css" rel="stylesheet" type="text/css" />
+    <link href="/css/customization.css" rel="stylesheet" type="text/css" />
+    <link href="/css/analytics.css" rel="stylesheet" type="text/css" />
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+    <title>VAPR</title>
+
+    <script src="https://kit.fontawesome.com/0431b99604.js" crossorigin="anonymous"></script>
+
+    <script defer data-domain="vapr.gg" src="https://plausible-analytics-production-1484.up.railway.app/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="background">
+
+<!--<a id="user_account_bt" onclick="openUserAccountModel()">
+    <i class="fa-solid fa-user-astronaut"></i>
+    ME
+</a>-->
+
+<a href="/public">
+    <h1 class="loading">
+        <span>V</span>
+        <span>A</span>
+        <span>P</span>
+        <span>R</span>
+    </h1>
+</a>
+
+<a href="https://discord.gg/vtsnj3zphd" class="discord-link">
+    <i class="fa-brands fa-discord"></i>
+</a>
+
+<main>
+    <!-- The Feed -->
+    <section id="feed">
+
+        <button id="add_post" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
+
+        [[rpg/xp_bar.html]]
+
+        <button id="reply" class="reply-btn glass_bt hidden"><i class="fa-solid fa-reply"></i> Reply</button>
+
+        <!-- Post -->
+
+        [[post.html]]
+
+    </section>
+
+    <!-- Add Post -->
+    [[forms/add_post.html]]
+
+    [[menu.html]]
+
+    <section id="background_images" class="glass_modal" style="display:none;">
+        <form>
+            <ul id="background_images_container">
+            </ul>
+            <div class="glass_bt close_bt" onclick="closeCustomizationMenu()"><i class="fa-solid fa-xmark"></i> Close</div>
+        </form>
+    </section>
+
+    <section id="old_posts" class="glass_modal" style="display:none;">
+        <form>
+            <ul id="old_posts_container">
+                <li>
+                    <span>Post name</span>
+                    <div><span><i class="fa-solid fa-eye"></i> 22</span> <a>open</a></div>
+                </li>
+                <li class="background_image_div">
+                    <div class="background_image_overlay">
+                        <p><i class="fa-solid fa-lock"></i></p>
+                        <h5>Unlock at level 1</h5>
+                    </div>
+                    <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/anime_city_night.webp')" src="https://vapr.b-cdn.net/background_images/anime_city_night.webp">
+
+                </li>
+            </ul>
+            <div class="glass_bt close_bt" onclick="closeAnalytics()"><i class="fa-solid fa-xmark"></i> Close</div>
+        </form>
+    </section>
+
+    [[forms/register.html]]
+
+    <a id="sign_in" class="discord_login glass_bt" href="/login"><i class="fa-brands fa-discord"></i> Login with discord</a>
+</main>
+
+<script src="/src/js/main.js"></script>
+<script src="/src/js/tinder.js"></script>
+<script src="/src/js/rpg.js"></script>
+<script src="/src/js/background_images.js"></script>
+<script src="/src/js/customization.js"></script>
+<script src="/src/js/analytics.js"></script>
+
+<script>
+    window.analytics = {};
+    function juneify(writeKey) {
+        window.analytics._writeKey = writeKey;
+        var script = document.createElement("script");
+        script.type = "application/javascript";
+        script.onload = function () {
+            window.analytics.page();
+        }
+        script.src = "https://unpkg.com/@june-so/analytics-next/dist/umd/standalone.js";
+        var first = document.getElementsByTagName('script')[0];
+        first.parentNode.insertBefore(script, first);
+    }
+    juneify("4MLzqgiiNqYz3VVt");
+</script>
+
+<!-- 100% privacy-first analytics -->
+<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+</body>
+</html>

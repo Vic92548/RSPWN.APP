@@ -1,0 +1,23 @@
+<section id="add-post" class="glass_modal" style="display:none;">
+    <form id="postForm">
+        <h3>VAPR</h3>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <div class="upload-card" onclick="document.getElementById('file').click()">
+            <img id="preview" src="" alt="Uploaded Image" style="display: none">
+            <i class="fas fa-cloud-upload-alt" id="upload-icon"></i>
+            <p class="upload-text">Click to upload an image</p>
+            <input type="file" id="file" name="file" hidden>
+        </div>
+
+
+        <label for="link">Link</label><br>
+        <label style="font-size: 10px">(If you want to promote, your game, community, whatever)</label>
+        <input id="link" type="url" name="link"></input><br><br>
+
+        <button onclick="closeNewPostModel()" class="glass_bt" style="background-color: rgba(52,73,94,0.9);color:#fff;"> CLOSE</button>
+        <button type="submit" class="glass_bt" style="float: right;"><i class="fa-solid fa-paper-plane"></i> SUBMIT POST</button>
+    </form>
+
+</section>
