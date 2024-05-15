@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: dev
+    branches: main
   pull_request:
-    branches: dev
+    branches: main
 
 jobs:
   deploy:
@@ -29,6 +29,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "vapr-dev"
+          project: "vapr-prod"
           entrypoint: "server.js"
           root: ""
