@@ -99,21 +99,6 @@
     align-items: center;
 }
 
-@keyframes glowing-shadow {
-    0% {
-        box-shadow: 0 0 30px rgb(154, 172, 255); /* Initial blue shadow */
-    }
-    33% {
-        box-shadow: 0 0 35px rgb(200, 100, 255); /* Purple shadow */
-    }
-    66% {
-        box-shadow: 0 0 40px rgb(100, 255, 150); /* Green shadow */
-    }
-    100% {
-        box-shadow: 0 0 30px rgb(154, 172, 255); /* Back to blue shadow */
-    }
-}
-
 #register{
     text-align: center;
 }

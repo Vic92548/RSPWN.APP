@@ -1,7 +1,15 @@
 function equipBackground(url, save = true) {
-    document.body.style.backgroundImage = 'url(' + url + ')';
+    const saved_background = localStorage.getItem('background_url');
     closeCustomizationMenu();
     hideMenu();
+
+    if(!saved_background){
+        localStorage.setItem('background_url', url);
+    }else if(saved_background !== url) {
+        localStorage.setItem('background_url', url);
+    }
+    document.body.style.backgroundImage = 'url(' + url + ')';
+
 }
 
 function updateBackgroundId(newBackgroundId) {

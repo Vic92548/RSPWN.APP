@@ -90,7 +90,8 @@ function loadUserData(){
 
         for (let i = 0; i < background_images.length; i++) {
             if(background_images[i].id === data.backgroundId){
-                equipBackground('https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp');
+                const background_url = 'https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp';
+                equipBackground(background_url);
                 break;
             }
         }
