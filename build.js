@@ -56,7 +56,7 @@ function minifyAndObfuscateCSS(content) {
     content = content.replace(/\/\*[\s\S]*?\*\//g, '');
 
     // Collapse whitespace
-    content = content.replace(/\s+/g, ' ').trim();
+    //content = content.replace(/\s+/g, ' ').trim();
 
     return content;
 }
