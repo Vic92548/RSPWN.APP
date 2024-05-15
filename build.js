@@ -109,7 +109,7 @@ async function main() {
     const minifiedContent = minifyAndObfuscateHTML(processedContent);
 
     // Write the minified content to a new file
-    await Deno.writeTextFile('output.html', minifiedContent);
+    await Deno.writeTextFile('index.html', minifiedContent);
 }
 
 // Run the main function
