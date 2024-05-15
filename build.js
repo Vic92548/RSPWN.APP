@@ -66,6 +66,7 @@ async function combineAndMinifyJS(directory) {
     let combinedJS = '';
 
     for await (const entry of walk(directory, { exts: ['js'] })) {
+        console.log(entry.path);
         const jsContent = await Deno.readTextFile(entry.path);
         combinedJS += jsContent + '\n';
     }
@@ -81,6 +82,7 @@ async function combineAndMinifyCSS(directory) {
     let combinedCSS = '';
 
     for await (const entry of walk(directory, { exts: ['css'] })) {
+        console.log(entry.path);
         const cssContent = await Deno.readTextFile(entry.path);
         combinedCSS += cssContent + '\n';
     }
