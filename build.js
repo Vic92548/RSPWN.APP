@@ -33,17 +33,11 @@ function minifyAndObfuscateHTML(content) {
     // Collapse whitespace
     content = content.replace(/\s+/g, ' ').trim();
 
-    // Obfuscate inline JavaScript and CSS
-    /*content = content.replace(/<script>([\s\S]*?)<\/script>/g, (match, p1) => {
-        return `<script>${minifyAndObfuscateJS(p1)}</script>`;
-    });*/
-
     return content;
 }
 
 // Custom JS minifier and obfuscator
 function minifyAndObfuscateJS(content) {
-
     // Remove multiline comments
     content = content.replace(/\/\*[\s\S]*?\*\//g, '');
 
@@ -51,17 +45,18 @@ function minifyAndObfuscateJS(content) {
     content = content.replace(/(^|\s)\/\/.*(?=[\n\r])/g, '');
 
     // Collapse whitespace
-    //content = content.replace(/\s+/g, ' ').trim();
+    content = content.replace(/\s+/g, ' ').trim();
 
-    // Obfuscate variable and function names
-    /*let variableCount = 0;
-    const variableMap = {};
-    content = content.replace(/\b[a-zA-Z_]\w*\b/g, (match) => {
-        if (!variableMap[match]) {
-            variableMap[match] = `_${variableCount++}`;
-        }
-        return variableMap[match];
-    });*/
+    return content;
+}
+
+// Custom CSS minifier and obfuscator
+function minifyAndObfuscateCSS(content) {
+    // Remove comments
+    content = content.replace(/\/\*[\s\S]*?\*\//g, '');
+
+    // Collapse whitespace
+    content = content.replace(/\s+/g, ' ').trim();
 
     return content;
 }
@@ -81,6 +76,21 @@ async function combineAndMinifyJS(directory) {
     return minifiedJS;
 }
 
+// Function to combine and minify CSS files
+async function combineAndMinifyCSS(directory) {
+    let combinedCSS = '';
+
+    for await (const entry of walk(directory, { exts: ['css'] })) {
+        const cssContent = await Deno.readTextFile(entry.path);
+        combinedCSS += cssContent + '\n';
+    }
+
+    // Minify and obfuscate the combined CSS content
+    const minifiedCSS = minifyAndObfuscateCSS(combinedCSS);
+    await Deno.writeTextFile('./public/style.min.css', minifiedCSS);
+    return minifiedCSS;
+}
+
 // Main function to start the process
 async function main() {
     // Specify the entry HTML file
@@ -92,11 +102,14 @@ async function main() {
     // Combine and minify JS files
     const combinedJS = await combineAndMinifyJS('./src/js/');
 
+    // Combine and minify CSS files
+    const combinedCSS = await combineAndMinifyCSS('./src/css/');
+
     // Minify and obfuscate the final HTML content
     const minifiedContent = minifyAndObfuscateHTML(processedContent);
 
     // Write the minified content to a new file
-    await Deno.writeTextFile('index.html', minifiedContent);
+    await Deno.writeTextFile('output.html', minifiedContent);
 }
 
 // Run the main function
