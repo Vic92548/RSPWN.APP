@@ -45,7 +45,7 @@ function minifyAndObfuscateJS(content) {
     content = content.replace(/(^|\s)\/\/.*(?=[\n\r])/g, '');
 
     // Collapse whitespace
-    content = content.replace(/\s+/g, ' ').trim();
+   // content = content.replace(/\s+/g, ' ').trim();
 
     return content;
 }
