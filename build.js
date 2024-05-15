@@ -34,9 +34,9 @@ function minifyAndObfuscateHTML(content) {
     content = content.replace(/\s+/g, ' ').trim();
 
     // Obfuscate inline JavaScript and CSS
-    content = content.replace(/<script>([\s\S]*?)<\/script>/g, (match, p1) => {
+    /*content = content.replace(/<script>([\s\S]*?)<\/script>/g, (match, p1) => {
         return `<script>${minifyAndObfuscateJS(p1)}</script>`;
-    });
+    });*/
 
     return content;
 }
