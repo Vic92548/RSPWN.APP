@@ -15,12 +15,12 @@
 
 @keyframes menu-shadow {
     0% {
-        box-shadow: 0 0 10px rgb(34, 36, 50); /* Initial blue shadow */
+        box-shadow: 0 0 10px rgba(27, 40, 56, 0.5); /* Initial blue shadow */
     }
     50% {
-        box-shadow: 0 0 15px rgb(51, 51, 53); /* Purple shadow */
+        box-shadow: 0 0 20px rgba(27, 40, 56, 0.5); /* Purple shadow */
     }
     100% {
-        box-shadow: 0 0 10px rgb(34, 36, 50); /* Initial blue shadow */
+        box-shadow: 0 0 10px rgba(27, 40, 56, 0.5); /* Initial blue shadow */
     }
 }
