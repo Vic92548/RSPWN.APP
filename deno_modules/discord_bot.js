@@ -1,6 +1,3 @@
-import { createBot, Intents } from 'npm:@discordeno/bot@19.0.0-next.d81b28a';
-
-
 const botToken = Deno.env.get("DISCORD_BOT_TOKEN");
 
 async function sendBotCommand(token, endpoint, method, body = null) {
@@ -34,7 +31,7 @@ async function sendPrivateMessage(token, userId) {
 
         // Send a message to the DM channel
         await sendBotCommand(token, `/channels/${channelData.id}/messages`, "POST", {
-            content: "Hello! This is a private message.",
+            content: "Just following up!",
         });
 
         console.log(`Sent a DM to user with ID: ${userId}`);
