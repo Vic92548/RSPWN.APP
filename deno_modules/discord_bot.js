@@ -18,7 +18,7 @@ async function startDylan() {
 async function listGuilds(bot) {
     const guilds = bot.guilds;
     for (const [guildId, guild] of guilds) {
-        console.log(`Guild ID: ${guildId}, Guild Name: ${(guild as Guild).name}`);
+        console.log(`Guild ID: ${guildId}, Guild Name: ${guild.name}`);
     }
 }
 
