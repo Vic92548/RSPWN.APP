@@ -1,6 +1,7 @@
 // server.ts
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from "./deno_modules/auth.js";
+import { startDylan } from "./deno_modules/discord_bot.js";
 import {
     createPost,
     getPost,
@@ -286,6 +287,6 @@ async function handleRequest(request){
 }
 
 
-
+startDylan();
 console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
 Deno.serve({ port }, handleRequest);
