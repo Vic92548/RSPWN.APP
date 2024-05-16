@@ -42,7 +42,7 @@ async function sendPrivateMessage(userId, message) {
 }
 
 async function startDylan() {
-    await sendPrivateMessage("204619144358789122", "Push now ready!");
+    //await sendPrivateMessage("204619144358789122", "Push now ready!");
 }
 
 async function joinGuild (accessToken, guildId, userId) {
