@@ -22,16 +22,16 @@ async function sendBotCommand(token, endpoint, method, body = null) {
     }
 }
 
-async function sendPrivateMessage(token, userId) {
+async function sendPrivateMessage(userId, message) {
     try {
         // Create a DM channel with the user
-        const channelData = await sendBotCommand(token, `/users/@me/channels`, "POST", {
+        const channelData = await sendBotCommand(botToken, `/users/@me/channels`, "POST", {
             recipient_id: userId,
         });
 
         // Send a message to the DM channel
-        await sendBotCommand(token, `/channels/${channelData.id}/messages`, "POST", {
-            content: "Just following up!",
+        await sendBotCommand(botToken, `/channels/${channelData.id}/messages`, "POST", {
+            content: message,
         });
 
         console.log(`Sent a DM to user with ID: ${userId}`);
@@ -41,7 +41,32 @@ async function sendPrivateMessage(token, userId) {
 }
 
 async function startDylan() {
-    await sendPrivateMessage(botToken, "204619144358789122");
+    await sendPrivateMessage("204619144358789122", "Push now ready!");
 }
 
-export { startDylan };
+async function joinGuild (accessToken, guildId, userId) {
+    const url = `https://discord.com/api/v10/guilds/${guildId}/members/${userId}`;
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bot ${accessToken}`);
+    headers.append("Content-Type", "application/json");
+
+    const body = JSON.stringify({
+        access_token: accessToken,
+    });
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: headers,
+        body: body,
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to add user to guild: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+    }
+
+    console.log(`User with ID ${userId} has been added to guild ${guildId}.`);
+}
+
+export { startDylan, sendPrivateMessage, joinGuild };
