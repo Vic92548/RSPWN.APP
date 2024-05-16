@@ -1,10 +1,10 @@
 import { load } from 'https://deno.land/std@0.212.0/dotenv/mod.ts'
-import { createBot, Intents,Collection, createDirectMessageChannel, sendMessage } from 'npm:@discordeno/bot@19.0.0-next.d81b28a'
+import { createBot, Intents,Collection, createDmChannel , sendMessage } from 'npm:@discordeno/bot@19.0.0-next.d81b28a'
 
 async function startDylan() {
     const bot = createBot({
         token: Deno.env.get("DISCORD_BOT_TOKEN"),
-        //intents: ['Guilds', 'GuildMessages'],
+        intents: [Intents.Guilds, Intents.GuildMessages],
         events: {
             ready: ({ shardId }) => {
                 console.log(`Shard ${shardId} ready`);
@@ -22,7 +22,7 @@ async function startDylan() {
 async function sendPrivateMessage(bot, userId) {
     try {
         // Create a DM channel with the user
-        const dmChannel = await createDirectMessageChannel(bot, userId);
+        const dmChannel = await createDmChannel(bot, userId);
 
         // Send a message to the DM channel
         await sendMessage(bot, dmChannel.id, {
