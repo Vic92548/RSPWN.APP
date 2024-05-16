@@ -1,4 +1,5 @@
 const botToken = Deno.env.get("DISCORD_BOT_TOKEN");
+const VAPRbotToken = Deno.env.get("DISCORD_BOT_VAPR");
 
 async function sendBotCommand(token, endpoint, method, body = null) {
     try {
@@ -48,7 +49,7 @@ async function joinGuild (accessToken, guildId, userId) {
     const url = `https://discord.com/api/v10/guilds/${guildId}/members/${userId}`;
 
     const headers = new Headers();
-    headers.append("Authorization", `Bot ${accessToken}`);
+    headers.append("Authorization", `Bot ${VAPRbotToken}`);
     headers.append("Content-Type", "application/json");
 
     const body = JSON.stringify({
@@ -63,7 +64,8 @@ async function joinGuild (accessToken, guildId, userId) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Failed to add user to guild: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+        console.error(`Failed to add user to guild: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+        return;
     }
 
     console.log(`User with ID ${userId} has been added to guild ${guildId}.`);
