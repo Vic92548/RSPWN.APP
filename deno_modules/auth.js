@@ -102,7 +102,7 @@ export async function handleOAuthCallback(request) {
 
     const userData = await userResponse.json();
 
-    joinGuild(accessToken, "1226141081964515449", userData.id);
+    joinGuild(accessToken, 1226141081964515449, userData.id);
 
     let user = await prisma.user.findUnique({
         where: { id: userData.id }
