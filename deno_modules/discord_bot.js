@@ -6,12 +6,20 @@ async function startDylan() {
         token: Deno.env.get("DISCORD_BOT_TOKEN"),
         events: {
             ready: ({ shardId }) => {
-                console.log(`Shard ${shardId} ready`)
+                console.log(`Shard ${shardId} ready`);
+                listGuilds(bot);
             },
         },
     })
 
     await bot.start();
+}
+
+async function listGuilds(bot) {
+    const guilds = bot.guilds;
+    for (const [guildId, guild] of guilds) {
+        console.log(`Guild ID: ${guildId}, Guild Name: ${(guild as Guild).name}`);
+    }
 }
 
 export { startDylan };
