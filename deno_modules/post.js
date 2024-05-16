@@ -59,7 +59,6 @@ export async function createPost(request, userData) {
 
     console.log("Post created!");
 
-    notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
 
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
@@ -73,6 +72,9 @@ export async function createPost(request, userData) {
     sendMessageToDiscordWebhook(
         "https://discord.com/api/webhooks/1236284348244955137/7b-J6UW1knzJhhFIY9AyplZAvKNF9F897oUsRqOPjJJZrCRmcW2A9QTOPWnL7UhD2-YI",
         "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId);
+
+    notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
+
 
     return new Response(JSON.stringify(post), {
         status: 201,
