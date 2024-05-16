@@ -44,21 +44,7 @@ async function sendPrivateMessage(token, userId) {
 }
 
 async function startDylan() {
-    const bot = createBot({
-        token: botToken,
-        intents: [Intents.Guilds, Intents.GuildMessages],
-        events: {
-            ready: ({ shardId }) => {
-                console.log(`Shard ${shardId} ready`);
-                sendPrivateMessage(botToken, "204619144358789122");
-            },
-            messageCreate: function (bot, message) {
-                console.log('message arrived --> ' + message);
-            },
-        },
-    });
-
-    await bot.start();
+    await sendPrivateMessage(botToken, "204619144358789122");
 }
 
 export { startDylan };
