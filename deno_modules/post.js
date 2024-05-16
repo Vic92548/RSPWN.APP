@@ -821,11 +821,14 @@ export async function notifyFollowers(userId, message) {
             select: { followerId: true }
         });
 
+        setTimeout(() => {
+            followers.forEach(follower => {
+                sendPrivateMessage(follower.followerId, message);
+            });
+        }, 2000);
+
         // Log a message for each follower
-        followers.forEach(follower => {
-            sendPrivateMessage(follower.followerId, message);
-            //console.log(`Notification sent to follower with ID: ${follower.followerId}:${message}`);
-        });
+
 
     } catch (error) {
         console.error("Error notifying followers:", error);
