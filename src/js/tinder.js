@@ -33,15 +33,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         if (velocity > 0.3 || Math.abs(changeX) > 100) {
             if (changeX < -100) {
-                setInitialTransform(post);
                 dislikePost();
             } else if (changeX > 100) {
-                setInitialTransform(post);
                 likePost();
             }
         }else if (velocityy > 0.3 || Math.abs(changeY) > 100) {
             if (changeY < -100) {
-                setInitialTransform(post);
                 skipPost();
             }
         } else {
@@ -109,6 +106,8 @@ function displaySkipAnimation() {
 
 
 function likePost() {
+    const post = document.getElementsByClassName("post")[0];
+    setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayLikeAnimation();
         makeApiRequest("/like/" + current_post_id).then(data => {
@@ -135,6 +134,8 @@ function likePost() {
 }
 
 function skipPost() {
+    const post = document.getElementsByClassName("post")[0];
+    setInitialTransform(post);
     if (isUserLoggedIn()) {
         displaySkipAnimation();
         makeApiRequest("/skip/" + current_post_id).then(data => {
@@ -161,6 +162,8 @@ function skipPost() {
 }
 
 function dislikePost() {
+    const post = document.getElementsByClassName("post")[0];
+    setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayDislikeAnimation();
         makeApiRequest("/dislike/" + current_post_id).then(data => {

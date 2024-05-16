@@ -352,7 +352,7 @@ function hidePost() {
 
 function showPost() {
     const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translateY(0vh) translateX(0vw)";
+    post.style.transform = "translate(0px, 0px) rotate(0deg)";
 
     post.style.backgroundColor = "rgba(255,255,255,0.4)";
     post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
