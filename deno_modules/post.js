@@ -825,7 +825,7 @@ export async function notifyFollowers(userId, message) {
             followers.forEach(follower => {
                 sendPrivateMessage(follower.followerId, message);
             });
-        }, 2000);
+        }, 10000);
 
         // Log a message for each follower
 
