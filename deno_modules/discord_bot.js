@@ -4,7 +4,7 @@ import { createBot, Intents,Collection } from 'npm:@discordeno/bot@19.0.0-next.d
 async function startDylan() {
     const bot = createBot({
         token: Deno.env.get("DISCORD_BOT_TOKEN"),
-        intents: ['Guilds', 'GuildMessages'],
+        //intents: ['Guilds', 'GuildMessages'],
         events: {
             ready: ({ shardId }) => {
                 console.log(`Shard ${shardId} ready`);
