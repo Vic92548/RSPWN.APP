@@ -1,6 +1,7 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
 import {sendMessageToDiscordWebhook} from "./discord.js";
+import {sendPrivateMessage} from "./discord_bot.js";
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
@@ -57,6 +58,8 @@ export async function createPost(request, userData) {
     });
 
     console.log("Post created!");
+
+    notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
 
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
@@ -805,6 +808,25 @@ export async function acceptInvitation(invitedUserId, ambassadorUserId) {
     } catch (error) {
         console.error("Error accepting invitation:", error);
         return { success: false, message: "Failed to accept invitation" };
+    }
+}
+
+export async function notifyFollowers(userId, message) {
+    try {
+        // Get all followers of the given user
+        const followers = await prisma.follow.findMany({
+            where: { creatorId: userId },
+            select: { followerId: true }
+        });
+
+        // Log a message for each follower
+        followers.forEach(follower => {
+            sendPrivateMessage(follower.followerId, message);
+            //console.log(`Notification sent to follower with ID: ${follower.followerId}:${message}`);
+        });
+
+    } catch (error) {
+        console.error("Error notifying followers:", error);
     }
 }
 

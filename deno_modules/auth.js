@@ -1,5 +1,6 @@
 import { PrismaClient } from '../generated/client/deno/edge.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
+import { joinGuild } from './discord_bot.js';
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
@@ -97,7 +98,11 @@ export async function handleOAuthCallback(request) {
         return new Response("Failed to fetch user data", { status: userResponse.status });
     }
 
+
+
     const userData = await userResponse.json();
+
+    joinGuild(accessToken, "1226141081964515449", userData.id);
 
     let user = await prisma.user.findUnique({
         where: { id: userData.id }
@@ -147,6 +152,6 @@ export async function handleOAuthCallback(request) {
 }
 
 export function redirectToDiscordLogin() {
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email`;
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email%20guilds.join`;
     return Response.redirect(authUrl);
 }
