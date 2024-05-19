@@ -1,9 +1,11 @@
 function makeImageBig(img) {
     img.classList.add("big_image");
+    img.classList.remove("normal_image");
 }
 
 function makeImageNormal(img) {
     img.classList.remove("big_image");
+    img.classList.add("normal_image");
 }
 
 function switchImage(img) {
