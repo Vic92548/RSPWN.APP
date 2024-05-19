@@ -8,7 +8,8 @@
 
 .big_image{
     cursor: zoom-out;
-    z-index: 200;
+    z-index: 5000;
     position: relative;
     transform: scale(3) translateZ(30px);
+    transition: transform 0.5s ease-in-out;
 }
