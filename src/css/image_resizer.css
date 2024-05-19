@@ -1,11 +1,11 @@
 .normal_image:hover{
     cursor: zoom-in;
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
     transition: transform 0.5s ease-in-out;
 }
 
 .big_image{
     cursor: zoom-out;
     z-index: 200;
-    transform: scale(3);
+    transform: scale(3) translateZ(30px);
 }

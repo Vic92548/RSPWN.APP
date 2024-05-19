@@ -1,6 +1,6 @@
 function makeImageBig(img) {
-    img.classList.add("big_image");
     img.classList.remove("normal_image");
+    img.classList.add("big_image");
 }
 
 function makeImageNormal(img) {
