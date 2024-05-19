@@ -1,0 +1,75 @@
+function loadUserData(){
+    document.getElementById("sign_in").style.display = "none";
+    document.getElementById("add_post").style.display = "none";
+
+    makeApiRequest("/me").then(data => {
+        window.user = data;
+        updateUsername();
+        updateLevel();
+
+        for (let i = 0; i < background_images.length; i++) {
+            if(background_images[i].id === data.backgroundId){
+                const background_url = 'https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp';
+                equipBackground(background_url);
+                break;
+            }
+        }
+
+        const oldUser = {
+            xp: 0,
+            level: window.user.level,
+            xp_required: window.user.xp_required
+        };
+
+        setXPProgress(oldUser, true);
+
+        document.getElementById("sign_in").style.display = "none";
+        if(window.innerWidth <= 768){
+            document.getElementById("add_post").style.display = "block";
+        }
+
+        document.getElementById("xp_bar").style.display = "block";
+
+
+
+        loading_steps--;
+        hideLoading();
+
+        handleReferral();
+
+        window.analytics.identify(data.id, {
+            email: data.email,
+            name: data.username
+        });
+
+        Featurebase(
+            "identify",
+            {
+                // Each 'identify' call should include an "organization" property,
+                // which is your Featurebase board's name before the ".featurebase.app".
+                organization: "vapr",
+
+                // Required. Replace with your customers data.
+                email: data.email,
+                name: data.username,
+                id: data.id
+            },
+            (err) => {
+                // Callback function. Called when identify completed.
+                if (err) {
+                    // console.error(err);
+                } else {
+                    // console.log("Data sent successfully!");
+                }
+            }
+        );
+    }).catch( error => {
+        document.getElementById("sign_in").style.display = "block";
+        if(window.innerWidth <= 768){
+            document.getElementById("add_post").style.display = "block";
+        }
+        document.getElementById("add_post").onclick = openRegisterModal;
+        loading_steps--;
+        hideLoading();
+    })
+}
