@@ -1,5 +1,7 @@
-.normal_image:hover{
+.normal_image{
     cursor: zoom-in;
+    position: relative;
+    z-index: 1;
     transform: scale(1) translateZ(0);
     transition: transform 0.5s ease-in-out;
 }
@@ -7,5 +9,6 @@
 .big_image{
     cursor: zoom-out;
     z-index: 200;
+    position: relative;
     transform: scale(3) translateZ(30px);
 }
