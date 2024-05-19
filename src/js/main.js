@@ -187,178 +187,18 @@ function setupSocialLink(id, link){
     link_bt.href = link;
 }
 
-function drawPost(data){
-    displayReactions();
 
-    makeApiRequest("/register-view?postId=" + data.id, false).then(data => {
-        console.log(data);
-        console.log("Views updated");
-    });
-
-    post_seen++;
-    showPost();
-    console.log("Post DATA:");
-    console.log(data);
-
-    updateFollowButton();
-
-    document.getElementById("post_title").textContent = data.title;
-    document.getElementById("post_username").textContent = "@" + data.username;
-    document.getElementById("post_time").textContent = timeAgo(data.timestamp);
-
-    document.getElementById("post_views").textContent = formatViews(data.views);
-
-    if(!data.content){
-        data.content = "https://vapr.b-cdn.net/posts/200w.gif";
-    }
-
-    if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
-        document.getElementById("post_image").src = data.content;
-        document.getElementById("post_image").style.display = "block";
-        document.getElementById("post_content").style.display = "none";
-    }else{
-        document.getElementById("post_content").textContent = data.content;
-        document.getElementById("post_content").style.display = "block";
-        document.getElementById("post_image").style.display = "none";
-    }
-
-    const links = document.getElementById("post_link").children;
-    for(let i = 0; i < links.length;i++){
-        links[i].style.display = "none";
-    }
-
-
-    if(data.link){
-        const url = new URL(data.link);
-
-        if(url.hostname.includes("itch.io")){
-            setupSocialLink("post_itch", data.link);
-        }
-
-        switch(url.hostname){
-            case 'discord.gg':
-                setupSocialLink("post_discord", data.link);
-                break;
-            case 'www.reddit.com':
-                setupSocialLink("post_reddit", data.link);
-                break;
-            case 'store.steampowered.com':
-                setupSocialLink("post_steam", data.link);
-                break;
-            case 'x.com':
-                setupSocialLink("post_x", data.link);
-                break;
-            case 'twitter.com':
-                setupSocialLink("post_x", data.link);
-                break;
-            case 'www.threads.net':
-                setupSocialLink("post_threads", data.link);
-                break;
-            case 'www.pinterest.fr':
-                setupSocialLink("post_pinterest", data.link);
-                break;
-            case 'www.twitch.tv':
-                setupSocialLink("post_twitch", data.link);
-                break;
-            case 'www.youtube.com':
-                setupSocialLink("post_youtube", data.link);
-                break;
-            case 'www.instagram.com':
-                setupSocialLink("post_instagram", data.link);
-                break;
-            case 'store.epicgames.com':
-                setupSocialLink("post_epic", data.link);
-                break;
-            case 'www.kickstarter.com':
-                setupSocialLink("post_kickstarter", data.link);
-                break;
-            case 'kick.com':
-                setupSocialLink("post_kick", data.link);
-                break;
-            case 'www.patreon.com':
-                setupSocialLink("post_patreon", data.link);
-                break;
-            case 'www.fortnite.com':
-                setupSocialLink("post_fortnite", data.link);
-                break;
-            default:
-                break;
-        }
-    }
-}
 
 let current_post_id = undefined;
 let current_post = undefined;
 
-function displayPost(postId = undefined){
-    hidePost();
-    if(!postId){
 
-        if(feed_posts.length > 0){
-            const data = feed_posts.shift();
-
-            loading_steps--;
-            hideLoading();
-
-            current_post_id = data.id;
-            current_post = data;
-            drawPost(data);
-
-
-            history.pushState(null, null, "/post/" + data.id);
-
-
-        }else{
-            makeApiRequest("/feed", false).then(data => {
-
-                console.log(data);
-
-                feed_posts = data.sort((a, b) => 0.5 - Math.random());
-
-                console.log(data);
-
-                displayPost();
-
-            }).catch(error => {
-                console.log(error);
-            });
-
-        }
-
-
-    }else{
-        makeApiRequest("/posts/"+postId, false).then(data => {
-
-            loading_steps--;
-            hideLoading();
-
-            current_post_id = data.id;
-            current_post = data;
-            drawPost(data);
-
-
-            history.pushState(null, null, "/post/" + data.id);
-        }).catch(error => {
-            console.log(error);
-        });
-    }
-
-}
 
 function hidePost() {
     showLoading();
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
-function showPost() {
-    const post = document.getElementsByClassName("post")[0];
-    post.style.transform = "translate(0px, 0px) rotate(0deg)";
-
-    post.style.backgroundColor = "rgba(255,255,255,0.4)";
-    post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
-
-    post.style.animation = 'none';
-}
 
 document.getElementById('file').addEventListener('change', function() {
     if (this.files && this.files[0]) {
