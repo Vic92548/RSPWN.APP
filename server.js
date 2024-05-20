@@ -29,7 +29,7 @@ async function handleRequest(request){
         const htmlContent = htmlTemplate
             .replaceAll('{{meta_description}}', "The place to share gaming content")
             .replaceAll('{{meta_author}}', "VAPR")
-            .replaceAll('{{meta_image}}', "https://vapr.b-cdn.net/VLTRXN_3.webp")
+            .replaceAll('{{meta_image}}', "https://vapr.b-cdn.net/vaprgif.gif")
             .replaceAll('{{meta_url}}', "https://vapr.gg/");
 
         return new Response(htmlContent, {
