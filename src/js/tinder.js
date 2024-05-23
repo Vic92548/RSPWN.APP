@@ -124,11 +124,11 @@ function likePost() {
             console.log(error);
         });
     } else {
-        if (post_seen > 7) {
+        if (post_seen > 3) {
             openRegisterModal();
         } else {
             displayLikeAnimation();
-            setTimeout(displayPost, 600); // Wait for animation to complete
+            setTimeout(displayPost, 1000); // Wait for animation to complete
         }
     }
 }
@@ -152,11 +152,11 @@ function skipPost() {
             console.log(error);
         });
     } else {
-        if (post_seen > 7) {
+        if (post_seen > 3) {
             openRegisterModal();
         } else {
             displaySkipAnimation();
-            setTimeout(displayPost, 600); // Wait for animation to complete
+            setTimeout(displayPost, 1000); // Wait for animation to complete
         }
     }
 }
@@ -180,11 +180,11 @@ function dislikePost() {
             console.log(error);
         });
     } else {
-        if (post_seen > 7) {
+        if (post_seen > 3) {
             openRegisterModal();
         } else {
             displayDislikeAnimation();
-            setTimeout(displayPost, 600); // Wait for animation to complete
+            setTimeout(displayPost, 1000); // Wait for animation to complete
         }
     }
 }

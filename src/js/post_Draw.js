@@ -29,8 +29,10 @@ function drawPost(data){
         document.getElementById("post_content").style.display = "none";
         document.getElementById("post_video").style.display = "none";
     }else if(data.content.includes("iframe.mediadelivery.net")){
-        document.getElementById("post_video").children[0].src = data.content;
         document.getElementById("post_video").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("post_video").children[0].src = data.content;
+        }, 100);
         document.getElementById("post_content").style.display = "none";
         document.getElementById("post_image").style.display = "none";
     }
