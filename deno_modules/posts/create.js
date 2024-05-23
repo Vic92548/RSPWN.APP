@@ -112,7 +112,7 @@ async function uploadImageToBunnyCDN(file, postId) {
 
 async function uploadVideoToBunnyCDN(file, postId) {
     const libraryId = Deno.env.get("BUNNY_CDN_LIBRARY_ID");
-    const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
+    const accessKey = Deno.env.get("BUNNY_CDN_VIDEO_API_KEY");
 
     if (!accessKey || !libraryId) {
         throw new Error("Bunny CDN configuration is missing from environment variables.");
