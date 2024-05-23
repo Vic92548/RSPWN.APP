@@ -2,6 +2,7 @@
 import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from "./deno_modules/auth.js";
 import { startDylan } from "./deno_modules/discord_bot.js";
+import { getVideoIdByPostId } from "./deno_modules/posts/video.js";
 import {
     createPost,
     getPost,
@@ -144,6 +145,11 @@ async function handleRequest(request){
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const post = await getPostData(id);
+
+        if(post.content.includes("iframe.mediadelivery.net")){
+            const video_id = getVideoIdByPostId(id);
+            post.content = "https://vz-9a396cc0-746.b-cdn.net/" + video_id + "/preview.webp";
+        }
 
         const htmlTemplate = await Deno.readTextFile("index.html");
         const htmlContent = htmlTemplate
