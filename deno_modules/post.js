@@ -1,84 +1,19 @@
-import { MongoClient } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
 import { addXP, EXPERIENCE_TABLE } from "./rpg.js";
 import { sendMessageToDiscordWebhook } from "./discord.js";
 import { sendPrivateMessage } from "./discord_bot.js";
+import {
+    postsCollection,
+    usersCollection,
+    viewsCollection,
+    likesCollection,
+    dislikesCollection,
+    followsCollection,
+    reactionsCollection,
+    registrationReferralsCollection
+} from "./database.js";
+import { createPost } from "./posts/create.js"; // Import the createPost function
 
-const databaseUrl = Deno.env.get("DATABASE_URL");
-
-const client = new MongoClient();
-await client.connect(databaseUrl);
-const db = client.database("vapr");
-
-const postsCollection = db.collection("posts");
-const usersCollection = db.collection("users");
-const viewsCollection = db.collection("views");
-const likesCollection = db.collection("likes");
-const dislikesCollection = db.collection("dislikes");
-const followsCollection = db.collection("follows");
-const reactionsCollection = db.collection("reactions");
-const registrationReferralsCollection = db.collection("registrationReferrals");
-
-export async function createPost(request, userData) {
-    if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
-        return new Response("Invalid content type", { status: 400 });
-    }
-
-    const formData = await request.formData();
-    const title = formData.get("title");
-    const link = formData.get("link");
-    const file = formData.get("file");
-
-    let content = "";
-
-    if (typeof title !== "string" || typeof userData.id !== "string") {
-        return new Response("Missing or invalid fields", { status: 400 });
-    }
-
-    const postId = crypto.randomUUID();
-    let fileExtension = "";
-    if (file) {
-        const parts = file.name.split('.');
-        fileExtension = parts.length > 1 ? parts.pop() : "";
-        const mediaResult = file ? await uploadToBunnyCDN(file, postId) : null;
-        if (mediaResult.success) {
-            content = "https://vapr.b-cdn.net/posts/" + postId + "." + fileExtension;
-        } else {
-            return new Response(JSON.stringify(mediaResult), {
-                status: 201,
-                headers: { "Content-Type": "application/json" }
-            });
-        }
-    }
-
-    await postsCollection.insertOne({
-        id: postId,
-        title,
-        content,
-        userId: userData.id,
-        timestamp: new Date(),
-        link
-    });
-
-    console.log("Post created!");
-
-    await addXP(userData.id, EXPERIENCE_TABLE.POST);
-
-    userData = await usersCollection.findOne({ id: userData.id });
-
-    const post = { id: postId, title, content, userId: userData.id, timestamp: new Date(), link, user: userData, success: true };
-
-    sendMessageToDiscordWebhook(
-        "https://discord.com/api/webhooks/1236284348244955137/7b-J6UW1knzJhhFIY9AyplZAvKNF9F897oUsRqOPjJJZrCRmcW2A9QTOPWnL7UhD2-YI",
-        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId
-    );
-
-    notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
-
-    return new Response(JSON.stringify(post), {
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-    });
-}
+export { createPost }; // Re-export createPost
 
 export async function getPostData(id) {
     const post = await postsCollection.findOne({ id });
@@ -275,42 +210,6 @@ export async function getNextFeedPosts(userid) {
             headers: { "Content-Type": "application/json" }
         });
     }
-}
-
-async function uploadToBunnyCDN(file, postId) {
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${postId}.${fileExtension}`;
-    const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
-    const storageZoneUrl = Deno.env.get("BUNNY_CDN_STORAGE_URL");
-
-    if (!accessKey || !storageZoneUrl) {
-        throw new Error("Bunny CDN configuration is missing from environment variables.");
-    }
-
-    const uploadUrl = `${storageZoneUrl}/vapr/posts/${fileName}`;
-
-    const arrayBuffer = await file.arrayBuffer();
-    const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
-
-    const response = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: {
-            "AccessKey": accessKey,
-            "Content-Type": "application/octet-stream",
-            "accept": "application/json"
-        },
-        body: blob
-    });
-
-    if (!response.ok) {
-        console.error("Failed to upload media. Response:", await response.text());
-        return { success: false, msg: await response.text() };
-    }
-
-    const data = await response.json();
-    console.log("POST UPLOADED IMAGE");
-    console.log(data);
-    return { success: true };
 }
 
 export async function followPost(postId, followerId) {
