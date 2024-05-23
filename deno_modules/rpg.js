@@ -1,14 +1,11 @@
-import { PrismaClient } from '../generated/client/deno/edge.js';
+import { MongoClient } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: databaseUrl,
-        },
-    },
-});
+const client = new MongoClient();
+await client.connect(databaseUrl);
+const db = client.database("vapr");
+const usersCollection = db.collection("users");
 
 /**
  * Adds XP to the user's data and handles leveling up if necessary.
@@ -18,12 +15,9 @@ const prisma = new PrismaClient({
  */
 export async function addXP(userId, amount) {
     // Retrieve the user data from the database
-
     console.log("Finding user with id : " + userId + " to add xp to...");
 
-    let user = await prisma.user.findUnique({
-        where: { id: userId }
-    });
+    let user = await usersCollection.findOne({ id: userId });
 
     console.log(user);
 
@@ -48,19 +42,21 @@ export async function addXP(userId, amount) {
         user.xp_required = Math.ceil(user.xp_required);  // Ensure it's an integer
     }
 
-    console.log("Upadting user data...");
+    console.log("Updating user data...");
 
     // Update the user record in the database with the new XP, level, and XP required
-    await prisma.user.update({
-        where: { id: userId },
-        data: {
-            xp: user.xp,
-            level: user.level,
-            xp_required: user.xp_required
+    await usersCollection.updateOne(
+        { id: userId },
+        {
+            $set: {
+                xp: user.xp,
+                level: user.level,
+                xp_required: user.xp_required
+            }
         }
-    });
+    );
 
-    console.log("XP addedd successfully!");
+    console.log("XP added successfully!");
 }
 
 export const EXPERIENCE_TABLE = {
@@ -68,5 +64,5 @@ export const EXPERIENCE_TABLE = {
     LIKE: 20,
     DISLIKE: 20,
     SKIP: 10,
-    INVITE : 650
+    INVITE: 650
 };
