@@ -142,6 +142,7 @@ let current_post = undefined;
 
 function hidePost() {
     showLoading();
+    document.getElementById("post_video").children[0].src = "";
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
