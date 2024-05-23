@@ -31,6 +31,7 @@ function drawPost(data){
     }else if(data.content.includes("iframe.mediadelivery.net")){
         document.getElementById("post_video").children[0].src = data.content;
         document.getElementById("post_video").style.display = "block";
+        document.getElementById("post_content").style.display = "none";
         document.getElementById("post_image").style.display = "none";
     }
 
