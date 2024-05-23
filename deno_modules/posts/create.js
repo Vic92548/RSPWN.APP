@@ -4,7 +4,6 @@ import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowers } from "../post.js"; // Adjust import path based on actual location
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB in bytes
-const MAX_VIDEO_DURATION = 2 * 60; // 2 minutes in seconds
 
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
@@ -33,10 +32,6 @@ export async function createPost(request, userData) {
         fileExtension = parts.length > 1 ? parts.pop() : "";
         let mediaResult;
         if (file.type.startsWith("video")) {
-            const duration = await getVideoDuration(file);
-            if (duration > MAX_VIDEO_DURATION) {
-                return new Response("Video duration exceeds the 2 minutes limit", { status: 400 });
-            }
             mediaResult = await uploadVideoToBunnyCDN(file, postId);
         } else {
             mediaResult = await uploadImageToBunnyCDN(file, postId);
@@ -164,22 +159,4 @@ async function uploadVideoToBunnyCDN(file, postId) {
 
     console.log("POST UPLOADED VIDEO");
     return { success: true, url: `https://iframe.mediadelivery.net/embed/${libraryId}/${videoId}?autoplay=true&loop=true&muted=false&preload=true&responsive=true` };
-}
-
-async function getVideoDuration(file) {
-    return new Promise((resolve, reject) => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-
-        video.onloadedmetadata = function() {
-            window.URL.revokeObjectURL(video.src);
-            resolve(video.duration);
-        };
-
-        video.onerror = function() {
-            reject("Failed to load video metadata");
-        };
-
-        video.src = URL.createObjectURL(file);
-    });
 }
