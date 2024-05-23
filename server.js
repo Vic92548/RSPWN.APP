@@ -148,7 +148,7 @@ async function handleRequest(request){
 
         if(post.content.includes("iframe.mediadelivery.net")){
             const video_id = await getVideoIdByPostId(id);
-            post.content = "https://vz-9a396cc0-746.b-cdn.net/" + video_id + "/preview.webp";
+            post.content = "https://vz-9a396cc0-746.b-cdn.net/" + video_id + "/thumbnail.jpg";
         }
 
         const htmlTemplate = await Deno.readTextFile("index.html");
