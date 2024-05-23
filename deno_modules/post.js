@@ -178,7 +178,7 @@ export async function getNextFeedPosts(userid) {
     let posts = [];
 
     if (userid === "anonymous") {
-        posts = await postsCollection.find().sort({ id: -1 }).limit(10).toArray();
+        posts = await postsCollection.find().sort({ timestamp: -1 }).limit(10).toArray();
     } else {
         const likes = await likesCollection.find({ userId: userid }).toArray();
         const dislikes = await dislikesCollection.find({ userId: userid }).toArray();
