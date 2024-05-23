@@ -146,114 +146,12 @@ function hidePost() {
 }
 
 
-document.getElementById('file').addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview').src = e.target.result;
-            document.getElementById('preview').style.display = "block";
-            document.getElementById('upload-icon').hidden = true;
-            document.querySelector('.upload-text').textContent = 'Click to replace the image';
-        };
-        reader.readAsDataURL(this.files[0]);
-    }
-});
-
-
 function opeNewPostModel() {
     document.getElementById("add-post").style.display = "flex";
 }
 function closeNewPostModel() {
     document.getElementById("add-post").style.display = "none";
 }
-
-document.getElementById('postForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-
-    const title = document.getElementById('title').value;
-    const link = document.getElementById('link').value;
-    const file = document.getElementById('file').files[0];
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('link', link);
-    
-    if (file) {
-        const fileExtension = file.name.split('.').pop(); // Extract the file extension
-        const fileName = `${new Date().getTime()}.${fileExtension}`; // Create a unique file name using a timestamp
-        const fileContentType = file.type || 'application/octet-stream'; // Default to a binary type if unknown
-    
-        // Create a new Blob from the file with the specified content type
-        const blob = new Blob([file], { type: fileContentType });
-    
-        // Append the blob to formData with the custom filename
-        formData.append("file", blob, fileName);
-    }
-    
-
-    const jwt = localStorage.getItem('jwt');
-
-    // Prepare the request headers
-    const headers = new Headers({
-        "Authorization": `Bearer ${jwt}`
-    });
-
-    try {
-        document.getElementById("add-post").style.display = "none";
-        hidePost();
-        hideMenu();
-
-        const response = await fetch('/posts', {
-            method: 'POST',
-            body: formData,
-            headers: headers
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-
-            if(result.success){
-                window.analytics.track('new_post_uploaded', {postId: result.id});
-
-                document.getElementById("add-post").style.display = "none";
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-                displayPost(result.id);
-                // Optionally clear the form or handle according to your needs
-
-                // Clear post
-                document.getElementById('title').value = '';
-                document.getElementById('file').value = '';
-                document.getElementById('link').value = '';
-                document.getElementById('preview').style.display = 'none';
-
-                const oldUser = {
-                    xp: window.user.xp,
-                    level: window.user.level,
-                    xp_required: window.user.xp_required
-                };
-
-                window.user = result.user;
-
-                setXPProgress(oldUser);
-            }else{
-                alert(result.msg);
-            }
-
-
-            
-        } else {
-            alert('Failed to create post. Please try again with an other image.');
-            displayPost();
-        }
-    } catch (error) {
-        console.error('Failed to submit post:', error);
-        alert('Error submitting post.');
-    }
-});
 
 function openRegisterModal() {
     document.getElementById("register").style.display = "flex";

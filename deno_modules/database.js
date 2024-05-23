@@ -10,6 +10,7 @@ const postsCollection = db.collection("posts");
 const usersCollection = db.collection("users");
 const viewsCollection = db.collection("views");
 const likesCollection = db.collection("likes");
+const videosCollection = db.collection("videos");
 const dislikesCollection = db.collection("dislikes");
 const followsCollection = db.collection("follows");
 const reactionsCollection = db.collection("reactions");
@@ -23,5 +24,6 @@ export {
     dislikesCollection,
     followsCollection,
     reactionsCollection,
-    registrationReferralsCollection
+    registrationReferralsCollection,
+    videosCollection
 };

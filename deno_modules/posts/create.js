@@ -1,4 +1,4 @@
-import { postsCollection, usersCollection } from "../database.js";
+import { postsCollection, usersCollection, videosCollection } from "../database.js";
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowers } from "../post.js"; // Adjust import path based on actual location
@@ -157,6 +157,14 @@ async function uploadVideoToBunnyCDN(file, postId) {
         return { success: false, msg: await uploadVideoResponse.text() };
     }
 
-    console.log("POST UPLOADED VIDEO");
+    // Step 3: Add video document to MongoDB
+    await videosCollection.insertOne({
+        videoId: videoId,
+        postId: postId,
+        libraryId: libraryId,
+        timestamp: new Date()
+    });
+
+    console.log("POST UPLOADED VIDEO AND DOCUMENT ADDED TO MONGODB");
     return { success: true, url: `https://iframe.mediadelivery.net/embed/${libraryId}/${videoId}?autoplay=true&loop=true&muted=false&preload=true&responsive=true` };
 }
