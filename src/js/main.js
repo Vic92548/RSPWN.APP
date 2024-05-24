@@ -148,7 +148,12 @@ function hidePost() {
 
 
 function opeNewPostModel() {
-    document.getElementById("add-post").style.display = "flex";
+    if(isUserLoggedIn()){
+        document.getElementById("add-post").style.display = "flex";
+    }else{
+        openRegisterModal();
+    }
+
 }
 function closeNewPostModel() {
     document.getElementById("add-post").style.display = "none";
