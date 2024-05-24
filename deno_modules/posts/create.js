@@ -3,7 +3,7 @@ import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowers } from "../post.js"; // Adjust import path based on actual location
 
-const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB in bytes
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
 
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
