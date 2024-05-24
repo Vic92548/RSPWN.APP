@@ -1,4 +1,4 @@
-import { postsCollection, viewsCollection, usersCollection, likesCollection, dislikesCollection, followsCollection } from "../database.js";
+import { postsCollection, viewsCollection, usersCollection, likesCollection, dislikesCollection, followsCollection, linkClicksCollection } from "../database.js";
 
 export async function getPostData(id) {
     const post = await postsCollection.findOne({ id });
@@ -55,13 +55,15 @@ export async function getPostList(userId) {
         const likesCount = await likesCollection.countDocuments({ postId: post.id });
         const dislikesCount = await dislikesCollection.countDocuments({ postId: post.id });
         const followersCount = await followsCollection.countDocuments({ postId: post.id });
+        const linkClicksCount = await linkClicksCollection.countDocuments({ postId: post.id });
 
         return {
             ...post,
             viewsCount,
             likesCount,
             dislikesCount,
-            followersCount
+            followersCount,
+            linkClicksCount
         };
     }));
 
@@ -70,3 +72,4 @@ export async function getPostList(userId) {
         headers: { "Content-Type": "application/json" }
     });
 }
+

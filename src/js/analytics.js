@@ -18,7 +18,7 @@ function openAnalytics() {
 
                 li.appendChild(title);
                 const stats = document.createElement("div");
-                stats.innerHTML = '<div><span><i class="fa-solid fa-eye"></i> ' + post.viewsCount + ' &nbsp;&nbsp;<i class="fa-solid fa-heart"></i> ' + post.likesCount + ' &nbsp;&nbsp;<i class="fa-solid fa-heart-crack"></i> ' + post.dislikesCount + ' &nbsp;&nbsp;<i class="fa-solid fa-user-plus"></i> ' + post.followersCount + '</span> <a href="/post/' + post.id + '">open</a></div>';
+                stats.innerHTML = '<div><span><i class="fa-solid fa-eye"></i> ' + post.viewsCount + ' &nbsp;&nbsp;<i class="fa-solid fa-heart"></i> ' + post.likesCount + ' &nbsp;&nbsp;<i class="fa-solid fa-heart-crack"></i> ' + post.dislikesCount + ' &nbsp;&nbsp;<i class="fa-solid fa-user-plus"></i> ' + post.followersCount + ' &nbsp;&nbsp;<i class="fa-solid fa-link"></i> ' + post.linkClicksCount + '</span> <a href="/post/' + post.id + '">open</a></div>';
 
                 li.appendChild(stats);
 
