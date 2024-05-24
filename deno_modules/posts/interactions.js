@@ -59,7 +59,7 @@ export async function viewPost(postId, userId) {
 export async function dislikePost(postId, userData) {
     try {
         if (await hasUserInteracted(postId, userData.id)) {
-            return new Response(JSON.stringify({ success: tru, message: "User has already interacted with this post" }), {
+            return new Response(JSON.stringify({ success: true, message: "User has already interacted with this post" }), {
                 status: 200,
                 headers: { "Content-Type": "application/json" }
             });
