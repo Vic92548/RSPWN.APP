@@ -1,18 +1,25 @@
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
-import { likesCollection, viewsCollection, dislikesCollection, linkClicksCollection, postsCollection, usersCollection } from "../database.js";
+import { likesCollection, viewsCollection, dislikesCollection, skipsCollection, linkClicksCollection, postsCollection, usersCollection } from "../database.js";
+
+async function hasUserInteracted(postId, userId) {
+    const existingLike = await likesCollection.findOne({ postId, userId });
+    const existingDislike = await dislikesCollection.findOne({ postId, userId });
+    const existingSkip = await skipsCollection.findOne({ postId, userId });
+
+    return existingLike || existingDislike || existingSkip;
+}
 
 export async function likePost(postId, userData) {
     try {
-        const existingLike = await likesCollection.findOne({ postId: postId, userId: userData.id });
-        if (existingLike) {
-            return new Response(JSON.stringify({ success: false, message: "User has already liked this post" }), {
-                status: 400,
+        if (await hasUserInteracted(postId, userData.id)) {
+            return new Response(JSON.stringify({ success: true, message: "User has already interacted with this post" }), {
+                status: 200,
                 headers: { "Content-Type": "application/json" }
             });
         }
 
         await likesCollection.insertOne({
-            postId: postId,
+            postId,
             userId: userData.id,
             timestamp: new Date()
         });
@@ -20,8 +27,8 @@ export async function likePost(postId, userData) {
         await addXP(userData.id, EXPERIENCE_TABLE.LIKE);
 
         userData = await usersCollection.findOne({ id: userData.id });
-    } catch {
-        // Handle error if needed
+    } catch (error) {
+        console.error(error);
     }
 
     return new Response(JSON.stringify({ success: true, user: userData }), {
@@ -34,7 +41,7 @@ export async function viewPost(postId, userId) {
     console.log("Starting to record view for userId " + userId + " for post:" + postId);
     try {
         const viewData = {
-            postId: postId,
+            postId,
             userId: userId === "anonymous" ? "anonymous_" + crypto.randomUUID() : userId,
             timestamp: new Date()
         };
@@ -51,16 +58,15 @@ export async function viewPost(postId, userId) {
 
 export async function dislikePost(postId, userData) {
     try {
-        const existingDislike = await dislikesCollection.findOne({ postId: postId, userId: userData.id });
-        if (existingDislike) {
-            return new Response(JSON.stringify({ success: false, message: "User has already disliked this post" }), {
-                status: 400,
+        if (await hasUserInteracted(postId, userData.id)) {
+            return new Response(JSON.stringify({ success: tru, message: "User has already interacted with this post" }), {
+                status: 200,
                 headers: { "Content-Type": "application/json" }
             });
         }
 
         await dislikesCollection.insertOne({
-            postId: postId,
+            postId,
             userId: userData.id,
             timestamp: new Date()
         });
@@ -68,8 +74,8 @@ export async function dislikePost(postId, userData) {
         await addXP(userData.id, EXPERIENCE_TABLE.DISLIKE);
 
         userData = await usersCollection.findOne({ id: userData.id });
-    } catch {
-        // Handle error if needed
+    } catch (error) {
+        console.error(error);
     }
 
     return new Response(JSON.stringify({ success: true, user: userData }), {
@@ -80,16 +86,15 @@ export async function dislikePost(postId, userData) {
 
 export async function skipPost(postId, userData) {
     try {
-        const existingSkip = await skipsCollection.findOne({ postId: postId, userId: userData.id });
-        if (existingSkip) {
-            return new Response(JSON.stringify({ success: false, message: "User has already skipped this post" }), {
-                status: 400,
+        if (await hasUserInteracted(postId, userData.id)) {
+            return new Response(JSON.stringify({ success: true, message: "User has already interacted with this post" }), {
+                status: 200,
                 headers: { "Content-Type": "application/json" }
             });
         }
 
         await skipsCollection.insertOne({
-            postId: postId,
+            postId,
             userId: userData.id,
             timestamp: new Date()
         });
@@ -97,8 +102,8 @@ export async function skipPost(postId, userData) {
         await addXP(userData.id, EXPERIENCE_TABLE.SKIP);
 
         userData = await usersCollection.findOne({ id: userData.id });
-    } catch {
-        // Handle error if needed
+    } catch (error) {
+        console.error(error);
     }
 
     return new Response(JSON.stringify({ success: true, user: userData }), {
@@ -117,7 +122,7 @@ export async function clickLink(postId, userId) {
         }
 
         const clickData = {
-            postId: postId,
+            postId,
             url: post.link,
             userId: userId === "anonymous" ? "anonymous_" + crypto.randomUUID() : userId,
             timestamp: new Date()
