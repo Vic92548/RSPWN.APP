@@ -100,6 +100,9 @@ function drawPost(data){
             case 'www.fortnite.com':
                 setupSocialLink("post_fortnite", data.link);
                 break;
+                case 'www.nintendo.com':
+                setupSocialLink("post_nintendo", data.link);
+                break;
             default:
                 break;
         }
