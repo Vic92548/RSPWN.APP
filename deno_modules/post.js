@@ -5,8 +5,8 @@ export { createPost }; // Re-export createPost
 import { addReaction, getReactionsByPostId } from "./posts/reactions.js";
 export { addReaction, getReactionsByPostId };
 
-import { likePost, viewPost, dislikePost, skipPost } from "./posts/interactions.js";
-export { likePost, viewPost, dislikePost, skipPost };
+import { likePost, viewPost, dislikePost, skipPost, clickLink } from "./posts/interactions.js";
+export { likePost, viewPost, dislikePost, skipPost, clickLink };
 
 import { followPost, unfollowPost, checkIfUserFollowsCreator, notifyFollowers } from "./posts/follow.js";
 export { followPost, unfollowPost, checkIfUserFollowsCreator, notifyFollowers };

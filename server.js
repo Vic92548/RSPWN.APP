@@ -17,7 +17,9 @@ import {
     checkIfUserFollowsCreator,
     addReaction,
     getReactionsByPostId,
-    viewPost, acceptInvitation
+    viewPost,
+    acceptInvitation,
+    clickLink
 } from "./deno_modules/post.js";
 
 const port = 8080;
@@ -41,7 +43,7 @@ async function handleRequest(request){
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {
         return redirectToDiscordLogin();
-    }else if (url.pathname.startsWith("/me/posts")) {
+    } else if (url.pathname.startsWith("/me/posts")) {
         const authResult = await authenticateRequest(request);
 
         console.log(authResult);
@@ -52,7 +54,7 @@ async function handleRequest(request){
 
         // Continue with the request handling for authenticated users
         return getPostList(authResult.userData.id);
-    }else if (url.pathname === "/me/update-background" && request.method === "GET") {
+    } else if (url.pathname === "/me/update-background" && request.method === "GET") {
         const authResult = await authenticateRequest(request);
         if (!authResult.isValid) {
             return new Response("Unauthorized", { status: 401 });
@@ -81,7 +83,7 @@ async function handleRequest(request){
                 headers: { "Content-Type": "application/json" }
             });
         }
-    }else if (url.pathname.startsWith("/me")) {
+    } else if (url.pathname.startsWith("/me")) {
         const authResult = await authenticateRequest(request);
 
         console.log(authResult);
@@ -90,15 +92,15 @@ async function handleRequest(request){
             return new Response("Unauthorized", { status: 401 });
         }
 
-        if(!authResult.userData.level){
+        if (!authResult.userData.level) {
             authResult.userData.level = 0;
         }
 
-        if(!authResult.userData.xp){
+        if (!authResult.userData.xp) {
             authResult.userData.xp = 0;
         }
 
-        if(!authResult.userData.xp_required){
+        if (!authResult.userData.xp_required) {
             authResult.userData.xp_required = 700;
         }
 
@@ -109,7 +111,7 @@ async function handleRequest(request){
                 "Content-Type": "application/json"
             }
         });
-    }else if (url.pathname.startsWith("/feed")) {
+    } else if (url.pathname.startsWith("/feed")) {
         const authResult = await authenticateRequest(request);
 
         if (!authResult.isValid) {
@@ -117,8 +119,7 @@ async function handleRequest(request){
         }
 
         return getNextFeedPosts(authResult.userData.id);
-    }// Create a new post
-    else if (request.method === "POST" && url.pathname === "/posts") {
+    } else if (request.method === "POST" && url.pathname === "/posts") {
         const authResult = await authenticateRequest(request);
         if (!authResult.isValid) {
             return new Response("Unauthorized", { status: 401 });
@@ -127,9 +128,7 @@ async function handleRequest(request){
         // Continue with the request handling for authenticated users
         return createPost(request, authResult.userData);
 
-    }
-    // Retrieve a post by ID
-    else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
+    } else if (request.method === "GET" && url.pathname.startsWith("/posts/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const authResult = await authenticateRequest(request);
@@ -141,12 +140,12 @@ async function handleRequest(request){
         }
 
         return getPost(id, authResult.userData.id);
-    }else if (request.method === "GET" && url.pathname.startsWith("/post/")) {
+    } else if (request.method === "GET" && url.pathname.startsWith("/post/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const post = await getPostData(id);
 
-        if(post.content.includes("iframe.mediadelivery.net")){
+        if (post.content.includes("iframe.mediadelivery.net")) {
             const video_id = await getVideoIdByPostId(id);
             post.content = "https://vz-9a396cc0-746.b-cdn.net/" + video_id + "/thumbnail.jpg";
         }
@@ -162,7 +161,7 @@ async function handleRequest(request){
             status: 200,
             headers: { "Content-Type": "text/html" }
         });
-    }else if (url.pathname.startsWith("/like/")) {
+    } else if (url.pathname.startsWith("/like/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const authResult = await authenticateRequest(request);
@@ -171,7 +170,7 @@ async function handleRequest(request){
         }
 
         return likePost(id, authResult.userData);
-    }else if (url.pathname.startsWith("/dislike/")) {
+    } else if (url.pathname.startsWith("/dislike/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const authResult = await authenticateRequest(request);
@@ -180,7 +179,7 @@ async function handleRequest(request){
         }
 
         return dislikePost(id, authResult.userData);
-    }else if (url.pathname.startsWith("/skip/")) {
+    } else if (url.pathname.startsWith("/skip/")) {
         const id = url.pathname.split('/')[2];  // Extract the post ID from the URL
 
         const authResult = await authenticateRequest(request);
@@ -189,7 +188,7 @@ async function handleRequest(request){
         }
 
         return skipPost(id, authResult.userData);
-    }else if (url.pathname.startsWith("/manage-follow") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/manage-follow") && request.method === "GET") {
         const postId = url.searchParams.get('postId');
         const action = url.searchParams.get('action');  // Expected to be 'follow' or 'unfollow'
         const authResult = await authenticateRequest(request);
@@ -208,8 +207,7 @@ async function handleRequest(request){
                 headers: { "Content-Type": "application/json" }
             });
         }
-    }
-    else if (url.pathname.startsWith("/check-follow/") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/check-follow/") && request.method === "GET") {
         const creatorId = url.pathname.split('/')[2];  // Extract the creator ID from the URL
         const authResult = await authenticateRequest(request);
 
@@ -218,7 +216,7 @@ async function handleRequest(request){
         }
 
         return checkIfUserFollowsCreator(authResult.userData.id, creatorId);
-    }else if (url.pathname.startsWith("/add-reaction") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/add-reaction") && request.method === "GET") {
         const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
         const emoji = url.searchParams.get('emoji'); // Get the emoji from URL query parameter
         const authResult = await authenticateRequest(request);
@@ -228,17 +226,11 @@ async function handleRequest(request){
         }
 
         return addReaction(postId, authResult.userData.id, emoji);
-    }
-
-    // Route to get all reactions for a post using GET request
-    else if (url.pathname.startsWith("/get-reactions") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/get-reactions") && request.method === "GET") {
         const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
 
         return getReactionsByPostId(postId);
-    }
-
-    // Route to get all reactions for a post using GET request
-    else if (url.pathname.startsWith("/register-view") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/register-view") && request.method === "GET") {
         const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
 
         const authResult = await authenticateRequest(request);
@@ -248,7 +240,7 @@ async function handleRequest(request){
         }
 
         return viewPost(postId, authResult.userData.id);
-    }else if (url.pathname.startsWith("/accept-invitation") && request.method === "GET") {
+    } else if (url.pathname.startsWith("/accept-invitation") && request.method === "GET") {
         const ambassadorUserId = url.searchParams.get('ambassadorUserId');
 
         // Authentication and user identification
@@ -281,7 +273,17 @@ async function handleRequest(request){
                 headers: { "Content-Type": "application/json" }
             });
         }
-    } else{
+    } else if (url.pathname.startsWith("/click-link") && request.method === "GET") {
+        const postId = url.searchParams.get('postId'); // Get the post ID from URL query parameter
+
+        const authResult = await authenticateRequest(request);
+
+        if (!authResult.isValid) {
+            return clickLink(postId, "anonymous");
+        }
+
+        return clickLink(postId, authResult.userData.id);
+    } else {
         try {
             const filePath = `./public${url.pathname}`;
             return await serveFile(request, filePath);

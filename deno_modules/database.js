@@ -14,6 +14,7 @@ const videosCollection = db.collection("videos");
 const dislikesCollection = db.collection("dislikes");
 const followsCollection = db.collection("follows");
 const reactionsCollection = db.collection("reactions");
+const linkClicksCollection = db.collection("linkClicks");
 const registrationReferralsCollection = db.collection("registrationReferrals");
 
 export {
@@ -25,5 +26,6 @@ export {
     followsCollection,
     reactionsCollection,
     registrationReferralsCollection,
+    linkClicksCollection,
     videosCollection
 };
