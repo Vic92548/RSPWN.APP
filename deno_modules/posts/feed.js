@@ -13,6 +13,11 @@ export async function getNextFeedPosts(userid) {
         const interactedPostIds = [...likes, ...dislikes, ...skips].map(interaction => interaction.postId);
 
         posts = await postsCollection.find({ id: { $nin: interactedPostIds } }).sort({ timestamp: -1 }).limit(10).toArray();
+
+        // If no new posts are found, fetch random posts
+        if (posts.length === 0) {
+            posts = await postsCollection.aggregate([{ $sample: { size: 10 } }]).toArray();
+        }
     }
 
     posts = await Promise.all(posts.map(async post => {
