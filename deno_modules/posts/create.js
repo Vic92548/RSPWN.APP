@@ -5,6 +5,33 @@ import { notifyFollowers } from "../post.js"; // Adjust import path based on act
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
 
+// webhook.ts
+
+const webhookUrl = "https://sloth-resolved-explicitly.ngrok-free.app/webhook";
+
+
+async function sendWebhook(url, data) {
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseBody = await response.json();
+        console.log("Webhook sent successfully:", responseBody);
+    } catch (error) {
+        console.error("Error sending webhook:", error);
+    }
+}
+
+
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
         return new Response("Invalid content type", { status: 400 });
@@ -68,7 +95,15 @@ export async function createPost(request, userData) {
         "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId
     );
 
-    notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
+    //notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
+
+    const payload = {
+        creatorId: userData.id,
+        postId: postId,
+        postTitle: title,
+    };
+
+    sendWebhook(webhookUrl, payload);
 
     return new Response(JSON.stringify(post), {
         status: 201,
