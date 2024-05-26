@@ -7,7 +7,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
 
 // webhook.ts
 
-const webhookUrl = "https://sloth-resolved-explicitly.ngrok-free.app";
+const webhookUrl = "https://sloth-resolved-explicitly.ngrok-free.app/webhook";
 
 
 async function sendWebhook(url, data) {
