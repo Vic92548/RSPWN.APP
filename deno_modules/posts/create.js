@@ -41,6 +41,7 @@ export async function createPost(request, userData) {
     const title = formData.get("title");
     const link = formData.get("link");
     const file = formData.get("file");
+    const community = formData.get("community");
 
     let content = "";
 
@@ -79,7 +80,8 @@ export async function createPost(request, userData) {
         content,
         userId: userData.id,
         timestamp: new Date(),
-        link
+        link,
+        community
     });
 
     console.log("Post created!");
