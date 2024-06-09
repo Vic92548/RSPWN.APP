@@ -38,7 +38,6 @@
     transform: translateY(100vh);
     transition: all 1s ease-in-out;
     max-height: 80vh;
-    overflow-y: auto;
 }
 @keyframes swipeRight {
     0% {
