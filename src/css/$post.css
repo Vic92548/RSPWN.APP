@@ -37,6 +37,7 @@
     color: #fff;
     transform: translateY(100vh);
     transition: all 1s ease-in-out;
+    max-height: 80vh;
 }
 @keyframes swipeRight {
     0% {

@@ -81,6 +81,22 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
                     origin: { y: 0.6 }
                 });
                 displayPost(result.id);
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Post created successfully!"
+                });
                 // Optionally clear the form or handle according to your needs
 
                 // Clear post
@@ -101,7 +117,11 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
 
                 setXPProgress(oldUser);
             } else {
-                alert(result.msg);
+                Swal.fire({
+                    title: "Error submitting your post :/",
+                    text: result.msg,
+                    icon: "error"
+                });
             }
         } else {
             alert('Failed to create post. Please try again with another image.');
