@@ -23,9 +23,7 @@
 }
 
 .user-details time{
-    float: right;
-    position: absolute;
-    right: 20px;
+    display: block;
 }
 
 .username {
@@ -47,10 +45,11 @@
 }
 
 .actions {
-    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    right: 20px;
 }
 
 .actions button {
