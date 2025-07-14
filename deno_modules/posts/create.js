@@ -126,7 +126,7 @@ async function uploadImageToBunnyCDN(file, postId) {
         throw new Error("Bunny CDN configuration is missing from environment variables.");
     }
 
-    const uploadUrl = `${storageZoneUrl}/vapr/posts/${fileName}`;
+    const uploadUrl = `${storageZoneUrl}vapr/posts/${fileName}`;
 
     const arrayBuffer = await file.arrayBuffer();
     const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
