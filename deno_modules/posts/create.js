@@ -7,7 +7,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
 
 // webhook.ts
 
-const webhookUrl = "https://sloth-resolved-explicitly.ngrok-free.app/webhook";
+const webhookUrl = Deno.env.get("WEBHOOK_URL");
 
 
 async function sendWebhook(url, data) {
@@ -89,12 +89,14 @@ export async function createPost(request, userData) {
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
     userData = await usersCollection.findOne({ id: userData.id });
+    const baseUrl = Deno.env.get("BASE_URL");
+    const discordWebhook = Deno.env.get("DISCORD_POST_WEBHOOK_URL");
 
     const post = { id: postId, title, content, userId: userData.id, timestamp: new Date(), link, user: userData, success: true };
 
     sendMessageToDiscordWebhook(
-        "https://discord.com/api/webhooks/1236284348244955137/7b-J6UW1knzJhhFIY9AyplZAvKNF9F897oUsRqOPjJJZrCRmcW2A9QTOPWnL7UhD2-YI",
-        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : https://vapr.gg/post/" + postId
+        discordWebhook,
+        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : " + baseUrl + "/post/" + postId
     );
 
     //notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
@@ -118,6 +120,7 @@ async function uploadImageToBunnyCDN(file, postId) {
     const fileName = `${postId}.${fileExtension}`;
     const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
     const storageZoneUrl = Deno.env.get("BUNNY_CDN_STORAGE_URL");
+    const cdnHostname = Deno.env.get("BUNNY_CDN_HOSTNAME");
 
     if (!accessKey || !storageZoneUrl) {
         throw new Error("Bunny CDN configuration is missing from environment variables.");
@@ -144,7 +147,7 @@ async function uploadImageToBunnyCDN(file, postId) {
     }
 
     console.log("POST UPLOADED IMAGE");
-    return { success: true, url: `https://vapr.b-cdn.net/posts/${fileName}` };
+    return { success: true, url: `https://${cdnHostname}/posts/${fileName}` };
 }
 
 async function uploadVideoToBunnyCDN(file, postId) {

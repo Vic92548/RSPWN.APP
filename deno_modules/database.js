@@ -1,10 +1,11 @@
-import { MongoClient } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
+import { MongoClient } from "npm:mongodb@6";
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
-const client = new MongoClient();
-await client.connect(databaseUrl);
-const db = client.database("vapr");
+const client = new MongoClient(databaseUrl);
+await client.connect();
+console.log("Connected");
+const db = client.db("vapr");
 
 const postsCollection = db.collection("posts");
 const usersCollection = db.collection("users");

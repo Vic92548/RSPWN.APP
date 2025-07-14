@@ -47,8 +47,10 @@ export async function followPost(postId, followerId) {
             followsCollection.countDocuments({ creatorId: creatorId })
         ]);
 
+        const discordFollowWebhook = Deno.env.get("DISCORD_FOLLOW_WEBHOOK_URL");
+
         sendMessageToDiscordWebhook(
-            "https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
+            discordFollowWebhook,
             ":incoming_envelope: **@" + follower.username + "**(lvl " + follower.level + ") is now following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**"
         );
 
@@ -89,8 +91,9 @@ export async function unfollowPost(postId, followerId) {
             followsCollection.countDocuments({ creatorId: post.userId })
         ]);
 
+        const discordFollowWebhook = Deno.env.get("DISCORD_FOLLOW_WEBHOOK_URL");
         sendMessageToDiscordWebhook(
-            "https://discord.com/api/webhooks/1237068985233833994/-Q63qOJO3H-6HwkZoHSwmTaaelnLiDXBxNj4fA_9oJlDMN_AKO4rhGKfQBM8uvKR46vu",
+            discordFollowWebhook,
             ":broken_heart: **@" + follower.username + "**(lvl " + follower.level + ") stopped following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**"
         );
 

@@ -1,18 +1,19 @@
-import { MongoClient } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
+import { MongoClient } from "npm:mongodb@6";
 import { sendMessageToDiscordWebhook } from './discord.js';
 import { joinGuild } from './discord_bot.js';
 
 const databaseUrl = Deno.env.get("DATABASE_URL");
 
-const client = new MongoClient();
-await client.connect(databaseUrl);
-const db = client.database("vapr");
+const client = new MongoClient(databaseUrl);
+console.log(databaseUrl);
+await client.connect();
+const db = client.db("vapr");
 
 // Environment variable-based configuration
 const clientId = Deno.env.get("DISCORD_ClientID");
 const clientSecret = Deno.env.get("DISCORD_ClientSecret");
-const DOMAIN = Deno.env.get("DOMAIN");
-const redirectUri = `https://${DOMAIN}/auth/discord/callback`;
+const BASE_URL = Deno.env.get("BASE_URL");
+const redirectUri = `${BASE_URL}/auth/discord/callback`;
 
 const usersCollection = db.collection("users");
 const secretKeysCollection = db.collection("secretKeys");
@@ -65,7 +66,7 @@ export async function authenticateRequest(request) {
 }
 
 export async function handleOAuthCallback(request) {
-    const url = new URL(request.url, `https://${DOMAIN}/`);
+    const url = new URL(request.url, `${BASE_URL}/`);
     const code = url.searchParams.get("code");
     if (!code) return new Response("Authorization code not found", { status: 400 });
 
@@ -112,8 +113,10 @@ export async function handleOAuthCallback(request) {
             xp_required: 700
         });
 
+        const discordJoinWebhook = Deno.env.get("DISCORD_JOIN_WEBHOOK_URL");
+
         sendMessageToDiscordWebhook(
-            "https://discord.com/api/webhooks/1235274235438436413/wIBKtVBz9QvyqqUN8Fu4jSoKfXsQn-ior-92FzPNPKxbDrI2i1VhzV4ps_XqzdjPlb9q",
+            discordJoinWebhook,
             `${userData.username} joined VAPR we are now ${(await usersCollection.countDocuments())} members!`
         );
     } else if (user.username !== userData.username) {
