@@ -21,11 +21,6 @@ function addReaction(emoji) {
         return;
     }
 
-    window.analytics.track('Add reaction', {
-        post: current_post,
-        emoji,
-    });
-
     if (user_previous_reaction) {
         decrementEmoji(user_previous_reaction);
     }
