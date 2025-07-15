@@ -7,6 +7,7 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
+        /*
         for (let i = 0; i < background_images.length; i++) {
             if(background_images[i].id === data.backgroundId){
                 const background_url = 'https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp';
@@ -14,6 +15,8 @@ function loadUserData(){
                 break;
             }
         }
+        
+         */
 
         const oldUser = {
             xp: 0,
@@ -30,39 +33,11 @@ function loadUserData(){
 
         document.getElementById("xp_bar").style.display = "block";
 
-
-
         loading_steps--;
         hideLoading();
 
         handleReferral();
 
-        window.analytics.identify(data.id, {
-            email: data.email,
-            name: data.username
-        });
-
-        Featurebase(
-            "identify",
-            {
-                // Each 'identify' call should include an "organization" property,
-                // which is your Featurebase board's name before the ".featurebase.app".
-                organization: "vapr",
-
-                // Required. Replace with your customers data.
-                email: data.email,
-                name: data.username,
-                id: data.id
-            },
-            (err) => {
-                // Callback function. Called when identify completed.
-                if (err) {
-                    // console.error(err);
-                } else {
-                    // console.log("Data sent successfully!");
-                }
-            }
-        );
     }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         if(window.innerWidth <= 768){
