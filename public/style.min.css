@@ -373,7 +373,7 @@ title span{
     align-items: center;
 }
 
-#register{
+#register, #text_modal{
     text-align: center;
 }
 
@@ -453,6 +453,16 @@ input:focus {
 #follow{
     font-size: 12px;
     color: rgba(255,255,255,0.6);
+}
+
+#post_title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#post_title_show_more{
+    display: inline-block;
 }
 
 #follow{
@@ -653,6 +663,11 @@ input:focus {
 #post_ubisoft{
     background-color: #0351A1 ;
     box-shadow: 0 0 5px #0351A1 ;
+}
+
+#post_gumroad{
+    background-color: #ff6d7b ;
+    box-shadow: 0 0 5px #ff6d7b ;
 }
 @keyframes wave {
     0% {

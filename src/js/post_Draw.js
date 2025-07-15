@@ -13,7 +13,23 @@ function drawPost(data){
 
     updateFollowButton();
 
-    document.getElementById("post_title").textContent = data.title;
+    const titleEl = document.getElementById("post_title");
+    const showMoreButtonEl = document.getElementById("post_title_show_more");
+    titleEl.textContent = data.title;
+
+    requestAnimationFrame(()=>{
+        const cropped = titleEl.scrollWidth > titleEl.clientWidth;
+
+        if(cropped){
+            showMoreButtonEl.style.display = "inline-block";
+            showMoreButtonEl.onclick = () => {
+                openTextModal(data.title);
+            };
+        }else{
+            showMoreButtonEl.style.display = "none";
+        }
+    });
+
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 

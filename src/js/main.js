@@ -371,6 +371,15 @@ function handleReferral() {
     }
 }
 
+function openTextModal(text) {
+    document.getElementById("text_modal_text").textContent = text;
+    document.getElementById("text_modal").style.display = 'block';
+}
+
+function closeTextModal() {
+    document.getElementById("text_modal").style.display = 'none';
+}
+
 function copyReferrerId() {
     // Construct the URL with the userId as a query parameter
     if(isUserLoggedIn()){
