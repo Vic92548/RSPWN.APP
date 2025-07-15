@@ -54,6 +54,12 @@ function drawPost(data){
             setupSocialLink("post_itch", data.link);
         }
 
+        if(url.hostname.includes("gumroad.com")){
+            setupSocialLink("post_gumroad", data.link);
+        }
+
+
+
         switch(url.hostname){
             case 'discord.gg':
                 setupSocialLink("post_discord", data.link);
@@ -93,9 +99,6 @@ function drawPost(data){
                 break;
             case 'kick.com':
                 setupSocialLink("post_kick", data.link);
-                break;
-            case 'gumroad.com':
-                setupSocialLink("post_gumroad", data.link);
                 break;
             case 'www.patreon.com':
                 setupSocialLink("post_patreon", data.link);
