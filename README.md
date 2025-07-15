@@ -4,9 +4,6 @@
 **VAPR** is an open-source, gamified social platform for sharing and discovering gaming content.
 It features Discord login, post creation with images or videos, reactions, following, XP/leveling, and more!
 
-![VAPR Screenshot](https://vapr.b-cdn.net/vaprgif.gif)
-*Screenshot: Main feed and post creation interface.*
-
 ---
 
 ## 🚀 Features
@@ -18,7 +15,7 @@ It features Discord login, post creation with images or videos, reactions, follo
 - **XP & Leveling:** Earn experience points for actions and level up your profile.
 - **Invite & Referral System:** Invite friends and earn rewards.
 - **Discord Integration:** Real-time notifications via Discord webhooks and bots.
-- **Modern Tech Stack:** Built with [Deno](https://deno.com/), [MongoDB](https://www.mongodb.com/), and [BunnyCDN](https://bunny.net/).
+- **Modern Tech Stack:** Built with [Deno](https://deno.com/), [MongoDB](https://www.mongodb.com/), and [BunnyCDN](https://bunny.net?ref=fy57v3kedf).
 
 ---
 
@@ -29,7 +26,7 @@ It features Discord login, post creation with images or videos, reactions, follo
 - [Deno](https://deno.com/manual/getting_started/installation)
 - [MongoDB](https://www.mongodb.com/) database
 - [Discord Developer Application](https://discord.com/developers/applications) (for OAuth)
-- [BunnyCDN](https://bunny.net/) account (for media hosting)
+- [BunnyCDN](https://bunny.net?ref=fy57v3kedf) account (for media hosting)
 
 ### 2. Clone the Repository
 
@@ -64,7 +61,7 @@ deno run --allow-read --allow-write build.js
 ### 5. Start the Server
 
 ```bash
-deno run --allow-net --allow-read --allow-env server.js
+deno run --env-files --allow-net --allow-read --allow-env server.js
 ```
 
 Visit [http://localhost:8080](http://localhost:8080) in your browser.
@@ -99,24 +96,13 @@ Contributions are welcome! To get started:
 
 - Open issues for bugs, feature requests, or questions.
 - Submit pull requests for improvements or fixes.
-- See `CONTRIBUTING.md` for more detailed guidelines (or create one if it doesn't exist).
+- See `CONTRIBUTING.md` for more detailed guidelines.
 
 ---
 
 ## 📄 License
 
-VAPR is open source, released under the [MIT License](LICENSE).
-
----
-
-## 🙏 Acknowledgements
-
-- [Deno](https://deno.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [BunnyCDN](https://bunny.net/)
-- [Discord](https://discord.com/)
-
-Thanks to all contributors and the open source community!
+VAPR is open source, released under the [VAPR Open Source License](LICENSE.md).
 
 ---
 
