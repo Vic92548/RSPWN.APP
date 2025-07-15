@@ -23,7 +23,7 @@ function drawPost(data){
         data.content = "https://vapr.b-cdn.net/posts/200w.gif";
     }
 
-    if(data.content.split("/posts/")[0] === "https://vapr.b-cdn.net"){
+    if(data.content.split("/posts/")[0] === "https://vapr-club.b-cdn.net"){
         document.getElementById("post_image").src = data.content;
         document.getElementById("post_image").style.display = "block";
         document.getElementById("post_content").style.display = "none";
