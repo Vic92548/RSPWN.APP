@@ -72,7 +72,6 @@ document.getElementById('postForm').addEventListener('submit', async function(ev
         const result = await response.json();
         if (response.ok) {
             if(result.success){
-                window.analytics.track('new_post_uploaded', {postId: result.id});
 
                 document.getElementById("add-post").style.display = "none";
                 confetti({

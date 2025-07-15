@@ -117,7 +117,6 @@ function likePost() {
                 xp_required: window.user.xp_required
             };
             window.user = data.user;
-            window.analytics.track('like', { post: current_post });
             setXPProgress(oldUser);
             setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
@@ -146,7 +145,6 @@ function skipPost() {
             };
             window.user = data.user;
             setXPProgress(oldUser);
-            window.analytics.track('skip', { post: current_post });
             setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
             console.log(error);
@@ -174,7 +172,6 @@ function dislikePost() {
             };
             window.user = data.user;
             setXPProgress(oldUser);
-            window.analytics.track('dislike', { post: current_post });
             setTimeout(displayPost, 600); // Wait for animation to complete
         }).catch(error => {
             console.log(error);
