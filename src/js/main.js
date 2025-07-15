@@ -388,7 +388,7 @@ function handleReferral() {
 function copyReferrerId() {
     // Construct the URL with the userId as a query parameter
     if(isUserLoggedIn()){
-        const referralUrl = `https://vapr.gg?join=${user.id}`;
+        const referralUrl = `https://vapr.club?join=${user.id}`;
 
         // Create a temporary text area to hold the URL
         const textArea = document.createElement('textarea');

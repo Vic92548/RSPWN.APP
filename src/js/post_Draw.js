@@ -94,6 +94,9 @@ function drawPost(data){
             case 'kick.com':
                 setupSocialLink("post_kick", data.link);
                 break;
+            case 'gumroad.com':
+                setupSocialLink("post_gumroad", data.link);
+                break;
             case 'www.patreon.com':
                 setupSocialLink("post_patreon", data.link);
                 break;
