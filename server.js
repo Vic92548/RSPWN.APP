@@ -295,6 +295,11 @@ async function handleRequest(request){
 }
 
 
-startDylan();
-console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
-Deno.serve({ port }, handleRequest);
+try {
+    startDylan();
+    console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
+    Deno.serve({ port }, handleRequest);
+} catch (err) {
+    console.error('Fatal startup error:', err);
+    Deno.exit(1);
+}
