@@ -1,6 +1,7 @@
 import { postsCollection, usersCollection, videosCollection } from "../database.js";
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
+import { notifyFollowersByEmail } from "./notify_by_email.js";
 import { notifyFollowers } from "../post.js"; // Adjust import path based on actual location
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
@@ -108,6 +109,8 @@ export async function createPost(request, userData) {
     };
 
     sendWebhook(webhookUrl, payload);
+
+    await notifyFollowersByEmail(userData.id, postId, title);
 
     return new Response(JSON.stringify(post), {
         status: 201,
