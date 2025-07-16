@@ -64,7 +64,6 @@ main {
     font-family: "Poppins", sans-serif;
     font-weight: 900;
     text-align: center;
-    color: rgba(255, 255, 255, 0.9);
     position: absolute;
     top: 15px;
     left: 0;
@@ -72,6 +71,12 @@ main {
     text-shadow: 0 0 5px rgba(0,0,0,0.4);
     transition: all 1s;
     font-size: 36px;
+    z-index: 0;
+}
+
+.title a{
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
 }
 
 .discord-link {
