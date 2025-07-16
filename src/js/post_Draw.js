@@ -119,6 +119,9 @@ function drawPost(data){
             case 'www.patreon.com':
                 setupSocialLink("post_patreon", data.link);
                 break;
+            case 'garryhost.com':
+                setupSocialLink("post_garryhost", data.link);
+                break;
             case 'www.fortnite.com':
                 setupSocialLink("post_fortnite", data.link);
                 break;
