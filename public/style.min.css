@@ -1048,6 +1048,10 @@ input:focus {
     transform: scale(1.5) translateZ(30px);
     transition: transform 0.5s ease-in-out;
 }
+.menu_tag{
+    display: inline-block;
+    float: right;
+}
 @media only screen and (min-width: 768px) {
     main {
         
