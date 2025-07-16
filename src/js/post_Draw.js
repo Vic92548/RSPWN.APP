@@ -17,18 +17,26 @@ function drawPost(data){
     const showMoreButtonEl = document.getElementById("post_title_show_more");
     titleEl.textContent = data.title;
 
-    requestAnimationFrame(()=>{
-        const cropped = titleEl.scrollWidth > titleEl.clientWidth;
+    requestAnimationFrame(() => {
+        const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 24;
+        const maxLines = 1;
+        const maxHeight = lineHeight * maxLines;
 
-        if(cropped){
+        const isClamped = titleEl.scrollHeight > maxHeight;
+
+        if (isClamped) {
             showMoreButtonEl.style.display = "inline-block";
             showMoreButtonEl.onclick = () => {
-                openTextModal(data.title);
+                titleEl.classList.toggle("expanded");
+                showMoreButtonEl.innerHTML = titleEl.classList.contains("expanded")
+                    ? `<i class="fa-solid fa-chevron-up"></i> Show less`
+                    : `<i class="fa-solid fa-chevron-down"></i> Show more`;
             };
-        }else{
+        } else {
             showMoreButtonEl.style.display = "none";
         }
     });
+
 
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);

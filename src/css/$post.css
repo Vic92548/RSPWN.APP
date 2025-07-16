@@ -182,11 +182,21 @@ input:focus {
     color: rgba(255,255,255,0.6);
 }
 
-#post_title{
-    white-space: nowrap;
+#post_title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Only 1 line shown by default */
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-height: 1.8em; /* Approx. 1 line */
+    transition: max-height 0.4s ease;
 }
+
+#post_title.expanded {
+    -webkit-line-clamp: unset;
+    max-height: 100vh; /* expand fully */
+}
+
 
 #post_title_show_more{
     display: inline-block;
