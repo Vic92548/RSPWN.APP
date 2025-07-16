@@ -4,6 +4,14 @@
         margin: 0 auto;
     }
 
+    .title {
+        margin: 0;
+        width: calc(50% - 240px);
+        max-width: 300px;
+        left: 20px;
+        top: 15px;
+    }
+
     h1 {
         /*font-size: 3em;*/
     }
@@ -13,6 +21,7 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+        margin-top: 0px;
     }
 
     /* Autres ajustements pour les écrans de bureau */
@@ -92,6 +101,23 @@
 
     .big_image{
         transform: scale(3) translateZ(30px);
+    }
+
+    .reactions{
+        margin-top: 10px;
+    }
+
+    .reactions .glass_bt{
+        padding: 5px;
+    }
+
+    .reactions .reaction_icon{
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .reactions span{
+        font-size: 18px;
     }
 
     @keyframes swipeRight {
