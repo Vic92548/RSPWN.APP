@@ -21,6 +21,9 @@ import {
     acceptInvitation,
     clickLink
 } from "./deno_modules/post.js";
+import { xpTodayHandler } from "./deno_modules/routes/xp_today.js";
+import { leaderboardHandler } from "./deno_modules/routes/leaderboard.js";
+
 
 const port = 8080;
 
@@ -283,7 +286,12 @@ async function handleRequest(request){
         }
 
         return clickLink(postId, authResult.userData.id);
-    } else {
+    } else if (url.pathname === "/api/xp-today" && request.method === "GET") {
+        return await xpTodayHandler(request);
+
+    } else if (url.pathname === "/api/leaderboard" && request.method === "GET") {
+        return await leaderboardHandler(request);
+    }else {
         try {
             const filePath = `./public${url.pathname}`;
             return await serveFile(request, filePath);

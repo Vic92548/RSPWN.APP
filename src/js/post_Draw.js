@@ -18,11 +18,7 @@ function drawPost(data){
     titleEl.textContent = data.title;
 
     requestAnimationFrame(() => {
-        const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 24;
-        const maxLines = 1;
-        const maxHeight = lineHeight * maxLines;
-
-        const isClamped = titleEl.scrollHeight > maxHeight;
+        const isClamped = titleEl.offsetHeight < titleEl.scrollHeight - 1;
 
         if (isClamped) {
             showMoreButtonEl.style.display = "inline-block";

@@ -6,6 +6,7 @@ const client = new MongoClient(databaseUrl);
 await client.connect();
 const db = client.db("vapr");
 const usersCollection = db.collection("users");
+const xpLogCollection = db.collection("xpLog");
 
 /**
  * Adds XP to the user's data and handles leveling up if necessary.
@@ -55,6 +56,12 @@ export async function addXP(userId, amount) {
             }
         }
     );
+
+    await xpLogCollection.insertOne({
+        userId,
+        amount,
+        timestamp: new Date()
+    });
 
     console.log("XP added successfully!");
 }
