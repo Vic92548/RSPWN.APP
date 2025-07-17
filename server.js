@@ -23,6 +23,7 @@ import {
 } from "./deno_modules/post.js";
 import { xpTodayHandler } from "./deno_modules/routes/xp_today.js";
 import { leaderboardHandler } from "./deno_modules/routes/leaderboard.js";
+import {usersCollection} from "./deno_modules/database.js";
 
 
 const port = 8080;
@@ -291,6 +292,12 @@ async function handleRequest(request){
 
     } else if (url.pathname === "/api/leaderboard" && request.method === "GET") {
         return await leaderboardHandler(request);
+    } else if (url.pathname === "/api/user-count" && request.method === "GET") {
+        const count = await usersCollection.countDocuments();
+        return new Response(JSON.stringify({count}), {
+            status: 200,
+            headers: {"Content-Type": "application/json"}
+        });
     }else {
         try {
             const filePath = `./public${url.pathname}`;

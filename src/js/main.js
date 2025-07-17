@@ -432,3 +432,12 @@ function copyReferrerId() {
 processJoinQueryParam();
 
 showInitialPost();
+
+fetch("/api/user-count")
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("user_count").textContent = data.count.toLocaleString();
+    })
+    .catch(() => {
+        document.getElementById("user_count").textContent = "hundreds of";
+    });
