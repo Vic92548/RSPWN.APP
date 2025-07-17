@@ -36,8 +36,8 @@ async function handleRequest(request){
         const htmlContent = htmlTemplate
             .replaceAll('{{meta_description}}', "The place to share gaming content")
             .replaceAll('{{meta_author}}', "VAPR")
-            .replaceAll('{{meta_image}}', "https://vapr.b-cdn.net/vaprgif.gif")
-            .replaceAll('{{meta_url}}', "https://vapr.gg/");
+            .replaceAll('{{meta_image}}', "https://vapr-club.b-cdn.net/posts/3bad19ce-9f1b-4abd-a718-3d701c3ca09a.png")
+            .replaceAll('{{meta_url}}', "https://vapr.club/");
 
         return new Response(htmlContent, {
             status: 200,
@@ -151,7 +151,7 @@ async function handleRequest(request){
 
         if (post.content.includes("iframe.mediadelivery.net")) {
             const video_id = await getVideoIdByPostId(id);
-            post.content = "https://vz-9a396cc0-746.b-cdn.net/" + video_id + "/thumbnail.jpg";
+            post.content = "https://vz-3641e40e-815.b-cdn.net/" + video_id + "/thumbnail.jpg";
         }
 
         const htmlTemplate = await Deno.readTextFile("index.html");
@@ -159,7 +159,7 @@ async function handleRequest(request){
             .replaceAll('{{meta_description}}', post.title)
             .replaceAll('{{meta_author}}', post.username)
             .replaceAll('{{meta_image}}', post.content)
-            .replaceAll('{{meta_url}}', "https://vapr.gg/" + url.pathname);
+            .replaceAll('{{meta_url}}', "https://vapr.club/" + url.pathname);
 
         return new Response(htmlContent, {
             status: 200,
