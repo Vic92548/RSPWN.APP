@@ -108,6 +108,7 @@ export async function handleOAuthCallback(request) {
             username: userData.username,
             email: userData.email,
             provider: 'discord',
+            avatar: userData.avatar,
             level: 0,
             xp: 0,
             xp_required: 700
@@ -119,10 +120,10 @@ export async function handleOAuthCallback(request) {
             discordJoinWebhook,
             `${userData.username} joined VAPR we are now ${(await usersCollection.countDocuments())} members!`
         );
-    } else if (user.username !== userData.username) {
+    } else if (user.username !== userData.username || user.email !== userData.email || user.avatar !== userData.avatar) {
         await usersCollection.updateOne(
             { id: userData.id },
-            { $set: { username: userData.username } }
+            { $set: { username: userData.username, email: userData.email, avatar: userData.avatar } },
         );
     }
 
