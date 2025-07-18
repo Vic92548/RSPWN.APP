@@ -50,12 +50,24 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+    body.background {
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
     .profile-page {
       min-height: 100vh;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      padding-bottom: 40px;
     }
 
     .profile-container {
@@ -85,6 +97,7 @@
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
     }
 
     .profile-avatar img {
@@ -93,10 +106,21 @@
       object-fit: cover;
     }
 
+    .profile-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .profile-info h1 {
       margin: 0;
       font-size: 32px;
       color: #fff;
+      word-break: break-word;
+    }
+
+    .profile-info p {
+      margin: 5px 0;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .level-badge {
@@ -160,11 +184,13 @@
     .xp-text {
       text-align: center;
       color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
     }
 
     .posts-section h2 {
       color: #fff;
       margin-bottom: 20px;
+      font-size: 24px;
     }
 
     .posts-grid {
@@ -186,6 +212,7 @@
     .profile-post-card:hover {
       background-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .profile-post-card h4 {
@@ -193,6 +220,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: 16px;
     }
 
     .post-meta {
@@ -200,12 +228,16 @@
       color: rgba(255, 255, 255, 0.7);
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .no-posts {
       text-align: center;
       color: rgba(255, 255, 255, 0.7);
       padding: 40px;
+      font-size: 16px;
     }
 
     .back-to-home {
@@ -220,24 +252,177 @@
       border-radius: 7px;
       font-weight: 700;
       transition: all 0.3s;
+      z-index: 100;
     }
 
     .back-to-home:hover {
       background-color: #0d8bf0;
+      transform: translateY(-2px);
     }
 
+    /* Mobile Styles */
     @media (max-width: 768px) {
+      .profile-page {
+        padding: 10px;
+        padding-bottom: 30px;
+      }
+
+      .profile-container {
+        padding: 20px;
+        margin-top: 80px;
+        border-radius: 10px;
+      }
+
       .profile-header {
         flex-direction: column;
         text-align: center;
+        gap: 20px;
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+      }
+
+      .profile-info h1 {
+        font-size: 24px;
       }
 
       .profile-stats {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .stat-card {
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .stat-value {
+        font-size: 28px;
+      }
+
+      .stat-label {
+        margin-top: 0;
+        font-size: 16px;
+      }
+
+      .xp-bar {
+        height: 25px;
+      }
+
+      .xp-text {
+        font-size: 14px;
+      }
+
+      .posts-section h2 {
+        font-size: 20px;
+        text-align: center;
       }
 
       .posts-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .profile-post-card {
+        padding: 15px;
+      }
+
+      .profile-post-card h4 {
+        font-size: 15px;
+        margin-bottom: 8px;
+      }
+
+      .post-meta {
+        font-size: 13px;
+      }
+
+      .back-to-home {
+        top: 10px;
+        left: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+
+      .back-to-home i {
+        margin-right: 5px;
+      }
+
+      h1.title {
+        font-size: 32px;
+        top: 10px;
+      }
+
+      /* Make follow button full width on mobile */
+      .follow-profile-btn {
+        width: 100%;
+        margin-top: 15px;
+      }
+    }
+
+    /* Small mobile screens */
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 15px;
+      }
+
+      .profile-info h1 {
+        font-size: 20px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+
+      .posts-section h2 {
+        font-size: 18px;
+      }
+
+      .profile-post-card {
+        padding: 12px;
+      }
+
+      .profile-post-card h4 {
+        font-size: 14px;
+      }
+
+      .post-meta {
+        font-size: 12px;
+      }
+    }
+
+    /* Ensure title animation works */
+    h1.title {
+      position: fixed;
+      z-index: 50;
+    }
+
+    /* Discord link responsive */
+    .discord-link {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #17212b;
+      box-shadow: 0 0 10px #17212b;
+      border-radius: 7px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 10px;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .discord-link {
+        top: 10px;
+        right: 10px;
+        font-size: 16px;
+        padding: 8px;
       }
     }
   </style>
@@ -245,6 +430,10 @@
 <body class="background">
 <a href="/" class="back-to-home">
   <i class="fa-solid fa-arrow-left"></i> Back to VAPR
+</a>
+
+<a href="https://discord.gg/vtsnj3zphd" class="discord-link">
+  <i class="fa-brands fa-discord"></i>
 </a>
 
 <div class="profile-page">
