@@ -316,8 +316,10 @@ function hideMenu() {
     }
 }
 
-if(window.innerWidth >= 768){
-    document.getElementById("menu").style.display = 'flex';
+if(MainPage){
+    if(window.innerWidth >= 768){
+        document.getElementById("menu").style.display = 'flex';
+    }
 }
 
 function processJoinQueryParam() {
@@ -431,13 +433,17 @@ function copyReferrerId() {
 
 processJoinQueryParam();
 
-showInitialPost();
+if(MainPage){
+    showInitialPost();
 
-fetch("/api/user-count")
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("user_count").textContent = data.count.toLocaleString();
-    })
-    .catch(() => {
-        document.getElementById("user_count").textContent = "hundreds of";
-    });
+    fetch("/api/user-count")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("user_count").textContent = data.count.toLocaleString();
+        })
+        .catch(() => {
+            document.getElementById("user_count").textContent = "hundreds of";
+        });
+}
+
+

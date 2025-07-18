@@ -13,4 +13,6 @@ async function updateGithubStars(element) {
     }
 }
 
-updateGithubStars(document.getElementById('github_stars'));
+if(MainPage){
+    updateGithubStars(document.getElementById('github_stars'));
+}

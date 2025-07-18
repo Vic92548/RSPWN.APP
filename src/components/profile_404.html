@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{meta_title}}</title>
+  <meta name="description" content="{{meta_description}}">
+  <meta name="robots" content="noindex, follow">
+
+  <link href="/style.min.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="https://vapr-club.b-cdn.net/default_vapr_avatar.png" type="image/png">
+  <script src="https://kit.fontawesome.com/0431b99604.js" crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    .error-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .error-card {
+      background-color: rgba(255,255,255,0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 8px;
+      box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
+      padding: 40px;
+      text-align: center;
+      color: #fff;
+      max-width: 500px;
+    }
+
+    .error-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      color: rgba(231, 76, 60, 0.8);
+    }
+
+    .error-card h1 {
+      margin: 0 0 20px 0;
+      font-size: 36px;
+    }
+
+    .error-card p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .action-buttons a {
+      background-color: rgba(255,255,255,0.3);
+      color: #fff;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 7px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.4);
+      padding: 10px 20px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.4s;
+    }
+
+    .action-buttons a:hover {
+      background-color: rgba(52, 152, 219, 0.8);
+    }
+  </style>
+</head>
+<body class="background">
+<h1 class="title">
+  <a href="/">
+    <span>V</span>
+    <span>A</span>
+    <span>P</span>
+    <span>R</span>
+  </a>
+</h1>
+
+<div class="error-container">
+  <div class="error-card">
+    <div class="error-icon">
+      <i class="fa-solid fa-user-slash"></i>
+    </div>
+    <h1>User Not Found</h1>
+    <p>Sorry, the user <strong>@{{username}}</strong> doesn't exist on VAPR.</p>
+    <div class="action-buttons">
+      <a href="/">
+        <i class="fa-solid fa-home"></i> Go Home
+      </a>
+      <a href="/login">
+        <i class="fa-brands fa-discord"></i> Join VAPR
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="/script.min.js"></script>
+</body>
+</html>

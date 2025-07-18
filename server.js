@@ -24,6 +24,7 @@ import {
 import { xpTodayHandler } from "./deno_modules/routes/xp_today.js";
 import { leaderboardHandler } from "./deno_modules/routes/leaderboard.js";
 import {usersCollection} from "./deno_modules/database.js";
+import {handleProfilePage} from "./deno_modules/user_profile.js";
 
 
 const port = 8080;
@@ -43,6 +44,11 @@ async function handleRequest(request){
             status: 200,
             headers: { "Content-Type": "text/html" }
         });
+    }else if(request.method === "GET" && url.pathname.startsWith("/@")){
+        const profileResponse = await handleProfilePage(request);
+        if (profileResponse) {
+            return profileResponse;
+        }
     } else if (url.pathname === "/auth/discord/callback") {
         return handleOAuthCallback(request);
     } else if (url.pathname === "/login") {

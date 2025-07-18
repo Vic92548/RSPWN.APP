@@ -1,9 +1,17 @@
 function loadUserData(){
-    document.getElementById("sign_in").style.display = "none";
-    document.getElementById("add_post").style.display = "none";
+    if(MainPage){
+        document.getElementById("sign_in").style.display = "none";
+        document.getElementById("add_post").style.display = "none";
+    }
+
 
     makeApiRequest("/me").then(data => {
         window.user = data;
+
+        if(!MainPage){
+            return;
+        }
+
         updateUsername();
         updateLevel();
 

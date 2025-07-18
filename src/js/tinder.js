@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+    if(!MainPage){
+        return;
+    }
+
     const post = document.getElementsByClassName("post")[0];
     let startX = 0;
     let startY = 0;
