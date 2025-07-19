@@ -108,6 +108,7 @@ async function gatherProfileData(user) {
         xp_required: user.xp_required || 700,
         joinDate: joinDate,
         joinDateFormatted: joinDateFormatted,
+        backgroundId: user.backgroundId || null,
         stats: {
             posts: postsCount,
             followers: followerCount,

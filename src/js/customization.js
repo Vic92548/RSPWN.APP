@@ -1,4 +1,9 @@
 function equipBackground(url, save = true) {
+
+    if(!MainPage){
+        return;
+    }
+
     const saved_background = localStorage.getItem('background_url');
     closeCustomizationMenu();
     hideMenu();
@@ -39,7 +44,7 @@ function closeCustomizationMenu() {
 }
 
 function displayBackgroundImages() {
-    if (!isUserLoggedIn()) {
+    if (!isUserLoggedIn() && MainPage) {
         openRegisterModal();
         return;
     }

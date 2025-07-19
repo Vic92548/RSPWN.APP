@@ -12,6 +12,14 @@ function initProfilePage() {
 
     // Add dynamic interactions
     addProfileInteractions();
+
+    console.log(profileData);
+    if (window.profileData && window.profileData.backgroundId) {
+        const background = background_images.find(bg => bg.id === window.profileData.backgroundId);
+        if (background) {
+            document.getElementById('profile-body').style.backgroundImage = 'url(' + background.image_url + ')';
+        }
+    }
 }
 
 // Add follow button to profile page
