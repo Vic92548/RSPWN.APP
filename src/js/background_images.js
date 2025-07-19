@@ -1,51 +1,35 @@
 background_images = [
     {
-        "id" : "bg_2",
-        "title" : "Cozy aliens",
-        "unlock" : 0
-    },{
-        "id" : "ninja_1",
-        "title" : "ninja 1",
-        "unlock" : 0
+        "id": "sunset_crush",
+        "title": "Sunset Crush",
+        "description": "Illustration from the music album Sunset Crush by Bip Bop Music",
+        "image_url": "https://vapr-club.b-cdn.net/backgrounds/sunset_crush.png",
+        "link": "https://www.youtube.com/watch?v=OU55Q9k7538&list=OLAK5uy_lSbP59KQr3hAI9h3DDdFI32BXO8AnpAJA",
+        "link_text": "Listen on YouTube",
+        "unlock": 0,
+        "rarity": "common",
+        "new": false
     },
     {
-        "id" : "anime_city_night",
-        "title" : "Anime city at night",
-        "unlock" : 1
+        "id": "pixel_mirage",
+        "title": "Pixel Mirage",
+        "description": "Illustration from the music album Pixel Mirage by Bip Bop Music",
+        "image_url": "https://vapr-club.b-cdn.net/backgrounds/pixel_mirage.png",
+        "link": "https://music.youtube.com/playlist?list=OLAK5uy_lD663FKcik2jpJwnZzkPLeQbaOgPqN75Y",
+        "link_text": "Listen on YouTube Music",
+        "unlock": 0,
+        "rarity": "common",
+        "new": true
     },
     {
-        "id" : "fantasy_forest",
-        "title" : "Fantasy forest",
-        "unlock" : 2
-    },
-    {
-        "id" : "boss_fight_1",
-        "title" : "Boss fight 1",
-        "unlock" : 3
-    },
-    {
-        "id" : "opex_1",
-        "title" : "opex 1",
-        "unlock" : 4
-    },
-    {
-        "id" : "sci_fi_1",
-        "title" : "Sci fi 1",
-        "unlock" : 5
-    },
-    {
-        "id" : "sci_fi_2",
-        "title" : "Sci fi 2",
-        "unlock" : 6
-    },
-    {
-        "id" : "sci_fi_3",
-        "title" : "Sci fi 3",
-        "unlock" : 10
-    },
-    {
-        "id" : "sci_fi_5",
-        "title" : "Sci fi 5",
-        "unlock" : 18
+        "id": "bip_bop_music",
+        "title": "Bip Bop Music",
+        "description": "Illustration from Bip Bop Music",
+        "image_url": "https://vapr-club.b-cdn.net/backgrounds/bip_bop_music.png",
+        "link": "https://www.youtube.com/@BipBopMusic",
+        "link_text": "Subscribe on YouTube",
+        "unlock": 2,
+        "rarity": "rare",
+        "new": true
     },
 ]

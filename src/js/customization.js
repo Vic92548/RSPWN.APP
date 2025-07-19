@@ -9,13 +9,9 @@ function equipBackground(url, save = true) {
         localStorage.setItem('background_url', url);
     }
     document.body.style.backgroundImage = 'url(' + url + ')';
-
 }
 
 function updateBackgroundId(newBackgroundId) {
-
-    window.analytics.track('update_background', {newBackground: background_images[newBackgroundId], newBackgroundId});
-
     if (!isUserLoggedIn()) {
         alert('You must be logged in to update your background.');
         return;
@@ -43,33 +39,82 @@ function closeCustomizationMenu() {
 }
 
 function displayBackgroundImages() {
-    if(isUserLoggedIn()){
-        const background_images_container = document.getElementById("background_images_container");
-        background_images_container.innerHTML = '';
-
-        for (let i = 0; i < background_images.length; i++) {
-            const img = background_images[i];
-
-            if(user.level >= img.unlock){
-                background_images_container.innerHTML += '<li class="background_image_div">\n' +
-                    '                        <div onclick="updateBackgroundId(\'' + img.id + '\');equipBackground(\'https://vapr.b-cdn.net/background_images/' + img.id + '.webp\')" class="background_image_overlay">\n' +
-                    '                            <h5>' + img.title + '</h5>\n' +
-                    '                        </div>\n' +
-                    '                        <img src="https://vapr.b-cdn.net/background_images/' + img.id + '.webp">\n' +
-                    '                    </li>';
-            }else{
-                background_images_container.innerHTML += '<li class="background_image_div">\n' +
-                    '                        <div class="background_image_overlay">\n' +
-                    '                            <p><i class="fa-solid fa-lock"></i></p>\n' +
-                    '                            <h5>Unlock at level ' + img.unlock + '</h5>\n' +
-                    '                        </div>\n' +
-                    '                        <img src="https://vapr.b-cdn.net/background_images/' + img.id + '.webp">\n' +
-                    '\n' +
-                    '                    </li>';
-            }
-        }
-    }else{
+    if (!isUserLoggedIn()) {
         openRegisterModal();
+        return;
     }
 
+    const container = document.getElementById("background_images_container");
+    container.innerHTML = '';
+
+    // Get current equipped background
+    const currentBackground = localStorage.getItem('background_url');
+
+    background_images.forEach(bg => {
+        const isUnlocked = user.level >= bg.unlock;
+        const isEquipped = currentBackground === bg.image_url;
+        const progress = Math.min((user.level / bg.unlock) * 100, 100);
+
+        const card = document.createElement('li');
+        card.className = `background-card ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`;
+
+        let rarityClass = `rarity-${bg.rarity}`;
+        let rarityText = bg.rarity.charAt(0).toUpperCase() + bg.rarity.slice(1);
+
+        card.innerHTML = `
+            <div class="rarity-badge ${rarityClass}">${rarityText}</div>
+            ${bg.new && isUnlocked ? '<div class="new-badge">NEW</div>' : ''}
+            
+            <img src="${bg.image_url}" class="background-preview" alt="${bg.title}">
+            
+            <div class="background-info">
+                <h4 class="background-title">${bg.title}</h4>
+                <p class="background-description">${bg.description}</p>
+                ${bg.link ? `
+                    <a href="${bg.link}" target="_blank" class="background-link" onclick="event.stopPropagation()">
+                        <i class="fa-solid fa-external-link-alt"></i>
+                        ${bg.link_text || 'View Source'}
+                    </a>
+                ` : ''}
+            </div>
+            
+            ${!isUnlocked ? `
+                <div class="lock-overlay">
+                    <i class="fa-solid fa-lock lock-icon"></i>
+                    <div class="unlock-text">Unlock at Level ${bg.unlock}</div>
+                    <div class="unlock-progress">
+                        <div class="unlock-progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            ` : ''}
+        `;
+
+        if (isUnlocked && !isEquipped) {
+            card.onclick = () => {
+                // Add selection animation
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 100);
+
+                updateBackgroundId(bg.id);
+                equipBackground(bg.image_url);
+
+                // Show success animation
+                if (typeof confetti !== 'undefined') {
+                    confetti({
+                        particleCount: 50,
+                        spread: 50,
+                        origin: { y: 0.6 },
+                        colors: ['#ff6b6b', '#4ecdc4', '#ffe66d']
+                    });
+                }
+
+                // Update UI to show new equipped state
+                displayBackgroundImages();
+            };
+        }
+
+        container.appendChild(card);
+    });
 }
