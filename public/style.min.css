@@ -175,7 +175,6 @@ title span{
 }
 #feed {
     position: relative;
-    margin-top: 80px;
 }
 
 .post-info h2 {
@@ -1386,80 +1385,167 @@ input:focus {
     background-color: #0d8bf0;
 }
 
-#xp_bar{
+.xp-container {
     position: relative;
-    padding: 0;
     left: 0;
     right: 0;
-    margin: auto;
-    display: block;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
     width: 90%;
+    max-width: 440px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+}
+
+.xp-container:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+
+.xp-level {
+    font-size: 18px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.9);
+    min-width: 30px;
+    text-align: center;
+}
+
+
+.xp-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    position: relative;
     overflow: hidden;
-    margin-top: 20px;
 }
 
-#xp_bar span{
-    font-size: 15px;
-    color: rgba(255,255,255,0.85);
-    height: 25px;
-    line-height: 25px;
-    padding-left: 10px;
-    padding-right: 10px;
+
+.xp-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.5s ease-out;
 }
 
-#xp_bar .username{
-    float: right;
+
+.xp-progress-visual {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(78, 205, 196, 0.6);
+    border-radius: 3px;
+    width: 0%;
+    transition: all 0.3s ease-out;
 }
 
-#xp_bar span#xp-notification{
-    padding-right: 0;
-    padding-left: 0;
+
+.xp-text {
     font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+}
+
+.xp-current {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+
+.xp-username {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.xp-username::before {
+    content: '@';
+    color: rgba(255, 255, 255, 0.5);
+}
+
+
+.xp-notification {
+    position: absolute;
+    right: 20px;
+    top: -25px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4ecdc4;
     opacity: 0;
-    top: 20px;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 @keyframes xpNotificationAnimation {
     0% {
         opacity: 0;
-        top: 20px;
+        transform: translateY(10px);
     }
     25% {
         opacity: 1;
-        top: 0px;
+        transform: translateY(0);
     }
     75% {
         opacity: 1;
-        top: 0px;
+        transform: translateY(0);
     }
     100% {
         opacity: 0;
-        top: 20px;
+        transform: translateY(-10px);
     }
 }
 
-#xp_bar_progress{
-    width: 0%;
-    background-color: rgba(13, 99, 255, 0.48);
-    height: 25px;
-    position: absolute;
-    transition: all 0.5s ease-in-out;
+
+@media (max-width: 768px) {
+    .xp-container {
+        width: calc(100% - 160px);
+        padding: 10px 15px;
+        gap: 12px;
+    }
+
+    .xp-level {
+        font-size: 16px;
+        min-width: 25px;
+    }
+
+    .xp-track {
+        height: 5px;
+    }
+
+    .xp-text {
+        font-size: 12px;
+    }
+
+    .xp-username {
+        font-size: 13px;
+    }
+
+    .xp-notification {
+        font-size: 12px;
+        right: 15px;
+    }
 }
 
-#xp_bar_progress_visual{
-    width: 0%;
-    left: 0;
-    background-color: rgba(0, 51, 143, 0.62);
-    height: 25px;
-    position: absolute;
-    transition: all 0.5s ease-in-out;
-}
 
-
-#xp_bar span,
-#xp_bar i{
-    z-index: 10;
-    position: relative;
+@media (max-width: 480px) {
+    .xp-container {
+        gap: 10px;
+        padding: 8px 12px;
+    }
 }
 .experience-bar {
     margin-top: 20px;

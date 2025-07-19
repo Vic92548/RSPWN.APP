@@ -1,7 +1,23 @@
-<div id="xp_bar" class="glass_bt" style="display: none">
-    <div id="xp_bar_progress"></div>
-    <div id="xp_bar_progress_visual"></div>
-    <span class="xp_level">10</span>
-    <span id="xp-notification">+120 xp</span>
-    <span class="username">username</span>
+<div id="xp_bar" class="xp-container glass_bt" style="display: none">
+    <!-- Level indicator -->
+    <div>
+        <span>
+            Level
+            <span class="xp-level">10</span>
+        </span>
+
+        <span class="xp-username" style="float: right">username</span>
+    </div>
+
+
+
+    <!-- Progress bar -->
+    <div class="xp-track">
+        <div id="xp_bar_progress" class="xp-progress"></div>
+        <div id="xp_bar_progress_visual" class="xp-progress-visual"></div>
+    </div>
+
+
+    <!-- XP notification -->
+    <span id="xp-notification" class="xp-notification">+120 XP</span>
 </div>
