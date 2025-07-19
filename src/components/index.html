@@ -29,6 +29,7 @@
     <title>VAPR</title>
 
     <script src="https://kit.fontawesome.com/0431b99604.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -103,25 +104,7 @@
         </form>
     </section>
 
-    <section id="old_posts" class="glass_modal" style="display:none;">
-        <form>
-            <ul id="old_posts_container">
-                <li>
-                    <span>Post name</span>
-                    <div><span><i class="fa-solid fa-eye"></i> 22</span> <a>open</a></div>
-                </li>
-                <li class="background_image_div">
-                    <div class="background_image_overlay">
-                        <p><i class="fa-solid fa-lock"></i></p>
-                        <h5>Unlock at level 1</h5>
-                    </div>
-                    <img onclick="equipBackground('https://vapr.b-cdn.net/background_images/anime_city_night.webp')" src="https://vapr.b-cdn.net/background_images/anime_city_night.webp">
-
-                </li>
-            </ul>
-            <div class="glass_bt close_bt" onclick="closeAnalytics()"><i class="fa-solid fa-xmark"></i> Close</div>
-        </form>
-    </section>
+    [[forms/analytics.html]]
 
     [[forms/register.html]]
 

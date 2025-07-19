@@ -286,6 +286,11 @@ router.get('/api/user-count', async () => {
     });
 });
 
+router.get('/api/analytics', async (request, url, authResult) => {
+    const { analyticsHandler } = await import("./deno_modules/routes/analytics.js");
+    return analyticsHandler(request, authResult);
+}, { requireAuth: true });
+
 // Profile pages (must be last due to catch-all nature)
 router.get('/@', async (request, url) => {
     const profileResponse = await handleProfilePage(request, templates);
