@@ -224,6 +224,35 @@ router.get('/get-reactions', async (request, url) => {
     return getReactionsByPostId(postId);
 });
 
+router.get('/api/user/:userId', async (request, url) => {
+    const userId = url.pathname.split('/')[3];
+
+    try {
+        const user = await usersCollection.findOne(
+            { id: userId },
+            { projection: { username: 1, avatar: 1, id: 1 } }
+        );
+
+        if (!user) {
+            return new Response(JSON.stringify({ error: 'User not found' }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        return new Response(JSON.stringify(user), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return new Response(JSON.stringify({ error: 'Internal server error' }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+});
+
 // View and click tracking
 router.get('/register-view', async (request, url) => {
     const postId = url.searchParams.get('postId');

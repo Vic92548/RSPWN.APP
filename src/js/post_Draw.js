@@ -13,30 +13,91 @@ function drawPost(data){
 
     updateFollowButton();
 
+    // Enhanced title handling
     const titleEl = document.getElementById("post_title");
     const showMoreButtonEl = document.getElementById("post_title_show_more");
     titleEl.textContent = data.title;
 
     requestAnimationFrame(() => {
-        const isClamped = titleEl.offsetHeight < titleEl.scrollHeight - 1;
+        const isClamped = titleEl.scrollHeight > titleEl.clientHeight;
 
         if (isClamped) {
             showMoreButtonEl.style.display = "inline-block";
             showMoreButtonEl.onclick = () => {
                 titleEl.classList.toggle("expanded");
-                showMoreButtonEl.innerHTML = titleEl.classList.contains("expanded")
+                const isExpanded = titleEl.classList.contains("expanded");
+                showMoreButtonEl.innerHTML = isExpanded
                     ? `<i class="fa-solid fa-chevron-up"></i> Show less`
                     : `<i class="fa-solid fa-chevron-down"></i> Show more`;
+
+                // Smooth scroll to show full title
+                if (isExpanded) {
+                    titleEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
             };
         } else {
             showMoreButtonEl.style.display = "none";
         }
     });
 
-    document.getElementById("post_username").textContent = "@" + data.username;
+    // Enhanced user info with real Discord avatar
+    const username = data.username;
+    document.getElementById("post_username").textContent = "@" + username;
+
+    // Handle avatar - check if user has Discord avatar
+    const avatarImg = document.getElementById("user_avatar_img");
+    const avatarLetter = document.getElementById("avatar_letter");
+    const avatarEl = document.getElementById("user_avatar");
+
+    // Try to get user avatar from Discord
+    if (data.userId && window.creators && window.creators[data.userId]) {
+        const creatorInfo = window.creators[data.userId];
+        if (creatorInfo.avatar) {
+            // Use Discord avatar
+            avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${creatorInfo.avatar}.png?size=128`;
+            avatarImg.style.display = "block";
+            avatarLetter.style.display = "none";
+            avatarEl.style.background = "none";
+        } else {
+            showLetterAvatar();
+        }
+    } else {
+        // Fetch user info to get avatar
+        makeApiRequest(`/api/user/${data.userId}`, false).then(userInfo => {
+            if (userInfo && userInfo.avatar) {
+                avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${userInfo.avatar}.png?size=128`;
+                avatarImg.style.display = "block";
+                avatarLetter.style.display = "none";
+                avatarEl.style.background = "none";
+
+                // Cache the avatar info
+                if (!window.creators[data.userId]) {
+                    window.creators[data.userId] = {};
+                }
+                window.creators[data.userId].avatar = userInfo.avatar;
+            } else {
+                showLetterAvatar();
+            }
+        }).catch(() => {
+            showLetterAvatar();
+        });
+    }
+
+    function showLetterAvatar() {
+        // Fallback to letter avatar
+        avatarImg.style.display = "none";
+        avatarLetter.style.display = "flex";
+        avatarLetter.textContent = username.charAt(0).toUpperCase();
+
+        // Generate avatar background color based on username
+        const hue = username.charCodeAt(0) * 3 % 360;
+        avatarEl.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${hue + 30}, 70%, 60%))`;
+    }
+
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
-    document.getElementById("post_views").textContent = formatViews(data.views);
+    // Animate view count in overlay
+    animateViewCount(data.views);
 
     if(!data.content){
         data.content = "https://vapr.b-cdn.net/posts/200w.gif";
@@ -47,6 +108,14 @@ function drawPost(data){
         document.getElementById("post_image").style.display = "block";
         document.getElementById("post_content").style.display = "none";
         document.getElementById("post_video").style.display = "none";
+
+        // Enhanced image handling
+        const imageEl = document.getElementById("post_image");
+        imageEl.style.filter = "blur(10px)";
+        imageEl.onload = () => {
+            imageEl.style.filter = "none";
+            imageEl.style.transition = "filter 0.3s ease";
+        };
     }else if(data.content.includes("iframe.mediadelivery.net")){
         document.getElementById("post_video").style.display = "block";
         setTimeout(() => {
@@ -57,90 +126,151 @@ function drawPost(data){
     }
 
     document.getElementById("post_image").onclick = function () {
-        switchImage(document.getElementById("post_image"));
+        toggleImageZoom(document.getElementById("post_image"));
     }
 
+    // Handle link button in header
+    const headerLinkButton = document.getElementById("header_link_button");
     const links = document.getElementById("post_link").children;
-    for(let i = 0; i < links.length;i++){
+
+    // Hide all links first
+    for(let i = 0; i < links.length; i++){
         links[i].style.display = "none";
     }
 
+    headerLinkButton.style.display = "none";
+
     if(data.link){
-        const url = new URL(data.link);
+        // Process the link and setup the header button
+        handlePostLinks(data.link);
+    }
+}
 
-        // Check for domain-specific patterns first
-        if(url.hostname.includes("itch.io")){
-            setupSocialLink("post_itch", data.link);
+// Navigate to user profile
+function navigateToProfile() {
+    if (current_post && current_post.username) {
+        window.location.href = `/@${current_post.username}`;
+    }
+}
+
+// Animate view count
+function animateViewCount(targetViews) {
+    const viewsEl = document.getElementById("post_views");
+    const startViews = parseInt(viewsEl.textContent) || 0;
+    const duration = 1000;
+    const startTime = performance.now();
+
+    function updateViews(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+        const currentViews = Math.floor(startViews + (targetViews - startViews) * easeOutQuart);
+        viewsEl.textContent = formatViews(currentViews);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateViews);
+        }
+    }
+
+    requestAnimationFrame(updateViews);
+}
+
+// Enhanced image zoom with overlay
+function toggleImageZoom(img) {
+    if (img.classList.contains('zoomed')) {
+        // Zoom out
+        img.classList.remove('zoomed');
+        document.querySelector('.image-overlay')?.remove();
+    } else {
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'image-overlay';
+        overlay.onclick = () => toggleImageZoom(img);
+
+        // Clone image for zoom
+        const zoomedImg = img.cloneNode();
+        zoomedImg.className = 'zoomed-image';
+
+        overlay.appendChild(zoomedImg);
+        document.body.appendChild(overlay);
+
+        img.classList.add('zoomed');
+
+        // Animate in
+        requestAnimationFrame(() => {
+            overlay.classList.add('active');
+        });
+    }
+}
+
+// Enhanced link handling with header button
+function handlePostLinks(link) {
+    try {
+        const url = new URL(link);
+        const hostname = url.hostname.toLowerCase();
+
+        // Link mapping
+        const linkMappings = {
+            'discord.gg': { id: 'post_discord', icon: 'fa-brands fa-discord', label: 'Discord' },
+            'reddit.com': { id: 'post_reddit', icon: 'fa-brands fa-reddit', label: 'Reddit' },
+            'store.steampowered.com': { id: 'post_steam', icon: 'fa-brands fa-steam', label: 'Steam' },
+            'x.com': { id: 'post_x', icon: 'fa-brands fa-x-twitter', label: 'X' },
+            'twitter.com': { id: 'post_x', icon: 'fa-brands fa-x-twitter', label: 'X' },
+            'threads.net': { id: 'post_threads', icon: 'fa-brands fa-threads', label: 'Threads' },
+            'pinterest': { id: 'post_pinterest', icon: 'fa-brands fa-pinterest', label: 'Pinterest' },
+            'twitch.tv': { id: 'post_twitch', icon: 'fa-brands fa-twitch', label: 'Twitch' },
+            'youtube.com': { id: 'post_youtube', icon: 'fa-brands fa-youtube', label: 'YouTube' },
+            'instagram.com': { id: 'post_instagram', icon: 'fa-brands fa-instagram', label: 'Instagram' },
+            'store.epicgames.com': { id: 'post_epic', icon: 'fa-solid fa-gamepad', label: 'Epic Games' },
+            'kickstarter.com': { id: 'post_kickstarter', icon: 'fa-brands fa-kickstarter', label: 'Kickstarter' },
+            'kick.com': { id: 'post_kick', icon: 'fa-brands fa-kickstarter-k', label: 'Kick' },
+            'patreon.com': { id: 'post_patreon', icon: 'fa-brands fa-patreon', label: 'Patreon' },
+            'fortnite.com': { id: 'post_fortnite', icon: 'fa-solid fa-gamepad', label: 'Fortnite' },
+            'nintendo.com': { id: 'post_nintendo', icon: 'fa-solid fa-gamepad', label: 'Nintendo' },
+            'ubisoft.com': { id: 'post_ubisoft', icon: 'fa-solid fa-gamepad', label: 'Ubisoft' },
+            'gumroad.com': { id: 'post_gumroad', icon: 'fa-solid fa-shopping-cart', label: 'Gumroad' },
+            'garryhost.com': { id: 'post_garryhost', icon: 'fa-solid fa-server', label: "Garry's Host" },
+            'itch.io': { id: 'post_itch', icon: 'fa-brands fa-itch-io', label: 'itch.io' }
+        };
+
+        // Find matching link
+        let matchedLink = null;
+        for (const [domain, linkInfo] of Object.entries(linkMappings)) {
+            if (hostname.includes(domain)) {
+                matchedLink = linkInfo;
+                setupSocialLink(linkInfo.id, link);
+                break;
+            }
         }
 
-        if(url.hostname.includes("gumroad.com")){
-            setupSocialLink("post_gumroad", data.link);
+        // Special case for hayarobi
+        if (hostname === 'hayarobi-portfolio.carrd.co') {
+            matchedLink = { id: 'post_hayarobi', icon: 'fa-solid fa-palette', label: 'Hayarobi' };
+            setupSocialLink('post_hayarobi', link);
         }
 
-        // Then check exact hostnames
-        switch(url.hostname){
-            case 'discord.gg':
-                setupSocialLink("post_discord", data.link);
-                break;
-            case 'www.reddit.com':
-                setupSocialLink("post_reddit", data.link);
-                break;
-            case 'hayarobi-portfolio.carrd.co':
-                setupSocialLink("post_hayarobi", data.link);
-                break;
-            case 'store.steampowered.com':
-                setupSocialLink("post_steam", data.link);
-                break;
-            case 'x.com':
-                setupSocialLink("post_x", data.link);
-                break;
-            case 'twitter.com':
-                setupSocialLink("post_x", data.link);
-                break;
-            case 'www.threads.net':
-                setupSocialLink("post_threads", data.link);
-                break;
-            case 'www.pinterest.fr':
-                setupSocialLink("post_pinterest", data.link);
-                break;
-            case 'www.pinterest.com':
-                setupSocialLink("post_pinterest", data.link);
-                break;
-            case 'www.twitch.tv':
-                setupSocialLink("post_twitch", data.link);
-                break;
-            case 'www.youtube.com':
-                setupSocialLink("post_youtube", data.link);
-                break;
-            case 'www.instagram.com':
-                setupSocialLink("post_instagram", data.link);
-                break;
-            case 'store.epicgames.com':
-                setupSocialLink("post_epic", data.link);
-                break;
-            case 'www.kickstarter.com':
-                setupSocialLink("post_kickstarter", data.link);
-                break;
-            case 'kick.com':
-                setupSocialLink("post_kick", data.link);
-                break;
-            case 'www.patreon.com':
-                setupSocialLink("post_patreon", data.link);
-                break;
-            case 'garryhost.com':
-                setupSocialLink("post_garryhost", data.link);
-                break;
-            case 'www.fortnite.com':
-                setupSocialLink("post_fortnite", data.link);
-                break;
-            case 'www.nintendo.com':
-                setupSocialLink("post_nintendo", data.link);
-                break;
-            case 'www.ubisoft.com':
-                setupSocialLink("post_ubisoft", data.link);
-                break;
-            default:
-                break;
+        // Setup header link button
+        if (matchedLink) {
+            const headerLinkButton = document.getElementById("header_link_button");
+            headerLinkButton.style.display = "inline-flex";
+            headerLinkButton.href = link;
+            headerLinkButton.innerHTML = `<i class="${matchedLink.icon}"></i><span>${matchedLink.label}</span>`;
+
+            // Animate appearance
+            headerLinkButton.style.opacity = '0';
+            headerLinkButton.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                headerLinkButton.style.transition = 'all 0.3s ease';
+                headerLinkButton.style.opacity = '1';
+                headerLinkButton.style.transform = 'translateY(0)';
+            }, 100);
         }
+
+    } catch (error) {
+        console.error('Invalid URL:', link);
     }
 }
