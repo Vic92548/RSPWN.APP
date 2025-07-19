@@ -83,19 +83,20 @@ loadUserData();
 
 function hideLoading(){
 
-    console.log("steps:"+loading_steps);
+    console.log("steps:"+loading_steps);/*
     if(loading_steps <= 0){
         document.getElementsByTagName('H1')[0].className = "title";
     }
+    */
 
 
     //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function showLoading(){
-    document.getElementsByTagName('H1')[0].className = "loading";
+    //document.getElementsByTagName('H1')[0].className = "loading";
 
-    document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
+    //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function timeAgo(dateParam) {

@@ -1,14 +1,173 @@
 <section id="menu" class="glass_modal" style="display:none;">
-    <form>
-        <ul>
-            <li onclick="opeNewPostModel()"><i class="fa-solid fa-plus"></i> Add post</li>
-            <li onclick="openAnalytics()"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
-            <li onclick="openCustomizationMenu()"><i class="fa-solid fa-image"></i> Backgrounds</li>
-            <li onclick="copyReferrerId()"><i class="fa-solid fa-user-plus"></i> Invite a friend</li>
-            <li onclick="openLeaderboardModal()"><i class="fa-solid fa-ranking-star"></i> Leaderboard</li>
+    <div class="menu-container">
+        <!-- Menu Header -->
+        <div class="menu-header">
+            <div class="menu-brand">
+                <img src="https://vapr-club.b-cdn.net/default_vapr_avatar.png" alt="VAPR" class="menu-logo">
+                <div>
+                    <h2>VAPR</h2>
+                    <p class="menu-tagline">Creator Dashboard</p>
+                </div>
+            </div>
+            <button class="menu-close" onclick="hideMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
 
-            <li onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');"><i class="fa-brands fa-github"></i> Github <span class="menu_tag" id="github_stars"></span></li>
-            <li id="close_menu" onclick="hideMenu()">close</li>
-        </ul>
-    </form>
+        <!-- User Info Card -->
+        <div class="user-info-card glass-card" id="menu_user_info" style="display: none;">
+            <div class="user-avatar-large">
+                <img id="menu_user_avatar" src="" alt="Avatar">
+                <div class="level-badge-overlay">
+                    <span id="menu_user_level">0</span>
+                </div>
+            </div>
+            <div class="user-details-menu">
+                <h3 id="menu_username">@username</h3>
+                <div class="xp-progress-mini">
+                    <div class="xp-bar-mini">
+                        <div class="xp-fill-mini" id="menu_xp_bar"></div>
+                    </div>
+                    <span class="xp-text-mini" id="menu_xp_text">0 / 700 XP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats" id="quick_stats" style="display: none;">
+            <div class="stat-mini">
+                <i class="fa-solid fa-fire"></i>
+                <div>
+                    <span class="stat-value" id="daily_xp">0</span>
+                    <span class="stat-label">Today's XP</span>
+                </div>
+            </div>
+            <div class="stat-mini">
+                <i class="fa-solid fa-users"></i>
+                <div>
+                    <span class="stat-value" id="follower_count">0</span>
+                    <span class="stat-label">Followers</span>
+                </div>
+            </div>
+            <div class="stat-mini">
+                <i class="fa-solid fa-eye"></i>
+                <div>
+                    <span class="stat-value" id="total_views">0</span>
+                    <span class="stat-label">Total Views</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="menu-nav">
+            <div class="menu-section">
+                <h4 class="menu-section-title">Create & Share</h4>
+                <ul class="menu-list">
+                    <li class="menu-item" onclick="opeNewPostModel()">
+                        <div class="menu-item-icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Create Post</span>
+                            <span class="menu-item-desc">Share your content</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+                    </li>
+                    <li class="menu-item" onclick="openAnalytics()">
+                        <div class="menu-item-icon analytics">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Analytics</span>
+                            <span class="menu-item-desc">Track performance</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h4 class="menu-section-title">Community</h4>
+                <ul class="menu-list">
+                    <li class="menu-item" onclick="copyReferrerId()">
+                        <div class="menu-item-icon invite">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Invite Friends</span>
+                            <span class="menu-item-desc">Grow your network</span>
+                        </div>
+                        <span class="menu-badge">+650 XP</span>
+                    </li>
+                    <li class="menu-item" onclick="openLeaderboardModal()">
+                        <div class="menu-item-icon leaderboard">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Leaderboard</span>
+                            <span class="menu-item-desc">Daily rankings</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h4 class="menu-section-title">Customize</h4>
+                <ul class="menu-list">
+                    <li class="menu-item" onclick="openCustomizationMenu()">
+                        <div class="menu-item-icon backgrounds">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Backgrounds</span>
+                            <span class="menu-item-desc">Personalize your view</span>
+                        </div>
+                        <span class="menu-badge new">NEW</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <h4 class="menu-section-title">About</h4>
+                <ul class="menu-list">
+                    <li class="menu-item" onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');">
+                        <div class="menu-item-icon github">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Open Source</span>
+                            <span class="menu-item-desc">View on GitHub</span>
+                        </div>
+                        <span class="menu-badge stars" id="github_stars">
+                            <i class="fa-solid fa-star"></i> ...
+                        </span>
+                    </li>
+                    <li class="menu-item" onclick="window.open('https://discord.gg/vtsnj3zphd', '_blank');">
+                        <div class="menu-item-icon discord">
+                            <i class="fa-brands fa-discord"></i>
+                        </div>
+                        <div class="menu-item-content">
+                            <span class="menu-item-title">Join Discord</span>
+                            <span class="menu-item-desc">Chat with community</span>
+                        </div>
+                        <i class="fa-solid fa-external-link menu-item-arrow"></i>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Menu Footer -->
+        <div class="menu-footer">
+            <button class="menu-logout-btn" onclick="logout()" id="logout_btn" style="display: none;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+            <div class="menu-version">
+                <span>VAPR v2.0</span>
+                <span class="dot">•</span>
+                <span id="online_users">0 online</span>
+            </div>
+        </div>
+    </div>
 </section>
