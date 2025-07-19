@@ -80,34 +80,49 @@ function setInitialTransform(post) {
     post.style.transition = 'all 1s ease-in-out';
 }
 
+// Enhanced animation feedback
+function showActionFeedback(action) {
+    const feedback = document.createElement('div');
+    feedback.className = 'action-feedback ' + action;
+    feedback.innerHTML = `<i class="fa-solid fa-${action === 'liked' ? 'heart' : action === 'passed' ? 'heart-crack' : 'forward'}"></i> ${action.charAt(0).toUpperCase() + action.slice(1)}!`;
+
+    document.body.appendChild(feedback);
+
+    setTimeout(() => {
+        feedback.remove();
+    }, 1000);
+}
 
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'swipeRight 0.6s';
-
     post.style.transform = "translateY(100vh)";
+
+    showActionFeedback('liked');
 
     confetti({
         particleCount: 100,
         spread: 70,
-        origin: { y: 0.6 }
+        origin: { y: 0.6 },
+        colors: ['#22c55e', '#10b981', '#059669']
     });
 }
 
 function displayDislikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'swipeLeft 0.6s';
-
     post.style.transform = "translateY(100vh)";
+
+    showActionFeedback('passed');
 }
 
 function displaySkipAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'skip 0.6s';
-
     post.style.transform = "translateY(100vh)";
-}
 
+    showActionFeedback('skipped');
+}
 
 function likePost() {
     const post = document.getElementsByClassName("post")[0];
@@ -188,4 +203,57 @@ function dislikePost() {
             setTimeout(displayPost, 1000); // Wait for animation to complete
         }
     }
+}
+
+// Add action feedback styles
+if (!document.getElementById('action-feedback-styles')) {
+    const style = document.createElement('style');
+    style.id = 'action-feedback-styles';
+    style.textContent = `
+        .action-feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: 700;
+            z-index: 10000;
+            animation: feedbackPulse 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-feedback.liked {
+            background: rgba(34, 197, 94, 0.9);
+        }
+
+        .action-feedback.passed {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        .action-feedback.skipped {
+            background: rgba(59, 130, 246, 0.9);
+        }
+
+        @keyframes feedbackPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.9;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }

@@ -33,7 +33,6 @@ function drawPost(data){
         }
     });
 
-
     document.getElementById("post_username").textContent = "@" + data.username;
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);
 
@@ -66,10 +65,10 @@ function drawPost(data){
         links[i].style.display = "none";
     }
 
-
     if(data.link){
         const url = new URL(data.link);
 
+        // Check for domain-specific patterns first
         if(url.hostname.includes("itch.io")){
             setupSocialLink("post_itch", data.link);
         }
@@ -78,8 +77,7 @@ function drawPost(data){
             setupSocialLink("post_gumroad", data.link);
         }
 
-
-
+        // Then check exact hostnames
         switch(url.hostname){
             case 'discord.gg':
                 setupSocialLink("post_discord", data.link);
@@ -103,6 +101,9 @@ function drawPost(data){
                 setupSocialLink("post_threads", data.link);
                 break;
             case 'www.pinterest.fr':
+                setupSocialLink("post_pinterest", data.link);
+                break;
+            case 'www.pinterest.com':
                 setupSocialLink("post_pinterest", data.link);
                 break;
             case 'www.twitch.tv':
@@ -132,10 +133,10 @@ function drawPost(data){
             case 'www.fortnite.com':
                 setupSocialLink("post_fortnite", data.link);
                 break;
-                case 'www.nintendo.com':
+            case 'www.nintendo.com':
                 setupSocialLink("post_nintendo", data.link);
                 break;
-                case 'www.ubisoft.com':
+            case 'www.ubisoft.com':
                 setupSocialLink("post_ubisoft", data.link);
                 break;
             default:
