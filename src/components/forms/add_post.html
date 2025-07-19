@@ -17,6 +17,17 @@
         <label style="font-size: 10px">(If you want to promote, your game, community, whatever)</label>
         <input id="link" type="url" name="link"></input><br><br>
 
+        <div class="feed-selection-section">
+            <label>Post to Feeds:</label>
+            <div class="selected-feeds" id="selected-feeds">
+                <span class="no-feeds-selected">No feeds selected (will post to general feed)</span>
+            </div>
+            <button type="button" class="glass_bt" onclick="openFeedSelector()">
+                <i class="fa-solid fa-plus"></i> Select Feeds
+            </button>
+            <input type="hidden" id="selectedFeedsInput" name="selectedFeeds" value="[]">
+        </div>
+
         <button onclick="closeNewPostModel()" class="glass_bt" style="background-color: rgba(52,73,94,0.9);color:#fff;"> CLOSE</button>
         <button type="submit" class="glass_bt" style="float: right;"><i class="fa-solid fa-paper-plane"></i> SUBMIT POST</button>
     </form>

@@ -1,15 +1,15 @@
-import { postsCollection, usersCollection, videosCollection } from "../database.js";
+// deno_modules/posts/create.js
+
+import { postsCollection, usersCollection, videosCollection, feedMembersCollection, postFeedsCollection, feedsCollection } from "../database.js";
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowersByEmail } from "./notify_by_email.js";
-import { notifyFollowers } from "../post.js"; // Adjust import path based on actual location
+import { notifyFollowers } from "../post.js";
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 15 MB in bytes
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB in bytes
 
 // webhook.ts
-
 const webhookUrl = Deno.env.get("WEBHOOK_URL");
-
 
 async function sendWebhook(url, data) {
     try {
@@ -32,7 +32,6 @@ async function sendWebhook(url, data) {
     }
 }
 
-
 export async function createPost(request, userData) {
     if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
         return new Response("Invalid content type", { status: 400 });
@@ -44,6 +43,37 @@ export async function createPost(request, userData) {
     const file = formData.get("file");
     const community = formData.get("community");
 
+    // NEW: Get selected feeds
+    const selectedFeeds = formData.get("selectedFeeds");
+    let feedIds = [];
+    try {
+        feedIds = selectedFeeds ? JSON.parse(selectedFeeds) : [];
+    } catch (e) {
+        console.error("Error parsing selected feeds:", e);
+    }
+
+    // Validate user can post to selected feeds
+    if (feedIds.length > 0) {
+        const memberships = await feedMembersCollection.find({
+            userId: userData.id,
+            feedId: { $in: feedIds },
+            canPost: true
+        }).toArray();
+
+        const allowedFeedIds = memberships.map(m => m.feedId);
+        feedIds = feedIds.filter(id => allowedFeedIds.includes(id));
+
+        if (feedIds.length === 0) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: "You don't have permission to post to any of the selected feeds"
+            }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+    }
+
     let content = "";
 
     if (typeof title !== "string" || typeof userData.id !== "string") {
@@ -51,7 +81,7 @@ export async function createPost(request, userData) {
     }
 
     if (file && file.size > MAX_FILE_SIZE) {
-        return new Response("File size exceeds the 15MB limit", { status: 400 });
+        return new Response("File size exceeds the 50MB limit", { status: 400 });
     }
 
     const postId = crypto.randomUUID();
@@ -87,17 +117,52 @@ export async function createPost(request, userData) {
 
     console.log("Post created!");
 
+    // NEW: Add post to selected feeds
+    if (feedIds.length > 0) {
+        const postFeedEntries = feedIds.map(feedId => ({
+            postId: postId,
+            feedId: feedId,
+            addedAt: new Date(),
+            addedBy: userData.id
+        }));
+
+        await postFeedsCollection.insertMany(postFeedEntries);
+
+        // Update post count for each feed
+        await feedsCollection.updateMany(
+            { id: { $in: feedIds } },
+            {
+                $inc: { postCount: 1 },
+                $set: { updatedAt: new Date() }
+            }
+        );
+    }
+
     await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
     userData = await usersCollection.findOne({ id: userData.id });
     const baseUrl = Deno.env.get("BASE_URL");
     const discordWebhook = Deno.env.get("DISCORD_POST_WEBHOOK_URL");
 
-    const post = { id: postId, title, content, userId: userData.id, timestamp: new Date(), link, user: userData, success: true };
+    // Get feed names for the response
+    const feeds = await feedsCollection.find({ id: { $in: feedIds } }).toArray();
+    const feedNames = feeds.map(f => f.name);
+
+    const post = {
+        id: postId,
+        title,
+        content,
+        userId: userData.id,
+        timestamp: new Date(),
+        link,
+        user: userData,
+        success: true,
+        feeds: feedNames
+    };
 
     sendMessageToDiscordWebhook(
         discordWebhook,
-        "New post made by @*" + userData.username + "* (level **" + userData.level + "**) available on **VAPR** : " + baseUrl + "/post/" + postId
+        `New post made by @*${userData.username}* (level **${userData.level}**) ${feedNames.length > 0 ? `in feeds: ${feedNames.join(', ')}` : ''} - Available on **VAPR** : ${baseUrl}/post/${postId}`
     );
 
     //notifyFollowers(userData.id, "A new post made by @*" + userData.username + "* is available on **VAPR** :point_right: https://vapr.gg/post/" + postId + ", go check this out and send some love :heart: *(you can stop to follow this creator if you don't want to receive this messages)*");
@@ -106,9 +171,12 @@ export async function createPost(request, userData) {
         creatorId: userData.id,
         postId: postId,
         postTitle: title,
+        feeds: feedNames
     };
 
-    sendWebhook(webhookUrl, payload);
+    if (webhookUrl) {
+        sendWebhook(webhookUrl, payload);
+    }
 
     await notifyFollowersByEmail(userData.id, postId, title);
 
