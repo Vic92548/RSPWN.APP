@@ -2028,7 +2028,7 @@ input:focus {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9) !important;
     font-size: 15px;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -2217,8 +2217,12 @@ input:focus {
 .cancel-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8) !important;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.cancel-btn i {
+    color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .cancel-btn:hover {
@@ -2230,8 +2234,13 @@ input:focus {
 .submit-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9) !important;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.submit-btn i,
+.submit-btn span {
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .submit-btn:hover:not(:disabled) {
