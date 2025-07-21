@@ -40,26 +40,26 @@ function makeApiRequest(path, requireAuth = true) {
             method: 'GET', // or 'POST', 'PUT', etc., depending on the requirement
             headers: headers
         })
-        .then(response => {
-            if (!response.ok) {
-                console.log(response);
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response);
 
-                if(response.status === 401){
-                    reject("Unauthorized");
-                }else{
-                    throw new Error('Network response was not ok: ' + response.statusText);
+                    if(response.status === 401){
+                        reject("Unauthorized");
+                    }else{
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+
+
                 }
-
-                
-            }
-            return response.json();  // Assuming the server responds with JSON
-        })
-        .then(data => {
-            resolve(data);  // Resolve the promise with the response data
-        })
-        .catch(error => {
-            reject(error);  // Reject the promise if there's an error
-        });
+                return response.json();  // Assuming the server responds with JSON
+            })
+            .then(data => {
+                resolve(data);  // Resolve the promise with the response data
+            })
+            .catch(error => {
+                reject(error);  // Reject the promise if there's an error
+            });
     });
 }
 
@@ -147,17 +147,63 @@ function hidePost() {
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
-
+// Updated opeNewPostModel function to use the new card system
 function opeNewPostModel() {
     if(isUserLoggedIn()){
-        document.getElementById("add-post").style.display = "flex";
+        showAddPostCard();
     }else{
         openRegisterModal();
     }
-
 }
+
+// New function to show the add post card
+function showAddPostCard() {
+    // Hide the current post
+    const post = document.getElementsByClassName("post")[0];
+    if (post) {
+        post.style.display = "none";
+    }
+
+    // Show the add post card
+    const addPostCard = document.getElementById("add-post-card");
+    if (addPostCard) {
+        addPostCard.style.display = "block";
+
+        // Trigger the show animation
+        setTimeout(() => {
+            addPostCard.classList.add("show");
+        }, 10);
+
+        // Focus on the title input
+        setTimeout(() => {
+            document.getElementById("title").focus();
+        }, 500);
+    }
+}
+
+// New function to close the add post card
+function closeAddPostCard() {
+    const addPostCard = document.getElementById("add-post-card");
+    const post = document.getElementsByClassName("post")[0];
+
+    if (addPostCard) {
+        addPostCard.classList.remove("show");
+
+        // Wait for animation to complete
+        setTimeout(() => {
+            addPostCard.style.display = "none";
+
+            // Show the post again
+            if (post) {
+                post.style.display = "block";
+            }
+        }, 800);
+    }
+}
+
+// Replace closeNewPostModel with the new function
 function closeNewPostModel() {
-    document.getElementById("add-post").style.display = "none";
+    closeAddPostCard();
 }
 
 function openRegisterModal() {
@@ -446,5 +492,3 @@ if(MainPage){
             document.getElementById("user_count").textContent = "hundreds of";
         });
 }
-
-

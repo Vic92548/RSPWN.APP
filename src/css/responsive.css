@@ -41,8 +41,9 @@
         margin-top: 20px;
     }
 
-    #postForm {
-        width: 500px;
+    #postForm,
+    .add-post-card {
+        width: 480px;
     }
 
     .discord_login {

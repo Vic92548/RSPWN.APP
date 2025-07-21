@@ -1,24 +1,96 @@
-<section id="add-post" class="glass_modal" style="display:none;">
+<!-- Modern Add Post Card -->
+<article class="add-post-card" id="add-post-card" style="display:none;">
     <form id="postForm">
-        <h3>VAPR</h3>
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" required><br><br>
-
-        <div class="upload-card" onclick="document.getElementById('file').click()">
-            <img id="preview_img" src="" alt="Uploaded Image" style="display: none">
-            <video id="preview_video" src="" alt="Uploaded Video" style="display: none;max-width: 100%;"></video>
-            <i class="fas fa-cloud-upload-alt" id="upload-icon"></i>
-            <p class="upload-text">Click to upload an image or video</p>
-            <input type="file" id="file" name="file" hidden>
+        <!-- Card Header -->
+        <div class="add-post-header">
+            <div class="header-content">
+                <h2><i class="fa-solid fa-plus-circle"></i> Create New Post</h2>
+                <p>Share your content with the VAPR community</p>
+            </div>
+            <button type="button" class="close-card-btn" onclick="closeAddPostCard()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
+        <!-- Card Body -->
+        <div class="add-post-body">
+            <!-- Title Input -->
+            <div class="input-group">
+                <label for="title">
+                    <i class="fa-solid fa-heading"></i> Title
+                    <span class="required">*</span>
+                </label>
+                <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Give your post an eye-catching title..."
+                        required
+                        maxlength="100"
+                >
+                <div class="character-count">
+                    <span id="title-count">0</span>/100
+                </div>
+            </div>
 
-        <label for="link">Link</label><br>
-        <label style="font-size: 10px">(If you want to promote, your game, community, whatever)</label>
-        <input id="link" type="url" name="link"></input><br><br>
+            <!-- Media Upload -->
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-photo-film"></i> Media
+                    <span class="required">*</span>
+                </label>
+                <div class="upload-area" onclick="document.getElementById('file').click()">
+                    <div class="upload-placeholder" id="upload-placeholder">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <h3>Drop your media here or click to browse</h3>
+                        <p>Supports: JPG, PNG, GIF, MP4, WEBM • Max 50MB</p>
+                    </div>
+                    <div class="upload-preview" id="upload-preview" style="display:none;">
+                        <img id="preview_img" src="" alt="Preview">
+                        <video id="preview_video" src="" controls></video>
+                        <div class="preview-overlay">
+                            <button type="button" class="change-media-btn" onclick="document.getElementById('file').click()">
+                                <i class="fa-solid fa-camera"></i> Change Media
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="file" name="file" hidden accept="image/*,video/*">
+                </div>
+            </div>
 
-        <button onclick="closeNewPostModel()" class="glass_bt" style="background-color: rgba(52,73,94,0.9);color:#fff;"> CLOSE</button>
-        <button type="submit" class="glass_bt" style="float: right;"><i class="fa-solid fa-paper-plane"></i> SUBMIT POST</button>
+            <!-- Link Input -->
+            <div class="input-group">
+                <label for="link">
+                    <i class="fa-solid fa-link"></i> Promotional Link
+                    <span class="optional">(Optional)</span>
+                </label>
+                <input
+                        type="url"
+                        id="link"
+                        name="link"
+                        placeholder="https://your-awesome-project.com"
+                >
+                <p class="input-hint">Add a link to your game, community, or project</p>
+            </div>
+
+            <!-- Submit Actions -->
+            <div class="submit-actions">
+                <button type="button" class="cancel-btn" onclick="closeAddPostCard()">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button type="submit" class="submit-btn" id="submit-post-btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Publish Post</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="upload-progress" id="upload-progress" style="display:none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="progress-text">Uploading your content...</p>
+        </div>
     </form>
-
-</section>
+</article>
