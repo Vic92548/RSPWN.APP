@@ -2,8 +2,9 @@ function showPost() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translate(0px, 0px) rotate(0deg)";
 
-    post.style.backgroundColor = "rgba(255,255,255,0.4)";
-    post.style.boxShadow = "0 0px 15px rgba(255, 255, 255, 0.3)";
+    // Remove inline style overrides to let CSS handle the styling
+    post.style.backgroundColor = "";  // Clear inline background color
+    post.style.boxShadow = "";  // Clear inline box shadow - let CSS handle it
 
     post.style.animation = 'none';
 }
