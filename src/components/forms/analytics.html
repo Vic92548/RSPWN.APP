@@ -1,125 +1,148 @@
-<!-- src/components/forms/analytics.html -->
-<section id="analytics_modal" class="glass_modal" style="display:none;">
-    <div class="analytics-container">
-        <!-- Header -->
+<article class="analytics-card" id="analytics-card" style="display:none;">
+    <div id="analyticsContent">
+        <!-- Card Header -->
         <div class="analytics-header">
-            <h2><i class="fa-solid fa-chart-line"></i> Creator Analytics</h2>
+            <div class="header-content">
+                <h2><i class="fa-solid fa-chart-line"></i> Creator Analytics</h2>
+                <p>Track your content performance and audience growth</p>
+            </div>
+            <button type="button" class="close-card-btn" onclick="closeAnalyticsCard()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Date Range Selector -->
+        <div class="date-range-wrapper">
             <div class="date-range-selector">
-                <button class="glass_bt range-btn active" data-range="7">7 Days</button>
-                <button class="glass_bt range-btn" data-range="30">30 Days</button>
-                <button class="glass_bt range-btn" data-range="all">All Time</button>
+                <button class="range-btn active" data-range="7">7 Days</button>
+                <button class="range-btn" data-range="30">30 Days</button>
+                <button class="range-btn" data-range="all">All Time</button>
             </div>
         </div>
 
-        <!-- Overview Cards -->
-        <div class="analytics-overview">
-            <div class="stat-card glass-card">
-                <div class="stat-icon"><i class="fa-solid fa-eye"></i></div>
-                <div class="stat-content">
-                    <h3 id="total_views">0</h3>
-                    <p>Total Views</p>
-                    <span class="stat-change positive">+0%</span>
-                </div>
-            </div>
-
-            <div class="stat-card glass-card">
-                <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
-                <div class="stat-content">
-                    <h3 id="total_likes">0</h3>
-                    <p>Total Likes</p>
-                    <span class="stat-change positive">+0%</span>
-                </div>
-            </div>
-
-            <div class="stat-card glass-card">
-                <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="stat-content">
-                    <h3 id="total_followers">0</h3>
-                    <p>Followers</p>
-                    <span class="stat-change positive">+0%</span>
-                </div>
-            </div>
-
-            <div class="stat-card glass-card">
-                <div class="stat-icon"><i class="fa-solid fa-link"></i></div>
-                <div class="stat-content">
-                    <h3 id="total_clicks">0</h3>
-                    <p>Link Clicks</p>
-                    <span class="stat-change positive">+0%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Engagement Rate Card -->
-        <div class="engagement-card glass-card">
-            <h3>Engagement Overview</h3>
-            <div class="engagement-metrics">
-                <div class="metric-item">
-                    <div class="metric-label">Engagement Rate</div>
-                    <div class="metric-value" id="engagement_rate">0%</div>
-                    <div class="metric-bar">
-                        <div class="metric-fill" id="engagement_bar" style="width: 0%"></div>
+        <!-- Card Body -->
+        <div class="analytics-body">
+            <!-- Overview Cards -->
+            <div class="analytics-overview">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-eye"></i></div>
+                    <div class="stat-content">
+                        <h3 id="total_views">0</h3>
+                        <p>Total Views</p>
+                        <span class="stat-change positive">+0%</span>
                     </div>
                 </div>
-                <div class="metric-item">
-                    <div class="metric-label">Click-through Rate</div>
-                    <div class="metric-value" id="ctr_rate">0%</div>
-                    <div class="metric-bar">
-                        <div class="metric-fill ctr" id="ctr_bar" style="width: 0%"></div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="stat-content">
+                        <h3 id="total_likes">0</h3>
+                        <p>Total Likes</p>
+                        <span class="stat-change positive">+0%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="stat-content">
+                        <h3 id="total_followers">0</h3>
+                        <p>Followers</p>
+                        <span class="stat-change positive">+0%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-link"></i></div>
+                    <div class="stat-content">
+                        <h3 id="total_clicks">0</h3>
+                        <p>Link Clicks</p>
+                        <span class="stat-change positive">+0%</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Engagement Metrics -->
+            <div class="engagement-section">
+                <h3>Engagement Overview</h3>
+                <div class="engagement-metrics">
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span class="metric-label">Engagement Rate</span>
+                            <span class="metric-value" id="engagement_rate">0%</span>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill" id="engagement_bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span class="metric-label">Click-through Rate</span>
+                            <span class="metric-value" id="ctr_rate">0%</span>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill ctr" id="ctr_bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3>Performance Over Time</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="performance_chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Reaction Distribution</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="reactions_chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Performance Table -->
+            <div class="posts-performance-section">
+                <div class="section-header">
+                    <h3>Post Performance</h3>
+                    <select class="sort-select" id="sort_posts">
+                        <option value="views">Sort by Views</option>
+                        <option value="likes">Sort by Likes</option>
+                        <option value="engagement">Sort by Engagement</option>
+                        <option value="recent">Most Recent</option>
+                    </select>
+                </div>
+
+                <div class="posts-table-wrapper">
+                    <table class="posts-table">
+                        <thead>
+                        <tr>
+                            <th>Post</th>
+                            <th><i class="fa-solid fa-eye"></i></th>
+                            <th><i class="fa-solid fa-heart"></i></th>
+                            <th><i class="fa-solid fa-heart-crack"></i></th>
+                            <th><i class="fa-solid fa-user-plus"></i></th>
+                            <th><i class="fa-solid fa-link"></i></th>
+                            <th>Engagement</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="posts_table_body">
+                        <!-- Posts will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- Chart Section -->
-        <div class="charts-container">
-            <div class="chart-card glass-card">
-                <h3>Performance Over Time</h3>
-                <canvas id="performance_chart"></canvas>
+        <!-- Loading State -->
+        <div class="analytics-loading" id="analytics-loading" style="display:none;">
+            <div class="loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
-
-            <div class="chart-card glass-card">
-                <h3>Reaction Distribution</h3>
-                <canvas id="reactions_chart"></canvas>
-            </div>
+            <p class="loading-text">Loading your analytics...</p>
         </div>
-
-        <!-- Posts Table -->
-        <div class="posts-table-container glass-card">
-            <div class="table-header">
-                <h3>Post Performance</h3>
-                <select class="glass_bt sort-select" id="sort_posts">
-                    <option value="views">Sort by Views</option>
-                    <option value="likes">Sort by Likes</option>
-                    <option value="engagement">Sort by Engagement</option>
-                    <option value="recent">Most Recent</option>
-                </select>
-            </div>
-
-            <div class="posts-table-wrapper">
-                <table class="posts-table">
-                    <thead>
-                    <tr>
-                        <th>Post</th>
-                        <th><i class="fa-solid fa-eye"></i> Views</th>
-                        <th><i class="fa-solid fa-heart"></i> Likes</th>
-                        <th><i class="fa-solid fa-heart-crack"></i> Dislikes</th>
-                        <th><i class="fa-solid fa-user-plus"></i> Follows</th>
-                        <th><i class="fa-solid fa-link"></i> Clicks</th>
-                        <th>Engagement</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="posts_table_body">
-                    <!-- Posts will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Close Button -->
-        <button class="glass_bt close_bt" onclick="closeAnalytics()">
-            <i class="fa-solid fa-xmark"></i> Close Analytics
-        </button>
     </div>
-</section>
+</article>

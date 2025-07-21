@@ -1,125 +1,192 @@
-/* analytics_enhanced.css - Professional Analytics Dashboard Styles */
-
-/* Analytics Container */
-.analytics-container {
-    width: 90%;
-    max-width: 1200px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.9);
+.analytics-card {
+    /* Match the exact glass style from XP bar, menu, and post cards */
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
-    box-shadow: 0 0 30px rgb(154, 172, 255);
-    animation: glowing-shadow 8s infinite;
-    color: #333;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    margin: 20px auto;
+    padding: 0;
+    color: #fff;
+    transform: translateY(100vh);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    max-width: 1200px;
+    width: 90%;
 }
 
-/* Custom Scrollbar */
-.analytics-container::-webkit-scrollbar {
-    width: 8px;
+.analytics-card.show {
+    transform: translateY(0);
 }
 
-.analytics-container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.analytics-container::-webkit-scrollbar-thumb {
-    background: rgba(52, 152, 219, 0.5);
-    border-radius: 4px;
-}
-
-/* Analytics Header */
-.analytics-header {
+/* Card Header - Match menu header style */
+.analytics-card .analytics-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 20px;
 }
 
-.analytics-header h2 {
+.analytics-card .header-content h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.analytics-card .header-content h2 i {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.analytics-card .header-content p {
     margin: 0;
-    font-size: 32px;
-    color: #333;
-    font-weight: 900;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.close-card-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.close-card-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: rotate(90deg);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Date Range Selector */
+.date-range-wrapper {
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .date-range-selector {
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
 
 .range-btn {
-    padding: 8px 16px;
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
-    background: rgba(255, 255, 255, 0.3);
-    color: #555;
-    transition: all 0.3s;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.range-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
 }
 
 .range-btn.active {
-    background: rgba(52, 152, 219, 0.8);
-    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Glass Card Style */
-.glass-card {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.3s, box-shadow 0.3s;
+/* Analytics Body */
+.analytics-body {
+    padding: 25px;
+    max-height: calc(90vh - 180px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
-.glass-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
+.analytics-body::-webkit-scrollbar {
+    width: 8px;
 }
 
-/* Overview Stats */
+.analytics-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.analytics-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Overview Cards */
 .analytics-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
     margin-bottom: 30px;
 }
 
 .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 25px;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
 }
 
 .stat-icon {
-    font-size: 36px;
-    color: rgba(52, 152, 219, 0.8);
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(52, 152, 219, 0.1);
-    border-radius: 12px;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .stat-content h3 {
     margin: 0;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
-    color: #333;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .stat-content p {
-    margin: 5px 0;
-    color: #666;
-    font-size: 14px;
+    margin: 2px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .stat-change {
@@ -128,50 +195,63 @@
 }
 
 .stat-change.positive {
-    color: #27ae60;
+    color: #4ecdc4;
 }
 
 .stat-change.negative {
     color: #e74c3c;
 }
 
-/* Engagement Card */
-.engagement-card {
+/* Engagement Section */
+.engagement-section {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
     margin-bottom: 30px;
 }
 
-.engagement-card h3 {
-    margin-top: 0;
-    color: #333;
+.engagement-section h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .engagement-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
 .metric-item {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .metric-label {
     font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .metric-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .metric-bar {
     width: 100%;
     height: 8px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -187,53 +267,88 @@
     background: linear-gradient(90deg, #e74c3c, #f39c12);
 }
 
-/* Charts Container */
-.charts-container {
+/* Charts Section */
+.charts-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
 
-.chart-card {
-    min-height: 300px;
+.chart-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
 }
 
-.chart-card h3 {
-    margin-top: 0;
-    color: #333;
+.chart-container h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-.chart-card canvas {
+.chart-wrapper {
+    position: relative;
+    height: 250px;
+}
+
+.chart-wrapper canvas {
     max-height: 250px;
 }
 
-/* Posts Table */
-.posts-table-container {
-    width: 100%;
+/* Posts Performance Section */
+.posts-performance-section {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
 }
 
-.table-header {
+.section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.table-header h3 {
+.section-header h3 {
     margin: 0;
-    color: #333;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .sort-select {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.3);
-    color: #555;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+.sort-select:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.sort-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Posts Table */
 .posts-table-wrapper {
     overflow-x: auto;
+    border-radius: 8px;
 }
 
 .posts-table {
@@ -244,15 +359,22 @@
 .posts-table th {
     text-align: left;
     padding: 12px;
-    font-weight: 700;
-    color: #555;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
     white-space: nowrap;
+}
+
+.posts-table th i {
+    font-size: 14px;
 }
 
 .posts-table td {
     padding: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
 }
 
 .posts-table tbody tr {
@@ -260,12 +382,12 @@
 }
 
 .posts-table tbody tr:hover {
-    background-color: rgba(52, 152, 219, 0.05);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .post-title {
     font-weight: 600;
-    color: #333;
+    color: rgba(255, 255, 255, 0.9);
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -274,76 +396,120 @@
 
 .engagement-rate {
     font-weight: 700;
-    color: #27ae60;
+    color: #4ecdc4;
 }
 
 .view-post-btn {
-    padding: 6px 12px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 12px;
-    background: rgba(52, 152, 219, 0.8);
-    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .view-post-btn:hover {
-    background: rgba(52, 152, 219, 1);
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
 }
 
-/* Close Button */
-#analytics_modal .close_bt {
-    background-color: #1b2838;
-    box-shadow: 0 0 5px #1b2838;
-    margin-top: 30px;
-    width: 100%;
-    max-width: 200px;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+/* Loading State */
+.analytics-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
 
-#analytics_modal .close_bt:hover {
-    background-color: #0d8bf0;
-    box-shadow: 0 0 10px #0d8bf0;
+.loading-spinner {
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .analytics-container {
-        padding: 20px;
+.loading-text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .analytics-card {
         width: 95%;
     }
 
-    .analytics-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .analytics-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-card {
+        margin: 10px;
+        border-radius: 16px;
+        max-height: 95vh;
+        width: calc(100% - 20px);
     }
 
-    .analytics-header h2 {
-        font-size: 24px;
+    .analytics-header {
+        padding: 20px;
+    }
+
+    .header-content h2 {
+        font-size: 20px;
+    }
+
+    .date-range-wrapper {
+        padding: 15px 20px;
     }
 
     .date-range-selector {
-        width: 100%;
         justify-content: space-between;
+    }
+
+    .range-btn {
+        padding: 6px 16px;
+        font-size: 13px;
+    }
+
+    .analytics-body {
+        padding: 20px;
     }
 
     .analytics-overview {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .stat-card {
-        padding: 20px;
+        padding: 15px;
     }
 
-    .charts-container {
+    .charts-section {
         grid-template-columns: 1fr;
     }
 
-    .chart-card {
-        min-height: 250px;
+    .chart-wrapper {
+        height: 200px;
+    }
+
+    /* Simplify table on mobile */
+    .posts-table th:nth-child(4),
+    .posts-table td:nth-child(4),
+    .posts-table th:nth-child(5),
+    .posts-table td:nth-child(5) {
+        display: none;
     }
 
     .posts-table {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .posts-table th,
@@ -351,29 +517,66 @@
         padding: 8px;
     }
 
-    /* Hide some columns on mobile */
-    .posts-table th:nth-child(4),
-    .posts-table td:nth-child(4),
-    .posts-table th:nth-child(5),
-    .posts-table td:nth-child(5) {
-        display: none;
+    .post-title {
+        max-width: 150px;
     }
 }
 
-@media (max-width: 480px) {
-    .analytics-container {
-        padding: 15px;
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-    .stat-content h3 {
-        font-size: 24px;
-    }
+.analytics-card.show .stat-card {
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
+}
 
-    .metric-value {
-        font-size: 20px;
-    }
+.analytics-card.show .stat-card:nth-child(1) { animation-delay: 0.1s; }
+.analytics-card.show .stat-card:nth-child(2) { animation-delay: 0.15s; }
+.analytics-card.show .stat-card:nth-child(3) { animation-delay: 0.2s; }
+.analytics-card.show .stat-card:nth-child(4) { animation-delay: 0.25s; }
 
-    .posts-table {
-        font-size: 12px;
-    }
+.analytics-card.show .engagement-section,
+.analytics-card.show .chart-container,
+.analytics-card.show .posts-performance-section {
+    animation: slideIn 0.5s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+/* Hover effects consistent with glass theme */
+.analytics-card button:not(:disabled),
+.analytics-card select {
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-card button:not(:disabled)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            135deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 60%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+}
+
+.analytics-card button:not(:disabled):hover::before {
+    transform: translateX(100%);
 }

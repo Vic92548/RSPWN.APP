@@ -1,4 +1,4 @@
-// analytics.js
+// analytics.js - Updated to use card instead of modal
 
 let analyticsData = {
     posts: [],
@@ -10,43 +10,97 @@ let analyticsData = {
     fullData: null
 };
 
-// Open analytics modal with data loading
+// Open analytics card with data loading
 async function openAnalytics() {
     if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
 
-    document.getElementById("analytics_modal").style.display = "flex";
+    // Hide menu if open
+    hideMenu();
 
-    // Reset UI
-    resetAnalyticsUI();
+    // Hide the current post
+    const post = document.getElementsByClassName("post")[0];
+    if (post) {
+        post.style.display = "none";
+    }
+
+    // Show the analytics card
+    const analyticsCard = document.getElementById("analytics-card");
+    if (analyticsCard) {
+        analyticsCard.style.display = "block";
+
+        // Trigger the show animation
+        setTimeout(() => {
+            analyticsCard.classList.add("show");
+        }, 10);
+    }
+
+    // Show loading state
+    showAnalyticsLoading();
 
     // Load analytics data
     await loadAnalyticsData();
+
+    // Hide loading state
+    hideAnalyticsLoading();
 }
 
-// Close analytics modal
-function closeAnalytics() {
-    document.getElementById("analytics_modal").style.display = "none";
+// Close analytics card
+function closeAnalyticsCard() {
+    const analyticsCard = document.getElementById("analytics-card");
+    const post = document.getElementsByClassName("post")[0];
 
-    // Destroy charts to prevent memory leaks
-    if (analyticsData.charts.performance) {
-        analyticsData.charts.performance.destroy();
-        analyticsData.charts.performance = null;
+    if (analyticsCard) {
+        analyticsCard.classList.remove("show");
+
+        // Wait for animation to complete
+        setTimeout(() => {
+            analyticsCard.style.display = "none";
+
+            // Show the post again
+            if (post) {
+                post.style.display = "block";
+            }
+
+            // Destroy charts to prevent memory leaks
+            if (analyticsData.charts.performance) {
+                analyticsData.charts.performance.destroy();
+                analyticsData.charts.performance = null;
+            }
+            if (analyticsData.charts.reactions) {
+                analyticsData.charts.reactions.destroy();
+                analyticsData.charts.reactions = null;
+            }
+        }, 800);
     }
-    if (analyticsData.charts.reactions) {
-        analyticsData.charts.reactions.destroy();
-        analyticsData.charts.reactions = null;
-    }
+}
+
+// Show loading state
+function showAnalyticsLoading() {
+    const loading = document.getElementById("analytics-loading");
+    const content = document.querySelector(".analytics-body");
+
+    if (loading) loading.style.display = "block";
+    if (content) content.style.opacity = "0.3";
+}
+
+// Hide loading state
+function hideAnalyticsLoading() {
+    const loading = document.getElementById("analytics-loading");
+    const content = document.querySelector(".analytics-body");
+
+    if (loading) loading.style.display = "none";
+    if (content) content.style.opacity = "1";
 }
 
 // Reset UI to loading state
 function resetAnalyticsUI() {
-    document.getElementById("total_views").textContent = "Loading...";
-    document.getElementById("total_likes").textContent = "Loading...";
-    document.getElementById("total_followers").textContent = "Loading...";
-    document.getElementById("total_clicks").textContent = "Loading...";
+    document.getElementById("total_views").textContent = "0";
+    document.getElementById("total_likes").textContent = "0";
+    document.getElementById("total_followers").textContent = "0";
+    document.getElementById("total_clicks").textContent = "0";
     document.getElementById("engagement_rate").textContent = "0%";
     document.getElementById("ctr_rate").textContent = "0%";
     document.getElementById("posts_table_body").innerHTML = '<tr><td colspan="8" style="text-align: center;">Loading posts...</td></tr>';
@@ -65,14 +119,16 @@ async function loadAnalyticsData() {
         analyticsData.fullData = data;
         analyticsData.posts = data.posts;
 
-        // Update overview metrics
+        // Update overview metrics with animation
         updateOverviewMetrics(data);
 
         // Populate posts table
         populatePostsTable();
 
         // Initialize charts with real data
-        initializeCharts(data);
+        setTimeout(() => {
+            initializeCharts(data);
+        }, 300);
 
         // Setup event listeners
         setupAnalyticsEventListeners();
@@ -86,7 +142,9 @@ async function loadAnalyticsData() {
             analyticsData.posts = fallbackData;
             calculateOverviewMetrics(); // Use old calculation method
             populatePostsTable();
-            initializeChartsWithFallback();
+            setTimeout(() => {
+                initializeChartsWithFallback();
+            }, 300);
             setupAnalyticsEventListeners();
         } catch (fallbackError) {
             document.getElementById("posts_table_body").innerHTML = '<tr><td colspan="8" style="text-align: center; color: #e74c3c;">Failed to load analytics data</td></tr>';
@@ -99,27 +157,59 @@ function updateOverviewMetrics(data) {
     const totals = data.totals;
     const comparison = data.comparison;
 
-    // Update counts
-    document.getElementById("total_views").textContent = formatNumber(totals.views);
-    document.getElementById("total_likes").textContent = formatNumber(totals.likes);
-    document.getElementById("total_followers").textContent = formatNumber(totals.followers);
-    document.getElementById("total_clicks").textContent = formatNumber(totals.clicks);
+    // Animate counters
+    animateCounter(document.getElementById("total_views"), 0, totals.views, 1000);
+    animateCounter(document.getElementById("total_likes"), 0, totals.likes, 1000);
+    animateCounter(document.getElementById("total_followers"), 0, totals.followers, 1000);
+    animateCounter(document.getElementById("total_clicks"), 0, totals.clicks, 1000);
 
     // Calculate engagement rate
     const totalEngagements = totals.likes + totals.dislikes + totals.follows;
     const engagementRate = totals.views > 0 ? ((totalEngagements / totals.views) * 100).toFixed(2) : 0;
-    document.getElementById("engagement_rate").textContent = engagementRate + "%";
-    document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
+
+    // Animate engagement rate
+    setTimeout(() => {
+        document.getElementById("engagement_rate").textContent = engagementRate + "%";
+        document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
+    }, 500);
 
     // Calculate CTR
     const ctr = totals.views > 0 ? ((totals.clicks / totals.views) * 100).toFixed(2) : 0;
-    document.getElementById("ctr_rate").textContent = ctr + "%";
-    document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%"; // Scale for visibility
+
+    // Animate CTR
+    setTimeout(() => {
+        document.getElementById("ctr_rate").textContent = ctr + "%";
+        document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%"; // Scale for visibility
+    }, 700);
 
     // Update change indicators with real comparison data
     if (comparison) {
         updateChangeIndicators(comparison);
     }
+}
+
+// Animate counter
+function animateCounter(element, start, end, duration) {
+    if (!element) return;
+
+    const startTime = performance.now();
+
+    function updateCounter(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+        const currentValue = Math.floor(start + (end - start) * easeOutQuart);
+        element.textContent = formatNumber(currentValue);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        }
+    }
+
+    requestAnimationFrame(updateCounter);
 }
 
 // Update change indicators with real data
@@ -136,8 +226,10 @@ function updateChangeIndicators(comparison) {
 
     statChanges.forEach((el, index) => {
         const change = parseFloat(changes[index] || 0);
-        el.textContent = (change >= 0 ? '+' : '') + change + '%';
-        el.className = 'stat-change ' + (change >= 0 ? 'positive' : 'negative');
+        setTimeout(() => {
+            el.textContent = (change >= 0 ? '+' : '') + change + '%';
+            el.className = 'stat-change ' + (change >= 0 ? 'positive' : 'negative');
+        }, 1200 + (index * 100));
     });
 }
 
@@ -159,22 +251,28 @@ function calculateOverviewMetrics() {
         totalClicks += post.linkClicksCount || 0;
     });
 
-    // Update UI
-    document.getElementById("total_views").textContent = formatNumber(totalViews);
-    document.getElementById("total_likes").textContent = formatNumber(totalLikes);
-    document.getElementById("total_followers").textContent = formatNumber(totalFollows);
-    document.getElementById("total_clicks").textContent = formatNumber(totalClicks);
+    // Animate counters
+    animateCounter(document.getElementById("total_views"), 0, totalViews, 1000);
+    animateCounter(document.getElementById("total_likes"), 0, totalLikes, 1000);
+    animateCounter(document.getElementById("total_followers"), 0, totalFollows, 1000);
+    animateCounter(document.getElementById("total_clicks"), 0, totalClicks, 1000);
 
     // Calculate engagement rate
     const totalEngagements = totalLikes + totalDislikes + totalFollows;
     const engagementRate = totalViews > 0 ? ((totalEngagements / totalViews) * 100).toFixed(2) : 0;
-    document.getElementById("engagement_rate").textContent = engagementRate + "%";
-    document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
+
+    setTimeout(() => {
+        document.getElementById("engagement_rate").textContent = engagementRate + "%";
+        document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
+    }, 500);
 
     // Calculate CTR
     const ctr = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(2) : 0;
-    document.getElementById("ctr_rate").textContent = ctr + "%";
-    document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%";
+
+    setTimeout(() => {
+        document.getElementById("ctr_rate").textContent = ctr + "%";
+        document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%";
+    }, 700);
 }
 
 // Populate posts table
@@ -217,8 +315,8 @@ function populatePostsTable(sortBy = 'views') {
             break;
     }
 
-    // Populate table
-    sortedPosts.forEach(post => {
+    // Populate table with animation
+    sortedPosts.forEach((post, index) => {
         const metrics = post.metrics || {
             views: post.viewsCount || 0,
             likes: post.likesCount || 0,
@@ -229,6 +327,8 @@ function populatePostsTable(sortBy = 'views') {
         };
 
         const row = document.createElement('tr');
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(10px)';
 
         row.innerHTML = `
             <td><div class="post-title" title="${escapeHtml(post.title)}">${escapeHtml(post.title)}</div></td>
@@ -238,10 +338,17 @@ function populatePostsTable(sortBy = 'views') {
             <td>${formatNumber(metrics.follows)}</td>
             <td>${formatNumber(metrics.clicks)}</td>
             <td><span class="engagement-rate">${metrics.engagement}%</span></td>
-            <td><a href="/post/${post.id}" class="glass_bt view-post-btn" target="_blank">View</a></td>
+            <td><a href="/post/${post.id}" class="view-post-btn" target="_blank">View</a></td>
         `;
 
         tbody.appendChild(row);
+
+        // Animate row appearance
+        setTimeout(() => {
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 50);
     });
 }
 
@@ -283,12 +390,32 @@ function initializeCharts(data) {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
                 }
             }
         }
@@ -307,7 +434,13 @@ function initializeCharts(data) {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             }
         }
@@ -344,7 +477,32 @@ function initializeChartsWithFallback() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            }
         }
     });
 
@@ -360,7 +518,14 @@ function initializeChartsWithFallback() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            }
         }
     });
 }
@@ -451,7 +616,9 @@ function generateReactionsData(reactions) {
         labels: labels,
         datasets: [{
             data: data,
-            backgroundColor: colors
+            backgroundColor: colors,
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 1
         }]
     };
 }
@@ -475,9 +642,15 @@ function setupAnalyticsEventListeners() {
             const range = e.target.dataset.range;
             analyticsData.timeRange = range === 'all' ? 'all' : parseInt(range);
 
+            // Show loading
+            showAnalyticsLoading();
+
             // Reload data for the selected range
             resetAnalyticsUI();
             await loadAnalyticsData();
+
+            // Hide loading
+            hideAnalyticsLoading();
         });
     });
 
@@ -532,3 +705,6 @@ function exportAnalyticsData() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
+// Replace the old modal function
+window.closeAnalytics = closeAnalyticsCard;
