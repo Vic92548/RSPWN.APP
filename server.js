@@ -28,17 +28,6 @@ import { handleProfilePage } from "./deno_modules/user_profile.js";
 import { createRenderer } from "./deno_modules/template_engine.js";
 import { FastRouter } from "./deno_modules/router.js";
 
-import {
-    createFeed,
-    joinFeed,
-    leaveFeed,
-    getUserFeeds,
-    getPublicFeeds,
-    getFeedDetails,
-    getUserFeedPosts,
-    searchFeeds
-} from "./deno_modules/feeds/feed_manager.js";
-
 const port = 8080;
 
 // Initialize the template engine
@@ -330,59 +319,6 @@ router.get('/api/analytics', async (request, url, authResult) => {
     const { analyticsHandler } = await import("./deno_modules/routes/analytics.js");
     return analyticsHandler(request, authResult);
 }, { requireAuth: true });
-
-router.post('/feeds', async (request, url, authResult) => {
-    const body = await request.json();
-    return createFeed(authResult.userData.id, body);
-}, { requireAuth: true });
-
-router.get('/feeds/mine', async (request, url, authResult) => {
-    return getUserFeeds(authResult.userData.id);
-}, { requireAuth: true });
-
-router.get('/feeds/public', async (request, url) => {
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const offset = parseInt(url.searchParams.get('offset') || '0');
-    return getPublicFeeds(limit, offset);
-}, { requireAuth: false });
-
-router.get('/feeds/search', async (request, url) => {
-    const query = url.searchParams.get('q');
-    const isPrivate = url.searchParams.get('private');
-    return searchFeeds(query, isPrivate ? isPrivate === 'true' : null);
-}, { requireAuth: false });
-
-router.get('/feeds/:feedId', async (request, url) => {
-    const feedId = url.pathname.split('/')[2];
-    const authResult = await authenticateRequest(request);
-    const userId = authResult.isValid ? authResult.userData.id : null;
-    return getFeedDetails(feedId, userId);
-}, { prefix: true });
-
-router.post('/feeds/:feedId/join', async (request, url, authResult) => {
-    const feedId = url.pathname.split('/')[2];
-    return joinFeed(authResult.userData.id, feedId);
-}, { prefix: true, requireAuth: true });
-
-router.post('/feeds/:feedId/leave', async (request, url, authResult) => {
-    const feedId = url.pathname.split('/')[2];
-    return leaveFeed(authResult.userData.id, feedId);
-}, { prefix: true, requireAuth: true });
-
-// Update the main feed route to use the new feed system
-router.get('/feed', async (request, url) => {
-    const authResult = await authenticateRequest(request);
-
-    if (authResult.isValid) {
-        // Get posts from user's joined feeds
-        const limit = parseInt(url.searchParams.get('limit') || '10');
-        const offset = parseInt(url.searchParams.get('offset') || '0');
-        return getUserFeedPosts(authResult.userData.id, limit, offset);
-    } else {
-        // For anonymous users, show posts from popular public feeds
-        return getNextFeedPosts("anonymous");
-    }
-}, { prefix: true });
 
 // Profile pages (must be last due to catch-all nature)
 router.get('/@', async (request, url) => {
