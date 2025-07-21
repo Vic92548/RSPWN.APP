@@ -1,6 +1,6 @@
 <!-- Modern Add Post Card -->
 <article class="add-post-card" id="add-post-card" style="display:none;">
-    <form id="postForm">
+    <div id="postForm">
         <!-- Card Header -->
         <div class="add-post-header">
             <div class="header-content">
@@ -78,7 +78,7 @@
                 <button type="button" class="cancel-btn" onclick="closeAddPostCard()">
                     <i class="fa-solid fa-xmark"></i> Cancel
                 </button>
-                <button type="submit" class="submit-btn" id="submit-post-btn">
+                <button type="submit" class="submit-btn" id="submit-post-btn" onclick="submitPost(event)">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Publish Post</span>
                 </button>
@@ -92,5 +92,5 @@
             </div>
             <p class="progress-text">Uploading your content...</p>
         </div>
-    </form>
+    </div>
 </article>

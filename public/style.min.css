@@ -1877,14 +1877,13 @@ input:focus {
 }
 
 .add-post-card {
+    
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow:
-            0 8px 32px 0 rgba(31, 38, 135, 0.37),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     margin: 20px auto;
     color: #fff;
     transform: translateY(100vh);
@@ -1892,6 +1891,22 @@ input:focus {
     max-height: 85vh;
     overflow: hidden;
     position: relative;
+    max-width: 480px; 
+}
+
+
+.add-post-card * {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+
+.add-post-card #postForm {
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
 }
 
 .add-post-card.show {
@@ -1900,7 +1915,7 @@ input:focus {
 
 
 .add-post-header {
-    padding: 25px 30px;
+    padding: 20px 25px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.03);
     display: flex;
@@ -1912,14 +1927,14 @@ input:focus {
     margin: 0 0 5px 0;
     font-size: 24px;
     font-weight: 700;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.9);
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .header-content h2 i {
-    color: #4ecdc4;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .header-content p {
@@ -1944,35 +1959,37 @@ input:focus {
 }
 
 .close-card-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     transform: rotate(90deg);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 
 .add-post-body {
-    padding: 30px;
+    padding: 25px;
     max-height: calc(85vh - 200px);
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .add-post-body::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .add-post-body::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
 }
 
 .add-post-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
 }
 
 
 .input-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .input-group label {
@@ -2006,14 +2023,17 @@ input:focus {
 .input-group input[type="url"] {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 15px;
     font-weight: 500;
     transition: all 0.3s ease;
     font-family: inherit;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .input-group input::placeholder {
@@ -2022,9 +2042,9 @@ input:focus {
 
 .input-group input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #4ecdc4;
-    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 
@@ -2046,21 +2066,26 @@ input:focus {
     position: relative;
     min-height: 250px;
     background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
     overflow: hidden;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .upload-area:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .upload-area.dragging {
     background: rgba(78, 205, 196, 0.1);
-    border-color: #4ecdc4;
+    border-color: rgba(78, 205, 196, 0.3);
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
 }
 
 .upload-placeholder {
@@ -2105,7 +2130,8 @@ input:focus {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #000;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
 }
 
 .preview-overlay {
@@ -2115,11 +2141,14 @@ input:focus {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: opacity 0.3s ease;
+    border-radius: 12px;
 }
 
 .upload-preview:hover .preview-overlay {
@@ -2127,10 +2156,11 @@ input:focus {
 }
 
 .change-media-btn {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
     padding: 12px 24px;
     border-radius: 12px;
     font-size: 14px;
@@ -2140,11 +2170,13 @@ input:focus {
     display: flex;
     align-items: center;
     gap: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .change-media-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
 }
 
 
@@ -2158,7 +2190,7 @@ input:focus {
 .submit-actions {
     display: flex;
     gap: 12px;
-    margin-top: 30px;
+    margin-top: 25px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -2178,28 +2210,35 @@ input:focus {
     justify-content: center;
     gap: 8px;
     font-family: inherit;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .submit-btn {
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .submit-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .submit-btn:disabled {
@@ -2213,9 +2252,11 @@ input:focus {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 20px;
-    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .progress-bar {
@@ -2229,9 +2270,10 @@ input:focus {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4ecdc4 0%, #44a08d 100%);
+    background: rgba(78, 205, 196, 0.6);
     width: 0%;
     transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
 }
 
 .progress-text {
@@ -2239,6 +2281,38 @@ input:focus {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.8);
     text-align: center;
+}
+
+
+.add-post-card button:not(:disabled),
+.add-post-card input,
+.upload-area {
+    position: relative;
+    overflow: hidden;
+}
+
+.add-post-card button:not(:disabled)::before,
+.upload-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            135deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 60%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+}
+
+.add-post-card button:not(:disabled):hover::before,
+.upload-area:hover::before {
+    transform: translateX(100%);
 }
 
 
@@ -2303,6 +2377,34 @@ input:focus {
     animation: slideIn 0.5s ease forwards;
     animation-delay: 0.4s;
     opacity: 0;
+}
+
+
+@keyframes rippleEffect {
+    to {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
+.cancel-btn::after,
+.submit-btn::after {
+    content: '';
+    position: absolute;
+    top: var(--ripple-y, 50%);
+    left: var(--ripple-x, 50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.cancel-btn:active::after,
+.submit-btn:active::after {
+    animation: rippleEffect 0.6s ease-out;
 }
 
 
