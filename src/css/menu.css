@@ -301,17 +301,17 @@
     margin: 0;
 }
 
-/* Menu Items - Enhanced Glass Button Style */
+/* Menu Items - Pure Glass Style */
 .menu-item {
     display: flex;
     align-items: center;
     gap: 15px;
     padding: 16px 20px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -320,11 +320,11 @@
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateX(8px) scale(1.02);
     box-shadow:
-            0 5px 20px rgba(255, 255, 255, 0.1),
+            0 5px 20px rgba(255, 255, 255, 0.15),
             inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
@@ -432,20 +432,21 @@
 }
 
 .menu-badge.new {
-    background: rgba(231, 76, 60, 0.1);
-    border-color: rgba(231, 76, 60, 0.2);
-    color: #ff6b6b;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(231, 76, 60, 0.3);
+    color: rgba(255, 150, 150, 0.9);
     animation: pulse-glow 2s infinite;
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.15);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
 }
 
 .menu-badge.stars {
-    background: rgba(241, 196, 15, 0.1);
-    border-color: rgba(241, 196, 15, 0.2);
-    color: #ffd633;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(241, 196, 15, 0.3);
+    color: rgba(255, 220, 100, 0.9);
     display: flex;
     align-items: center;
     gap: 4px;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
 }
 
 @keyframes pulse-glow {
@@ -483,12 +484,12 @@
 .menu-logout-btn {
     width: 100%;
     padding: 14px;
-    background: rgba(231, 76, 60, 0.08);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(231, 76, 60, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 14px;
-    color: #ff6b6b;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 700;
     font-size: 14px;
     display: flex;
@@ -498,7 +499,7 @@
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 15px;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -506,12 +507,13 @@
 }
 
 .menu-logout-btn:hover {
-    background: rgba(231, 76, 60, 0.12);
+    background: rgba(255, 100, 100, 0.1);
     transform: translateY(-2px);
     box-shadow:
-            0 8px 25px rgba(231, 76, 60, 0.15),
-            inset 0 0 20px rgba(231, 76, 60, 0.1);
-    border-color: rgba(231, 76, 60, 0.25);
+            0 8px 20px rgba(255, 100, 100, 0.1),
+            inset 0 0 20px rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 100, 100, 0.2);
+    color: rgba(255, 150, 150, 0.9);
 }
 
 .menu-logout-btn:active {
@@ -670,6 +672,38 @@
     transform: translateX(100%);
 }
 
+/* Override old dark theme styles */
+#menu ul {
+    padding: 0;
+}
+
+#menu li {
+    list-style: none;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    color: rgba(255, 255, 255, 0.9);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    transition: all 0.4s;
+}
+
+#menu li:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+#menu li i {
+    margin-right: 5px;
+}
+
 /* Consistent glass button style */
 .glass_bt {
     background: rgba(255, 255, 255, 0.1);
@@ -746,13 +780,88 @@
 
 /* Create Post Button Special Glass Style */
 .menu-item:first-child {
-    background: rgba(78, 205, 196, 0.08);
-    border-color: rgba(78, 205, 196, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .menu-item:first-child:hover {
-    background: rgba(78, 205, 196, 0.12);
+    background: rgba(78, 205, 196, 0.08);
     box-shadow:
-            0 5px 25px rgba(78, 205, 196, 0.15),
-            inset 0 0 20px rgba(78, 205, 196, 0.1);
+            0 5px 20px rgba(78, 205, 196, 0.1),
+            inset 0 0 20px rgba(78, 205, 196, 0.05);
+    border-color: rgba(78, 205, 196, 0.2);
+}
+
+/* Update create post button */
+.create-post-btn {
+    position: fixed;
+    display: block;
+    top: 20px;
+    left: 20px;
+    text-align: center;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s;
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+    line-height: 0;
+}
+
+.create-post-btn:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.create-post-btn i {
+    margin: 0;
+}
+
+/* Update close button to glass style */
+.close_bt {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.close_bt:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+/* Discord link button - glass style */
+.discord-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+    border-radius: 7px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.discord-link:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px);
 }
