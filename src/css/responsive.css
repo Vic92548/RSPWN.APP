@@ -58,13 +58,25 @@
         opacity: 1;
     }
 
-    #menu{
-        width: calc(50% - 240px);
-        max-width: 300px;
-
-        margin-left: 20px;
+    /* Updated menu styles for collapsible functionality */
+    #menu {
+        /* Remove fixed width - let the menu container control it */
+        width: auto;
+        max-width: none;
+        margin-left: 0;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* When menu container is NOT collapsed */
+    #menu:has(.menu-container:not(.collapsed)) {
+        width: 480px;
+    }
+
+    /* When menu container IS collapsed */
+    #menu:has(.menu-container.collapsed) {
+        width: 120px;
     }
 
     #menu form{
@@ -81,6 +93,12 @@
         font-weight: 500;
         padding: 10px 20px 10px 20px;
         cursor: pointer;
+    }
+
+    /* Adjust list item styles when collapsed */
+    #menu:has(.menu-container.collapsed) li {
+        text-align: center;
+        padding: 10px;
     }
 
     #close_menu{

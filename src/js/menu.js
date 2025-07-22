@@ -21,6 +21,101 @@ function initMenu() {
     if (document.getElementById('github_stars')) {
         updateGithubStars(document.getElementById('github_stars'));
     }
+
+    // Initialize collapse state for desktop
+    if (window.innerWidth >= 769) {
+        initMenuCollapseState();
+        addCollapsedMenuInteractions();
+    }
+}
+
+// Toggle menu collapse state
+function toggleMenuCollapse() {
+    const menuContainer = document.querySelector('.menu-container');
+    const mainElement = document.querySelector('main');
+    const toggleButton = document.querySelector('.menu-toggle i');
+
+    if (!menuContainer) return;
+
+    // Toggle collapsed class
+    menuContainer.classList.toggle('collapsed');
+
+    // Update main content area
+    if (mainElement) {
+        mainElement.classList.toggle('menu-collapsed');
+    }
+
+    // Save state to localStorage
+    const isCollapsed = menuContainer.classList.contains('collapsed');
+    localStorage.setItem('menuCollapsed', isCollapsed);
+
+    // Update tooltips for menu items
+    updateMenuTooltips(isCollapsed);
+
+    // Animate toggle button
+    if (toggleButton) {
+        toggleButton.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+}
+
+// Update tooltips for collapsed menu
+function updateMenuTooltips(isCollapsed) {
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    menuItems.forEach(item => {
+        if (isCollapsed) {
+            const title = item.querySelector('.menu-item-title');
+            if (title) {
+                item.setAttribute('data-tooltip', title.textContent);
+            }
+        } else {
+            item.removeAttribute('data-tooltip');
+        }
+    });
+}
+
+// Initialize menu state on load
+function initMenuCollapseState() {
+    const savedState = localStorage.getItem('menuCollapsed');
+    const menuContainer = document.querySelector('.menu-container');
+    const mainElement = document.querySelector('main');
+
+    if (savedState === 'true' && menuContainer) {
+        menuContainer.classList.add('collapsed');
+        if (mainElement) {
+            mainElement.classList.add('menu-collapsed');
+        }
+        updateMenuTooltips(true);
+
+        // Update toggle button icon
+        const toggleButton = document.querySelector('.menu-toggle i');
+        if (toggleButton) {
+            toggleButton.style.transform = 'rotate(180deg)';
+        }
+    }
+}
+
+// Add smooth expand animation when hovering over collapsed menu items
+function addCollapsedMenuInteractions() {
+    const menuContainer = document.querySelector('.menu-container');
+    if (!menuContainer) return;
+
+    // Optional: Auto-expand on hover (uncomment if desired)
+    /*
+    let hoverTimeout;
+    menuContainer.addEventListener('mouseenter', () => {
+        if (menuContainer.classList.contains('collapsed')) {
+            hoverTimeout = setTimeout(() => {
+                menuContainer.classList.add('hover-expand');
+            }, 300);
+        }
+    });
+
+    menuContainer.addEventListener('mouseleave', () => {
+        clearTimeout(hoverTimeout);
+        menuContainer.classList.remove('hover-expand');
+    });
+    */
 }
 
 // Update menu user info
@@ -245,6 +340,29 @@ function logout() {
     }
 }
 
+// Handle window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        if (window.innerWidth < 769) {
+            // Remove collapsed state on mobile
+            const menuContainer = document.querySelector('.menu-container');
+            const mainElement = document.querySelector('main');
+
+            if (menuContainer) {
+                menuContainer.classList.remove('collapsed');
+            }
+            if (mainElement) {
+                mainElement.classList.remove('menu-collapsed');
+            }
+        } else {
+            // Reinitialize collapse state when resizing to desktop
+            initMenuCollapseState();
+        }
+    }, 250);
+});
+
 // Override existing functions to use new menu
 const originalOpenNewPostModel = window.opeNewPostModel;
 window.opeNewPostModel = function() {
@@ -272,7 +390,14 @@ window.openLeaderboardModal = function() {
 
 // Initialize on DOM load
 if (typeof document !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', initMenu);
+    document.addEventListener('DOMContentLoaded', () => {
+        initMenu();
+
+        // Initialize collapse state for desktop
+        if (window.innerWidth >= 769) {
+            initMenuCollapseState();
+        }
+    });
 
     // Re-initialize when user logs in
     const originalLoadUserData = window.loadUserData;
@@ -281,3 +406,9 @@ if (typeof document !== 'undefined') {
         setTimeout(initMenu, 500);
     };
 }
+
+// Make functions globally available
+window.toggleMenuCollapse = toggleMenuCollapse;
+window.openMenu = openMenu;
+window.hideMenu = hideMenu;
+window.logout = logout;
