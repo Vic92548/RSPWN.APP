@@ -40,11 +40,13 @@ if(MainPage){
     }
 
     // File input change handler
-    fileInput.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            handleFileSelect(this.files[0]);
-        }
-    });
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                handleFileSelect(this.files[0]);
+            }
+        });
+    }
 
     function handleFileSelect(file) {
         const fileType = file.type;
@@ -99,106 +101,111 @@ if(MainPage){
             titleCount.textContent = this.value.length;
         });
     }
+}
 
-    // Enhanced form submission
-    document.getElementById('postForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+// Define submitPost as a global function
+window.submitPost = async function(event) {
+    event.preventDefault();
 
-        const submitBtn = document.getElementById('submit-post-btn');
-        const uploadProgress = document.getElementById('upload-progress');
-        const progressFill = document.getElementById('progress-fill');
+    const submitBtn = document.getElementById('submit-post-btn');
+    const uploadProgress = document.getElementById('upload-progress');
+    const progressFill = document.getElementById('progress-fill');
 
-        const title = document.getElementById('title').value;
-        const link = document.getElementById('link').value;
-        const file = document.getElementById('file').files[0];
+    const title = document.getElementById('title').value;
+    const link = document.getElementById('link').value;
+    const file = document.getElementById('file').files[0];
 
-        if (!file) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'No media selected',
-                text: 'Please select an image or video to upload'
-            });
-            return;
-        }
+    if (!file) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No media selected',
+            text: 'Please select an image or video to upload'
+        });
+        return;
+    }
 
-        // Disable submit button
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Publishing...</span>';
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Publishing...</span>';
 
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('link', link);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('link', link);
 
-        if (file) {
-            const fileExtension = file.name.split('.').pop();
-            const fileName = `${new Date().getTime()}.${fileExtension}`;
-            const fileContentType = file.type || 'application/octet-stream';
-            const blob = new Blob([file], { type: fileContentType });
-            formData.append("file", blob, fileName);
-        }
+    if (file) {
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `${new Date().getTime()}.${fileExtension}`;
+        const fileContentType = file.type || 'application/octet-stream';
+        const blob = new Blob([file], { type: fileContentType });
+        formData.append("file", blob, fileName);
+    }
 
-        const jwt = localStorage.getItem('jwt');
-        const headers = new Headers({
-            "Authorization": `Bearer ${jwt}`
+    const jwt = localStorage.getItem('jwt');
+    const headers = new Headers({
+        "Authorization": `Bearer ${jwt}`
+    });
+
+    try {
+        // Show progress bar
+        uploadProgress.style.display = 'block';
+
+        // Simulate progress (since we can't track actual upload progress with fetch)
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            progressFill.style.width = progress + '%';
+        }, 200);
+
+        const response = await fetch('/posts', {
+            method: 'POST',
+            body: formData,
+            headers: headers
         });
 
-        try {
-            // Show progress bar
-            uploadProgress.style.display = 'block';
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
 
-            // Simulate progress (since we can't track actual upload progress with fetch)
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 90) progress = 90;
-                progressFill.style.width = progress + '%';
-            }, 200);
+        const result = await response.json();
 
-            const response = await fetch('/posts', {
-                method: 'POST',
-                body: formData,
-                headers: headers
+        if (response.ok && result.success) {
+            // Success animation
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
             });
 
-            clearInterval(progressInterval);
-            progressFill.style.width = '100%';
+            // Close the add post card
+            closeAddPostCard();
 
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                // Success animation
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-
-                // Close the add post card
-                closeAddPostCard();
-
-                // Reset form
-                document.getElementById('title').value = '';
-                document.getElementById('link').value = '';
-                document.getElementById('file').value = '';
-                document.getElementById('upload-placeholder').style.display = 'flex';
-                document.getElementById('upload-preview').style.display = 'none';
+            // Reset form
+            document.getElementById('title').value = '';
+            document.getElementById('link').value = '';
+            document.getElementById('file').value = '';
+            document.getElementById('upload-placeholder').style.display = 'flex';
+            document.getElementById('upload-preview').style.display = 'none';
+            const titleCount = document.getElementById('title-count');
+            if (titleCount) {
                 titleCount.textContent = '0';
+            }
 
-                // Show success notification
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
+            // Show success notification
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
 
-                Toast.fire({
-                    icon: "success",
-                    title: "Post published successfully!"
-                });
+            Toast.fire({
+                icon: "success",
+                title: "Post published successfully!"
+            });
 
-                // Update XP
+            // Update XP if user data is available
+            if (window.user && result.user) {
                 const oldUser = {
                     xp: window.user.xp,
                     level: window.user.level,
@@ -207,31 +214,31 @@ if(MainPage){
 
                 window.user = result.user;
                 setXPProgress(oldUser);
-
-                // Display the new post
-                setTimeout(() => {
-                    displayPost(result.id);
-                }, 500);
-
-            } else {
-                throw new Error(result.error || 'Failed to create post');
             }
 
-        } catch (error) {
-            console.error('Failed to submit post:', error);
+            // Display the new post
+            setTimeout(() => {
+                displayPost(result.id);
+            }, 500);
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Upload failed',
-                text: error.message || 'Failed to create post. Please try again.'
-            });
-
-        } finally {
-            // Reset button and hide progress
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Publish Post</span>';
-            uploadProgress.style.display = 'none';
-            progressFill.style.width = '0%';
+        } else {
+            throw new Error(result.error || 'Failed to create post');
         }
-    });
+
+    } catch (error) {
+        console.error('Failed to submit post:', error);
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Upload failed',
+            text: error.message || 'Failed to create post. Please try again.'
+        });
+
+    } finally {
+        // Reset button and hide progress
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Publish Post</span>';
+        uploadProgress.style.display = 'none';
+        progressFill.style.width = '0%';
+    }
 }
