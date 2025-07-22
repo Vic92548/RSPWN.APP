@@ -118,22 +118,24 @@ async function gatherProfileData(user) {
     };
 }
 
+// Updated generateProfileHtml function with new glass design
+
 async function generateProfileHtml(profileData) {
     // Read the base template
     const template = await Deno.readTextFile("src/components/profile_page.html");
 
     // Generate avatar URL
     const avatarUrl = profileData.avatar
-        ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png`
-        : 'https://vapr.b-cdn.net/V_round_128.png';
+        ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png?size=256`
+        : 'https://vapr.b-cdn.net/default_vapr_avatar.png';
 
     // Calculate XP percentage
     const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
 
-    // Generate posts HTML
+    // Generate posts HTML with new glass card style
     let postsHtml = '';
     if (profileData.recentPosts.length === 0) {
-        postsHtml = '<p class="no-posts">No posts yet</p>';
+        postsHtml = '<p class="no-posts"><i class="fa-solid fa-inbox"></i> No posts yet</p>';
     } else {
         postsHtml = profileData.recentPosts.map(post => {
             const timeAgoText = getTimeAgo(post.timestamp);
@@ -142,7 +144,7 @@ async function generateProfileHtml(profileData) {
                     <h4>${escapeHtml(post.title)}</h4>
                     <div class="post-meta">
                         <span><i class="fa-solid fa-eye"></i> ${formatNumber(post.views)}</span>
-                        <span>${timeAgoText}</span>
+                        <span><i class="fa-solid fa-clock"></i> ${timeAgoText}</span>
                     </div>
                 </a>
             `;
