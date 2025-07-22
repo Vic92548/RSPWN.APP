@@ -3586,22 +3586,11 @@ input:focus {
     transform: scale(1.5) translateZ(30px);
     transition: transform 0.5s ease-in-out;
 }
-#menu.glass_modal {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background: rgba(0, 0, 0, 0.6);
-}
 
 .menu-container {
     width: 100%;
     max-width: 480px;
     height: 100vh;
-    
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -3612,8 +3601,6 @@ input:focus {
 
 .menu-header {
     padding: 20px 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -3636,84 +3623,37 @@ input:focus {
     margin: 0;
     font-size: 24px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.9);
     letter-spacing: 1px;
 }
 
 .menu-tagline {
     margin: 0;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
     font-weight: 500;
-}
-
-.menu-close {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
-
-.menu-close:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: rotate(90deg);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 
 .menu-toggle {
     position: absolute;
     top: 20px;
-    right: 0px;
+    right: 0;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px 0 0 12px;
-    color: rgba(255, 255, 255, 0.8);
     display: none;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
     font-size: 16px;
     z-index: 10;
-}
-
-.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 
 .user-info-card {
     margin: 20px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.4s ease;
-}
-
-.user-info-card:hover {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .user-avatar-large {
@@ -3757,7 +3697,6 @@ input:focus {
 .user-details-menu h3 {
     margin: 0 0 8px 0;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
     font-weight: 600;
 }
 
@@ -3786,7 +3725,6 @@ input:focus {
 
 .xp-text-mini {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
 }
 
@@ -3798,52 +3736,15 @@ input:focus {
     margin: 0 20px 20px;
 }
 
-
 .stat-mini {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 14px;
     padding: 14px;
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-mini::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    transform: rotate(45deg);
-}
-
-.stat-mini:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-3px) scale(1.02);
-    box-shadow:
-            0 8px 25px rgba(255, 255, 255, 0.15),
-            inset 0 0 20px rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-.stat-mini:hover::before {
-    opacity: 1;
 }
 
 .stat-mini i {
     font-size: 22px;
-    color: rgba(255, 255, 255, 0.8);
     transition: all 0.4s ease;
 }
 
@@ -3865,12 +3766,10 @@ input:focus {
 .stat-value {
     font-size: 16px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
 }
 
 .stat-label {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
 }
 
@@ -3879,22 +3778,6 @@ input:focus {
     flex: 1;
     overflow-y: auto;
     padding: 0 20px 20px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-
-.menu-nav::-webkit-scrollbar {
-    width: 8px;
-}
-
-.menu-nav::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.menu-nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
 }
 
 
@@ -3906,7 +3789,6 @@ input:focus {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: rgba(255, 255, 255, 0.4);
     margin: 0 0 10px 0;
     font-weight: 600;
 }
@@ -3924,24 +3806,13 @@ input:focus {
     gap: 15px;
     padding: 16px 20px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
     transform: translateX(8px) scale(1.02);
-    box-shadow:
-            0 5px 20px rgba(255, 255, 255, 0.15),
-            inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .menu-item:active {
@@ -3980,12 +3851,6 @@ input:focus {
     color: #52e788;
 }
 
-.menu-item-icon.leaderboard {
-    background: rgba(241, 196, 15, 0.1);
-    border-color: rgba(241, 196, 15, 0.2);
-    color: #ffd633;
-}
-
 .menu-item-icon.backgrounds {
     background: rgba(155, 89, 182, 0.1);
     border-color: rgba(155, 89, 182, 0.2);
@@ -4020,31 +3885,20 @@ input:focus {
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 2px;
 }
 
 .menu-item-desc {
     display: block;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
 }
 
 
 .menu-badge {
-    padding: 6px 12px;
-    border-radius: 24px;
     font-size: 11px;
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    transition: all 0.3s ease;
 }
 
 .menu-badge.new {
@@ -4079,7 +3933,6 @@ input:focus {
 
 .menu-item-arrow {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
     transition: transform 0.3s ease;
 }
 
@@ -4090,36 +3943,22 @@ input:focus {
 
 .menu-footer {
     padding: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 
 .menu-logout-btn {
     width: 100%;
     padding: 14px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 14px;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 700;
     font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 15px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
 
 .menu-logout-btn:hover {
@@ -4140,7 +3979,6 @@ input:focus {
 .menu-version {
     text-align: center;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4171,7 +4009,15 @@ input:focus {
 }
 
 .menu-container.collapsed .menu-brand div,
-.menu-container.collapsed .menu-close {
+.menu-container.collapsed .menu-close,
+.menu-container.collapsed .user-details-menu,
+.menu-container.collapsed .quick-stats,
+.menu-container.collapsed .menu-section-title,
+.menu-container.collapsed .menu-item-content,
+.menu-container.collapsed .menu-badge,
+.menu-container.collapsed .menu-item-arrow,
+.menu-container.collapsed .menu-logout-btn span,
+.menu-container.collapsed .menu-version .dot {
     display: none;
 }
 
@@ -4186,20 +4032,8 @@ input:focus {
     height: 45px;
 }
 
-.menu-container.collapsed .user-details-menu {
-    display: none;
-}
-
-.menu-container.collapsed .quick-stats {
-    display: none;
-}
-
 .menu-container.collapsed .menu-nav {
     padding: 0 10px 20px;
-}
-
-.menu-container.collapsed .menu-section-title {
-    display: none;
 }
 
 .menu-container.collapsed .menu-item {
@@ -4212,12 +4046,6 @@ input:focus {
     width: 40px;
     height: 40px;
     font-size: 18px;
-}
-
-.menu-container.collapsed .menu-item-content,
-.menu-container.collapsed .menu-badge,
-.menu-container.collapsed .menu-item-arrow {
-    display: none;
 }
 
 .menu-container.collapsed .menu-footer {
@@ -4234,18 +4062,10 @@ input:focus {
     margin: 0;
 }
 
-.menu-container.collapsed .menu-logout-btn span {
-    display: none;
-}
-
 .menu-container.collapsed .menu-version {
     flex-direction: column;
     font-size: 10px;
     gap: 4px;
-}
-
-.menu-container.collapsed .menu-version .dot {
-    display: none;
 }
 
 
@@ -4329,7 +4149,6 @@ input:focus {
 
 
 @media (min-width: 769px) {
-    
     .menu-toggle {
         display: flex;
     }
@@ -4348,7 +4167,7 @@ input:focus {
 
     
     #menu.glass_modal {
-        display: flex !important; 
+        display: flex !important;
         position: fixed;
         left: 0;
         top: 0;
@@ -4358,7 +4177,7 @@ input:focus {
         backdrop-filter: none;
         background: transparent;
         z-index: 1;
-        pointer-events: none; 
+        pointer-events: none;
         margin-left: 0;
     }
 
@@ -4393,12 +4212,12 @@ input:focus {
 
     
     .glass_modal:not(#menu) form {
-        margin-left: -160px; 
+        margin-left: -160px;
     }
 
     
     h1.title {
-        left: 340px !important; 
+        left: 340px !important;
         right: 20px;
         width: auto;
         max-width: none;
@@ -4414,82 +4233,6 @@ input:focus {
     transition-property: background-color, transform, box-shadow, opacity;
     transition-duration: 0.3s;
     transition-timing-function: ease;
-}
-
-
-.menu-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-            135deg,
-            transparent 40%,
-            rgba(255, 255, 255, 0.2) 50%,
-            transparent 60%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-    pointer-events: none;
-}
-
-.menu-item:hover::before {
-    transform: translateX(100%);
-}
-
-
-#menu ul {
-    padding: 0;
-}
-
-#menu li {
-    list-style: none;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    border-radius: 7px;
-    color: rgba(255, 255, 255, 0.9);
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 18px;
-    margin-top: 10px;
-    transition: all 0.4s;
-}
-
-#menu li:hover {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-#menu li i {
-    margin-right: 5px;
-}
-
-
-.glass_bt {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    padding: 10px 20px;
-    font-weight: 700;
-    transition: all 0.4s ease;
-    cursor: pointer;
-}
-
-.glass_bt:hover {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
 }
 
 
@@ -4629,10 +4372,56 @@ input:focus {
 }
 
 
-.menu-container * {
-    transition-property: all;
-    transition-duration: 0.3s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+#menu ul {
+    padding: 0;
+}
+
+#menu li {
+    list-style: none;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    color: rgba(255, 255, 255, 0.9);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    transition: all 0.4s;
+}
+
+#menu li:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+#menu li i {
+    margin-right: 5px;
+}
+
+
+.glass_bt {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    font-weight: 700;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.glass_bt:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 @media only screen and (min-width: 768px) {
     main {

@@ -1,7 +1,7 @@
 <section id="menu" class="glass_modal" style="display:none;">
-    <div class="menu-container">
+    <div class="menu-container glass-primary">
         <!-- Menu Header -->
-        <div class="menu-header">
+        <div class="menu-header glass-section-bg">
             <div class="menu-brand">
                 <img src="https://vapr-club.b-cdn.net/default_vapr_avatar.png" alt="VAPR" class="menu-logo">
                 <div>
@@ -9,18 +9,18 @@
                     <p class="menu-tagline">Creator Dashboard</p>
                 </div>
             </div>
-            <button class="menu-close" onclick="hideMenu()">
+            <button class="menu-close glass-close-btn" onclick="hideMenu()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
         <!-- Toggle Button for Collapse/Expand -->
-        <button class="menu-toggle" onclick="toggleMenuCollapse()" title="Collapse menu">
+        <button class="menu-toggle glass-button" onclick="toggleMenuCollapse()" title="Collapse menu">
             <i class="fa-solid fa-angles-left"></i>
         </button>
 
         <!-- User Info Card -->
-        <div class="user-info-card glass-card" id="menu_user_info" style="display: none;">
+        <div class="user-info-card glass-secondary" id="menu_user_info" style="display: none;">
             <div class="user-avatar-large">
                 <img id="menu_user_avatar" src="" alt="Avatar">
                 <div class="level-badge-overlay">
@@ -40,21 +40,21 @@
 
         <!-- Quick Stats -->
         <div class="quick-stats" id="quick_stats" style="display: none;">
-            <div class="stat-mini">
+            <div class="stat-mini glass-stat-mini">
                 <i class="fa-solid fa-fire"></i>
                 <div>
                     <span class="stat-value" id="daily_xp">0</span>
                     <span class="stat-label">Today's XP</span>
                 </div>
             </div>
-            <div class="stat-mini">
+            <div class="stat-mini glass-stat-mini">
                 <i class="fa-solid fa-users"></i>
                 <div>
                     <span class="stat-value" id="follower_count">0</span>
                     <span class="stat-label">Followers</span>
                 </div>
             </div>
-            <div class="stat-mini">
+            <div class="stat-mini glass-stat-mini">
                 <i class="fa-solid fa-eye"></i>
                 <div>
                     <span class="stat-value" id="total_views">0</span>
@@ -64,11 +64,11 @@
         </div>
 
         <!-- Menu Items -->
-        <nav class="menu-nav">
+        <nav class="menu-nav glass-scrollbar">
             <div class="menu-section">
                 <h4 class="menu-section-title">Create & Share</h4>
                 <ul class="menu-list">
-                    <li class="menu-item" onclick="opeNewPostModel()">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="opeNewPostModel()">
                         <div class="menu-item-icon">
                             <i class="fa-solid fa-plus"></i>
                         </div>
@@ -78,7 +78,7 @@
                         </div>
                         <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
                     </li>
-                    <li class="menu-item" onclick="openAnalytics()">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="openAnalytics()">
                         <div class="menu-item-icon analytics">
                             <i class="fa-solid fa-chart-line"></i>
                         </div>
@@ -94,7 +94,7 @@
             <div class="menu-section">
                 <h4 class="menu-section-title">Community</h4>
                 <ul class="menu-list">
-                    <li class="menu-item" onclick="copyReferrerId()">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="copyReferrerId()">
                         <div class="menu-item-icon invite">
                             <i class="fa-solid fa-user-plus"></i>
                         </div>
@@ -102,7 +102,7 @@
                             <span class="menu-item-title">Invite Friends</span>
                             <span class="menu-item-desc">Grow your network</span>
                         </div>
-                        <span class="menu-badge">+650 XP</span>
+                        <span class="menu-badge glass-badge">+650 XP</span>
                     </li>
                 </ul>
             </div>
@@ -110,7 +110,7 @@
             <div class="menu-section">
                 <h4 class="menu-section-title">Customize</h4>
                 <ul class="menu-list">
-                    <li class="menu-item" onclick="openCustomizationMenu()">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="openCustomizationMenu()">
                         <div class="menu-item-icon backgrounds">
                             <i class="fa-solid fa-image"></i>
                         </div>
@@ -118,7 +118,7 @@
                             <span class="menu-item-title">Backgrounds</span>
                             <span class="menu-item-desc">Personalize your view</span>
                         </div>
-                        <span class="menu-badge new">NEW</span>
+                        <span class="menu-badge new glass-badge">NEW</span>
                     </li>
                 </ul>
             </div>
@@ -126,7 +126,7 @@
             <div class="menu-section">
                 <h4 class="menu-section-title">About</h4>
                 <ul class="menu-list">
-                    <li class="menu-item" onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');">
                         <div class="menu-item-icon github">
                             <i class="fa-brands fa-github"></i>
                         </div>
@@ -134,11 +134,11 @@
                             <span class="menu-item-title">Open Source</span>
                             <span class="menu-item-desc">View on GitHub</span>
                         </div>
-                        <span class="menu-badge stars" id="github_stars">
+                        <span class="menu-badge stars glass-badge" id="github_stars">
                             <i class="fa-solid fa-star"></i> ...
                         </span>
                     </li>
-                    <li class="menu-item" onclick="window.open('https://discord.gg/vtsnj3zphd', '_blank');">
+                    <li class="menu-item glass-secondary glass-shimmer" onclick="window.open('https://discord.gg/vtsnj3zphd', '_blank');">
                         <div class="menu-item-icon discord">
                             <i class="fa-brands fa-discord"></i>
                         </div>
@@ -153,8 +153,8 @@
         </nav>
 
         <!-- Menu Footer -->
-        <div class="menu-footer">
-            <button class="menu-logout-btn" onclick="logout()" id="logout_btn" style="display: none;">
+        <div class="menu-footer glass-section-bg">
+            <button class="menu-logout-btn glass-button" onclick="logout()" id="logout_btn" style="display: none;">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>
             </button>
