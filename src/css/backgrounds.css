@@ -1,0 +1,455 @@
+/* Modern Background Gallery Card - Consistent Glass Design */
+.backgrounds-card {
+    /* Match the exact glass style from XP bar, menu, and post cards */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    margin: 20px auto;
+    color: #fff;
+    transform: translateY(100vh);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    max-width: 1200px;
+    width: 90%;
+}
+
+.backgrounds-card.show {
+    transform: translateY(0);
+}
+
+/* Card Header - Match menu header style */
+.backgrounds-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.backgrounds-header .header-content h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.backgrounds-header .header-content h2 i {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.backgrounds-header .header-content p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Gallery Body */
+.backgrounds-body {
+    padding: 25px;
+    max-height: calc(90vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.backgrounds-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.backgrounds-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.backgrounds-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Background Grid */
+.backgrounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Enhanced Background Card - Glass Style */
+.background-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    height: 220px;
+}
+
+.background-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.background-item.locked {
+    cursor: not-allowed;
+}
+
+.background-item.locked:hover {
+    transform: translateY(-2px);
+}
+
+/* Equipped State - Corner Accent */
+.background-item.equipped {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.background-item.equipped::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    background: #4ecdc4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.6);
+    animation: equipped-dot 2s ease-in-out infinite;
+    z-index: 10;
+}
+
+@keyframes equipped-dot {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+        box-shadow: 0 0 10px rgba(78, 205, 196, 0.6);
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(78, 205, 196, 0.8);
+    }
+}
+
+/* Background Preview Image */
+.background-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.background-item:hover .background-preview {
+    transform: scale(1.1);
+}
+
+/* Background Info - Slide Up on Hover */
+.background-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.background-item:hover .background-info {
+    transform: translateY(0);
+}
+
+.background-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 5px 0;
+}
+
+.background-description {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.background-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 6px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.background-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Lock Overlay */
+.lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.lock-icon {
+    font-size: 40px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 10px;
+}
+
+.unlock-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.unlock-progress {
+    width: 80%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.unlock-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a3aa);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+}
+
+/* Rarity Badges - Glass Style */
+.rarity-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 4;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rarity-common {
+    background: rgba(150, 150, 150, 0.3);
+    color: #fff;
+}
+
+.rarity-rare {
+    background: rgba(41, 128, 185, 0.3);
+    color: #74b9ff;
+    box-shadow: 0 0 15px rgba(41, 128, 185, 0.3);
+}
+
+.rarity-epic {
+    background: rgba(142, 68, 173, 0.3);
+    color: #a29bfe;
+    box-shadow: 0 0 15px rgba(142, 68, 173, 0.3);
+}
+
+.rarity-legendary {
+    background: rgba(241, 196, 15, 0.3);
+    color: #ffeaa7;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.4);
+    animation: legendary-glow 2s ease-in-out infinite;
+}
+
+@keyframes legendary-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.6); }
+}
+
+/* New Badge */
+.new-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(231, 76, 60, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 4;
+    animation: new-pulse 2s ease-in-out infinite;
+}
+
+@keyframes new-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Loading State */
+.backgrounds-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.loading-spinner {
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .backgrounds-card {
+        margin: 10px;
+        border-radius: 16px;
+        max-height: 95vh;
+        width: calc(100% - 20px);
+    }
+
+    .backgrounds-header {
+        padding: 20px;
+    }
+
+    .backgrounds-header .header-content h2 {
+        font-size: 20px;
+    }
+
+    .backgrounds-body {
+        padding: 20px;
+    }
+
+    .backgrounds-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .background-item {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .backgrounds-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.backgrounds-card.show .background-item {
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+.backgrounds-card.show .background-item:nth-child(1) { animation-delay: 0.1s; }
+.backgrounds-card.show .background-item:nth-child(2) { animation-delay: 0.15s; }
+.backgrounds-card.show .background-item:nth-child(3) { animation-delay: 0.2s; }
+.backgrounds-card.show .background-item:nth-child(4) { animation-delay: 0.25s; }
+.backgrounds-card.show .background-item:nth-child(5) { animation-delay: 0.3s; }
+.backgrounds-card.show .background-item:nth-child(6) { animation-delay: 0.35s; }
+
+/* Hover effect for glass reflection */
+.background-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            135deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 60%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.background-item:hover::before {
+    transform: translateX(100%);
+}
+
+/* Close button styles to match other cards */
+.close-card-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.close-card-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: rotate(90deg);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}

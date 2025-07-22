@@ -1,46 +1,57 @@
-function equipBackground(url, save = true) {
-
-    if(!MainPage){
+// Open background gallery card
+function openCustomizationMenu() {
+    if (!isUserLoggedIn() && MainPage) {
+        openRegisterModal();
         return;
     }
 
-    const saved_background = localStorage.getItem('background_url');
-    closeCustomizationMenu();
+    // Hide menu if open
     hideMenu();
 
-    if(!saved_background){
-        localStorage.setItem('background_url', url);
-    }else if(saved_background !== url) {
-        localStorage.setItem('background_url', url);
-    }
-    document.body.style.backgroundImage = 'url(' + url + ')';
-}
-
-function updateBackgroundId(newBackgroundId) {
-    if (!isUserLoggedIn()) {
-        alert('You must be logged in to update your background.');
-        return;
+    // Hide the current post
+    const post = document.getElementsByClassName("post")[0];
+    if (post) {
+        post.style.display = "none";
     }
 
-    const path = `/me/update-background?backgroundId=${encodeURIComponent(newBackgroundId)}`;
-    makeApiRequest(path, true)
-        .then(response => {
-            console.log('Background updated successfully:', response);
-            // Optionally refresh user data or UI components if necessary
-        })
-        .catch(error => {
-            console.error('Failed to update background:', error);
-            alert('Failed to update background. Please try again.');
-        });
-}
+    // Show the backgrounds card
+    const backgroundsCard = document.getElementById("backgrounds-card");
+    if (backgroundsCard) {
+        backgroundsCard.style.display = "block";
 
-function openCustomizationMenu() {
+        // Trigger the show animation
+        setTimeout(() => {
+            backgroundsCard.classList.add("show");
+        }, 10);
+    }
+
+    // Display backgrounds
     displayBackgroundImages();
-    document.getElementById("background_images").style.display = "flex";
 }
 
+// Close backgrounds card
+function closeBackgroundsCard() {
+    const backgroundsCard = document.getElementById("backgrounds-card");
+    const post = document.getElementsByClassName("post")[0];
+
+    if (backgroundsCard) {
+        backgroundsCard.classList.remove("show");
+
+        // Wait for animation to complete
+        setTimeout(() => {
+            backgroundsCard.style.display = "none";
+
+            // Show the post again
+            if (post) {
+                post.style.display = "block";
+            }
+        }, 800);
+    }
+}
+
+// Replace closeCustomizationMenu with the new function
 function closeCustomizationMenu() {
-    document.getElementById("background_images").style.display = "none";
+    closeBackgroundsCard();
 }
 
 function displayBackgroundImages() {
@@ -49,19 +60,19 @@ function displayBackgroundImages() {
         return;
     }
 
-    const container = document.getElementById("background_images_container");
+    const container = document.getElementById("backgrounds-grid");
     container.innerHTML = '';
 
     // Get current equipped background
     const currentBackground = localStorage.getItem('background_url');
 
-    background_images.forEach(bg => {
+    background_images.forEach((bg, index) => {
         const isUnlocked = user.level >= bg.unlock;
         const isEquipped = currentBackground === bg.image_url;
         const progress = Math.min((user.level / bg.unlock) * 100, 100);
 
-        const card = document.createElement('li');
-        card.className = `background-card ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`;
+        const card = document.createElement('div');
+        card.className = `background-item ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`;
 
         let rarityClass = `rarity-${bg.rarity}`;
         let rarityText = bg.rarity.charAt(0).toUpperCase() + bg.rarity.slice(1);
@@ -70,7 +81,7 @@ function displayBackgroundImages() {
             <div class="rarity-badge ${rarityClass}">${rarityText}</div>
             ${bg.new && isUnlocked ? '<div class="new-badge">NEW</div>' : ''}
             
-            <img src="${bg.image_url}" class="background-preview" alt="${bg.title}">
+            <img src="${bg.image_url}" class="background-preview" alt="${bg.title}" loading="lazy">
             
             <div class="background-info">
                 <h4 class="background-title">${bg.title}</h4>
@@ -111,7 +122,7 @@ function displayBackgroundImages() {
                         particleCount: 50,
                         spread: 50,
                         origin: { y: 0.6 },
-                        colors: ['#ff6b6b', '#4ecdc4', '#ffe66d']
+                        colors: ['#4ecdc4', '#44a3aa', '#3d9a92']
                     });
                 }
 
@@ -122,4 +133,52 @@ function displayBackgroundImages() {
 
         container.appendChild(card);
     });
+}
+
+function equipBackground(url, save = true) {
+    if(!MainPage){
+        return;
+    }
+
+    const saved_background = localStorage.getItem('background_url');
+
+    if(!saved_background){
+        localStorage.setItem('background_url', url);
+    }else if(saved_background !== url) {
+        localStorage.setItem('background_url', url);
+    }
+    document.body.style.backgroundImage = 'url(' + url + ')';
+}
+
+function updateBackgroundId(newBackgroundId) {
+    if (!isUserLoggedIn()) {
+        alert('You must be logged in to update your background.');
+        return;
+    }
+
+    const path = `/me/update-background?backgroundId=${encodeURIComponent(newBackgroundId)}`;
+    makeApiRequest(path, true)
+        .then(response => {
+            console.log('Background updated successfully:', response);
+
+            // Show success notification
+            if (typeof Swal !== 'undefined') {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+
+                Toast.fire({
+                    icon: "success",
+                    title: "Background equipped!"
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Failed to update background:', error);
+            alert('Failed to update background. Please try again.');
+        });
 }

@@ -1,0 +1,31 @@
+<!-- Modern Background Gallery Card -->
+<article class="backgrounds-card" id="backgrounds-card" style="display:none;">
+  <div id="backgroundsContent">
+    <!-- Card Header -->
+    <div class="backgrounds-header">
+      <div class="header-content">
+        <h2><i class="fa-solid fa-image"></i> Background Gallery</h2>
+        <p>Unlock and collect exclusive backgrounds as you level up</p>
+      </div>
+      <button type="button" class="close-card-btn" onclick="closeBackgroundsCard()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Gallery Body -->
+    <div class="backgrounds-body">
+      <!-- Background Grid -->
+      <div class="backgrounds-grid" id="backgrounds-grid">
+        <!-- Background cards will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="backgrounds-loading" id="backgrounds-loading" style="display:none;">
+      <div class="loading-spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+      </div>
+      <p class="loading-text">Loading your backgrounds...</p>
+    </div>
+  </div>
+</article>
