@@ -182,7 +182,7 @@ function showMenuUserElements() {
 async function updateQuickStats() {
     try {
         // Get today's XP
-        const xpResponse = await makeApiRequest('/api/xp-today', true);
+        const xpResponse = await api.getDailyXP();
         if (xpResponse && xpResponse.xp !== undefined) {
             const dailyXPEl = document.getElementById('daily_xp');
             if (dailyXPEl) {
@@ -191,7 +191,7 @@ async function updateQuickStats() {
         }
 
         // Get user's posts for stats
-        const postsResponse = await makeApiRequest('/me/posts', true);
+        const postsResponse = await api.getMyPosts();
         if (postsResponse && Array.isArray(postsResponse)) {
             let totalFollowers = 0;
             let totalViews = 0;
@@ -248,8 +248,7 @@ function formatNumber(num) {
 // Update online users count
 async function updateOnlineUsers() {
     try {
-        const response = await fetch('/api/user-count');
-        const data = await response.json();
+        const data = await api.getUserCount();
 
         const onlineEl = document.getElementById('online_users');
         if (onlineEl && data.count) {

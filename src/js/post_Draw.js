@@ -1,7 +1,7 @@
 function drawPost(data){
     displayReactions();
 
-    makeApiRequest("/register-view?postId=" + data.id, false).then(data => {
+    api.registerView(data.id).then(data => {
         console.log(data);
         console.log("Views updated");
     });
@@ -101,7 +101,7 @@ function drawPost(data){
     // Finally, fetch user info if needed
     else {
         // Fetch user info to get avatar
-        makeApiRequest(`/api/user/${data.userId}`, false)
+        api.getUser(data.userId)
             .then(userInfo => {
                 // Initialize creators object if it doesn't exist
                 if (!window.creators) {

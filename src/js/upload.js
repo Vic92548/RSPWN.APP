@@ -157,16 +157,10 @@ window.submitPost = async function(event) {
             progressFill.style.width = progress + '%';
         }, 200);
 
-        const response = await fetch('/posts', {
-            method: 'POST',
-            body: formData,
-            headers: headers
-        });
+        const result = await api.createPost(formData);
 
         clearInterval(progressInterval);
         progressFill.style.width = '100%';
-
-        const result = await response.json();
 
         if (response.ok && result.success) {
             // Success animation

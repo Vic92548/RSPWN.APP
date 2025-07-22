@@ -5,7 +5,7 @@ function loadUserData(){
     }
 
 
-    makeApiRequest("/me").then(data => {
+   api.getMe().then(data => {
         window.user = data;
 
         if(!MainPage){

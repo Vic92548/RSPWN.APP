@@ -1761,6 +1761,27 @@ input:focus {
 }
 
 
+.glass_bt {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    font-weight: 700;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.glass_bt:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+
 .glass-button {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
@@ -1804,6 +1825,23 @@ input:focus {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     background: rgba(0, 0, 0, 0.6);
+}
+
+
+.glass_modal {
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    position: fixed;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
@@ -4401,27 +4439,6 @@ input:focus {
 
 #menu li i {
     margin-right: 5px;
-}
-
-
-.glass_bt {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    padding: 10px 20px;
-    font-weight: 700;
-    transition: all 0.4s ease;
-    cursor: pointer;
-}
-
-.glass_bt:hover {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
 }
 @media only screen and (min-width: 768px) {
     main {

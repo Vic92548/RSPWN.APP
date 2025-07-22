@@ -156,8 +156,7 @@ function updateBackgroundId(newBackgroundId) {
         return;
     }
 
-    const path = `/me/update-background?backgroundId=${encodeURIComponent(newBackgroundId)}`;
-    makeApiRequest(path, true)
+    api.updateBackground(newBackgroundId)
         .then(response => {
             console.log('Background updated successfully:', response);
 

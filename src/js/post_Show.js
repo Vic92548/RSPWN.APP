@@ -28,7 +28,7 @@ function displayPost(postId = undefined){
 
 
         }else{
-            makeApiRequest("/feed", false).then(data => {
+            api.getFeed().then(data => {
 
                 console.log(data);
 
@@ -46,7 +46,7 @@ function displayPost(postId = undefined){
 
 
     }else{
-        makeApiRequest("/posts/"+postId, false).then(data => {
+        api.getPost(postId).then(data => {
 
             loading_steps--;
             hideLoading();

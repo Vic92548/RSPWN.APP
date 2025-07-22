@@ -129,7 +129,7 @@ function likePost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayLikeAnimation();
-        makeApiRequest("/like/" + current_post_id).then(data => {
+        api.likePost(current_post_id).then(data => {
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,
@@ -156,7 +156,7 @@ function skipPost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displaySkipAnimation();
-        makeApiRequest("/skip/" + current_post_id).then(data => {
+        api.skipPost(current_post_id).then(data => {
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,
@@ -183,7 +183,7 @@ function dislikePost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayDislikeAnimation();
-        makeApiRequest("/dislike/" + current_post_id).then(data => {
+        api.dislikePost(current_post_id).then(data => {
             const oldUser = {
                 xp: window.user.xp,
                 level: window.user.level,

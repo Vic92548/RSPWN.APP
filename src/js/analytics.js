@@ -110,7 +110,7 @@ function resetAnalyticsUI() {
 async function loadAnalyticsData() {
     try {
         // Get analytics data from new endpoint
-        const data = await makeApiRequest(`/api/analytics?range=${analyticsData.timeRange}`, true);
+        const data = await api.getAnalytics(analyticsData.timeRange);
 
         if (!data.success) {
             throw new Error(data.error || 'Failed to load analytics');
@@ -138,7 +138,7 @@ async function loadAnalyticsData() {
 
         // Fallback to old endpoint if new one fails
         try {
-            const fallbackData = await makeApiRequest("/me/posts", true);
+            const fallbackData = await api.getMyPosts();
             analyticsData.posts = fallbackData;
             calculateOverviewMetrics(); // Use old calculation method
             populatePostsTable();

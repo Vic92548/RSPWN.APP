@@ -51,7 +51,7 @@ function addFollowButton() {
 // Check if current user follows the profile user
 async function checkProfileFollowStatus(profileUserId) {
     try {
-        const response = await makeApiRequest(`/api/check-follow-status?profileUserId=${profileUserId}`);
+        const response = await api.checkFollowStatus(profileUserId);
         return response.isFollowing;
     } catch (error) {
         console.error("Error checking follow status:", error);
@@ -76,7 +76,9 @@ async function toggleProfileFollow() {
         // Create a temporary post object to reuse existing follow logic
         const tempPost = { id: "profile_follow", userId: window.profileData.id };
 
-        const response = await makeApiRequest(`/manage-follow?action=${action}&postId=${tempPost.id}`);
+        const response = action === 'follow'
+            ? await api.followPost(tempPost.id)
+            : await api.unfollowPost(tempPost.id);
 
         if (response) {
             const followerCountEl = document.querySelector('.stat-value[data-stat="followers"]');

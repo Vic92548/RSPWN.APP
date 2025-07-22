@@ -117,7 +117,7 @@ function addReaction(emoji) {
     }
 
     const path = `/add-reaction?postId=${current_post_id}&emoji=${encodeURIComponent(emoji)}`;
-    makeApiRequest(path).then(data => {
+    api.addReaction(current_post_id, emoji).then(data => {
         console.log('Reaction added:', data);
         user_previous_reaction = emoji;
         isProcessingReaction = false;
@@ -180,7 +180,7 @@ function displayReactions() {
 
     console.log("Post id : " + current_post_id);
 
-    makeApiRequest(path, false).then(data => {
+    api.getReactions(current_post_id).then(data => {
         console.log('Reactions received:', data);
 
         user_previous_reaction = null;

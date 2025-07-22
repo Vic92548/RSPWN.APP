@@ -13,56 +13,6 @@ function showInitialPost() {
     }
 }
 
-function makeApiRequest(path, requireAuth = true) {
-    return new Promise((resolve, reject) => {
-        // Retrieve the JWT from local storage
-        let jwt = localStorage.getItem('jwt');
-        if (jwt === null) {
-            jwt = "";
-            if(requireAuth){
-                reject("No JWT found in local storage.");
-                return;
-            }
-
-        }
-
-
-
-        console.log("JWT:" + jwt);
-        // Prepare the request headers
-        const headers = new Headers({
-            "Authorization": `Bearer ${jwt}`,
-            "Content-Type": "application/json"
-        });
-
-        // Make the fetch request to the API
-        fetch(path, {
-            method: 'GET', // or 'POST', 'PUT', etc., depending on the requirement
-            headers: headers
-        })
-            .then(response => {
-                if (!response.ok) {
-                    console.log(response);
-
-                    if(response.status === 401){
-                        reject("Unauthorized");
-                    }else{
-                        throw new Error('Network response was not ok: ' + response.statusText);
-                    }
-
-
-                }
-                return response.json();  // Assuming the server responds with JSON
-            })
-            .then(data => {
-                resolve(data);  // Resolve the promise with the response data
-            })
-            .catch(error => {
-                reject(error);  // Reject the promise if there's an error
-            });
-    });
-}
-
 function isUserLoggedIn(){
     if(window.user){
         return true;
@@ -295,7 +245,7 @@ function followPost() {
     updateFollowButton();
     if(isUserLoggedIn()){
 
-        makeApiRequest(`/manage-follow?action=follow&postId=${current_post.id}`).then(data => {
+        api.followPost(current_post.id).then(data => {
             console.log('Followed successfully:', data);
 
         }).catch(error => {
@@ -313,7 +263,7 @@ function unfollowPost() {
     updateFollowButton();
     if(isUserLoggedIn()){
 
-        makeApiRequest(`/manage-follow?action=unfollow&postId=${current_post.id}`).then(data => {
+        api.unfollowPost(current_post.id).then(data => {
             console.log('Unfollowed successfully:', data);
         }).catch(error => {
             console.error('Error unfollowing post:', error);
@@ -327,7 +277,7 @@ function unfollowPost() {
 
 function checkUserFollowsCreator(creatorId) {
     return new Promise((resolve, reject) => {
-        makeApiRequest(`/check-follow/${creatorId}`).then(data => {
+        api.checkFollowStatus(creatorId).then(data => {
             console.log('Check follow status:', data);
             if (data.success) {
                 resolve(true);
@@ -400,7 +350,7 @@ function handleReferral() {
 
     if (referrerId) {
 
-        makeApiRequest("/accept-invitation?ambassadorUserId=" + referrerId).then(data => {
+        api.acceptInvitation(referrerId).then(data => {
             console.log('Invitation processed:', data);
 
             if(creators[referrerId]){
@@ -483,12 +433,9 @@ processJoinQueryParam();
 if(MainPage){
     showInitialPost();
 
-    fetch("/api/user-count")
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("user_count").textContent = data.count.toLocaleString();
-        })
-        .catch(() => {
-            document.getElementById("user_count").textContent = "hundreds of";
-        });
+    api.getUserCount().then(data => {
+        document.getElementById("user_count").textContent = data.count.toLocaleString();
+    }).catch(() => {
+        document.getElementById("user_count").textContent = "hundreds of";
+    });
 }
