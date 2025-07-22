@@ -22,7 +22,6 @@ import {
     clickLink
 } from "./deno_modules/post.js";
 import { xpTodayHandler } from "./deno_modules/routes/xp_today.js";
-import { leaderboardHandler } from "./deno_modules/routes/leaderboard.js";
 import { usersCollection } from "./deno_modules/database.js";
 import { handleProfilePage } from "./deno_modules/user_profile.js";
 import { createRenderer } from "./deno_modules/template_engine.js";
@@ -306,7 +305,6 @@ router.get('/accept-invitation', async (request, url, authResult) => {
 
 // API routes
 router.get('/api/xp-today', async (request) => xpTodayHandler(request));
-router.get('/api/leaderboard', async (request) => leaderboardHandler(request));
 router.get('/api/user-count', async () => {
     const count = await usersCollection.countDocuments();
     return new Response(JSON.stringify({ count }), {
