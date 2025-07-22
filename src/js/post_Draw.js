@@ -44,47 +44,13 @@ function drawPost(data){
     const username = data.username;
     document.getElementById("post_username").textContent = "@" + username;
 
-    // Handle avatar - check if user has Discord avatar
+    // Handle avatar
     const avatarImg = document.getElementById("user_avatar_img");
     const avatarLetter = document.getElementById("avatar_letter");
     const avatarEl = document.getElementById("user_avatar");
 
-    // Try to get user avatar from Discord
-    if (data.userId && window.creators && window.creators[data.userId]) {
-        const creatorInfo = window.creators[data.userId];
-        if (creatorInfo.avatar) {
-            // Use Discord avatar
-            avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${creatorInfo.avatar}.png?size=128`;
-            avatarImg.style.display = "block";
-            avatarLetter.style.display = "none";
-            avatarEl.style.background = "none";
-        } else {
-            showLetterAvatar();
-        }
-    } else {
-        // Fetch user info to get avatar
-        makeApiRequest(`/api/user/${data.userId}`, false).then(userInfo => {
-            if (userInfo && userInfo.avatar) {
-                avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${userInfo.avatar}.png?size=128`;
-                avatarImg.style.display = "block";
-                avatarLetter.style.display = "none";
-                avatarEl.style.background = "none";
-
-                // Cache the avatar info
-                if (!window.creators[data.userId]) {
-                    window.creators[data.userId] = {};
-                }
-                window.creators[data.userId].avatar = userInfo.avatar;
-            } else {
-                showLetterAvatar();
-            }
-        }).catch(() => {
-            showLetterAvatar();
-        });
-    }
-
+    // Function to show letter avatar fallback
     function showLetterAvatar() {
-        // Fallback to letter avatar
         avatarImg.style.display = "none";
         avatarLetter.style.display = "flex";
         avatarLetter.textContent = username.charAt(0).toUpperCase();
@@ -92,6 +58,80 @@ function drawPost(data){
         // Generate avatar background color based on username
         const hue = username.charCodeAt(0) * 3 % 360;
         avatarEl.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${hue + 30}, 70%, 60%))`;
+    }
+
+    // Function to show Discord avatar
+    function showDiscordAvatar(avatarHash) {
+        if (avatarHash) {
+            avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${avatarHash}.png?size=128`;
+            avatarImg.style.display = "block";
+            avatarLetter.style.display = "none";
+            avatarEl.style.background = "none";
+
+            // Handle image load error
+            avatarImg.onerror = () => {
+                console.log("Failed to load Discord avatar, showing fallback");
+                showLetterAvatar();
+            };
+        } else {
+            showLetterAvatar();
+        }
+    }
+
+    // First check if avatar data is included in the post data
+    if (data.userAvatar !== undefined) {
+        // Use avatar from post data
+        showDiscordAvatar(data.userAvatar);
+
+        // Cache the avatar info
+        if (!window.creators) {
+            window.creators = {};
+        }
+        if (!window.creators[data.userId]) {
+            window.creators[data.userId] = {};
+        }
+        window.creators[data.userId].avatar = data.userAvatar;
+        window.creators[data.userId].username = data.username;
+        window.creators[data.userId].level = data.userLevel || 0;
+    }
+    // Then check if we have the creator's avatar in cache
+    else if (window.creators && window.creators[data.userId] && window.creators[data.userId].avatar !== undefined) {
+        showDiscordAvatar(window.creators[data.userId].avatar);
+    }
+    // Finally, fetch user info if needed
+    else {
+        // Fetch user info to get avatar
+        makeApiRequest(`/api/user/${data.userId}`, false)
+            .then(userInfo => {
+                // Initialize creators object if it doesn't exist
+                if (!window.creators) {
+                    window.creators = {};
+                }
+                if (!window.creators[data.userId]) {
+                    window.creators[data.userId] = {};
+                }
+
+                // Store avatar info (even if null)
+                window.creators[data.userId].avatar = userInfo.avatar || null;
+                window.creators[data.userId].username = userInfo.username;
+                window.creators[data.userId].level = userInfo.level || 0;
+
+                // Show the avatar
+                showDiscordAvatar(userInfo.avatar);
+            })
+            .catch(error => {
+                console.error("Failed to fetch user info:", error);
+                showLetterAvatar();
+
+                // Cache the failure to avoid repeated API calls
+                if (!window.creators) {
+                    window.creators = {};
+                }
+                if (!window.creators[data.userId]) {
+                    window.creators[data.userId] = {};
+                }
+                window.creators[data.userId].avatar = null;
+            });
     }
 
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);

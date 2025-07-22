@@ -22,12 +22,26 @@ export async function getNextFeedPosts(userid) {
 
     posts = await Promise.all(posts.map(async post => {
         const views = await viewsCollection.countDocuments({ postId: post.id });
-        const postOwner = await usersCollection.findOne({ id: post.userId }, { projection: { id: 1, username: 1 } });
+
+        // Fetch complete user data including avatar
+        const postOwner = await usersCollection.findOne(
+            { id: post.userId },
+            {
+                projection: {
+                    id: 1,
+                    username: 1,
+                    avatar: 1,  // Include avatar
+                    level: 1    // Include level
+                }
+            }
+        );
 
         return {
             ...post,
             views: views,
-            username: postOwner.username
+            username: postOwner?.username || 'Unknown',
+            userAvatar: postOwner?.avatar || null,  // Add avatar to post data
+            userLevel: postOwner?.level || 0        // Add level to post data
         };
     }));
 

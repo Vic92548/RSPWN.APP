@@ -7,9 +7,21 @@ export async function getPostData(id) {
         return { title: "not found", content: "", userId: "unknown" };
     }
 
-    const postOwner = await usersCollection.findOne({ id: post.userId }, { projection: { id: 1, username: 1 } });
+    const postOwner = await usersCollection.findOne(
+        { id: post.userId },
+        {
+            projection: {
+                id: 1,
+                username: 1,
+                avatar: 1,  // Include avatar
+                level: 1    // Include level
+            }
+        }
+    );
 
-    post.username = postOwner.username;
+    post.username = postOwner?.username || 'Unknown';
+    post.userAvatar = postOwner?.avatar || null;
+    post.userLevel = postOwner?.level || 0;
 
     return post;
 }
@@ -33,9 +45,21 @@ export async function getPost(id, userId = "anonymous") {
 
     post.views = await viewsCollection.countDocuments({ postId: post.id });
 
-    const postOwner = await usersCollection.findOne({ id: post.userId }, { projection: { id: 1, username: 1 } });
+    const postOwner = await usersCollection.findOne(
+        { id: post.userId },
+        {
+            projection: {
+                id: 1,
+                username: 1,
+                avatar: 1,  // Include avatar
+                level: 1    // Include level
+            }
+        }
+    );
 
-    post.username = postOwner.username;
+    post.username = postOwner?.username || 'Unknown';
+    post.userAvatar = postOwner?.avatar || null;
+    post.userLevel = postOwner?.level || 0;
 
     return new Response(JSON.stringify(post), {
         status: 200,
@@ -72,4 +96,3 @@ export async function getPostList(userId) {
         headers: { "Content-Type": "application/json" }
     });
 }
-
