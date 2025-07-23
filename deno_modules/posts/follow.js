@@ -115,22 +115,23 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
     try {
         const follows = await followsCollection.find({ followerId: userId, creatorId }).toArray();
 
-        if (follows.length > 0) {
-            console.log("User follows the creator.");
-            return new Response(JSON.stringify({ success: true, follows, message: "User follows the creator" }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" }
-            });
-        } else {
-            console.log("User does not follow the creator.");
-            return new Response(JSON.stringify({ success: false, message: "User does not follow the creator" }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" }
-            });
-        }
+        const isFollowing = follows.length > 0;
+
+        return new Response(JSON.stringify({
+            success: true,  // API call succeeded
+            isFollowing: isFollowing,  // Actual follow status
+            message: isFollowing ? "User follows the creator" : "User does not follow the creator"
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
     } catch (error) {
         console.error("Error checking if user follows creator:", error);
-        return new Response(JSON.stringify({ success: false, message: "Error checking follow status" }), {
+        return new Response(JSON.stringify({
+            success: false,
+            isFollowing: false,
+            message: "Error checking follow status"
+        }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });

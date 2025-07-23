@@ -275,20 +275,15 @@ function unfollowPost() {
 
 }
 
-function checkUserFollowsCreator(creatorId) {
-    return new Promise((resolve, reject) => {
-        api.checkFollowStatus(creatorId).then(data => {
-            console.log('Check follow status:', data);
-            if (data.success) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        }).catch(error => {
-            console.error('Error checking follow status:', error);
-            reject(false);  // You may also consider rejecting with the error message itself
-        });
-    });
+async function checkUserFollowsCreator(creatorId) {
+    try {
+        const isFollowing = await api.checkFollowStatus(creatorId);
+        console.log('Check follow status:', isFollowing);
+        return isFollowing;  // It's already a boolean
+    } catch (error) {
+        console.error('Error checking follow status:', error);
+        return false;
+    }
 }
 
 function formatViews(viewCount) {

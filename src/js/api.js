@@ -110,7 +110,8 @@ class API {
 
     async checkFollowStatus(creatorId) {
         const data = await this.get(`/check-follow/${creatorId}`);
-        return data.success;
+        console.log({data});
+        return data.isFollowing || false;
     }
 
     async addReaction(postId, emoji) {

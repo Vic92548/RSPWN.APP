@@ -51,8 +51,8 @@ function addFollowButton() {
 // Check if current user follows the profile user
 async function checkProfileFollowStatus(profileUserId) {
     try {
-        const response = await api.checkFollowStatus(profileUserId);
-        return response.isFollowing;
+        const isFollowing = await api.checkFollowStatus(profileUserId);
+        return isFollowing;  // It's already a boolean
     } catch (error) {
         console.error("Error checking follow status:", error);
         return false;
