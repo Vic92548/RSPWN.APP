@@ -1,35 +1,18 @@
+/* Analytics Card - Specific Styles Only */
+
 .analytics-card {
-    /* Match the exact glass style from XP bar, menu, and post cards */
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    margin: 20px auto;
-    padding: 0;
-    color: #fff;
     transform: translateY(100vh);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 90vh;
-    overflow: hidden;
     position: relative;
-    max-width: 1200px;
-    width: 90%;
+    max-height: 85vh !important; /* Override vapr-height-modal to fit better */
 }
 
 .analytics-card.show {
     transform: translateY(0);
 }
 
-/* Card Header - Match menu header style */
+/* Card Header - Only custom spacing */
 .analytics-card .analytics-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative;
 }
 
 .analytics-card .header-content h2 {
@@ -42,6 +25,13 @@
     gap: 10px;
 }
 
+/* Position close button in top right */
+.analytics-card .glass-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
 .analytics-card .header-content h2 i {
     color: rgba(255, 255, 255, 0.8);
 }
@@ -49,34 +39,11 @@
 .analytics-card .header-content p {
     margin: 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.close-card-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
-
-.close-card-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: rotate(90deg);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 /* Date Range Selector */
 .date-range-wrapper {
     padding: 15px 25px;
-    background: rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -88,22 +55,8 @@
 
 .range-btn {
     padding: 8px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.range-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    transform: translateY(-2px);
 }
 
 .range-btn.active {
@@ -115,26 +68,9 @@
 
 /* Analytics Body */
 .analytics-body {
-    padding: 25px;
-    max-height: calc(90vh - 180px);
+    max-height: calc(85vh - 140px); /* Reduced from 180px to account for smaller card height */
     overflow-y: auto;
     overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-
-.analytics-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.analytics-body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.analytics-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
 }
 
 /* Overview Cards */
@@ -146,22 +82,10 @@
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     padding: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
 }
 
 .stat-icon {
@@ -186,7 +110,6 @@
 .stat-content p {
     margin: 2px 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
 }
 
 .stat-change {
@@ -204,11 +127,6 @@
 
 /* Engagement Section */
 .engagement-section {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     padding: 20px;
     margin-bottom: 30px;
 }
@@ -239,7 +157,6 @@
 
 .metric-label {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
 }
 
 .metric-value {
@@ -249,17 +166,14 @@
 }
 
 .metric-bar {
-    width: 100%;
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
     overflow: hidden;
+    border-radius: 4px;
 }
 
 .metric-fill {
     height: 100%;
     background: linear-gradient(90deg, #3498db, #2ecc71);
-    border-radius: 4px;
     transition: width 0.5s ease;
 }
 
@@ -276,11 +190,6 @@
 }
 
 .chart-container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     padding: 20px;
 }
 
@@ -301,11 +210,6 @@
 
 /* Posts Performance Section */
 .posts-performance-section {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     padding: 20px;
 }
 
@@ -324,25 +228,9 @@
 
 .sort-select {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.sort-select:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.sort-select:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 /* Posts Table */
@@ -401,22 +289,10 @@
 
 .view-post-btn {
     padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
     font-size: 12px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s ease;
     display: inline-block;
-}
-
-.view-post-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
 }
 
 /* Loading State */
@@ -436,15 +312,10 @@
 
 .loading-text {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Mobile Responsive */
 @media (max-width: 1024px) {
-    .analytics-card {
-        width: 95%;
-    }
-
     .analytics-overview {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -452,10 +323,8 @@
 
 @media (max-width: 768px) {
     .analytics-card {
-        margin: 10px;
         border-radius: 16px;
         max-height: 95vh;
-        width: calc(100% - 20px);
     }
 
     .analytics-header {
@@ -550,33 +419,4 @@
     animation: slideIn 0.5s ease forwards;
     animation-delay: 0.3s;
     opacity: 0;
-}
-
-/* Hover effects consistent with glass theme */
-.analytics-card button:not(:disabled),
-.analytics-card select {
-    position: relative;
-    overflow: hidden;
-}
-
-.analytics-card button:not(:disabled)::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-            135deg,
-            transparent 40%,
-            rgba(255, 255, 255, 0.1) 50%,
-            transparent 60%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-    pointer-events: none;
-}
-
-.analytics-card button:not(:disabled):hover::before {
-    transform: translateX(100%);
 }
