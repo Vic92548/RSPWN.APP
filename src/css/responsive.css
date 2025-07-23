@@ -25,16 +25,6 @@
         margin-top: 0px;
     }
 
-    /* Autres ajustements pour les écrans de bureau */
-    .profile-img {
-        height: 70px;
-    }
-
-    .attribute {
-        flex: 0 0 calc(33.33% - 20px); /* Ajustement de la largeur des attributs dans la fiche de personnage */
-        margin: 10px;
-    }
-
     .post {
         width: 400px;
         margin: auto;
@@ -52,10 +42,6 @@
 
     #xp_bar{
         width: 440px;
-    }
-
-    .hidden_on_mobile{
-        opacity: 1;
     }
 
     /* Updated menu styles for collapsible functionality */

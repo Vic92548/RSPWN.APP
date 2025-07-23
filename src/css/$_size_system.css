@@ -138,7 +138,6 @@
 }
 
 /* Forms and Modals - No padding, needs full width */
-#postForm,
 .glass_modal form {
     width: 90% !important;
     max-width: 480px !important;
@@ -157,7 +156,6 @@
     .post,
     .add-post-card,
     .menu-container,
-    #postForm,
     .discord_login {
         width: calc(100% - 20px) !important;
         margin: 10px !important;
