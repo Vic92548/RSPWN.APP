@@ -1,16 +1,12 @@
-// Check if we're on a profile page
 function initProfilePage() {
     if (!window.profileData) return;
 
-    // Add follow button functionality if user is logged in
     if (isUserLoggedIn()) {
         addFollowButton();
     }
 
-    // Make usernames in posts clickable
     makeProfilePostsInteractive();
 
-    // Add dynamic interactions
     addProfileInteractions();
 
     console.log(profileData);
@@ -22,18 +18,16 @@ function initProfilePage() {
     }
 }
 
-// Add follow button to profile page
 function addFollowButton() {
     const profileHeader = document.querySelector('.profile-info');
     if (!profileHeader || !window.user || window.user.id === window.profileData.id) {
-        return; // Don't show follow button on own profile
+        return;
     }
 
     const followBtn = document.createElement('button');
     followBtn.className = 'glass_bt follow-profile-btn';
     followBtn.id = 'profile_follow_btn';
 
-    // Check follow status
     checkProfileFollowStatus(window.profileData.id).then(isFollowing => {
         if (isFollowing) {
             followBtn.innerHTML = '<i class="fa-solid fa-user-minus"></i> Following';
@@ -48,18 +42,16 @@ function addFollowButton() {
     profileHeader.appendChild(followBtn);
 }
 
-// Check if current user follows the profile user
 async function checkProfileFollowStatus(profileUserId) {
     try {
         const isFollowing = await api.checkFollowStatus(profileUserId);
-        return isFollowing;  // It's already a boolean
+        return isFollowing;
     } catch (error) {
         console.error("Error checking follow status:", error);
         return false;
     }
 }
 
-// Toggle follow/unfollow
 async function toggleProfileFollow() {
     if (!isUserLoggedIn()) {
         window.location.href = '/login';
@@ -73,7 +65,6 @@ async function toggleProfileFollow() {
     const action = isFollowing ? "unfollow" : "follow";
 
     try {
-        // Create a temporary post object to reuse existing follow logic
         const tempPost = { id: "profile_follow", userId: window.profileData.id };
 
         const response = action === 'follow'
@@ -86,7 +77,6 @@ async function toggleProfileFollow() {
             if (isFollowing) {
                 followBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Follow';
                 followBtn.classList.remove('following');
-                // Update follower count
                 if (followerCountEl) {
                     const currentCount = parseInt(followerCountEl.textContent.replace(/[^0-9]/g, ''));
                     followerCountEl.textContent = formatNumber(Math.max(0, currentCount - 1));
@@ -94,7 +84,6 @@ async function toggleProfileFollow() {
             } else {
                 followBtn.innerHTML = '<i class="fa-solid fa-user-minus"></i> Following';
                 followBtn.classList.add('following');
-                // Update follower count
                 if (followerCountEl) {
                     const currentCount = parseInt(followerCountEl.textContent.replace(/[^0-9]/g, ''));
                     followerCountEl.textContent = formatNumber(currentCount + 1);
@@ -106,29 +95,22 @@ async function toggleProfileFollow() {
     }
 }
 
-// Make profile posts interactive
 function makeProfilePostsInteractive() {
-    // Posts are already links in the SSR version, but we can add hover effects
     const postCards = document.querySelectorAll('.profile-post-card');
 
     postCards.forEach(card => {
-        // Add click tracking
         card.addEventListener('click', (e) => {
             e.preventDefault();
             const postId = card.href.split('/post/')[1];
 
-            // Store current location for back navigation
             sessionStorage.setItem('previousPage', window.location.pathname);
 
-            // Navigate to post
             window.location.href = card.href;
         });
     });
 }
 
-// Add profile interactions
 function addProfileInteractions() {
-    // Add styles for follow button
     const style = document.createElement('style');
     style.textContent = `
         .follow-profile-btn {
@@ -158,7 +140,6 @@ function addProfileInteractions() {
     document.head.appendChild(style);
 }
 
-// Format numbers for display
 function formatNumber(num) {
     if (num < 1000) return num.toString();
     if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
@@ -166,12 +147,10 @@ function formatNumber(num) {
     return (num / 1000000000).toFixed(1) + 'B';
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     initProfilePage();
 });
 
-// Update the main drawPost function to make usernames link to profiles
 if (typeof drawPost !== 'undefined') {
     const originalDrawPost = drawPost;
     drawPost = function(data) {

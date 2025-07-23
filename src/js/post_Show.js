@@ -1,10 +1,8 @@
 function showPost() {
     const post = document.getElementsByClassName("post")[0];
     post.style.transform = "translate(0px, 0px) rotate(0deg)";
-
-    // Remove inline style overrides to let CSS handle the styling
-    post.style.backgroundColor = "";  // Clear inline background color
-    post.style.boxShadow = "";  // Clear inline box shadow - let CSS handle it
+    post.style.backgroundColor = "";
+    post.style.boxShadow = "";
 
     post.style.animation = 'none';
 }

@@ -15,17 +15,6 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
-        /*
-        for (let i = 0; i < background_images.length; i++) {
-            if(background_images[i].id === data.backgroundId){
-                const background_url = 'https://vapr.b-cdn.net/background_images/' + background_images[i].id + '.webp';
-                equipBackground(background_url);
-                break;
-            }
-        }
-
-         */
-
         const oldUser = {
             xp: 0,
             level: window.user.level,

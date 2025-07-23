@@ -205,7 +205,6 @@ function dislikePost() {
     }
 }
 
-// Add action feedback styles
 if (!document.getElementById('action-feedback-styles')) {
     const style = document.createElement('style');
     style.id = 'action-feedback-styles';

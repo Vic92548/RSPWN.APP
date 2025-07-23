@@ -1,5 +1,3 @@
-// Client-side RPG functions for XP and leveling
-
 function setXPProgress(old_user, disable_xp_notif = false, force_update = false) {
     if (!user.xp) user.xp = 0;
     if (!user.level) user.level = 0;
@@ -18,7 +16,6 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
         const xp_bar_progress = document.getElementById("xp_bar_progress");
         const notification = document.getElementById('xp-notification');
 
-        // Animate visual progress
         xp_bar_progress_visual.style.width = diff + "%";
         xp_bar_progress_visual.style.left = (new_value - diff) + "%";
 
@@ -30,14 +27,12 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
                 notification.style.animation = 'none';
 
                 if (old_user.level < user.level) {
-                    // Level up - show notification
                     showLevelUpNotification(user.level);
                     setXPProgress(window.user, true, true);
                 }
             }, 1500);
         }
 
-        // Update main progress bar
         setTimeout(() => {
             xp_bar_progress.style.width = new_value + "%";
             xp_bar_progress_visual.style.width = "0%";
@@ -47,13 +42,11 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
 }
 
 function updateLevel() {
-    // Update old class name for compatibility
     const level_elements = document.getElementsByClassName("xp_level");
     for (let i = 0; i < level_elements.length; i++) {
         level_elements[i].textContent = user.level;
     }
 
-    // Update new class name
     const xp_level_elements = document.getElementsByClassName("xp-level");
     for (let i = 0; i < xp_level_elements.length; i++) {
         xp_level_elements[i].textContent = user.level;
@@ -65,13 +58,11 @@ function updateXPDisplay() {
 
     if (username) username.textContent = user.username || 'username';
 
-    // Also update old username class for compatibility
     const oldUsername = document.querySelector('.username');
     if (oldUsername) oldUsername.textContent = user.username || 'username';
 }
 
 function showLevelUpNotification(newLevel) {
-    // Simple level up notification
     if (typeof confetti !== 'undefined') {
         confetti({
             particleCount: 50,
@@ -81,7 +72,6 @@ function showLevelUpNotification(newLevel) {
         });
     }
 
-    // Optional: Show a toast notification using SweetAlert2 if available
     if (typeof Swal !== 'undefined') {
         const Toast = Swal.mixin({
             toast: true,

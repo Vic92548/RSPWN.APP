@@ -1,5 +1,3 @@
-// analytics.js - Updated to use card instead of modal
-
 let analyticsData = {
     posts: [],
     timeRange: 7,
@@ -10,14 +8,12 @@ let analyticsData = {
     fullData: null
 };
 
-// Register analytics card with cardManager
 cardManager.register('analytics-card', {
     onLoad: async () => {
         resetAnalyticsUI();
         await loadAnalyticsData();
     },
     onHide: () => {
-        // Destroy charts to prevent memory leaks
         if (analyticsData.charts.performance) {
             analyticsData.charts.performance.destroy();
             analyticsData.charts.performance = null;
@@ -29,7 +25,6 @@ cardManager.register('analytics-card', {
     }
 });
 
-// Replace openAnalytics function
 async function openAnalytics() {
     if (!isUserLoggedIn()) {
         openRegisterModal();
@@ -39,13 +34,10 @@ async function openAnalytics() {
     await cardManager.show('analytics-card');
 }
 
-// Replace closeAnalyticsCard function
 function closeAnalyticsCard() {
     cardManager.hide('analytics-card');
 }
 
-
-// Show loading state
 function showAnalyticsLoading() {
     const loading = document.getElementById("analytics-loading");
     const content = document.querySelector(".analytics-body");
@@ -54,7 +46,6 @@ function showAnalyticsLoading() {
     if (content) content.style.opacity = "0.3";
 }
 
-// Hide loading state
 function hideAnalyticsLoading() {
     const loading = document.getElementById("analytics-loading");
     const content = document.querySelector(".analytics-body");
@@ -63,7 +54,6 @@ function hideAnalyticsLoading() {
     if (content) content.style.opacity = "1";
 }
 
-// Reset UI to loading state
 function resetAnalyticsUI() {
     document.getElementById("total_views").textContent = "0";
     document.getElementById("total_likes").textContent = "0";
@@ -74,10 +64,8 @@ function resetAnalyticsUI() {
     document.getElementById("posts_table_body").innerHTML = '<tr><td colspan="8" style="text-align: center;">Loading posts...</td></tr>';
 }
 
-// Load analytics data from new endpoint
 async function loadAnalyticsData() {
     try {
-        // Get analytics data from new endpoint
         const data = await api.getAnalytics(analyticsData.timeRange);
 
         if (!data.success) {
@@ -87,28 +75,23 @@ async function loadAnalyticsData() {
         analyticsData.fullData = data;
         analyticsData.posts = data.posts;
 
-        // Update overview metrics with animation
         updateOverviewMetrics(data);
 
-        // Populate posts table
         populatePostsTable();
 
-        // Initialize charts with real data
         setTimeout(() => {
             initializeCharts(data);
         }, 300);
 
-        // Setup event listeners
         setupAnalyticsEventListeners();
 
     } catch (error) {
         console.error("Error loading analytics data:", error);
 
-        // Fallback to old endpoint if new one fails
         try {
             const fallbackData = await api.getMyPosts();
             analyticsData.posts = fallbackData;
-            calculateOverviewMetrics(); // Use old calculation method
+            calculateOverviewMetrics();
             populatePostsTable();
             setTimeout(() => {
                 initializeChartsWithFallback();
@@ -120,43 +103,35 @@ async function loadAnalyticsData() {
     }
 }
 
-// Update overview metrics with real data
 function updateOverviewMetrics(data) {
     const totals = data.totals;
     const comparison = data.comparison;
 
-    // Animate counters
     animateCounter(document.getElementById("total_views"), 0, totals.views, 1000);
     animateCounter(document.getElementById("total_likes"), 0, totals.likes, 1000);
     animateCounter(document.getElementById("total_followers"), 0, totals.followers, 1000);
     animateCounter(document.getElementById("total_clicks"), 0, totals.clicks, 1000);
 
-    // Calculate engagement rate
     const totalEngagements = totals.likes + totals.dislikes + totals.follows;
     const engagementRate = totals.views > 0 ? ((totalEngagements / totals.views) * 100).toFixed(2) : 0;
 
-    // Animate engagement rate
     setTimeout(() => {
         document.getElementById("engagement_rate").textContent = engagementRate + "%";
         document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
     }, 500);
 
-    // Calculate CTR
     const ctr = totals.views > 0 ? ((totals.clicks / totals.views) * 100).toFixed(2) : 0;
 
-    // Animate CTR
     setTimeout(() => {
         document.getElementById("ctr_rate").textContent = ctr + "%";
-        document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%"; // Scale for visibility
+        document.getElementById("ctr_bar").style.width = Math.min(ctr * 10, 100) + "%";
     }, 700);
 
-    // Update change indicators with real comparison data
     if (comparison) {
         updateChangeIndicators(comparison);
     }
 }
 
-// Animate counter
 function animateCounter(element, start, end, duration) {
     if (!element) return;
 
@@ -166,7 +141,6 @@ function animateCounter(element, start, end, duration) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
 
-        // Easing function
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 
         const currentValue = Math.floor(start + (end - start) * easeOutQuart);
@@ -180,16 +154,14 @@ function animateCounter(element, start, end, duration) {
     requestAnimationFrame(updateCounter);
 }
 
-// Update change indicators with real data
 function updateChangeIndicators(comparison) {
     const statChanges = document.querySelectorAll('.stat-change');
 
-    // Map stat changes to their respective metrics
     const changes = {
-        0: comparison.views ? comparison.views.change : 0,      // Views
-        1: comparison.likes ? comparison.likes.change : 0,      // Likes
-        2: comparison.follows ? comparison.follows.change : 0,  // Followers
-        3: 0  // Clicks (not in comparison yet, could be added)
+        0: comparison.views ? comparison.views.change : 0,
+        1: comparison.likes ? comparison.likes.change : 0,
+        2: comparison.follows ? comparison.follows.change : 0,
+        3: 0
     };
 
     statChanges.forEach((el, index) => {
@@ -201,7 +173,6 @@ function updateChangeIndicators(comparison) {
     });
 }
 
-// Fallback to calculate overview metrics from posts data
 function calculateOverviewMetrics() {
     const posts = analyticsData.posts;
 
@@ -219,13 +190,11 @@ function calculateOverviewMetrics() {
         totalClicks += post.linkClicksCount || 0;
     });
 
-    // Animate counters
     animateCounter(document.getElementById("total_views"), 0, totalViews, 1000);
     animateCounter(document.getElementById("total_likes"), 0, totalLikes, 1000);
     animateCounter(document.getElementById("total_followers"), 0, totalFollows, 1000);
     animateCounter(document.getElementById("total_clicks"), 0, totalClicks, 1000);
 
-    // Calculate engagement rate
     const totalEngagements = totalLikes + totalDislikes + totalFollows;
     const engagementRate = totalViews > 0 ? ((totalEngagements / totalViews) * 100).toFixed(2) : 0;
 
@@ -234,7 +203,6 @@ function calculateOverviewMetrics() {
         document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
     }, 500);
 
-    // Calculate CTR
     const ctr = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(2) : 0;
 
     setTimeout(() => {
@@ -243,7 +211,6 @@ function calculateOverviewMetrics() {
     }, 700);
 }
 
-// Populate posts table
 function populatePostsTable(sortBy = 'views') {
     const tbody = document.getElementById("posts_table_body");
     tbody.innerHTML = '';
@@ -254,7 +221,6 @@ function populatePostsTable(sortBy = 'views') {
         return;
     }
 
-    // Sort posts
     let sortedPosts = [...posts];
     switch(sortBy) {
         case 'views':
@@ -283,7 +249,6 @@ function populatePostsTable(sortBy = 'views') {
             break;
     }
 
-    // Populate table with animation
     sortedPosts.forEach((post, index) => {
         const metrics = post.metrics || {
             views: post.viewsCount || 0,
@@ -311,7 +276,6 @@ function populatePostsTable(sortBy = 'views') {
 
         tbody.appendChild(row);
 
-        // Animate row appearance
         setTimeout(() => {
             row.style.transition = 'all 0.3s ease';
             row.style.opacity = '1';
@@ -320,7 +284,6 @@ function populatePostsTable(sortBy = 'views') {
     });
 }
 
-// Calculate post engagement rate
 function calculatePostEngagement(post) {
     const views = post.metrics ? post.metrics.views : (post.viewsCount || 0);
     if (views === 0) return 0;
@@ -333,9 +296,7 @@ function calculatePostEngagement(post) {
     return ((engagements / views) * 100).toFixed(1);
 }
 
-// Initialize charts with real data
 function initializeCharts(data) {
-    // Destroy existing charts first
     if (analyticsData.charts.performance) {
         analyticsData.charts.performance.destroy();
         analyticsData.charts.performance = null;
@@ -345,7 +306,6 @@ function initializeCharts(data) {
         analyticsData.charts.reactions = null;
     }
 
-    // Performance Chart
     const perfCtx = document.getElementById('performance_chart').getContext('2d');
     const perfData = generatePerformanceData(data.charts.timeSeries);
 
@@ -389,7 +349,6 @@ function initializeCharts(data) {
         }
     });
 
-    // Reactions Chart
     const reactCtx = document.getElementById('reactions_chart').getContext('2d');
     const reactData = generateReactionsData(data.totals.reactions);
 
@@ -415,9 +374,7 @@ function initializeCharts(data) {
     });
 }
 
-// Initialize charts with fallback data
 function initializeChartsWithFallback() {
-    // Destroy existing charts first
     if (analyticsData.charts.performance) {
         analyticsData.charts.performance.destroy();
         analyticsData.charts.performance = null;
@@ -427,11 +384,9 @@ function initializeChartsWithFallback() {
         analyticsData.charts.reactions = null;
     }
 
-    // Create empty/minimal charts when API data isn't available
     const perfCtx = document.getElementById('performance_chart').getContext('2d');
     const reactCtx = document.getElementById('reactions_chart').getContext('2d');
 
-    // Simple line chart
     analyticsData.charts.performance = new Chart(perfCtx, {
         type: 'line',
         data: {
@@ -474,7 +429,6 @@ function initializeChartsWithFallback() {
         }
     });
 
-    // Simple doughnut chart
     analyticsData.charts.reactions = new Chart(reactCtx, {
         type: 'doughnut',
         data: {
@@ -498,7 +452,6 @@ function initializeChartsWithFallback() {
     });
 }
 
-// Generate performance chart data from real time series
 function generatePerformanceData(timeSeries) {
     if (!timeSeries || timeSeries.length === 0) {
         return {
@@ -549,7 +502,6 @@ function generatePerformanceData(timeSeries) {
     };
 }
 
-// Generate reactions chart data from real reactions
 function generateReactionsData(reactions) {
     if (!reactions || Object.keys(reactions).length === 0) {
         return {
@@ -591,15 +543,11 @@ function generateReactionsData(reactions) {
     };
 }
 
-// Setup event listeners
 function setupAnalyticsEventListeners() {
-    // Remove existing listeners first to prevent duplicates
     const rangeButtons = document.querySelectorAll('.range-btn');
     const sortDropdown = document.getElementById('sort_posts');
 
-    // Date range buttons
     rangeButtons.forEach(btn => {
-        // Clone node to remove all event listeners
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
 
@@ -610,21 +558,16 @@ function setupAnalyticsEventListeners() {
             const range = e.target.dataset.range;
             analyticsData.timeRange = range === 'all' ? 'all' : parseInt(range);
 
-            // Show loading
             showAnalyticsLoading();
 
-            // Reload data for the selected range
             resetAnalyticsUI();
             await loadAnalyticsData();
 
-            // Hide loading
             hideAnalyticsLoading();
         });
     });
 
-    // Sort dropdown
     if (sortDropdown) {
-        // Clone to remove existing listeners
         const newDropdown = sortDropdown.cloneNode(true);
         sortDropdown.parentNode.replaceChild(newDropdown, sortDropdown);
 
@@ -634,7 +577,6 @@ function setupAnalyticsEventListeners() {
     }
 }
 
-// Utility functions
 function formatNumber(num) {
     if (num < 1000) return num.toString();
     if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
@@ -648,7 +590,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Export analytics data function
 function exportAnalyticsData() {
     const data = {
         overview: {
@@ -674,5 +615,4 @@ function exportAnalyticsData() {
     URL.revokeObjectURL(url);
 }
 
-// Replace the old modal function
 window.closeAnalytics = closeAnalyticsCard;

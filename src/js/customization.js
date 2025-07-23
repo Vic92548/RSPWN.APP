@@ -4,7 +4,6 @@ cardManager.register('backgrounds-card', {
     }
 });
 
-// Replace openCustomizationMenu function
 function openCustomizationMenu() {
     if (!isUserLoggedIn() && MainPage) {
         openRegisterModal();
@@ -14,12 +13,10 @@ function openCustomizationMenu() {
     cardManager.show('backgrounds-card');
 }
 
-// Replace closeBackgroundsCard function
 function closeBackgroundsCard() {
     cardManager.hide('backgrounds-card');
 }
 
-// Replace closeCustomizationMenu with the new function
 function closeCustomizationMenu() {
     closeBackgroundsCard();
 }
@@ -33,7 +30,6 @@ function displayBackgroundImages() {
     const container = document.getElementById("backgrounds-grid");
     container.innerHTML = '';
 
-    // Get current equipped background
     const currentBackground = localStorage.getItem('background_url');
 
     background_images.forEach((bg, index) => {
@@ -77,7 +73,6 @@ function displayBackgroundImages() {
 
         if (isUnlocked && !isEquipped) {
             card.onclick = () => {
-                // Add selection animation
                 card.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     card.style.transform = '';
@@ -86,7 +81,6 @@ function displayBackgroundImages() {
                 updateBackgroundId(bg.id);
                 equipBackground(bg.image_url);
 
-                // Show success animation
                 if (typeof confetti !== 'undefined') {
                     confetti({
                         particleCount: 50,
@@ -96,7 +90,6 @@ function displayBackgroundImages() {
                     });
                 }
 
-                // Update UI to show new equipped state
                 displayBackgroundImages();
             };
         }
@@ -130,7 +123,6 @@ function updateBackgroundId(newBackgroundId) {
         .then(response => {
             console.log('Background updated successfully:', response);
 
-            // Show success notification
             if (typeof Swal !== 'undefined') {
                 const Toast = Swal.mixin({
                     toast: true,

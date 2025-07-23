@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const TARGET_DIRS = ['deno_modules', 'src'];
-const ROOT_FILES = ['server.js'];
+const ROOT_FILES = ['server.js','build.js'];
 const OUTPUT_FILE = 'output.txt';
 const ALLOWED_EXTENSIONS = ['.html', '.css', '.js'];
 

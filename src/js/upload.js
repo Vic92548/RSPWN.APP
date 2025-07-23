@@ -1,9 +1,7 @@
 if(MainPage){
-    // Enhanced file upload with drag and drop
     const uploadArea = document.querySelector('.upload-area');
     const fileInput = document.getElementById('file');
 
-    // Drag and drop functionality
     if (uploadArea) {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, preventDefaults, false);
@@ -39,7 +37,6 @@ if(MainPage){
         }
     }
 
-    // File input change handler
     if (fileInput) {
         fileInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
@@ -55,7 +52,6 @@ if(MainPage){
         const previewImage = document.getElementById('preview_img');
         const previewVideo = document.getElementById('preview_video');
 
-        // Validate file size
         if (file.size > 50 * 1024 * 1024) {
             Swal.fire({
                 icon: 'error',
@@ -92,7 +88,6 @@ if(MainPage){
         reader.readAsDataURL(file);
     }
 
-    // Character counter
     const titleInput = document.getElementById('title');
     const titleCount = document.getElementById('title-count');
 
@@ -123,7 +118,6 @@ window.submitPost = async function(event) {
         return;
     }
 
-    // Disable submit button
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Publishing...</span>';
 
@@ -140,10 +134,8 @@ window.submitPost = async function(event) {
     }
 
     try {
-        // Show progress bar
         uploadProgress.style.display = 'block';
 
-        // Simulate progress (since we can't track actual upload progress with fetch)
         let progress = 0;
         const progressInterval = setInterval(() => {
             progress += Math.random() * 15;
@@ -156,19 +148,15 @@ window.submitPost = async function(event) {
         clearInterval(progressInterval);
         progressFill.style.width = '100%';
 
-        // Fix: Check result.success instead of response.ok
         if (result.success) {
-            // Success animation
             confetti({
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 }
             });
 
-            // Close the add post card
             closeAddPostCard();
 
-            // Reset form
             document.getElementById('title').value = '';
             document.getElementById('link').value = '';
             document.getElementById('file').value = '';
@@ -179,7 +167,6 @@ window.submitPost = async function(event) {
                 titleCount.textContent = '0';
             }
 
-            // Show success notification
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -193,7 +180,6 @@ window.submitPost = async function(event) {
                 title: "Post published successfully!"
             });
 
-            // Update XP if user data is available
             if (window.user && result.user) {
                 const oldUser = {
                     xp: window.user.xp,
@@ -205,7 +191,6 @@ window.submitPost = async function(event) {
                 setXPProgress(oldUser);
             }
 
-            // Display the new post
             setTimeout(() => {
                 displayPost(result.id);
             }, 500);
@@ -224,7 +209,6 @@ window.submitPost = async function(event) {
         });
 
     } finally {
-        // Reset button and hide progress
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Publish Post</span>';
         uploadProgress.style.display = 'none';

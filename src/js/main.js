@@ -33,20 +33,12 @@ loadUserData();
 
 function hideLoading(){
 
-    console.log("steps:"+loading_steps);/*
-    if(loading_steps <= 0){
-        document.getElementsByTagName('H1')[0].className = "title";
-    }
-    */
+    console.log("steps:"+loading_steps);
 
-
-    //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function showLoading(){
-    //document.getElementsByTagName('H1')[0].className = "loading";
 
-    //document.getElementsByTagName("ARTICLE")[0].style.transform = "translateY(0vh)";
 }
 
 function timeAgo(dateParam) {
@@ -60,7 +52,7 @@ function timeAgo(dateParam) {
     const minutes = Math.round(seconds / 60);
     const hours = Math.round(minutes / 60);
     const days = Math.round(hours / 24);
-    const months = Math.round(days / 30.4); // average number of days in month
+    const months = Math.round(days / 30.4);
     const years = Math.round(days / 365);
 
     if (seconds < 60) {
@@ -97,10 +89,8 @@ function hidePost() {
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
-// Register add post card
 cardManager.register('add-post-card', {
     onShow: () => {
-        // Focus on title input when card opens
         setTimeout(() => {
             const titleInput = document.getElementById('title');
             if (titleInput) titleInput.focus();
@@ -108,7 +98,6 @@ cardManager.register('add-post-card', {
     }
 });
 
-// Replace opeNewPostModel function
 function opeNewPostModel() {
     if (isUserLoggedIn()) {
         cardManager.show('add-post-card');
@@ -117,12 +106,10 @@ function opeNewPostModel() {
     }
 }
 
-// Replace closeAddPostCard function
 function closeAddPostCard() {
     cardManager.hide('add-post-card');
 }
 
-// Replace closeNewPostModel with the new function
 function closeNewPostModel() {
     closeAddPostCard();
 }
@@ -250,7 +237,7 @@ async function checkUserFollowsCreator(creatorId) {
     try {
         const isFollowing = await api.checkFollowStatus(creatorId);
         console.log('Check follow status:', isFollowing);
-        return isFollowing;  // It's already a boolean
+        return isFollowing;
     } catch (error) {
         console.error('Error checking follow status:', error);
         return false;
@@ -259,13 +246,13 @@ async function checkUserFollowsCreator(creatorId) {
 
 function formatViews(viewCount) {
     if (viewCount < 1000) {
-        return viewCount; // return the number as is if it's less than 1000
+        return viewCount;
     } else if (viewCount < 1000000) {
-        return (viewCount / 1000).toFixed(2) + 'K'; // return in 'K' format for thousands
+        return (viewCount / 1000).toFixed(2) + 'K';
     } else if (viewCount < 1000000000) {
-        return (viewCount / 1000000).toFixed(2) + 'M'; // return in 'M' format for millions
+        return (viewCount / 1000000).toFixed(2) + 'M';
     } else {
-        return (viewCount / 1000000000).toFixed(2) + 'B'; // return in 'B' format for billions
+        return (viewCount / 1000000000).toFixed(2) + 'B';
     }
 }
 
@@ -286,32 +273,24 @@ if(MainPage){
 }
 
 function processJoinQueryParam() {
-    // Create a URL object based on the current location
     const url = new URL(window.location.href);
 
-    // Access the URL's search parameters
     const params = url.searchParams;
 
-    // Check if the 'join' query parameter exists
     if (params.has('join')) {
-        // Retrieve the value of the 'join' parameter
         const joinValue = params.get('join');
 
         console.log("Join param found with value = " + joinValue);
 
-        // Store the value in local storage
         localStorage.setItem('referrerId', joinValue);
 
-        // Remove the 'join' parameter from the URL
         params.delete('join');
 
-        // Replace the state in history without reloading the page to reflect the new URL
         window.history.replaceState({}, '', url.toString());
     }
 }
 
 function handleReferral() {
-    // Check if 'referrerId' is stored in local storage
     const referrerId = localStorage.getItem('referrerId');
 
     if (referrerId) {
@@ -325,7 +304,6 @@ function handleReferral() {
             }
 
 
-            // Remove 'referrerId' from local storage after processing
             localStorage.removeItem('referrerId');
 
 
@@ -346,30 +324,23 @@ function closeTextModal() {
 }
 
 function copyReferrerId() {
-    // Construct the URL with the userId as a query parameter
     if(isUserLoggedIn()){
         const referralUrl = `https://vapr.club?join=${user.id}`;
 
-        // Create a temporary text area to hold the URL
         const textArea = document.createElement('textarea');
         textArea.value = referralUrl;
 
-        // Avoid styling that would make the textarea visible
         textArea.style.position = 'absolute';
         textArea.style.left = '-9999px';
 
-        // Append the textarea to the document
         document.body.appendChild(textArea);
 
-        // Select the URL
         textArea.select();
-        textArea.setSelectionRange(0, 99999); // For mobile devices
+        textArea.setSelectionRange(0, 99999);
 
         try {
-            // Copy the text inside the text area
             const successful = document.execCommand('copy');
 
-            // Provide feedback on whether the URL was copied successfully
             console.log(successful ? 'Referral URL copied to clipboard!' : 'Failed to copy the URL');
 
             Swal.fire({
@@ -387,7 +358,6 @@ function copyReferrerId() {
             });
         }
 
-        // Remove the textarea element from the document after copying
         document.body.removeChild(textArea);
     }else{
         openRegisterModal();

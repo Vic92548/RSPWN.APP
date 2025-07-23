@@ -6,13 +6,11 @@ class API {
         };
     }
 
-    // Get auth headers
     getAuthHeaders() {
         const jwt = localStorage.getItem('jwt');
         return jwt ? { Authorization: `Bearer ${jwt}` } : {};
     }
 
-    // Main request method
     async request(path, options = {}) {
         const {
             method = 'GET',
@@ -53,7 +51,6 @@ class API {
         }
     }
 
-    // Convenience methods
     get(path, requireAuth = true) {
         return this.request(path, { requireAuth });
     }
@@ -66,7 +63,6 @@ class API {
         });
     }
 
-    // Specific API calls
     async getMe() {
         return this.get('/me');
     }
@@ -160,13 +156,10 @@ class API {
     }
 }
 
-// Create singleton instance
 const api = new API();
 
-// Export for use
 window.api = api;
 
-// Migration helper - replace old makeApiRequest calls
 window.makeApiRequest = function(path, requireAuth = true) {
     return api.get(path, requireAuth);
 };
