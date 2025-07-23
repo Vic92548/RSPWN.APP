@@ -252,7 +252,7 @@ async function updateOnlineUsers() {
 
         const onlineEl = document.getElementById('online_users');
         if (onlineEl && data.count) {
-            onlineEl.textContent = data.count.toLocaleString() + ' online';
+            onlineEl.textContent = data.count.toLocaleString() + ' users';
         }
     } catch (error) {
         console.error('Error fetching online users:', error);

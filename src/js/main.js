@@ -432,10 +432,4 @@ processJoinQueryParam();
 
 if(MainPage){
     showInitialPost();
-
-    api.getUserCount().then(data => {
-        document.getElementById("user_count").textContent = data.count.toLocaleString();
-    }).catch(() => {
-        document.getElementById("user_count").textContent = "hundreds of";
-    });
 }
