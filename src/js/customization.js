@@ -1,52 +1,22 @@
-// Open background gallery card
+cardManager.register('backgrounds-card', {
+    onShow: () => {
+        displayBackgroundImages();
+    }
+});
+
+// Replace openCustomizationMenu function
 function openCustomizationMenu() {
     if (!isUserLoggedIn() && MainPage) {
         openRegisterModal();
         return;
     }
 
-    // Hide menu if open
-    hideMenu();
-
-    // Hide the current post
-    const post = document.getElementsByClassName("post")[0];
-    if (post) {
-        post.style.display = "none";
-    }
-
-    // Show the backgrounds card
-    const backgroundsCard = document.getElementById("backgrounds-card");
-    if (backgroundsCard) {
-        backgroundsCard.style.display = "block";
-
-        // Trigger the show animation
-        setTimeout(() => {
-            backgroundsCard.classList.add("show");
-        }, 10);
-    }
-
-    // Display backgrounds
-    displayBackgroundImages();
+    cardManager.show('backgrounds-card');
 }
 
-// Close backgrounds card
+// Replace closeBackgroundsCard function
 function closeBackgroundsCard() {
-    const backgroundsCard = document.getElementById("backgrounds-card");
-    const post = document.getElementsByClassName("post")[0];
-
-    if (backgroundsCard) {
-        backgroundsCard.classList.remove("show");
-
-        // Wait for animation to complete
-        setTimeout(() => {
-            backgroundsCard.style.display = "none";
-
-            // Show the post again
-            if (post) {
-                post.style.display = "block";
-            }
-        }, 800);
-    }
+    cardManager.hide('backgrounds-card');
 }
 
 // Replace closeCustomizationMenu with the new function

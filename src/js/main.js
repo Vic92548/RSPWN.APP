@@ -97,58 +97,29 @@ function hidePost() {
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
-// Updated opeNewPostModel function to use the new card system
+// Register add post card
+cardManager.register('add-post-card', {
+    onShow: () => {
+        // Focus on title input when card opens
+        setTimeout(() => {
+            const titleInput = document.getElementById('title');
+            if (titleInput) titleInput.focus();
+        }, 500);
+    }
+});
+
+// Replace opeNewPostModel function
 function opeNewPostModel() {
-    if(isUserLoggedIn()){
-        showAddPostCard();
-    }else{
+    if (isUserLoggedIn()) {
+        cardManager.show('add-post-card');
+    } else {
         openRegisterModal();
     }
 }
 
-// New function to show the add post card
-function showAddPostCard() {
-    // Hide the current post
-    const post = document.getElementsByClassName("post")[0];
-    if (post) {
-        post.style.display = "none";
-    }
-
-    // Show the add post card
-    const addPostCard = document.getElementById("add-post-card");
-    if (addPostCard) {
-        addPostCard.style.display = "block";
-
-        // Trigger the show animation
-        setTimeout(() => {
-            addPostCard.classList.add("show");
-        }, 10);
-
-        // Focus on the title input
-        setTimeout(() => {
-            document.getElementById("title").focus();
-        }, 500);
-    }
-}
-
-// New function to close the add post card
+// Replace closeAddPostCard function
 function closeAddPostCard() {
-    const addPostCard = document.getElementById("add-post-card");
-    const post = document.getElementsByClassName("post")[0];
-
-    if (addPostCard) {
-        addPostCard.classList.remove("show");
-
-        // Wait for animation to complete
-        setTimeout(() => {
-            addPostCard.style.display = "none";
-
-            // Show the post again
-            if (post) {
-                post.style.display = "block";
-            }
-        }, 800);
-    }
+    cardManager.hide('add-post-card');
 }
 
 // Replace closeNewPostModel with the new function

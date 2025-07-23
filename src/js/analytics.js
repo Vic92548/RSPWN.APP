@@ -10,72 +10,40 @@ let analyticsData = {
     fullData: null
 };
 
-// Open analytics card with data loading
+// Register analytics card with cardManager
+cardManager.register('analytics-card', {
+    onLoad: async () => {
+        resetAnalyticsUI();
+        await loadAnalyticsData();
+    },
+    onHide: () => {
+        // Destroy charts to prevent memory leaks
+        if (analyticsData.charts.performance) {
+            analyticsData.charts.performance.destroy();
+            analyticsData.charts.performance = null;
+        }
+        if (analyticsData.charts.reactions) {
+            analyticsData.charts.reactions.destroy();
+            analyticsData.charts.reactions = null;
+        }
+    }
+});
+
+// Replace openAnalytics function
 async function openAnalytics() {
     if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
 
-    // Hide menu if open
-    hideMenu();
-
-    // Hide the current post
-    const post = document.getElementsByClassName("post")[0];
-    if (post) {
-        post.style.display = "none";
-    }
-
-    // Show the analytics card
-    const analyticsCard = document.getElementById("analytics-card");
-    if (analyticsCard) {
-        analyticsCard.style.display = "block";
-
-        // Trigger the show animation
-        setTimeout(() => {
-            analyticsCard.classList.add("show");
-        }, 10);
-    }
-
-    // Show loading state
-    showAnalyticsLoading();
-
-    // Load analytics data
-    await loadAnalyticsData();
-
-    // Hide loading state
-    hideAnalyticsLoading();
+    await cardManager.show('analytics-card');
 }
 
-// Close analytics card
+// Replace closeAnalyticsCard function
 function closeAnalyticsCard() {
-    const analyticsCard = document.getElementById("analytics-card");
-    const post = document.getElementsByClassName("post")[0];
-
-    if (analyticsCard) {
-        analyticsCard.classList.remove("show");
-
-        // Wait for animation to complete
-        setTimeout(() => {
-            analyticsCard.style.display = "none";
-
-            // Show the post again
-            if (post) {
-                post.style.display = "block";
-            }
-
-            // Destroy charts to prevent memory leaks
-            if (analyticsData.charts.performance) {
-                analyticsData.charts.performance.destroy();
-                analyticsData.charts.performance = null;
-            }
-            if (analyticsData.charts.reactions) {
-                analyticsData.charts.reactions.destroy();
-                analyticsData.charts.reactions = null;
-            }
-        }, 800);
-    }
+    cardManager.hide('analytics-card');
 }
+
 
 // Show loading state
 function showAnalyticsLoading() {
