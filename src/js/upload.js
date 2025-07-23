@@ -103,7 +103,6 @@ if(MainPage){
     }
 }
 
-// Define submitPost as a global function
 window.submitPost = async function(event) {
     event.preventDefault();
 
@@ -140,11 +139,6 @@ window.submitPost = async function(event) {
         formData.append("file", blob, fileName);
     }
 
-    const jwt = localStorage.getItem('jwt');
-    const headers = new Headers({
-        "Authorization": `Bearer ${jwt}`
-    });
-
     try {
         // Show progress bar
         uploadProgress.style.display = 'block';
@@ -162,7 +156,8 @@ window.submitPost = async function(event) {
         clearInterval(progressInterval);
         progressFill.style.width = '100%';
 
-        if (response.ok && result.success) {
+        // Fix: Check result.success instead of response.ok
+        if (result.success) {
             // Success animation
             confetti({
                 particleCount: 100,
