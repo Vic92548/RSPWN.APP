@@ -1,21 +1,11 @@
-import { MongoClient } from "npm:mongodb@6";
+import { usersCollection, secretKeysCollection } from './database.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
 import { joinGuild } from './discord_bot.js';
-
-const databaseUrl = Deno.env.get("DATABASE_URL");
-
-const client = new MongoClient(databaseUrl);
-console.log(databaseUrl);
-await client.connect();
-const db = client.db("vapr");
 
 const clientId = Deno.env.get("DISCORD_ClientID");
 const clientSecret = Deno.env.get("DISCORD_ClientSecret");
 const BASE_URL = Deno.env.get("BASE_URL");
 const redirectUri = `${BASE_URL}/auth/discord/callback`;
-
-const usersCollection = db.collection("users");
-const secretKeysCollection = db.collection("secretKeys");
 
 export async function updateBackgroundId(userId, newBackgroundId) {
     try {

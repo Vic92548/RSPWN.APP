@@ -19,6 +19,7 @@ const reactionsCollection = db.collection("reactions");
 const linkClicksCollection = db.collection("linkClicks");
 const registrationReferralsCollection = db.collection("registrationReferrals");
 const xpLogCollection = db.collection("xpLog");
+const secretKeysCollection = db.collection("secretKeys");
 
 export {
     postsCollection,
@@ -32,5 +33,6 @@ export {
     linkClicksCollection,
     skipsCollection,
     videosCollection,
-    xpLogCollection
+    xpLogCollection,
+    secretKeysCollection
 };
