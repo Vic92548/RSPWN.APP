@@ -1,15 +1,8 @@
-// notify_by_email.js
 import { Resend } from "npm:resend";
 import { followsCollection, usersCollection } from "../database.js";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
-/**
- * Notify all followers of a creator via email.
- * @param {string} creatorId - ID of the post author
- * @param {string} postId - ID of the new post
- * @param {string} postTitle - Title of the post
- */
 export async function notifyFollowersByEmail(creatorId, postId, postTitle) {
     try {
         const [creator, follows] = await Promise.all([
@@ -46,7 +39,7 @@ export async function notifyFollowersByEmail(creatorId, postId, postTitle) {
                 <p><strong>@${creator.username}</strong> just shared a new post:</p>
                 <p><a href="${postUrl}">${postTitle}</a></p>
                 <p>Click to read and show some love ❤️</p>
-                <small>You’re receiving this email because you follow @${creator.username} on VAPR.<br>
+                <small>You're receiving this email because you follow @${creator.username} on VAPR.<br>
                 <a href="${baseUrl}/settings">Unfollow or manage notifications</a></small>
             `
         }));

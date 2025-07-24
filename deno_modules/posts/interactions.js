@@ -115,7 +115,6 @@ export async function skipPost(postId, userData) {
 export async function clickLink(postId, userId) {
     console.log("Starting to record link click for userId " + userId + " for post: " + postId);
     try {
-        // Fetch the post to get the URL
         const post = await postsCollection.findOne({ id: postId });
         if (!post || !post.link) {
             throw new Error("Post not found or does not contain a link");

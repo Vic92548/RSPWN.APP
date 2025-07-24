@@ -9,7 +9,6 @@ console.log(databaseUrl);
 await client.connect();
 const db = client.db("vapr");
 
-// Environment variable-based configuration
 const clientId = Deno.env.get("DISCORD_ClientID");
 const clientSecret = Deno.env.get("DISCORD_ClientSecret");
 const BASE_URL = Deno.env.get("BASE_URL");
@@ -20,7 +19,6 @@ const secretKeysCollection = db.collection("secretKeys");
 
 export async function updateBackgroundId(userId, newBackgroundId) {
     try {
-        // Update the user's backgroundId in the database
         const result = await usersCollection.updateOne(
             { id: userId },
             { $set: { backgroundId: newBackgroundId } }
@@ -40,7 +38,7 @@ export async function updateBackgroundId(userId, newBackgroundId) {
 }
 
 function generateSecretKey() {
-    const byteLength = 32;  // Typically sufficient for security needs
+    const byteLength = 32;
     const bytes = new Uint8Array(byteLength);
     crypto.getRandomValues(bytes);
     return btoa(String.fromCharCode(...bytes));
@@ -52,7 +50,7 @@ export async function authenticateRequest(request) {
         return { isValid: false };
     }
 
-    const token = authHeader.slice(7);  // Remove "Bearer "
+    const token = authHeader.slice(7);
     const secretKey = await secretKeysCollection.findOne({ key: token });
 
     if (secretKey && secretKey.userId) {

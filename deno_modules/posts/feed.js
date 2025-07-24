@@ -14,7 +14,6 @@ export async function getNextFeedPosts(userid) {
 
         posts = await postsCollection.find({ id: { $nin: interactedPostIds } }).sort({ timestamp: -1 }).limit(10).toArray();
 
-        // If no new posts are found, fetch random posts
         if (posts.length === 0) {
             posts = await postsCollection.aggregate([{ $sample: { size: 10 } }]).toArray();
         }
@@ -23,15 +22,14 @@ export async function getNextFeedPosts(userid) {
     posts = await Promise.all(posts.map(async post => {
         const views = await viewsCollection.countDocuments({ postId: post.id });
 
-        // Fetch complete user data including avatar
         const postOwner = await usersCollection.findOne(
             { id: post.userId },
             {
                 projection: {
                     id: 1,
                     username: 1,
-                    avatar: 1,  // Include avatar
-                    level: 1    // Include level
+                    avatar: 1,
+                    level: 1
                 }
             }
         );
@@ -40,8 +38,8 @@ export async function getNextFeedPosts(userid) {
             ...post,
             views: views,
             username: postOwner?.username || 'Unknown',
-            userAvatar: postOwner?.avatar || null,  // Add avatar to post data
-            userLevel: postOwner?.level || 0        // Add level to post data
+            userAvatar: postOwner?.avatar || null,
+            userLevel: postOwner?.level || 0
         };
     }));
 

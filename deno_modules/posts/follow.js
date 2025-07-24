@@ -118,8 +118,8 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
         const isFollowing = follows.length > 0;
 
         return new Response(JSON.stringify({
-            success: true,  // API call succeeded
-            isFollowing: isFollowing,  // Actual follow status
+            success: true,
+            isFollowing: isFollowing,
             message: isFollowing ? "User follows the creator" : "User does not follow the creator"
         }), {
             status: 200,

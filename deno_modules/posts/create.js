@@ -1,11 +1,10 @@
-// deno_modules/posts/create.js
 import { postsCollection, usersCollection, videosCollection } from "../database.js";
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowersByEmail } from "./notify_by_email.js";
 import { notifyFollowers } from "../post.js";
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB in bytes
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
 const ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -34,22 +33,18 @@ async function sendWebhook(url, data) {
     }
 }
 
-// Validate file before upload
 function validateFile(file) {
     if (!file) {
         return { valid: false, error: "No file provided" };
     }
 
-    // Check file size
     if (file.size > MAX_FILE_SIZE) {
         return { valid: false, error: "File size exceeds the 50MB limit" };
     }
 
-    // Get file extension
     const parts = file.name.split('.');
     const extension = parts.length > 1 ? parts.pop().toLowerCase() : "";
 
-    // Check file type and extension
     const isImage = ALLOWED_IMAGE_TYPES.includes(file.type) && ALLOWED_IMAGE_EXTENSIONS.includes(extension);
     const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type) && ALLOWED_VIDEO_EXTENSIONS.includes(extension);
 
@@ -86,7 +81,6 @@ export async function createPost(request, userData) {
         const file = formData.get("file");
         const community = formData.get("community");
 
-        // Validate required fields
         if (typeof title !== "string" || !title.trim()) {
             return new Response(JSON.stringify({
                 success: false,
@@ -107,7 +101,6 @@ export async function createPost(request, userData) {
             });
         }
 
-        // Validate file
         const validation = validateFile(file);
         if (!validation.valid) {
             return new Response(JSON.stringify({
@@ -119,11 +112,9 @@ export async function createPost(request, userData) {
             });
         }
 
-        // Generate post ID early but don't create post yet
         const postId = crypto.randomUUID();
         let content = "";
 
-        // Upload media to Bunny CDN
         try {
             let mediaResult;
             if (validation.isVideo) {
@@ -155,7 +146,6 @@ export async function createPost(request, userData) {
             });
         }
 
-        // Only create post if media upload was successful
         try {
             await postsCollection.insertOne({
                 id: postId,
@@ -171,13 +161,10 @@ export async function createPost(request, userData) {
 
             console.log("Post created successfully!");
 
-            // Add XP for creating a post
             await addXP(userData.id, EXPERIENCE_TABLE.POST);
 
-            // Refresh user data to get updated XP/level
             userData = await usersCollection.findOne({ id: userData.id });
 
-            // Send notifications
             const baseUrl = Deno.env.get("BASE_URL");
             const discordWebhook = Deno.env.get("DISCORD_POST_WEBHOOK_URL");
 
@@ -188,7 +175,6 @@ export async function createPost(request, userData) {
                 );
             }
 
-            // Send webhook
             if (webhookUrl) {
                 const payload = {
                     creatorId: userData.id,
@@ -198,7 +184,6 @@ export async function createPost(request, userData) {
                 sendWebhook(webhookUrl, payload);
             }
 
-            // Notify followers by email
             await notifyFollowersByEmail(userData.id, postId, title.trim());
 
             const post = {
@@ -220,7 +205,6 @@ export async function createPost(request, userData) {
         } catch (dbError) {
             console.error("Database error:", dbError);
 
-            // Attempt to clean up uploaded media if post creation failed
             try {
                 await cleanupFailedUpload(postId, validation.isVideo ? 'video' : 'image', validation.extension);
                 console.log("Cleaned up media after database error");
@@ -299,7 +283,6 @@ async function uploadVideoToBunnyCDN(file, postId) {
             throw new Error("Bunny CDN video configuration is missing from environment variables.");
         }
 
-        // Step 1: Create a video object
         const createVideoUrl = `https://video.bunnycdn.com/library/${libraryId}/videos`;
         const createVideoResponse = await fetch(createVideoUrl, {
             method: "POST",
@@ -320,7 +303,6 @@ async function uploadVideoToBunnyCDN(file, postId) {
         const videoData = await createVideoResponse.json();
         const videoId = videoData.guid;
 
-        // Step 2: Upload the video content
         const uploadVideoUrl = `https://video.bunnycdn.com/library/${libraryId}/videos/${videoId}`;
         const arrayBuffer = await file.arrayBuffer();
         const blob = new Blob([arrayBuffer], { type: file.type || 'application/octet-stream' });
@@ -338,7 +320,6 @@ async function uploadVideoToBunnyCDN(file, postId) {
             const errorText = await uploadVideoResponse.text();
             console.error("Failed to upload video content. Response:", errorText);
 
-            // Try to delete the created video object
             try {
                 await fetch(`https://video.bunnycdn.com/library/${libraryId}/videos/${videoId}`, {
                     method: "DELETE",
@@ -354,7 +335,6 @@ async function uploadVideoToBunnyCDN(file, postId) {
             return { success: false, msg: errorText };
         }
 
-        // Step 3: Add video document to MongoDB
         await videosCollection.insertOne({
             videoId: videoId,
             postId: postId,
@@ -373,11 +353,9 @@ async function uploadVideoToBunnyCDN(file, postId) {
     }
 }
 
-// Cleanup function for failed uploads
 export async function cleanupFailedUpload(postId, mediaType = 'image', fileExtension = null) {
     try {
         if (mediaType === 'video') {
-            // Find and delete video from Bunny CDN
             const video = await videosCollection.findOne({ postId });
             if (video) {
                 const libraryId = Deno.env.get("BUNNY_CDN_LIBRARY_ID");
@@ -397,11 +375,9 @@ export async function cleanupFailedUpload(postId, mediaType = 'image', fileExten
                     console.error(`Failed to delete video: ${await deleteResponse.text()}`);
                 }
 
-                // Remove from database
                 await videosCollection.deleteOne({ postId });
             }
         } else {
-            // Delete image from Bunny CDN storage
             await deleteImageFromBunnyCDN(postId, fileExtension);
         }
     } catch (error) {
@@ -409,7 +385,6 @@ export async function cleanupFailedUpload(postId, mediaType = 'image', fileExten
     }
 }
 
-// Delete image from Bunny CDN Storage
 async function deleteImageFromBunnyCDN(postId, fileExtension) {
     try {
         const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
@@ -419,7 +394,6 @@ async function deleteImageFromBunnyCDN(postId, fileExtension) {
             throw new Error("Bunny CDN configuration missing for deletion");
         }
 
-        // Try multiple extensions if not provided
         const extensions = fileExtension ? [fileExtension] : ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
         for (const ext of extensions) {
@@ -438,7 +412,6 @@ async function deleteImageFromBunnyCDN(postId, fileExtension) {
                 console.log(`Successfully deleted image ${fileName} from Bunny CDN`);
                 return true;
             } else if (response.status === 404) {
-                // File doesn't exist, continue to try other extensions
                 continue;
             } else {
                 console.error(`Failed to delete image ${fileName}: ${await response.text()}`);
@@ -453,15 +426,11 @@ async function deleteImageFromBunnyCDN(postId, fileExtension) {
     }
 }
 
-// Verify media exists on Bunny CDN
 export async function verifyMediaExists(url, mediaType = 'image') {
     try {
         if (mediaType === 'video') {
-            // For video embeds, we can't easily check without the video API
-            // But we can verify the URL format is correct
             return /^https:\/\/iframe\.mediadelivery\.net\/embed\/\d+\/[a-f0-9-]+/.test(url);
         } else {
-            // For images, we can do a HEAD request
             const response = await fetch(url, {
                 method: 'HEAD',
                 headers: {
@@ -476,7 +445,6 @@ export async function verifyMediaExists(url, mediaType = 'image') {
     }
 }
 
-// Batch cleanup for multiple failed posts
 export async function batchCleanupFailedPosts(postIds) {
     const results = {
         success: [],
@@ -486,7 +454,6 @@ export async function batchCleanupFailedPosts(postIds) {
 
     for (const postId of postIds) {
         try {
-            // Find the post to determine media type
             const post = await postsCollection.findOne({ id: postId });
 
             if (!post) {
@@ -499,7 +466,6 @@ export async function batchCleanupFailedPosts(postIds) {
 
             await cleanupFailedUpload(postId, mediaType, fileExtension);
 
-            // Delete the post from database
             await postsCollection.deleteOne({ id: postId });
 
             results.success.push(postId);

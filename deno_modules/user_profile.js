@@ -1,30 +1,25 @@
-// Backend handler for server-side rendered profiles
-
 import {usersCollection, postsCollection, followsCollection, viewsCollection} from "./database.js";
 
 async function handleProfilePage(request) {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Check if this is a profile request
     if (!path.startsWith('/@')) {
-        return null; // Let other handlers process this
+        return null;
     }
 
-    const username = path.substring(2); // Remove /@
+    const username = path.substring(2);
 
     if (!username) {
         return new Response("Username not provided", { status: 400 });
     }
 
     try {
-        // Find user by username
         const user = await usersCollection.findOne({
             username: username
         });
 
         if (!user) {
-            // Return 404 page
             const notFoundHtml = await generateProfileNotFound(username);
             return new Response(notFoundHtml, {
                 status: 404,
@@ -32,17 +27,15 @@ async function handleProfilePage(request) {
             });
         }
 
-        // Gather profile data
         const profileData = await gatherProfileData(user);
 
-        // Generate HTML with embedded data
         const profileHtml = await generateProfileHtml(profileData);
 
         return new Response(profileHtml, {
             status: 200,
             headers: {
                 "Content-Type": "text/html",
-                "Cache-Control": "public, max-age=300" // Cache for 5 minutes
+                "Cache-Control": "public, max-age=300"
             }
         });
 
@@ -53,17 +46,14 @@ async function handleProfilePage(request) {
 }
 
 async function gatherProfileData(user) {
-    // Get user's posts count
     const postsCount = await postsCollection.countDocuments({
         userId: user.id
     });
 
-    // Get follower count
     const followerCount = await followsCollection.countDocuments({
         creatorId: user.id
     });
 
-    // Get total views across all posts
     const userPosts = await postsCollection.find({
         userId: user.id
     }).toArray();
@@ -76,14 +66,12 @@ async function gatherProfileData(user) {
         totalViews += views;
     }
 
-    // Get recent posts (limit to 10)
     const recentPosts = await postsCollection
         .find({ userId: user.id })
         .sort({ timestamp: -1 })
         .limit(10)
         .toArray();
 
-    // Add view counts to recent posts
     const postsWithViews = await Promise.all(recentPosts.map(async post => {
         const views = await viewsCollection.countDocuments({
             postId: post.id
@@ -91,7 +79,6 @@ async function gatherProfileData(user) {
         return { ...post, views };
     }));
 
-    // Format join date
     const joinDate = user._id.getTimestamp();
     const joinDateFormatted = new Date(joinDate).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -118,21 +105,15 @@ async function gatherProfileData(user) {
     };
 }
 
-// Updated generateProfileHtml function with new glass design
-
 async function generateProfileHtml(profileData) {
-    // Read the base template
     const template = await Deno.readTextFile("src/components/profile_page.html");
 
-    // Generate avatar URL
     const avatarUrl = profileData.avatar
         ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png?size=256`
         : 'https://vapr.b-cdn.net/default_vapr_avatar.png';
 
-    // Calculate XP percentage
     const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
 
-    // Generate posts HTML with new glass card style
     let postsHtml = '';
     if (profileData.recentPosts.length === 0) {
         postsHtml = '<p class="no-posts"><i class="fa-solid fa-inbox"></i> No posts yet</p>';
@@ -151,7 +132,6 @@ async function generateProfileHtml(profileData) {
         }).join('');
     }
 
-    // Replace placeholders in template
     let html = template
         .replace(/{{username}}/g, escapeHtml(profileData.username))
         .replace(/{{user_id}}/g, profileData.id)
@@ -167,7 +147,6 @@ async function generateProfileHtml(profileData) {
         .replace(/{{posts_html}}/g, postsHtml)
         .replace(/{{profile_data_json}}/g, JSON.stringify(profileData));
 
-    // SEO meta tags
     const metaDescription = `Check out @${profileData.username}'s profile on VAPR - Level ${profileData.level} creator with ${profileData.stats.posts} posts and ${profileData.stats.followers} followers.`;
     const metaTitle = `@${profileData.username} - VAPR Profile`;
 
@@ -189,7 +168,6 @@ async function generateProfileNotFound(username) {
         .replace(/{{meta_description}}/g, `The user @${username} was not found on VAPR.`);
 }
 
-// Helper functions
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',

@@ -13,8 +13,8 @@ export async function getPostData(id) {
             projection: {
                 id: 1,
                 username: 1,
-                avatar: 1,  // Include avatar
-                level: 1    // Include level
+                avatar: 1,
+                level: 1
             }
         }
     );
@@ -40,7 +40,6 @@ export async function getPost(id, userId = "anonymous") {
             timestamp: new Date()
         });
     } catch {
-        // Handle error if needed
     }
 
     post.views = await viewsCollection.countDocuments({ postId: post.id });
@@ -51,8 +50,8 @@ export async function getPost(id, userId = "anonymous") {
             projection: {
                 id: 1,
                 username: 1,
-                avatar: 1,  // Include avatar
-                level: 1    // Include level
+                avatar: 1,
+                level: 1
             }
         }
     );

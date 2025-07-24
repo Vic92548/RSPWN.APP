@@ -1,4 +1,3 @@
-// discordWebhook.js
 async function sendMessageToDiscordWebhook(url, message) {
     const payload = JSON.stringify({
         content: message
