@@ -1,4 +1,3 @@
-/* Container */
 .xp-container {
     position: relative;
     left: 0;
@@ -23,7 +22,6 @@
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
 }
 
-/* Level badge */
 .xp-level {
     font-size: 18px;
     font-weight: 900;
@@ -32,7 +30,6 @@
     text-align: center;
 }
 
-/* Progress track */
 .xp-track {
     flex: 1;
     height: 6px;
@@ -42,7 +39,6 @@
     overflow: hidden;
 }
 
-/* Progress bar */
 .xp-progress {
     position: absolute;
     top: 0;
@@ -54,7 +50,6 @@
     transition: width 0.5s ease-out;
 }
 
-/* Visual progress (for animations) */
 .xp-progress-visual {
     position: absolute;
     top: 0;
@@ -66,7 +61,6 @@
     transition: all 0.3s ease-out;
 }
 
-/* XP text */
 .xp-text {
     font-size: 13px;
     font-weight: 600;
@@ -78,7 +72,6 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Username */
 .xp-username {
     font-size: 14px;
     font-weight: 600;
@@ -90,7 +83,6 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* XP notification */
 .xp-notification {
     position: absolute;
     right: 20px;
@@ -123,7 +115,6 @@
     }
 }
 
-/* Mobile responsive */
 @media (max-width: 768px) {
     .xp-container {
         width: calc(100% - 160px);
@@ -154,7 +145,6 @@
     }
 }
 
-/* Compact mode for small spaces */
 @media (max-width: 480px) {
     .xp-container {
         gap: 10px;

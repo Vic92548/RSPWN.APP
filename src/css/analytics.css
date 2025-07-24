@@ -1,16 +1,13 @@
-/* Analytics Card - Specific Styles Only */
-
 .analytics-card {
     transform: translateY(100vh);
     position: relative;
-    max-height: 85vh !important; /* Override vapr-height-modal to fit better */
+    max-height: 85vh !important;
 }
 
 .analytics-card.show {
     transform: translateY(0);
 }
 
-/* Card Header - Only custom spacing */
 .analytics-card .analytics-header {
     position: relative;
 }
@@ -25,7 +22,6 @@
     gap: 10px;
 }
 
-/* Position close button in top right */
 .analytics-card .glass-close-btn {
     position: absolute;
     top: 20px;
@@ -41,7 +37,6 @@
     font-size: 14px;
 }
 
-/* Date Range Selector */
 .date-range-wrapper {
     padding: 15px 25px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -66,14 +61,12 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Analytics Body */
 .analytics-body {
-    max-height: calc(85vh - 140px); /* Reduced from 180px to account for smaller card height */
+    max-height: calc(85vh - 140px);
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* Overview Cards */
 .analytics-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -125,7 +118,6 @@
     color: #e74c3c;
 }
 
-/* Engagement Section */
 .engagement-section {
     padding: 20px;
     margin-bottom: 30px;
@@ -181,7 +173,6 @@
     background: linear-gradient(90deg, #e74c3c, #f39c12);
 }
 
-/* Charts Section */
 .charts-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -208,7 +199,6 @@
     max-height: 250px;
 }
 
-/* Posts Performance Section */
 .posts-performance-section {
     padding: 20px;
 }
@@ -233,7 +223,6 @@
     cursor: pointer;
 }
 
-/* Posts Table */
 .posts-table-wrapper {
     overflow-x: auto;
     border-radius: 8px;
@@ -295,7 +284,6 @@
     display: inline-block;
 }
 
-/* Loading State */
 .analytics-loading {
     position: absolute;
     top: 50%;
@@ -314,7 +302,6 @@
     font-size: 16px;
 }
 
-/* Mobile Responsive */
 @media (max-width: 1024px) {
     .analytics-overview {
         grid-template-columns: repeat(2, 1fr);
@@ -369,7 +356,6 @@
         height: 200px;
     }
 
-    /* Simplify table on mobile */
     .posts-table th:nth-child(4),
     .posts-table td:nth-child(4),
     .posts-table th:nth-child(5),
@@ -391,7 +377,6 @@
     }
 }
 
-/* Animations */
 @keyframes slideIn {
     from {
         opacity: 0;
