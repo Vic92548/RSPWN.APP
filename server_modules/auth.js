@@ -5,6 +5,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,16 +15,19 @@ const clientId = process.env.DISCORD_ClientID;
 const clientSecret = process.env.DISCORD_ClientSecret;
 const BASE_URL = process.env.BASE_URL;
 const redirectUri = `${BASE_URL}/auth/discord/callback`;
+const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
 
 export async function updateBackgroundId(userId, newBackgroundId) {
     try {
+        const sanitizedBackgroundId = newBackgroundId.replace(/[^a-zA-Z0-9_-]/g, '');
+
         const result = await usersCollection.updateOne(
             { id: userId },
-            { $set: { backgroundId: newBackgroundId } }
+            { $set: { backgroundId: sanitizedBackgroundId } }
         );
 
         if (result.modifiedCount === 1) {
-            console.log(`Updated user ${userId} backgroundId to ${newBackgroundId}`);
+            console.log(`Updated user ${userId} backgroundId to ${sanitizedBackgroundId}`);
             return { success: true };
         } else {
             console.error('No user found with the provided id:', userId);
@@ -34,11 +39,21 @@ export async function updateBackgroundId(userId, newBackgroundId) {
     }
 }
 
-function generateSecretKey() {
-    const byteLength = 32;
-    const bytes = new Uint8Array(byteLength);
-    crypto.getRandomValues(bytes);
-    return Buffer.from(bytes).toString('base64');
+function generateSecureToken(userId) {
+    const payload = {
+        userId: userId,
+        iat: Math.floor(Date.now() / 1000)
+    };
+
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+}
+
+function verifyToken(token) {
+    try {
+        return jwt.verify(token, JWT_SECRET);
+    } catch (error) {
+        return null;
+    }
 }
 
 export async function authenticateRequest(request) {
@@ -48,21 +63,25 @@ export async function authenticateRequest(request) {
     }
 
     const token = authHeader.slice(7);
-    const secretKey = await secretKeysCollection.findOne({ key: token });
 
-    if (secretKey && secretKey.userId) {
-        const userData = await usersCollection.findOne({ id: secretKey.userId });
-
-        if (userData) {
-            return { isValid: true, userData };
-        }
+    const decoded = verifyToken(token);
+    if (!decoded || !decoded.userId) {
+        return { isValid: false };
     }
-    return { isValid: false };
+
+    const userData = await usersCollection.findOne({ id: decoded.userId });
+    if (!userData) {
+        return { isValid: false };
+    }
+
+    return { isValid: true, userData };
 }
 
 export async function handleOAuthCallback(request) {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
+    const state = url.searchParams.get("state");
+
     if (!code) return new Response("Authorization code not found", { status: 400 });
 
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
@@ -93,7 +112,11 @@ export async function handleOAuthCallback(request) {
 
     const userData = await userResponse.json();
 
-    joinGuild(accessToken, "1226141081964515449", userData.id);
+    try {
+        await joinGuild(accessToken, "1226141081964515449", userData.id);
+    } catch (error) {
+        console.error("Failed to add user to guild:", error);
+    }
 
     let user = await usersCollection.findOne({ id: userData.id });
 
@@ -106,40 +129,58 @@ export async function handleOAuthCallback(request) {
             avatar: userData.avatar,
             level: 0,
             xp: 0,
-            xp_required: 700
+            xp_required: 700,
+            createdAt: new Date(),
+            lastLoginAt: new Date()
         });
 
         const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
 
-        sendMessageToDiscordWebhook(
-            discordJoinWebhook,
-            `${userData.username} joined VAPR we are now ${(await usersCollection.countDocuments())} members!`
-        );
-    } else if (user.username !== userData.username || user.email !== userData.email || user.avatar !== userData.avatar) {
+        if (discordJoinWebhook) {
+            sendMessageToDiscordWebhook(
+                discordJoinWebhook,
+                `${userData.username} joined VAPR we are now ${(await usersCollection.countDocuments())} members!`
+            );
+        }
+    } else {
         await usersCollection.updateOne(
             { id: userData.id },
-            { $set: { username: userData.username, email: userData.email, avatar: userData.avatar } },
+            {
+                $set: {
+                    username: userData.username,
+                    email: userData.email,
+                    avatar: userData.avatar,
+                    lastLoginAt: new Date()
+                }
+            }
         );
     }
 
-    const secret_key = generateSecretKey();
-    await secretKeysCollection.insertOne({
-        key: secret_key,
-        userId: userData.id
-    });
+    const jwtToken = generateSecureToken(userData.id);
 
     const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'discord_callback.html'), 'utf8');
     const htmlContent = htmlTemplate
-        .replace('{{jwt}}', secret_key)
+        .replace('{{jwt}}', jwtToken)
         .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
     return new Response(htmlContent, {
         status: 200,
-        headers: { "Content-Type": "text/html" }
+        headers: {
+            "Content-Type": "text/html",
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+        }
     });
 }
 
 export function redirectToDiscordLogin() {
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email%20guilds.join`;
-    return Response.redirect(authUrl);
+    const state = crypto.randomBytes(32).toString('hex');
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email%20guilds.join&state=${state}`;
+
+    return new Response(null, {
+        status: 302,
+        headers: {
+            'Location': authUrl,
+            'Set-Cookie': `oauth_state=${state}; HttpOnly; Secure; SameSite=Lax; Max-Age=600`
+        }
+    });
 }

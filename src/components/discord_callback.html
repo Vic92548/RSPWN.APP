@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAPR - Authentication</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #17212b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #4ecdc4;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>VAPR</h1>
+    <div class="spinner"></div>
+    <p>Authentication successful!</p>
+    <p>Redirecting you back to VAPR...</p>
+</div>
+<script>
+    (function() {
+        const token = "{{jwt}}";
+        const userData = {{userData}};
+
+        if (token && token !== "{{jwt}}") {
+            localStorage.setItem('jwt', token);
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+            setTimeout(function() {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            document.querySelector('p').textContent = 'Authentication failed. Please try again.';
+            setTimeout(function() {
+                window.location.href = '/';
+            }, 3000);
+        }
+    })();
+</script>
+</body>
+</html>
