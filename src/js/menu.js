@@ -272,11 +272,21 @@ function hideMenu() {
     }
 }
 
-function logout() {
+async function logout() {
     if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('jwt');
-        window.user = null;
-        window.location.href = '/';
+        try {
+            await fetch('/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            localStorage.removeItem('userData');
+            window.user = null;
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Logout error:', error);
+            window.location.href = '/';
+        }
     }
 }
 

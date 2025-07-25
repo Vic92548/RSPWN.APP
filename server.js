@@ -4,6 +4,7 @@ import { dirname, join } from 'path';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 import cors from 'cors';
@@ -110,6 +111,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -177,7 +179,8 @@ function createExpressRequest(req) {
         method: req.method,
         headers: req.headers,
         body: req.body,
-        file: req.file
+        file: req.file,
+        cookies: req.cookies
     };
 }
 
@@ -210,7 +213,18 @@ app.get('/login', authLimiter, async (req, res) => {
 app.get('/auth/discord/callback', authLimiter, async (req, res) => {
     const response = await handleOAuthCallback(createExpressRequest(req));
     const html = await response.text();
+    const setCookieHeader = response.headers.get('set-cookie');
+
+    if (setCookieHeader) {
+        res.setHeader('Set-Cookie', setCookieHeader);
+    }
+
     res.status(response.status).type('html').send(html);
+});
+
+app.post('/logout', (req, res) => {
+    res.setHeader('Set-Cookie', 'jwt=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/');
+    res.json({ success: true });
 });
 
 app.get('/me', authMiddleware, async (req, res) => {

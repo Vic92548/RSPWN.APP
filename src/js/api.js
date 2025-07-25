@@ -4,50 +4,9 @@ class API {
         this.defaultHeaders = {
             'Content-Type': 'application/json'
         };
-        this.tokenRefreshPromise = null;
-    }
-
-    getAuthHeaders() {
-        const jwt = this.getStoredToken();
-        return jwt ? { Authorization: `Bearer ${jwt}` } : {};
-    }
-
-    getStoredToken() {
-        try {
-            const token = localStorage.getItem('jwt');
-            if (!token) return null;
-
-            const payload = this.parseJwt(token);
-            if (!payload || !payload.exp) return null;
-
-            const now = Date.now() / 1000;
-            if (payload.exp < now) {
-                this.clearAuth();
-                return null;
-            }
-
-            return token;
-        } catch (error) {
-            this.clearAuth();
-            return null;
-        }
-    }
-
-    parseJwt(token) {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch (error) {
-            return null;
-        }
     }
 
     clearAuth() {
-        localStorage.removeItem('jwt');
         localStorage.removeItem('userData');
         window.user = null;
     }
@@ -61,15 +20,8 @@ class API {
             isFormData = false
         } = options;
 
-        const jwt = this.getStoredToken();
-        if (requireAuth && !jwt) {
-            this.clearAuth();
-            throw new Error('Authentication required');
-        }
-
         const requestHeaders = {
             ...(!isFormData ? this.defaultHeaders : {}),
-            ...this.getAuthHeaders(),
             ...headers
         };
 
@@ -78,7 +30,7 @@ class API {
                 method,
                 headers: requestHeaders,
                 body: isFormData ? body : (body ? JSON.stringify(body) : null),
-                credentials: 'same-origin'
+                credentials: 'include'
             });
 
             if (!response.ok) {

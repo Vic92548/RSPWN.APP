@@ -15,7 +15,11 @@ const clientId = process.env.DISCORD_ClientID;
 const clientSecret = process.env.DISCORD_ClientSecret;
 const BASE_URL = process.env.BASE_URL;
 const redirectUri = `${BASE_URL}/auth/discord/callback`;
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET must be set in production');
+}
 
 export async function updateBackgroundId(userId, newBackgroundId) {
     try {
@@ -56,13 +60,38 @@ function verifyToken(token) {
     }
 }
 
+function parseCookies(cookieHeader) {
+    const cookies = {};
+    if (!cookieHeader) return cookies;
+
+    cookieHeader.split(';').forEach(cookie => {
+        const [name, value] = cookie.trim().split('=');
+        if (name && value) {
+            cookies[name] = value;
+        }
+    });
+    return cookies;
+}
+
 export async function authenticateRequest(request) {
+    let token = null;
+
     const authHeader = request.headers.authorization || request.headers.get?.("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return { isValid: false };
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.slice(7);
+    } else {
+        const cookieHeader = request.headers.cookie || request.headers.get?.("Cookie") || request.headers.Cookie;
+        if (cookieHeader) {
+            const cookies = parseCookies(cookieHeader);
+            token = cookies.jwt;
+        } else if (request.cookies && request.cookies.jwt) {
+            token = request.cookies.jwt;
+        }
     }
 
-    const token = authHeader.slice(7);
+    if (!token) {
+        return { isValid: false };
+    }
 
     const decoded = verifyToken(token);
     if (!decoded || !decoded.userId) {
@@ -77,12 +106,25 @@ export async function authenticateRequest(request) {
     return { isValid: true, userData };
 }
 
+function parseStateFromCookie(cookieHeader) {
+    if (!cookieHeader) return null;
+    const cookies = parseCookies(cookieHeader);
+    return cookies.oauth_state;
+}
+
 export async function handleOAuthCallback(request) {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
 
     if (!code) return new Response("Authorization code not found", { status: 400 });
+
+    const cookieHeader = request.headers.cookie || request.headers.get?.("Cookie");
+    const storedState = parseStateFromCookie(cookieHeader);
+
+    if (!state || state !== storedState) {
+        return new Response("Invalid state parameter", { status: 400 });
+    }
 
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
         method: "POST",
@@ -160,14 +202,15 @@ export async function handleOAuthCallback(request) {
 
     const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'discord_callback.html'), 'utf8');
     const htmlContent = htmlTemplate
-        .replace('{{jwt}}', jwtToken)
+        .replace('{{jwt}}', '')
         .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
     return new Response(htmlContent, {
         status: 200,
         headers: {
             "Content-Type": "text/html",
-            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
+            "Set-Cookie": `jwt=${jwtToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=604800; Path=/`
         }
     });
 }

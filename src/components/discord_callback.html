@@ -55,11 +55,9 @@
 </div>
 <script>
     (function() {
-        const token = "{{jwt}}";
         const userData = {{userData}};
 
-        if (token && token !== "{{jwt}}") {
-            localStorage.setItem('jwt', token);
+        if (userData) {
             localStorage.setItem('userData', JSON.stringify(userData));
 
             setTimeout(function() {
