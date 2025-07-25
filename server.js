@@ -1,8 +1,16 @@
-// server.js
-import { serveFile } from "https://deno.land/std@0.224.0/http/file_server.ts";
-import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from "./deno_modules/auth.js";
-import { startDylan } from "./deno_modules/discord_bot.js";
-import { getVideoIdByPostId } from "./deno_modules/posts/video.js";
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import cors from 'cors';
+import serveStatic from 'serve-static';
+import multer from 'multer';
+
+import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
+import { startDylan } from './server_modules/discord_bot.js';
+import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
     createPost,
     getPost,
@@ -20,16 +28,27 @@ import {
     viewPost,
     acceptInvitation,
     clickLink
-} from "./deno_modules/post.js";
-import { xpTodayHandler } from "./deno_modules/routes/xp_today.js";
-import { usersCollection } from "./deno_modules/database.js";
-import { handleProfilePage } from "./deno_modules/user_profile.js";
-import { createRenderer } from "./deno_modules/template_engine.js";
-import { FastRouter } from "./deno_modules/router.js";
+} from './server_modules/post.js';
+import { xpTodayHandler } from './server_modules/routes/xp_today.js';
+import { usersCollection } from './server_modules/database.js';
+import { handleProfilePage } from './server_modules/user_profile.js';
+import { createRenderer } from './server_modules/template_engine.js';
 
-const port = 8080;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Initialize the template engine
+const app = express();
+const port = process.env.PORT || 8080;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 }
+});
+
 const templates = createRenderer({
     baseDir: './src/components/',
     enableCache: true,
@@ -37,13 +56,26 @@ const templates = createRenderer({
     variablePattern: /\{\{(.+?)\}\}/g,
 });
 
-// Initialize router
-const router = new FastRouter();
+async function authMiddleware(req, res, next) {
+    const authResult = await authenticateRequest(req);
+    if (!authResult.isValid) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    req.userData = authResult.userData;
+    next();
+}
 
-// Register routes
+function createExpressRequest(req) {
+    return {
+        url: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+        method: req.method,
+        headers: req.headers,
+        body: req.body,
+        file: req.file
+    };
+}
 
-// Home page
-router.get('/', async (request, url) => {
+app.get('/', async (req, res) => {
     try {
         const htmlContent = await templates.render('index.html', {
             meta_description: "Self promote your awesomeness",
@@ -51,100 +83,95 @@ router.get('/', async (request, url) => {
             meta_image: "https://vapr-club.b-cdn.net/posts/3bad19ce-9f1b-4abd-a718-3d701c3ca09a.png",
             meta_url: "https://vapr.club/"
         });
-
-        return new Response(htmlContent, {
-            status: 200,
-            headers: { "Content-Type": "text/html" }
-        });
+        res.status(200).type('html').send(htmlContent);
     } catch (error) {
         console.error('Template rendering error:', error);
-        return new Response("Internal Server Error", { status: 500 });
+        res.status(500).send("Internal Server Error");
     }
 });
 
-// Auth routes
-router.get('/login', async () => redirectToDiscordLogin());
-router.get('/auth/discord/callback', async (request) => handleOAuthCallback(request));
+app.get('/login', async (req, res) => {
+    const response = await redirectToDiscordLogin();
+    res.redirect(response.headers.get('location'));
+});
 
-// User routes
-router.get('/me', async (request, url, authResult) => {
-    console.log(authResult);
-    const user = authResult.userData;
+app.get('/auth/discord/callback', async (req, res) => {
+    const response = await handleOAuthCallback(createExpressRequest(req));
+    const html = await response.text();
+    res.status(response.status).type('html').send(html);
+});
 
+app.get('/me', authMiddleware, async (req, res) => {
+    console.log(req.userData);
+    const user = req.userData;
     if (!user.level) user.level = 0;
     if (!user.xp) user.xp = 0;
     if (!user.xp_required) user.xp_required = 700;
+    res.json(user);
+});
 
-    return new Response(JSON.stringify(user), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-    });
-}, { requireAuth: true, prefix: true });
+app.get('/me/posts', authMiddleware, async (req, res) => {
+    const response = await getPostList(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
 
-router.get('/me/posts', async (request, url, authResult) => {
-    console.log(authResult);
-    return getPostList(authResult.userData.id);
-}, { requireAuth: true });
-
-router.get('/me/update-background', async (request, url, authResult) => {
-    const backgroundId = url.searchParams.get('backgroundId');
+app.get('/me/update-background', authMiddleware, async (req, res) => {
+    const backgroundId = req.query.backgroundId;
     if (!backgroundId) {
-        return new Response(JSON.stringify({
+        return res.status(400).json({
             success: false,
             message: "backgroundId parameter is required"
-        }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" }
         });
     }
 
     try {
-        await updateBackgroundId(authResult.userData.id, backgroundId);
-        return new Response(JSON.stringify({
+        await updateBackgroundId(req.userData.id, backgroundId);
+        res.json({
             success: true,
             message: "Background updated successfully"
-        }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" }
         });
     } catch (error) {
         console.error('Error updating background:', error);
-        return new Response(JSON.stringify({
+        res.status(500).json({
             success: false,
             message: "Failed to update background"
-        }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
         });
     }
-}, { requireAuth: true });
+});
 
-// Feed route
-router.get('/feed', async (request, url) => {
-    const authResult = await authenticateRequest(request);
+app.get('/feed', async (req, res) => {
+    const authResult = await authenticateRequest(req);
     const userId = authResult.isValid ? authResult.userData.id : "anonymous";
-    return getNextFeedPosts(userId);
-}, { prefix: true });
+    const response = await getNextFeedPosts(userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
 
-// Post routes
-router.post('/posts', async (request, url, authResult) => {
-    return createPost(request, authResult.userData);
-}, { requireAuth: true });
+app.post('/posts', authMiddleware, upload.single('file'), async (req, res) => {
+    const expressReq = createExpressRequest(req);
+    const response = await createPost(expressReq, req.userData);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
 
-router.get('/posts/', async (request, url) => {
-    const id = url.pathname.split('/')[2];
-    const authResult = await authenticateRequest(request);
-
+app.get('/posts/:id', async (req, res) => {
+    const authResult = await authenticateRequest(req);
     console.log(authResult);
 
     if (authResult.isValid) {
-        return getPost(id, authResult.userData.id);
+        const response = await getPost(req.params.id, authResult.userData.id);
+        const data = await response.json();
+        res.status(response.status).json(data);
+    } else {
+        const response = await getPost(req.params.id);
+        const data = await response.json();
+        res.status(response.status).json(data);
     }
-    return getPost(id);
-}, { prefix: true });
+});
 
-router.get('/post/', async (request, url) => {
-    const id = url.pathname.split('/')[2];
+app.get('/post/:id', async (req, res) => {
+    const id = req.params.id;
     const post = await getPostData(id);
 
     if (post.content.includes("iframe.mediadelivery.net")) {
@@ -157,74 +184,76 @@ router.get('/post/', async (request, url) => {
             meta_description: post.title,
             meta_author: post.username,
             meta_image: post.content,
-            meta_url: "https://vapr.club" + url.pathname
+            meta_url: "https://vapr.club" + req.path
         });
-
-        return new Response(htmlContent, {
-            status: 200,
-            headers: { "Content-Type": "text/html" }
-        });
+        res.status(200).type('html').send(htmlContent);
     } catch (error) {
         console.error('Template rendering error:', error);
-        return new Response("Internal Server Error", { status: 500 });
+        res.status(500).send("Internal Server Error");
     }
-}, { prefix: true });
-
-// Post interaction routes
-router.get('/like/', async (request, url, authResult) => {
-    const id = url.pathname.split('/')[2];
-    return likePost(id, authResult.userData);
-}, { prefix: true, requireAuth: true });
-
-router.get('/dislike/', async (request, url, authResult) => {
-    const id = url.pathname.split('/')[2];
-    return dislikePost(id, authResult.userData);
-}, { prefix: true, requireAuth: true });
-
-router.get('/skip/', async (request, url, authResult) => {
-    const id = url.pathname.split('/')[2];
-    return skipPost(id, authResult.userData);
-}, { prefix: true, requireAuth: true });
-
-// Follow management
-router.get('/manage-follow', async (request, url, authResult) => {
-    const postId = url.searchParams.get('postId');
-    const action = url.searchParams.get('action');
-
-    if (action === 'follow') {
-        return followPost(postId, authResult.userData.id);
-    } else if (action === 'unfollow') {
-        return unfollowPost(postId, authResult.userData.id);
-    } else {
-        return new Response(JSON.stringify({
-            success: false,
-            message: "Invalid action specified"
-        }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" }
-        });
-    }
-}, { requireAuth: true });
-
-router.get('/check-follow/', async (request, url, authResult) => {
-    const creatorId = url.pathname.split('/')[2];
-    return checkIfUserFollowsCreator(authResult.userData.id, creatorId);
-}, { prefix: true, requireAuth: true });
-
-// Reaction routes
-router.get('/add-reaction', async (request, url, authResult) => {
-    const postId = url.searchParams.get('postId');
-    const emoji = url.searchParams.get('emoji');
-    return addReaction(postId, authResult.userData.id, emoji);
-}, { requireAuth: true });
-
-router.get('/get-reactions', async (request, url) => {
-    const postId = url.searchParams.get('postId');
-    return getReactionsByPostId(postId);
 });
 
-router.get('/api/user/:userId', async (request, url) => {
-    const userId = url.pathname.split('/')[3];
+app.get('/like/:id', authMiddleware, async (req, res) => {
+    const response = await likePost(req.params.id, req.userData);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/dislike/:id', authMiddleware, async (req, res) => {
+    const response = await dislikePost(req.params.id, req.userData);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/skip/:id', authMiddleware, async (req, res) => {
+    const response = await skipPost(req.params.id, req.userData);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/manage-follow', authMiddleware, async (req, res) => {
+    const postId = req.query.postId;
+    const action = req.query.action;
+
+    let response;
+    if (action === 'follow') {
+        response = await followPost(postId, req.userData.id);
+    } else if (action === 'unfollow') {
+        response = await unfollowPost(postId, req.userData.id);
+    } else {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid action specified"
+        });
+    }
+
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/check-follow/:creatorId', authMiddleware, async (req, res) => {
+    const response = await checkIfUserFollowsCreator(req.userData.id, req.params.creatorId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/add-reaction', authMiddleware, async (req, res) => {
+    const postId = req.query.postId;
+    const emoji = req.query.emoji;
+    const response = await addReaction(postId, req.userData.id, emoji);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/get-reactions', async (req, res) => {
+    const postId = req.query.postId;
+    const response = await getReactionsByPostId(postId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/user/:userId', async (req, res) => {
+    const userId = req.params.userId;
 
     try {
         const user = await usersCollection.findOne(
@@ -233,125 +262,96 @@ router.get('/api/user/:userId', async (request, url) => {
         );
 
         if (!user) {
-            return new Response(JSON.stringify({ error: 'User not found' }), {
-                status: 404,
-                headers: { "Content-Type": "application/json" }
-            });
+            return res.status(404).json({ error: 'User not found' });
         }
 
-        return new Response(JSON.stringify(user), {
-            status: 200,
-            headers: { "Content-Type": "application/json" }
-        });
+        res.json(user);
     } catch (error) {
         console.error('Error fetching user:', error);
-        return new Response(JSON.stringify({ error: 'Internal server error' }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
-        });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// View and click tracking
-router.get('/register-view', async (request, url) => {
-    const postId = url.searchParams.get('postId');
-    const authResult = await authenticateRequest(request);
+app.get('/register-view', async (req, res) => {
+    const postId = req.query.postId;
+    const authResult = await authenticateRequest(req);
     const userId = authResult.isValid ? authResult.userData.id : "anonymous";
-    return viewPost(postId, userId);
+    const response = await viewPost(postId, userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
 });
 
-router.get('/click-link', async (request, url) => {
-    const postId = url.searchParams.get('postId');
-    const authResult = await authenticateRequest(request);
+app.get('/click-link', async (req, res) => {
+    const postId = req.query.postId;
+    const authResult = await authenticateRequest(req);
     const userId = authResult.isValid ? authResult.userData.id : "anonymous";
-    return clickLink(postId, userId);
+    const response = await clickLink(postId, userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
 });
 
-// Invitation route
-router.get('/accept-invitation', async (request, url, authResult) => {
-    const ambassadorUserId = url.searchParams.get('ambassadorUserId');
+app.get('/accept-invitation', authMiddleware, async (req, res) => {
+    const ambassadorUserId = req.query.ambassadorUserId;
 
     try {
-        const acceptanceResult = await acceptInvitation(authResult.userData.id, ambassadorUserId);
+        const acceptanceResult = await acceptInvitation(req.userData.id, ambassadorUserId);
 
         if (acceptanceResult.success) {
-            return new Response(JSON.stringify({
+            res.json({
                 success: true,
                 message: "Invitation accepted successfully"
-            }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" }
             });
         } else {
-            return new Response(JSON.stringify({
+            res.status(400).json({
                 success: false,
                 message: "Failed to accept invitation"
-            }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" }
             });
         }
     } catch (error) {
         console.error('Error accepting invitation:', error);
-        return new Response(JSON.stringify({
+        res.status(500).json({
             success: false,
             message: "Error processing your request"
-        }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
         });
     }
-}, { requireAuth: true });
-
-// API routes
-router.get('/api/xp-today', async (request) => xpTodayHandler(request));
-router.get('/api/user-count', async () => {
-    const count = await usersCollection.countDocuments();
-    return new Response(JSON.stringify({ count }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-    });
 });
 
-router.get('/api/analytics', async (request, url, authResult) => {
-    const { analyticsHandler } = await import("./deno_modules/routes/analytics.js");
-    return analyticsHandler(request, authResult);
-}, { requireAuth: true });
+app.get('/api/xp-today', async (req, res) => {
+    const response = await xpTodayHandler(createExpressRequest(req));
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
 
-// Profile pages (must be last due to catch-all nature)
-router.get('/@', async (request, url) => {
-    const profileResponse = await handleProfilePage(request, templates);
+app.get('/api/user-count', async (req, res) => {
+    const count = await usersCollection.countDocuments();
+    res.json({ count });
+});
+
+app.get('/api/analytics', authMiddleware, async (req, res) => {
+    const { analyticsHandler } = await import("./server_modules/routes/analytics.js");
+    const response = await analyticsHandler(createExpressRequest(req), { isValid: true, userData: req.userData });
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/@:username', async (req, res) => {
+    const expressReq = createExpressRequest(req);
+    const profileResponse = await handleProfilePage(expressReq, templates);
     if (profileResponse) {
-        return profileResponse;
+        const html = await profileResponse.text();
+        res.status(profileResponse.status).type('html').send(html);
+    } else {
+        res.status(404).send("Profile not found");
     }
-}, { prefix: true });
+});
 
-// Main request handler
-async function handleRequest(request) {
-    // Try router first - pass authenticateRequest function
-    const response = await router.handle(request, authenticateRequest);
-
-    if (response) {
-        return response;
-    }
-
-    // Fall back to static file serving
-    try {
-        const url = new URL(request.url);
-        const filePath = `./public${url.pathname}`;
-        return await serveFile(request, filePath);
-    } catch (error) {
-        console.error(error);
-        return new Response("Not Found", { status: 404 });
-    }
-}
+app.use(serveStatic(join(__dirname, 'public')));
 
 try {
-    startDylan();
+    await startDylan();
     console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
-    console.log(`Router initialized with ${Object.keys(router.routes.GET).length} GET routes`);
-    Deno.serve({ port }, handleRequest);
+    app.listen(port);
 } catch (err) {
     console.error('Fatal startup error:', err);
-    Deno.exit(1);
+    process.exit(1);
 }

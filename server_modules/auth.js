@@ -1,10 +1,17 @@
 import { usersCollection, secretKeysCollection } from './database.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
 import { joinGuild } from './discord_bot.js';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const clientId = Deno.env.get("DISCORD_ClientID");
-const clientSecret = Deno.env.get("DISCORD_ClientSecret");
-const BASE_URL = Deno.env.get("BASE_URL");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const clientId = process.env.DISCORD_ClientID;
+const clientSecret = process.env.DISCORD_ClientSecret;
+const BASE_URL = process.env.BASE_URL;
 const redirectUri = `${BASE_URL}/auth/discord/callback`;
 
 export async function updateBackgroundId(userId, newBackgroundId) {
@@ -31,11 +38,11 @@ function generateSecretKey() {
     const byteLength = 32;
     const bytes = new Uint8Array(byteLength);
     crypto.getRandomValues(bytes);
-    return btoa(String.fromCharCode(...bytes));
+    return Buffer.from(bytes).toString('base64');
 }
 
 export async function authenticateRequest(request) {
-    const authHeader = request.headers.get("Authorization");
+    const authHeader = request.headers.authorization || request.headers.get?.("Authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return { isValid: false };
     }
@@ -54,7 +61,7 @@ export async function authenticateRequest(request) {
 }
 
 export async function handleOAuthCallback(request) {
-    const url = new URL(request.url, `${BASE_URL}/`);
+    const url = new URL(request.url);
     const code = url.searchParams.get("code");
     if (!code) return new Response("Authorization code not found", { status: 400 });
 
@@ -102,7 +109,7 @@ export async function handleOAuthCallback(request) {
             xp_required: 700
         });
 
-        const discordJoinWebhook = Deno.env.get("DISCORD_JOIN_WEBHOOK_URL");
+        const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
 
         sendMessageToDiscordWebhook(
             discordJoinWebhook,
@@ -121,7 +128,7 @@ export async function handleOAuthCallback(request) {
         userId: userData.id
     });
 
-    const htmlTemplate = await Deno.readTextFile("discord_callback.html");
+    const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'discord_callback.html'), 'utf8');
     const htmlContent = htmlTemplate
         .replace('{{jwt}}', secret_key)
         .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));

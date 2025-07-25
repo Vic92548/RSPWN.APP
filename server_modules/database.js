@@ -1,6 +1,8 @@
-import { MongoClient } from "npm:mongodb@6";
+import { MongoClient } from "mongodb";
+import dotenv from 'dotenv';
+dotenv.config();
 
-const databaseUrl = Deno.env.get("DATABASE_URL");
+const databaseUrl = process.env.DATABASE_URL;
 
 const client = new MongoClient(databaseUrl);
 await client.connect();

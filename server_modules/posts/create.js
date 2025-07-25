@@ -10,7 +10,7 @@ const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quic
 const ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 const ALLOWED_VIDEO_EXTENSIONS = ['mp4', 'webm', 'ogg', 'mov'];
 
-const webhookUrl = Deno.env.get("WEBHOOK_URL");
+const webhookUrl = process.env.WEBHOOK_URL;
 
 async function sendWebhook(url, data) {
     try {
@@ -65,21 +65,10 @@ function validateFile(file) {
 
 export async function createPost(request, userData) {
     try {
-        if (!request.headers.get("Content-Type")?.includes("multipart/form-data")) {
-            return new Response(JSON.stringify({
-                success: false,
-                error: "Invalid content type"
-            }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" }
-            });
-        }
-
-        const formData = await request.formData();
-        const title = formData.get("title");
-        const link = formData.get("link");
-        const file = formData.get("file");
-        const community = formData.get("community");
+        const title = request.body.title;
+        const link = request.body.link;
+        const file = request.file;
+        const community = request.body.community;
 
         if (typeof title !== "string" || !title.trim()) {
             return new Response(JSON.stringify({
@@ -165,8 +154,8 @@ export async function createPost(request, userData) {
 
             userData = await usersCollection.findOne({ id: userData.id });
 
-            const baseUrl = Deno.env.get("BASE_URL");
-            const discordWebhook = Deno.env.get("DISCORD_POST_WEBHOOK_URL");
+            const baseUrl = process.env.BASE_URL;
+            const discordWebhook = process.env.DISCORD_POST_WEBHOOK_URL;
 
             if (discordWebhook) {
                 sendMessageToDiscordWebhook(
@@ -235,11 +224,11 @@ export async function createPost(request, userData) {
 
 async function uploadImageToBunnyCDN(file, postId) {
     try {
-        const fileExtension = file.name.split('.').pop();
+        const fileExtension = file.originalname.split('.').pop();
         const fileName = `${postId}.${fileExtension}`;
-        const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
-        const storageZoneUrl = Deno.env.get("BUNNY_CDN_STORAGE_URL");
-        const cdnHostname = Deno.env.get("BUNNY_CDN_HOSTNAME");
+        const accessKey = process.env.BUNNY_CDN_ACCESSKEY;
+        const storageZoneUrl = process.env.BUNNY_CDN_STORAGE_URL;
+        const cdnHostname = process.env.BUNNY_CDN_HOSTNAME;
 
         if (!accessKey || !storageZoneUrl || !cdnHostname) {
             throw new Error("Bunny CDN configuration is missing from environment variables.");
@@ -247,17 +236,14 @@ async function uploadImageToBunnyCDN(file, postId) {
 
         const uploadUrl = `${storageZoneUrl}posts/${fileName}`;
 
-        const arrayBuffer = await file.arrayBuffer();
-        const blob = new Blob([arrayBuffer], { type: file.type || 'application/octet-stream' });
-
         const response = await fetch(uploadUrl, {
             method: "PUT",
             headers: {
                 "AccessKey": accessKey,
-                "Content-Type": file.type || "application/octet-stream",
+                "Content-Type": file.mimetype || "application/octet-stream",
                 "accept": "application/json"
             },
-            body: blob
+            body: file.buffer
         });
 
         if (!response.ok) {
@@ -276,8 +262,8 @@ async function uploadImageToBunnyCDN(file, postId) {
 
 async function uploadVideoToBunnyCDN(file, postId) {
     try {
-        const libraryId = Deno.env.get("BUNNY_CDN_LIBRARY_ID");
-        const accessKey = Deno.env.get("BUNNY_CDN_VIDEO_API_KEY");
+        const libraryId = process.env.BUNNY_CDN_LIBRARY_ID;
+        const accessKey = process.env.BUNNY_CDN_VIDEO_API_KEY;
 
         if (!accessKey || !libraryId) {
             throw new Error("Bunny CDN video configuration is missing from environment variables.");
@@ -304,8 +290,6 @@ async function uploadVideoToBunnyCDN(file, postId) {
         const videoId = videoData.guid;
 
         const uploadVideoUrl = `https://video.bunnycdn.com/library/${libraryId}/videos/${videoId}`;
-        const arrayBuffer = await file.arrayBuffer();
-        const blob = new Blob([arrayBuffer], { type: file.type || 'application/octet-stream' });
 
         const uploadVideoResponse = await fetch(uploadVideoUrl, {
             method: "PUT",
@@ -313,7 +297,7 @@ async function uploadVideoToBunnyCDN(file, postId) {
                 "AccessKey": accessKey,
                 "accept": "application/json"
             },
-            body: blob
+            body: file.buffer
         });
 
         if (!uploadVideoResponse.ok) {
@@ -358,8 +342,8 @@ export async function cleanupFailedUpload(postId, mediaType = 'image', fileExten
         if (mediaType === 'video') {
             const video = await videosCollection.findOne({ postId });
             if (video) {
-                const libraryId = Deno.env.get("BUNNY_CDN_LIBRARY_ID");
-                const accessKey = Deno.env.get("BUNNY_CDN_VIDEO_API_KEY");
+                const libraryId = process.env.BUNNY_CDN_LIBRARY_ID;
+                const accessKey = process.env.BUNNY_CDN_VIDEO_API_KEY;
 
                 const deleteResponse = await fetch(`https://video.bunnycdn.com/library/${libraryId}/videos/${video.videoId}`, {
                     method: "DELETE",
@@ -387,8 +371,8 @@ export async function cleanupFailedUpload(postId, mediaType = 'image', fileExten
 
 async function deleteImageFromBunnyCDN(postId, fileExtension) {
     try {
-        const accessKey = Deno.env.get("BUNNY_CDN_ACCESSKEY");
-        const storageZoneUrl = Deno.env.get("BUNNY_CDN_STORAGE_URL");
+        const accessKey = process.env.BUNNY_CDN_ACCESSKEY;
+        const storageZoneUrl = process.env.BUNNY_CDN_STORAGE_URL;
 
         if (!accessKey || !storageZoneUrl) {
             throw new Error("Bunny CDN configuration missing for deletion");

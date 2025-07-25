@@ -1,6 +1,5 @@
-import { createPost } from "./posts/create.js"; // Import the createPost function
-
-export { createPost }; // Re-export createPost
+import { createPost } from "./posts/create.js";
+export { createPost };
 
 import { addReaction, getReactionsByPostId } from "./posts/reactions.js";
 export { addReaction, getReactionsByPostId };

@@ -1,7 +1,7 @@
-import { Resend } from "npm:resend";
+import { Resend } from "resend";
 import { followsCollection, usersCollection } from "../database.js";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function notifyFollowersByEmail(creatorId, postId, postTitle) {
     try {
@@ -27,7 +27,7 @@ export async function notifyFollowersByEmail(creatorId, postId, postTitle) {
             return;
         }
 
-        const baseUrl = Deno.env.get("BASE_URL") || "https://vapr.club";
+        const baseUrl = process.env.BASE_URL || "https://vapr.club";
         const postUrl = `${baseUrl}/post/${postId}`;
 
         const emailPayload = followers.map(follower => ({
@@ -35,13 +35,13 @@ export async function notifyFollowersByEmail(creatorId, postId, postTitle) {
             to: [follower.email],
             subject: `@${creator.username} just posted: ${postTitle}`,
             html: `
-                <h2>🚨 New post alert!</h2>
-                <p><strong>@${creator.username}</strong> just shared a new post:</p>
-                <p><a href="${postUrl}">${postTitle}</a></p>
-                <p>Click to read and show some love ❤️</p>
-                <small>You're receiving this email because you follow @${creator.username} on VAPR.<br>
-                <a href="${baseUrl}/settings">Unfollow or manage notifications</a></small>
-            `
+               <h2>🚨 New post alert!</h2>
+               <p><strong>@${creator.username}</strong> just shared a new post:</p>
+               <p><a href="${postUrl}">${postTitle}</a></p>
+               <p>Click to read and show some love ❤️</p>
+               <small>You're receiving this email because you follow @${creator.username} on VAPR.<br>
+               <a href="${baseUrl}/settings">Unfollow or manage notifications</a></small>
+           `
         }));
 
         const response = await resend.batch.send(emailPayload);

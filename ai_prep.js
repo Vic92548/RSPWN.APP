@@ -2,10 +2,10 @@
 // Combines all .html, .css, and .js files from 'deno_modules' and 'src' into one big text file.
 // Also includes server.js from the root directory.
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const TARGET_DIRS = ['deno_modules', 'src'];
+const TARGET_DIRS = ['server_modules', 'src'];
 const ROOT_FILES = ['server.js','build.js'];
 const OUTPUT_FILE = 'output.txt';
 const ALLOWED_EXTENSIONS = ['.html', '.css', '.js'];

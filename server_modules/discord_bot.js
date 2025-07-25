@@ -1,5 +1,5 @@
-const botToken = Deno.env.get("DISCORD_BOT_TOKEN");
-const VAPRbotToken = Deno.env.get("DISCORD_BOT_VAPR");
+const botToken = process.env.DISCORD_BOT_TOKEN;
+const VAPRbotToken = process.env.DISCORD_BOT_VAPR;
 
 async function sendBotCommand(token, endpoint, method, body = null) {
     try {
@@ -25,12 +25,10 @@ async function sendBotCommand(token, endpoint, method, body = null) {
 
 async function sendPrivateMessage(userId, message) {
     try {
-        // Create a DM channel with the user
         const channelData = await sendBotCommand(botToken, `/users/@me/channels`, "POST", {
             recipient_id: userId,
         });
 
-        // Send a message to the DM channel
         await sendBotCommand(botToken, `/channels/${channelData.id}/messages`, "POST", {
             content: message,
         });
@@ -42,7 +40,6 @@ async function sendPrivateMessage(userId, message) {
 }
 
 async function startDylan() {
-    //await sendPrivateMessage("204619144358789122", "Push now ready!");
 }
 
 async function joinGuild (accessToken, guildId, userId) {

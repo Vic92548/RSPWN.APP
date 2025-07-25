@@ -1,3 +1,5 @@
+import { promises as fs } from 'fs';
+
 class TemplateEngine {
     constructor(options = {}) {
         this.baseDir = options.baseDir || './src/components/';
@@ -19,7 +21,7 @@ class TemplateEngine {
 
         try {
             const fullPath = filePath.startsWith('/') ? filePath : `${this.baseDir}${filePath}`;
-            const content = await Deno.readTextFile(fullPath);
+            const content = await fs.readFile(fullPath, 'utf8');
 
             if (this.enableCache) {
                 this.cache.set(filePath, content);
@@ -39,6 +41,7 @@ class TemplateEngine {
         const includes = [];
         let match;
 
+        this.includePattern.lastIndex = 0;
         while ((match = this.includePattern.exec(template)) !== null) {
             includes.push({
                 fullMatch: match[0],

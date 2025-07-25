@@ -36,7 +36,7 @@ export async function acceptInvitation(invitedUserId, ambassadorUserId) {
 
         await addXP(ambassadorUserId, EXPERIENCE_TABLE.INVITE);
 
-        const discordInvitesWebhook = Deno.env.get("DISCORD_INVITES_WEBHOOK_URL");
+        const discordInvitesWebhook = process.env.DISCORD_INVITES_WEBHOOK_URL;
 
         sendMessageToDiscordWebhook(
             discordInvitesWebhook,
@@ -63,7 +63,7 @@ export async function acceptInvitation(invitedUserId, ambassadorUserId) {
             followsCollection.countDocuments({ creatorId: ambassadorUserId })
         ]);
 
-        const discordFollowWebhook = Deno.env.get("DISCORD_FOLLOW_WEBHOOK_URL");
+        const discordFollowWebhook = process.env.DISCORD_FOLLOW_WEBHOOK_URL;
 
         sendMessageToDiscordWebhook(
             discordFollowWebhook,

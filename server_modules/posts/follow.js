@@ -47,7 +47,7 @@ export async function followPost(postId, followerId) {
             followsCollection.countDocuments({ creatorId: creatorId })
         ]);
 
-        const discordFollowWebhook = Deno.env.get("DISCORD_FOLLOW_WEBHOOK_URL");
+        const discordFollowWebhook = process.env.DISCORD_FOLLOW_WEBHOOK_URL;
 
         sendMessageToDiscordWebhook(
             discordFollowWebhook,
@@ -91,7 +91,7 @@ export async function unfollowPost(postId, followerId) {
             followsCollection.countDocuments({ creatorId: post.userId })
         ]);
 
-        const discordFollowWebhook = Deno.env.get("DISCORD_FOLLOW_WEBHOOK_URL");
+        const discordFollowWebhook = process.env.DISCORD_FOLLOW_WEBHOOK_URL;
         sendMessageToDiscordWebhook(
             discordFollowWebhook,
             ":broken_heart: **@" + follower.username + "**(lvl " + follower.level + ") stopped following :arrow_right: **@" + creator.username + "**(lvl " + creator.level + "), followers: **" + followerCount + "**"

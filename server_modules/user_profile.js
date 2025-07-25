@@ -1,4 +1,5 @@
 import {usersCollection, postsCollection, followsCollection, viewsCollection} from "./database.js";
+import { promises as fs } from 'fs';
 
 async function handleProfilePage(request) {
     const url = new URL(request.url);
@@ -106,11 +107,11 @@ async function gatherProfileData(user) {
 }
 
 async function generateProfileHtml(profileData) {
-    const template = await Deno.readTextFile("src/components/profile_page.html");
+    const template = await fs.readFile("src/components/profile_page.html", 'utf8');
 
     const avatarUrl = profileData.avatar
         ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png?size=256`
-        : 'https://vapr.b-cdn.net/default_vapr_avatar.png';
+        : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
 
     const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
 
@@ -121,14 +122,14 @@ async function generateProfileHtml(profileData) {
         postsHtml = profileData.recentPosts.map(post => {
             const timeAgoText = getTimeAgo(post.timestamp);
             return `
-                <a href="/post/${post.id}" class="profile-post-card">
-                    <h4>${escapeHtml(post.title)}</h4>
-                    <div class="post-meta">
-                        <span><i class="fa-solid fa-eye"></i> ${formatNumber(post.views)}</span>
-                        <span><i class="fa-solid fa-clock"></i> ${timeAgoText}</span>
-                    </div>
-                </a>
-            `;
+               <a href="/post/${post.id}" class="profile-post-card">
+                   <h4>${escapeHtml(post.title)}</h4>
+                   <div class="post-meta">
+                       <span><i class="fa-solid fa-eye"></i> ${formatNumber(post.views)}</span>
+                       <span><i class="fa-solid fa-clock"></i> ${timeAgoText}</span>
+                   </div>
+               </a>
+           `;
         }).join('');
     }
 
@@ -160,7 +161,7 @@ async function generateProfileHtml(profileData) {
 }
 
 async function generateProfileNotFound(username) {
-    const template = await Deno.readTextFile("src/components/profile_404.html");
+    const template = await fs.readFile("src/components/profile_404.html", 'utf8');
 
     return template
         .replace(/{{username}}/g, escapeHtml(username))
