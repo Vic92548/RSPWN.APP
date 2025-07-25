@@ -103,14 +103,16 @@ function equipBackground(url, save = true) {
         return;
     }
 
-    const saved_background = localStorage.getItem('background_url');
-
-    if(!saved_background){
-        localStorage.setItem('background_url', url);
-    }else if(saved_background !== url) {
-        localStorage.setItem('background_url', url);
-    }
     document.body.style.backgroundImage = 'url(' + url + ')';
+
+    if (save) {
+        localStorage.setItem('background_url', url);
+
+        const bgData = background_images.find(bg => bg.image_url === url);
+        if (bgData) {
+            localStorage.setItem('background_id', bgData.id);
+        }
+    }
 }
 
 function updateBackgroundId(newBackgroundId) {
@@ -119,9 +121,31 @@ function updateBackgroundId(newBackgroundId) {
         return;
     }
 
+    if (!navigator.onLine) {
+        localStorage.setItem('pending_background_id', newBackgroundId);
+
+        const bg = background_images.find(b => b.id === newBackgroundId);
+        if (bg) {
+            equipBackground(bg.image_url, true);
+        }
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Offline Mode',
+                text: 'Background will be synced when you\'re back online'
+            });
+        }
+        return;
+    }
+
     api.updateBackground(newBackgroundId)
         .then(response => {
             console.log('Background updated successfully:', response);
+
+            if (window.user) {
+                window.user.backgroundId = newBackgroundId;
+            }
 
             if (typeof Swal !== 'undefined') {
                 const Toast = Swal.mixin({
@@ -143,3 +167,47 @@ function updateBackgroundId(newBackgroundId) {
             alert('Failed to update background. Please try again.');
         });
 }
+
+async function migrateLocalBackgroundToBackend() {
+    if (!isUserLoggedIn()) return;
+
+    if (!window.user.backgroundId) {
+        const localBackgroundId = localStorage.getItem('background_id');
+        const localBackgroundUrl = localStorage.getItem('background_url');
+
+        if (localBackgroundId) {
+            try {
+                await api.updateBackground(localBackgroundId);
+                console.log('Migrated local background to backend');
+            } catch (error) {
+                console.error('Failed to migrate background:', error);
+            }
+        } else if (localBackgroundUrl) {
+            const bgData = background_images.find(bg => bg.image_url === localBackgroundUrl);
+            if (bgData) {
+                try {
+                    await api.updateBackground(bgData.id);
+                    localStorage.setItem('background_id', bgData.id);
+                    console.log('Migrated local background URL to backend');
+                } catch (error) {
+                    console.error('Failed to migrate background:', error);
+                }
+            }
+        }
+    }
+}
+
+window.addEventListener('online', async () => {
+    if (isUserLoggedIn()) {
+        const pendingBackgroundId = localStorage.getItem('pending_background_id');
+        if (pendingBackgroundId) {
+            try {
+                await api.updateBackground(pendingBackgroundId);
+                localStorage.removeItem('pending_background_id');
+                console.log('Synced pending background change');
+            } catch (error) {
+                console.error('Failed to sync pending background:', error);
+            }
+        }
+    }
+});
