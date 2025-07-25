@@ -80,8 +80,10 @@ app.use(helmet({
                 "https://kit.fontawesome.com",
                 "https://cloud.umami.is",
                 "https://eu.i.posthog.com",
+                "https://api-gateway.umami.dev",
                 "https://discord.com"
             ],
+            scriptSrcAttr: ["'unsafe-inline'"],
             fontSrc: [
                 "'self'",
                 "https://fonts.gstatic.com",
@@ -197,7 +199,7 @@ app.get('/', async (req, res) => {
         console.error('Template rendering error:', error);
         res.status(500).send("Internal Server Error");
     }
-});
+})
 
 app.get('/login', authLimiter, async (req, res) => {
     const response = await redirectToDiscordLogin();
@@ -554,8 +556,13 @@ app.get('/@:username', async (req, res) => {
 });
 
 app.use(serveStatic(join(__dirname, 'public'), {
-    maxAge: '1d',
+    maxAge: 0,
     setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        res.setHeader('Surrogate-Control', 'no-store');
+
         if (path.endsWith('.js')) {
             res.setHeader('Content-Type', 'application/javascript');
         }

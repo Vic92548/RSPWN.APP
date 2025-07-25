@@ -34,7 +34,7 @@ class API {
             });
 
             if (!response.ok) {
-                if (response.status === 401) {
+                if (response.status === 401 && requireAuth) {
                     this.clearAuth();
                     window.location.href = '/login';
                     throw new Error('Unauthorized');
@@ -128,7 +128,7 @@ class API {
         if (!/^[a-f0-9-]{36}$/.test(postId)) {
             throw new Error('Invalid post ID format');
         }
-        const allowedEmojis = ['💩', '👀', '😂', '❤️', '💯'];
+        const allowedEmojis = ['💩', '👀', '😂', '❤️', '💯', 'null'];
         if (!allowedEmojis.includes(emoji)) {
             throw new Error('Invalid emoji');
         }
@@ -183,7 +183,9 @@ class API {
     }
 
     async getUserCount() {
-        const response = await fetch('/api/user-count');
+        const response = await fetch('/api/user-count', {
+            credentials: 'include'
+        });
         return response.json();
     }
 

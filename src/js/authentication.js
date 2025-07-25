@@ -4,38 +4,46 @@ function loadUserData(){
         document.getElementById("add_post").style.display = "none";
     }
 
+    fetch('/me', {
+        credentials: 'include'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Not authenticated');
+            }
+            return response.json();
+        })
+        .then(data => {
+            window.user = data;
 
-   api.getMe().then(data => {
-        window.user = data;
+            if(!MainPage){
+                return;
+            }
 
-        if(!MainPage){
-            return;
-        }
+            updateUsername();
+            updateLevel();
 
-        updateUsername();
-        updateLevel();
+            const oldUser = {
+                xp: 0,
+                level: window.user.level,
+                xp_required: window.user.xp_required
+            };
 
-        const oldUser = {
-            xp: 0,
-            level: window.user.level,
-            xp_required: window.user.xp_required
-        };
+            setXPProgress(oldUser, true);
 
-        setXPProgress(oldUser, true);
+            document.getElementById("sign_in").style.display = "none";
+            if(window.innerWidth <= 768){
+                document.getElementById("add_post").style.display = "block";
+            }
 
-        document.getElementById("sign_in").style.display = "none";
-        if(window.innerWidth <= 768){
-            document.getElementById("add_post").style.display = "block";
-        }
+            document.getElementById("xp_bar").style.display = "block";
 
-        document.getElementById("xp_bar").style.display = "block";
+            loading_steps--;
+            hideLoading();
 
-        loading_steps--;
-        hideLoading();
+            handleReferral();
 
-        handleReferral();
-
-    }).catch( error => {
+        }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         if(window.innerWidth <= 768){
             document.getElementById("add_post").style.display = "block";
@@ -43,5 +51,5 @@ function loadUserData(){
         document.getElementById("add_post").onclick = openRegisterModal;
         loading_steps--;
         hideLoading();
-    })
+    });
 }
