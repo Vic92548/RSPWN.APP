@@ -5,28 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9fdf49d-a7bd-46f9-abcd-01932399e592" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/VAPR.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VAPR.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deno.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai_prep.js" beforeDir="false" afterPath="$PROJECT_DIR$/ai_prep.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.js" beforeDir="false" afterPath="$PROJECT_DIR$/build.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_modules/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/database.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/database.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/discord_bot.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/discord_bot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/post.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/post.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/posts/create.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/posts/create.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/posts/follow.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/posts/follow.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/posts/invitations.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/posts/invitations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/posts/notify_by_email.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/posts/notify_by_email.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/posts/reactions.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/posts/reactions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/template_engine.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/template_engine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/user_profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/user_profile.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,39 +17,41 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="30L909OrjHvI9pzLVwe5ML7nYYc" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "node",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.nodejs",
-    "ts.external.directory.path": "C:\\Users\\victo\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\victo\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -84,7 +66,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753395761680</updated>
-      <workItem from="1753395763295" duration="4325000" />
+      <workItem from="1753395763295" duration="8053000" />
+      <workItem from="1753441925947" duration="5776000" />
+      <workItem from="1753541599728" duration="757000" />
     </task>
     <servers />
   </component>

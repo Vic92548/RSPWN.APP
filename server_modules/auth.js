@@ -202,7 +202,6 @@ export async function handleOAuthCallback(request) {
 
     const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'discord_callback.html'), 'utf8');
     const htmlContent = htmlTemplate
-        .replace('{{jwt}}', '')
         .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
 
     return new Response(htmlContent, {
@@ -217,7 +216,7 @@ export async function handleOAuthCallback(request) {
 
 export function redirectToDiscordLogin() {
     const state = crypto.randomBytes(32).toString('hex');
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email%20guilds.join&state=${state}`;
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email&state=${state}`;
 
     return new Response(null, {
         status: 302,
