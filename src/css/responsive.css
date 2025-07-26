@@ -88,16 +88,6 @@
         margin-left: 50px;
     }
 
-    #old_posts_container{
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    #old_posts_container li{
-        width: 400px;
-    }
-
     .big_image{
         transform: scale(3) translateZ(30px);
     }

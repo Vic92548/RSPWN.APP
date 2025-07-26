@@ -136,7 +136,7 @@
 
 .input-group input[type="text"],
 .input-group input[type="url"] {
-    width: 100%;
+    width: calc(100% - 34px);
     padding: 12px 16px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);

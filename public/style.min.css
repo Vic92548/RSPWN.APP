@@ -984,24 +984,6 @@ main {
         padding: 8px 12px;
     }
 }
-.experience-bar {
-    margin-top: 20px;
-}
-
-.progress-bar {
-    background-color: #ddd;
-    height: 20px;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.progress-bar .progress-text {
-    display: block;
-    text-align: center;
-    color: #333;
-    font-weight: bold;
-    line-height: 20px;
-}
 #background_images_container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1280,11 +1262,6 @@ main {
 .close_bt:hover {
     background-color: #0d8bf0;
     box-shadow: 0 0 10px #0d8bf0;
-}
-
-.background_image_div,
-.background_image_overlay {
-    display: none;
 }
 
 @media (max-width: 768px) {
@@ -1938,7 +1915,7 @@ article.vapr-article-fixed {
 
 .input-group input[type="text"],
 .input-group input[type="url"] {
-    width: 100%;
+    width: calc(100% - 34px);
     padding: 12px 16px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -4013,16 +3990,6 @@ article.vapr-article-fixed {
 
     .background_image_div{
         margin-left: 50px;
-    }
-
-    #old_posts_container{
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    #old_posts_container li{
-        width: 400px;
     }
 
     .big_image{

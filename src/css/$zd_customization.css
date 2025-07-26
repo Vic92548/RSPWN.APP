@@ -278,11 +278,6 @@
     box-shadow: 0 0 10px #0d8bf0;
 }
 
-.background_image_div,
-.background_image_overlay {
-    display: none;
-}
-
 @media (max-width: 768px) {
     #background_images_container {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

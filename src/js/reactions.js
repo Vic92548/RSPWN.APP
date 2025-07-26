@@ -159,7 +159,6 @@ function displayReactions() {
     resetEmoji('💩');
     resetEmoji('👀');
     resetEmoji('😂');
-    resetEmoji('❤️');
     resetEmoji('💯');
 
     console.log("Post id : " + current_post_id);
