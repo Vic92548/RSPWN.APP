@@ -80,7 +80,6 @@ function setInitialTransform(post) {
     post.style.transition = 'all 1s ease-in-out';
 }
 
-// Enhanced animation feedback
 function showActionFeedback(action) {
     const feedback = document.createElement('div');
     feedback.className = 'action-feedback ' + action;
@@ -129,24 +128,19 @@ function likePost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayLikeAnimation();
-        api.likePost(current_post_id).then(data => {
-            const oldUser = {
-                xp: window.user.xp,
-                level: window.user.level,
-                xp_required: window.user.xp_required
-            };
-            window.user = data.user;
-            setXPProgress(oldUser);
-            setTimeout(displayPost, 600); // Wait for animation to complete
-        }).catch(error => {
-            console.log(error);
-        });
+        APIHandler.handle(
+            () => api.likePost(current_post_id),
+            {
+                updateXP: true,
+                onSuccess: () => setTimeout(displayPost, 600)
+            }
+        );
     } else {
         if (post_seen > 3) {
             openRegisterModal();
         } else {
             displayLikeAnimation();
-            setTimeout(displayPost, 1000); // Wait for animation to complete
+            setTimeout(displayPost, 1000);
         }
     }
 }
@@ -156,24 +150,19 @@ function skipPost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displaySkipAnimation();
-        api.skipPost(current_post_id).then(data => {
-            const oldUser = {
-                xp: window.user.xp,
-                level: window.user.level,
-                xp_required: window.user.xp_required
-            };
-            window.user = data.user;
-            setXPProgress(oldUser);
-            setTimeout(displayPost, 600); // Wait for animation to complete
-        }).catch(error => {
-            console.log(error);
-        });
+        APIHandler.handle(
+            () => api.skipPost(current_post_id),
+            {
+                updateXP: true,
+                onSuccess: () => setTimeout(displayPost, 600)
+            }
+        );
     } else {
         if (post_seen > 3) {
             openRegisterModal();
         } else {
             displaySkipAnimation();
-            setTimeout(displayPost, 1000); // Wait for animation to complete
+            setTimeout(displayPost, 1000);
         }
     }
 }
@@ -183,24 +172,19 @@ function dislikePost() {
     setInitialTransform(post);
     if (isUserLoggedIn()) {
         displayDislikeAnimation();
-        api.dislikePost(current_post_id).then(data => {
-            const oldUser = {
-                xp: window.user.xp,
-                level: window.user.level,
-                xp_required: window.user.xp_required
-            };
-            window.user = data.user;
-            setXPProgress(oldUser);
-            setTimeout(displayPost, 600); // Wait for animation to complete
-        }).catch(error => {
-            console.log(error);
-        });
+        APIHandler.handle(
+            () => api.dislikePost(current_post_id),
+            {
+                updateXP: true,
+                onSuccess: () => setTimeout(displayPost, 600)
+            }
+        );
     } else {
         if (post_seen > 3) {
             openRegisterModal();
         } else {
             displayDislikeAnimation();
-            setTimeout(displayPost, 1000); // Wait for animation to complete
+            setTimeout(displayPost, 1000);
         }
     }
 }

@@ -194,9 +194,69 @@ class API {
     }
 }
 
-const api = new API();
+class APIHandler {
+    static async handle(apiCall, options = {}) {
+        const {
+            onSuccess = () => {},
+            onError = null,
+            showLoading = false,
+            successMessage = null,
+            errorMessage = 'An error occurred',
+            updateXP = false
+        } = options;
 
+        if (showLoading) showLoading();
+
+        try {
+            const data = await apiCall();
+
+            if (updateXP && window.user && data.user) {
+                const oldUser = {
+                    xp: window.user.xp,
+                    level: window.user.level,
+                    xp_required: window.user.xp_required
+                };
+                window.user = data.user;
+                setXPProgress(oldUser);
+            }
+
+            if (successMessage && typeof Swal !== 'undefined') {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                Toast.fire({ icon: "success", title: successMessage });
+            }
+
+            await onSuccess(data);
+            return data;
+
+        } catch (error) {
+            console.error(error);
+
+            if (onError) {
+                await onError(error);
+            } else if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            }
+
+            throw error;
+        } finally {
+            if (showLoading) hideLoading();
+        }
+    }
+}
+
+const api = new API();
 window.api = api;
+window.APIHandler = APIHandler;
 
 window.makeApiRequest = function(path, requireAuth = true) {
     return api.get(path, requireAuth);

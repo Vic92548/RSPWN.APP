@@ -27,7 +27,7 @@
 }
 
 .vapr-height-card {
-    max-height: 85vh;
+    max-height: calc(85vh - 20px);
     overflow: hidden;
 }
 
@@ -42,6 +42,11 @@
 
 .vapr-padding {
     padding: 20px;
+}
+
+
+.vapr-padding-x {
+    padding: 0 20px;
 }
 
 .vapr-padding-sm {

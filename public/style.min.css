@@ -636,7 +636,6 @@ main {
     gap: 4px;
     padding: 8px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 30px;
     position: relative;
 }
 
@@ -1590,7 +1589,7 @@ main {
 }
 
 .vapr-height-card {
-    max-height: 85vh;
+    max-height: calc(85vh - 20px);
     overflow: hidden;
 }
 
@@ -1605,6 +1604,11 @@ main {
 
 .vapr-padding {
     padding: 20px;
+}
+
+
+.vapr-padding-x {
+    padding: 0 20px;
 }
 
 .vapr-padding-sm {
@@ -4027,10 +4031,6 @@ article.vapr-article-fixed {
 
     .big_image{
         transform: scale(3) translateZ(30px);
-    }
-
-    .reactions{
-        margin-top: 10px;
     }
 
     .reactions .glass_bt{

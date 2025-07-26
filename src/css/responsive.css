@@ -102,10 +102,6 @@
         transform: scale(3) translateZ(30px);
     }
 
-    .reactions{
-        margin-top: 10px;
-    }
-
     .reactions .glass_bt{
         padding: 5px;
     }

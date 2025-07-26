@@ -1,10 +1,15 @@
 function drawPost(data){
     displayReactions();
 
-    api.registerView(data.id).then(data => {
-        console.log(data);
-        console.log("Views updated");
-    });
+    APIHandler.handle(
+        () => api.registerView(data.id),
+        {
+            onSuccess: (data) => {
+                console.log(data);
+                console.log("Views updated");
+            }
+        }
+    );
 
     post_seen++;
     showPost();
@@ -87,33 +92,37 @@ function drawPost(data){
         showDiscordAvatar(window.creators[data.userId].avatar);
     }
     else {
-        api.getUser(data.userId)
-            .then(userInfo => {
-                if (!window.creators) {
-                    window.creators = {};
-                }
-                if (!window.creators[data.userId]) {
-                    window.creators[data.userId] = {};
-                }
+        APIHandler.handle(
+            () => api.getUser(data.userId),
+            {
+                onSuccess: (userInfo) => {
+                    if (!window.creators) {
+                        window.creators = {};
+                    }
+                    if (!window.creators[data.userId]) {
+                        window.creators[data.userId] = {};
+                    }
 
-                window.creators[data.userId].avatar = userInfo.avatar || null;
-                window.creators[data.userId].username = userInfo.username;
-                window.creators[data.userId].level = userInfo.level || 0;
+                    window.creators[data.userId].avatar = userInfo.avatar || null;
+                    window.creators[data.userId].username = userInfo.username;
+                    window.creators[data.userId].level = userInfo.level || 0;
 
-                showDiscordAvatar(userInfo.avatar);
-            })
-            .catch(error => {
-                console.error("Failed to fetch user info:", error);
-                showLetterAvatar();
+                    showDiscordAvatar(userInfo.avatar);
+                },
+                onError: (error) => {
+                    console.error("Failed to fetch user info:", error);
+                    showLetterAvatar();
 
-                if (!window.creators) {
-                    window.creators = {};
+                    if (!window.creators) {
+                        window.creators = {};
+                    }
+                    if (!window.creators[data.userId]) {
+                        window.creators[data.userId] = {};
+                    }
+                    window.creators[data.userId].avatar = null;
                 }
-                if (!window.creators[data.userId]) {
-                    window.creators[data.userId] = {};
-                }
-                window.creators[data.userId].avatar = null;
-            });
+            }
+        );
     }
 
     document.getElementById("post_time").textContent = timeAgo(data.timestamp);

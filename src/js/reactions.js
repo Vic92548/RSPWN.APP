@@ -30,7 +30,6 @@ function createRipple(event, button) {
     `;
 
     button.appendChild(ripple);
-
     setTimeout(() => ripple.remove(), 600);
 }
 
@@ -104,22 +103,25 @@ function addReaction(emoji) {
         emoji = null;
     }
 
-    const path = `/add-reaction?postId=${current_post_id}&emoji=${encodeURIComponent(emoji)}`;
-    api.addReaction(current_post_id, emoji).then(data => {
-        console.log('Reaction added:', data);
-        user_previous_reaction = emoji;
-        isProcessingReaction = false;
-    }).catch(error => {
-        console.error('Error adding reaction:', error);
-
-        if (user_previous_reaction) {
-            incrementEmoji(user_previous_reaction);
-            decrementEmoji(emoji);
+    APIHandler.handle(
+        () => api.addReaction(current_post_id, emoji),
+        {
+            onSuccess: (data) => {
+                console.log('Reaction added:', data);
+                user_previous_reaction = emoji;
+                isProcessingReaction = false;
+            },
+            onError: (error) => {
+                console.error('Error adding reaction:', error);
+                if (user_previous_reaction) {
+                    incrementEmoji(user_previous_reaction);
+                    decrementEmoji(emoji);
+                }
+                currentBtn.classList.toggle('active');
+                isProcessingReaction = false;
+            }
         }
-
-        currentBtn.classList.toggle('active');
-        isProcessingReaction = false;
-    });
+    );
 }
 
 function animateReactionIcon(icon) {
@@ -160,30 +162,29 @@ function displayReactions() {
     resetEmoji('❤️');
     resetEmoji('💯');
 
-    const path = `/get-reactions?postId=${current_post_id}`;
-
     console.log("Post id : " + current_post_id);
 
-    api.getReactions(current_post_id).then(data => {
-        console.log('Reactions received:', data);
+    APIHandler.handle(
+        () => api.getReactions(current_post_id),
+        {
+            onSuccess: (data) => {
+                console.log('Reactions received:', data);
+                user_previous_reaction = null;
 
-        user_previous_reaction = null;
+                data.reactions.forEach((reaction, index) => {
+                    setTimeout(() => {
+                        incrementEmoji(reaction.emoji);
 
-        data.reactions.forEach((reaction, index) => {
-            setTimeout(() => {
-                incrementEmoji(reaction.emoji);
-
-                if (reaction.userId === window.user?.id) {
-                    user_previous_reaction = reaction.emoji;
-                    const btn = document.querySelector(`[data-reaction="${reaction.emoji}"]`);
-                    btn.classList.add('active');
-                }
-            }, index * 50);
-        });
-
-    }).catch(error => {
-        console.error('Error retrieving reactions:', error);
-    });
+                        if (reaction.userId === window.user?.id) {
+                            user_previous_reaction = reaction.emoji;
+                            const btn = document.querySelector(`[data-reaction="${reaction.emoji}"]`);
+                            btn.classList.add('active');
+                        }
+                    }, index * 50);
+                });
+            }
+        }
+    );
 }
 
 if (typeof document !== 'undefined') {

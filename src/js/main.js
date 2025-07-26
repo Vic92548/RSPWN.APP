@@ -32,13 +32,10 @@ function updateUsername() {
 loadUserData();
 
 function hideLoading(){
-
     console.log("steps:"+loading_steps);
-
 }
 
 function showLoading(){
-
 }
 
 function timeAgo(dateParam) {
@@ -76,12 +73,8 @@ function setupSocialLink(id, link){
     link_bt.href = link;
 }
 
-
-
 let current_post_id = undefined;
 let current_post = undefined;
-
-
 
 function hidePost() {
     showLoading();
@@ -121,33 +114,37 @@ function openRegisterModal() {
 function openUserAccountModel() {
     document.getElementById("account").style.display = "flex";
 
-    makeApiRequest("/me/posts").then(data => {
+    APIHandler.handle(
+        () => api.getMyPosts(),
+        {
+            onSuccess: (data) => {
+                console.log("Coucou");
+                console.log(data);
 
-        console.log("Coucou");
-        console.log(data);
+                const old_posts = document.getElementById("old-posts");
+                old_posts.innerHTML = "";
 
-        const old_posts = document.getElementById("old-posts");
-        old_posts.innerHTML = "";
-
-        for (let i = 0; i < data.length; i++) {
-            old_posts.innerHTML += '<div class="post-card">\n' +
-                '                    <h4>' + data[i].title + '</h4>\n' +
-                '                    <div style="display: flex; justify-content: space-between">\n' +
-                '                        <span><i class="fa-solid fa-eye"></i> <span>loading...</span></span>\n' +
-                '                        <span><i class="fa-solid fa-heart"></i> <span>loading...</span></span>\n' +
-                '                        <span><i class="fa-solid fa-heart-crack"></i> <span>loading...</span></span>\n' +
-                '                        <span><i class="fa-solid fa-forward"></i> <span>loading...</span></span>\n' +
-                '                    </div>\n' +
-                '                </div>'
+                for (let i = 0; i < data.length; i++) {
+                    old_posts.innerHTML += '<div class="post-card">\n' +
+                        '                    <h4>' + data[i].title + '</h4>\n' +
+                        '                    <div style="display: flex; justify-content: space-between">\n' +
+                        '                        <span><i class="fa-solid fa-eye"></i> <span>loading...</span></span>\n' +
+                        '                        <span><i class="fa-solid fa-heart"></i> <span>loading...</span></span>\n' +
+                        '                        <span><i class="fa-solid fa-heart-crack"></i> <span>loading...</span></span>\n' +
+                        '                        <span><i class="fa-solid fa-forward"></i> <span>loading...</span></span>\n' +
+                        '                    </div>\n' +
+                        '                </div>'
+                }
+            },
+            onError: () => {
+                const old_posts = document.getElementById("old-posts");
+                old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
+            }
         }
-    }).catch( () => {
-        const old_posts = document.getElementById("old-posts");
-        old_posts.innerHTML = "<p>You don't have created any posts yet, what are you waiting for? :)</p>";
-    })
+    );
 }
 
 async function updateFollowButton() {
-
     const follow_bt = document.getElementById("follow");
 
     if(isUserLoggedIn()){
@@ -168,7 +165,6 @@ async function updateFollowButton() {
             following = await checkUserFollowsCreator(current_post.userId);
             creators[current_post.userId].following = following;
         }
-
 
         follow_bt.style.opacity = "0";
         follow_bt.style.display = "inline-block";
@@ -194,43 +190,33 @@ async function updateFollowButton() {
     }else{
         follow_bt.onclick = openRegisterModal;
     }
-
 }
 
 function followPost() {
-
     creators[current_post.userId].following = true;
     updateFollowButton();
     if(isUserLoggedIn()){
-
-        api.followPost(current_post.id).then(data => {
-            console.log('Followed successfully:', data);
-
-        }).catch(error => {
-            console.error('Error following post:', error);
-            alert('Error when trying to follow. Please try again.');
-        });
+        APIHandler.handle(
+            () => api.followPost(current_post.id),
+            {
+                errorMessage: 'Error when trying to follow. Please try again.'
+            }
+        );
     }else{
         openRegisterModal();
     }
-
 }
 
 function unfollowPost() {
     creators[current_post.userId].following = false;
     updateFollowButton();
     if(isUserLoggedIn()){
-
-        api.unfollowPost(current_post.id).then(data => {
-            console.log('Unfollowed successfully:', data);
-        }).catch(error => {
-            console.error('Error unfollowing post:', error);
-            alert('Error unfollowing post. Please try again.');
-        });
+        APIHandler.handle(
+            () => api.unfollowPost(current_post.id)
+        );
     }else{
         openRegisterModal();
     }
-
 }
 
 async function checkUserFollowsCreator(creatorId) {
@@ -274,18 +260,13 @@ if(MainPage){
 
 function processJoinQueryParam() {
     const url = new URL(window.location.href);
-
     const params = url.searchParams;
 
     if (params.has('join')) {
         const joinValue = params.get('join');
-
         console.log("Join param found with value = " + joinValue);
-
         localStorage.setItem('referrerId', joinValue);
-
         params.delete('join');
-
         window.history.replaceState({}, '', url.toString());
     }
 }
@@ -294,23 +275,22 @@ function handleReferral() {
     const referrerId = localStorage.getItem('referrerId');
 
     if (referrerId) {
-
-        api.acceptInvitation(referrerId).then(data => {
-            console.log('Invitation processed:', data);
-
-            if(creators[referrerId]){
-                creators[referrerId].following = true;
-                updateFollowButton();
+        APIHandler.handle(
+            () => api.acceptInvitation(referrerId),
+            {
+                onSuccess: (data) => {
+                    console.log('Invitation processed:', data);
+                    if(creators[referrerId]){
+                        creators[referrerId].following = true;
+                        updateFollowButton();
+                    }
+                    localStorage.removeItem('referrerId');
+                },
+                onError: (error) => {
+                    localStorage.removeItem('referrerId');
+                }
             }
-
-
-            localStorage.removeItem('referrerId');
-
-
-        }).catch(error => {
-            console.log("failed to accept invitation");
-        });
-
+        );
     }
 }
 
@@ -326,23 +306,17 @@ function closeTextModal() {
 function copyReferrerId() {
     if(isUserLoggedIn()){
         const referralUrl = `https://vapr.club?join=${user.id}`;
-
         const textArea = document.createElement('textarea');
         textArea.value = referralUrl;
-
         textArea.style.position = 'absolute';
         textArea.style.left = '-9999px';
-
         document.body.appendChild(textArea);
-
         textArea.select();
         textArea.setSelectionRange(0, 99999);
 
         try {
             const successful = document.execCommand('copy');
-
             console.log(successful ? 'Referral URL copied to clipboard!' : 'Failed to copy the URL');
-
             Swal.fire({
                 title: "Invitation copied to clipboard!",
                 text: "Your invitation link (" + referralUrl + "), has been copied to clipboard!",
@@ -350,7 +324,6 @@ function copyReferrerId() {
             });
         } catch (err) {
             console.error('Error copying to clipboard: ', err);
-
             Swal.fire({
                 title: "Failed to copy to clipboard!",
                 text: "Your invitation link (" + referralUrl + "), has failed to copy to clipboard!",
