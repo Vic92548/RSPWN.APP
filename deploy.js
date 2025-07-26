@@ -85,6 +85,40 @@ function updateVersion(currentVersion, bumpType) {
     return `${major}.${minor}.${patch}`;
 }
 
+function updateVersionInHTML(newVersion) {
+    const htmlFiles = [
+        'src/components/menu.html',
+        'src/components/forms/register.html' // Also update in register.html if needed
+    ];
+
+    htmlFiles.forEach(filePath => {
+        const fullPath = path.join(process.cwd(), filePath);
+
+        if (fs.existsSync(fullPath)) {
+            let content = fs.readFileSync(fullPath, 'utf8');
+
+            // Update version in menu footer
+            const versionRegex = /<span>VAPR v[\d.]+<\/span>/g;
+            const newVersionText = `<span>VAPR v${newVersion}</span>`;
+
+            if (content.match(versionRegex)) {
+                content = content.replace(versionRegex, newVersionText);
+
+                if (!dryRun) {
+                    fs.writeFileSync(fullPath, content);
+                    log(`✅ Updated version in ${filePath}`, colors.green);
+                } else {
+                    log(`[DRY RUN] Would update version in ${filePath} to v${newVersion}`, colors.magenta);
+                }
+            } else {
+                log(`⚠️  Version pattern not found in ${filePath}`, colors.yellow);
+            }
+        } else {
+            log(`⚠️  File not found: ${filePath}`, colors.yellow);
+        }
+    });
+}
+
 function showVersionPreview(currentVersion, bumpType) {
     if (bumpType === 'skip' || bumpType === 'custom') return null;
 
@@ -296,9 +330,13 @@ async function deploy() {
 
             log(`\n✅ Updated package.json version to: ${newVersion}`, colors.green);
 
+            // Update version in HTML files
+            log('\n📝 Updating version in HTML files...', colors.yellow);
+            updateVersionInHTML(newVersion);
+
             // Commit version change
             try {
-                execCommand(`git add package.json`);
+                execCommand(`git add package.json src/components/menu.html src/components/forms/register.html`);
                 execCommand(`git commit -m "chore: bump version to ${newVersion}"`);
                 log('✅ Committed version change', colors.green);
             } catch (error) {
@@ -415,6 +453,7 @@ async function deploy() {
         log('1. Fix the issue that caused the failure', colors.cyan);
         log('2. If version was bumped, you may need to:', colors.cyan);
         log('   - Revert the version in package.json', colors.cyan);
+        log('   - Revert the version in HTML files', colors.cyan);
         log('   - Delete the git tag: git tag -d v<version>', colors.cyan);
         log('3. Run the deploy script again', colors.cyan);
 
