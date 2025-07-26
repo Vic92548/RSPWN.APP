@@ -12,7 +12,6 @@ import serveStatic from 'serve-static';
 import multer from 'multer';
 
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
-import { startDylan } from './server_modules/discord_bot.js';
 import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
     createPost,
@@ -575,7 +574,6 @@ app.use((err, req, res, next) => {
 });
 
 try {
-    await startDylan();
     console.log(`HTTP server running. Access it at: http://localhost:${port}/`);
     app.listen(port);
 } catch (err) {

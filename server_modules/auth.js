@@ -1,6 +1,5 @@
 import { usersCollection, secretKeysCollection } from './database.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
-import { joinGuild } from './discord_bot.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -153,12 +152,6 @@ export async function handleOAuthCallback(request) {
     }
 
     const userData = await userResponse.json();
-
-    try {
-        await joinGuild(accessToken, "1226141081964515449", userData.id);
-    } catch (error) {
-        console.error("Failed to add user to guild:", error);
-    }
 
     let user = await usersCollection.findOne({ id: userData.id });
 

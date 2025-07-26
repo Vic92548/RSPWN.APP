@@ -7,8 +7,8 @@ export { addReaction, getReactionsByPostId };
 import { likePost, viewPost, dislikePost, skipPost, clickLink } from "./posts/interactions.js";
 export { likePost, viewPost, dislikePost, skipPost, clickLink };
 
-import { followPost, unfollowPost, checkIfUserFollowsCreator, notifyFollowers } from "./posts/follow.js";
-export { followPost, unfollowPost, checkIfUserFollowsCreator, notifyFollowers };
+import { followPost, unfollowPost, checkIfUserFollowsCreator } from "./posts/follow.js";
+export { followPost, unfollowPost, checkIfUserFollowsCreator };
 
 import { acceptInvitation } from "./posts/invitations.js";
 export { acceptInvitation };

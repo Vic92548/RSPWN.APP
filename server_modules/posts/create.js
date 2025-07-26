@@ -2,7 +2,6 @@ import { postsCollection, usersCollection, videosCollection } from "../database.
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowersByEmail } from "./notify_by_email.js";
-import { notifyFollowers } from "../post.js";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];

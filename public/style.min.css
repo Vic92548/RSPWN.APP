@@ -628,7 +628,7 @@ main {
 
 .reactions{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     gap: 4px;
     padding: 8px;
     background: rgba(255, 255, 255, 0.05);

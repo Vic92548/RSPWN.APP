@@ -1,6 +1,5 @@
 import { followsCollection, postsCollection, usersCollection } from "../database.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
-import { sendPrivateMessage } from "../discord_bot.js";
 
 export async function followPost(postId, followerId) {
     try {
@@ -135,19 +134,5 @@ export async function checkIfUserFollowsCreator(userId, creatorId) {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
-    }
-}
-
-export async function notifyFollowers(userId, message) {
-    try {
-        const followers = await followsCollection.find({ creatorId: userId }, { projection: { followerId: 1 } }).toArray();
-
-        setTimeout(() => {
-            followers.forEach(follower => {
-                sendPrivateMessage(follower.followerId, message);
-            });
-        }, 10000);
-    } catch (error) {
-        console.error("Error notifying followers:", error);
     }
 }
