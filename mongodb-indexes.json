@@ -1,0 +1,75 @@
+{
+  "posts": [
+    { "fields": { "id": 1 }, "options": { "unique": true } },
+    { "fields": { "userId": 1, "timestamp": -1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} },
+    { "fields": { "community": 1 }, "options": { "sparse": true } }
+  ],
+  "users": [
+    { "fields": { "id": 1 }, "options": { "unique": true } },
+    { "fields": { "username": 1 }, "options": { "unique": true } },
+    { "fields": { "email": 1 }, "options": { "sparse": true } },
+    { "fields": { "provider": 1 }, "options": {} }
+  ],
+  "views": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "postId": 1, "userId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "likes": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "postId": 1, "userId": 1 }, "options": { "unique": true } },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "dislikes": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "postId": 1, "userId": 1 }, "options": { "unique": true } },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "skips": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "postId": 1, "userId": 1 }, "options": { "unique": true } },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "follows": [
+    { "fields": { "followerId": 1 }, "options": {} },
+    { "fields": { "creatorId": 1 }, "options": {} },
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "followerId": 1, "creatorId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "reactions": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "postId": 1, "userId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "linkClicks": [
+    { "fields": { "postId": 1 }, "options": {} },
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "registrationReferrals": [
+    { "fields": { "invitedUserId": 1 }, "options": { "unique": true } },
+    { "fields": { "ambassadorUserId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "xpLog": [
+    { "fields": { "userId": 1 }, "options": {} },
+    { "fields": { "timestamp": -1 }, "options": {} },
+    { "fields": { "userId": 1, "timestamp": -1 }, "options": {} }
+  ],
+  "videos": [
+    { "fields": { "postId": 1 }, "options": { "unique": true } },
+    { "fields": { "videoId": 1 }, "options": { "unique": true } },
+    { "fields": { "timestamp": -1 }, "options": {} }
+  ],
+  "secretKeys": [
+    { "fields": { "key": 1 }, "options": { "unique": true } },
+    { "fields": { "userId": 1 }, "options": {} }
+  ]
+}
