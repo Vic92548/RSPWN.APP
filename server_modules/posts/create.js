@@ -41,11 +41,22 @@ function validateFile(file) {
         return { valid: false, error: "File size exceeds the 50MB limit" };
     }
 
-    const parts = file.name.split('.');
+    // Handle both multer's originalname and regular name property
+    const fileName = file.originalname || file.name || '';
+
+    if (!fileName) {
+        return { valid: false, error: "File name is missing" };
+    }
+
+    const parts = fileName.split('.');
     const extension = parts.length > 1 ? parts.pop().toLowerCase() : "";
 
-    const isImage = ALLOWED_IMAGE_TYPES.includes(file.type) && ALLOWED_IMAGE_EXTENSIONS.includes(extension);
-    const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type) && ALLOWED_VIDEO_EXTENSIONS.includes(extension);
+    if (!extension) {
+        return { valid: false, error: "File must have an extension" };
+    }
+
+    const isImage = ALLOWED_IMAGE_TYPES.includes(file.mimetype) && ALLOWED_IMAGE_EXTENSIONS.includes(extension);
+    const isVideo = ALLOWED_VIDEO_TYPES.includes(file.mimetype) && ALLOWED_VIDEO_EXTENSIONS.includes(extension);
 
     if (!isImage && !isVideo) {
         return {
@@ -58,7 +69,7 @@ function validateFile(file) {
         valid: true,
         isVideo,
         extension,
-        type: file.type
+        type: file.mimetype
     };
 }
 
@@ -223,8 +234,10 @@ export async function createPost(request, userData) {
 
 async function uploadImageToBunnyCDN(file, postId) {
     try {
-        const fileExtension = file.originalname.split('.').pop();
-        const fileName = `${postId}.${fileExtension}`;
+        // Get the file extension from originalname or name
+        const fileName = file.originalname || file.name || '';
+        const fileExtension = fileName.split('.').pop();
+        const uploadFileName = `${postId}.${fileExtension}`;
         const accessKey = process.env.BUNNY_CDN_ACCESSKEY;
         const storageZoneUrl = process.env.BUNNY_CDN_STORAGE_URL;
         const cdnHostname = process.env.BUNNY_CDN_HOSTNAME;
@@ -233,7 +246,7 @@ async function uploadImageToBunnyCDN(file, postId) {
             throw new Error("Bunny CDN configuration is missing from environment variables.");
         }
 
-        const uploadUrl = `${storageZoneUrl}posts/${fileName}`;
+        const uploadUrl = `${storageZoneUrl}posts/${uploadFileName}`;
 
         const response = await fetch(uploadUrl, {
             method: "PUT",
@@ -252,7 +265,7 @@ async function uploadImageToBunnyCDN(file, postId) {
         }
 
         console.log("Image uploaded successfully to Bunny CDN");
-        return { success: true, url: `https://${cdnHostname}/posts/${fileName}` };
+        return { success: true, url: `https://${cdnHostname}/posts/${uploadFileName}` };
     } catch (error) {
         console.error("Error in uploadImageToBunnyCDN:", error);
         return { success: false, msg: error.message };

@@ -42,6 +42,10 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 8080;
 
+// IMPORTANT: Enable trust proxy before any middleware
+// This tells Express to trust the X-Forwarded-* headers from reverse proxies
+app.set('trust proxy', true);
+
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -116,22 +120,29 @@ app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Updated rate limiters with proper configuration for trusted proxies
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
-    message: 'Too many requests from this IP, please try again later.'
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
-    message: 'Too many authentication attempts, please try again later.'
+    message: 'Too many authentication attempts, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
 });
 
 const createPostLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     max: 10,
-    message: 'Post creation limit reached. Please wait before creating more posts.'
+    message: 'Post creation limit reached. Please wait before creating more posts.',
+    standardHeaders: true,
+    legacyHeaders: false,
 });
 
 app.use('/api/', generalLimiter);
