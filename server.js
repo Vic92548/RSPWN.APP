@@ -548,6 +548,59 @@ app.get('/api/analytics', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
+import {
+    getAllGames,
+    getUserGames,
+    redeemGameKey,
+    generateGameKeys,
+    getGameKeys,
+    getGameDownloadUrl
+} from './server_modules/games.js';
+
+app.get('/api/games', async (req, res) => {
+    const response = await getAllGames();
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/my-games', authMiddleware, async (req, res) => {
+    const response = await getUserGames(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/games/redeem-key', authMiddleware, async (req, res) => {
+    const { key } = req.body;
+    if (!key) {
+        return res.status(400).json({ success: false, error: 'Key is required' });
+    }
+    const response = await redeemGameKey(req.userData.id, key);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/games/:id/generate-keys', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const count = parseInt(req.body.count) || 5;
+    const response = await generateGameKeys(gameId, req.userData.id, count);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/games/:id/keys', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const response = await getGameKeys(gameId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/games/:id/download', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const response = await getGameDownloadUrl(gameId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
 app.get('/@:username', async (req, res) => {
     const username = req.params.username;
 

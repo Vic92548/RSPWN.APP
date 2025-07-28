@@ -4261,7 +4261,7 @@ dependencies = [
 
 [[package]]
 name = "vapr-desktop"
-version = "1.1.20"
+version = "1.1.21"
 dependencies = [
  "serde",
  "serde_json",
