@@ -6,6 +6,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import readline from 'readline';
+import { createWriteStream } from 'fs';
+
+// Try to load dotenv if available
+try {
+    const dotenv = await import('dotenv');
+    dotenv.config();
+} catch (error) {
+    // dotenv not installed, continue without it
+}
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +25,9 @@ const args = process.argv.slice(2);
 const cliVersionType = args.find(arg => ['--patch', '--minor', '--major'].includes(arg))?.substring(2);
 const skipBuild = args.includes('--skip-build');
 const skipTests = args.includes('--skip-tests');
+const skipDesktop = args.includes('--skip-desktop');
+const skipDocker = args.includes('--skip-docker');
+const skipRelease = args.includes('--skip-release');
 const dryRun = args.includes('--dry-run');
 
 // Colors for console output
@@ -36,14 +48,21 @@ function log(message, color = colors.reset) {
     console.log(`${color}${message}${colors.reset}`);
 }
 
-function execCommand(command, showOutput = true) {
+function execCommand(command, showOutput = true, cwd = null) {
     try {
         if (dryRun) {
-            log(`[DRY RUN] Would execute: ${command}`, colors.magenta);
+            log(`[DRY RUN] Would execute: ${command}${cwd ? ` (in ${cwd})` : ''}`, colors.magenta);
             return '';
         }
-        log(`\n→ Running: ${command}`, colors.cyan);
-        const output = execSync(command, { encoding: 'utf8', stdio: showOutput ? 'inherit' : 'pipe' });
+        log(`\n→ Running: ${command}${cwd ? ` (in ${cwd})` : ''}`, colors.cyan);
+        const options = {
+            encoding: 'utf8',
+            stdio: showOutput ? 'inherit' : 'pipe'
+        };
+        if (cwd) {
+            options.cwd = cwd;
+        }
+        const output = execSync(command, options);
         return output;
     } catch (error) {
         log(`Error executing command: ${command}`, colors.red);
@@ -117,6 +136,167 @@ function updateVersionInHTML(newVersion) {
             log(`⚠️  File not found: ${filePath}`, colors.yellow);
         }
     });
+}
+
+function updateVersionInTauri(newVersion) {
+    const tauriConfigPath = path.join(process.cwd(), 'desktop', 'src-tauri', 'tauri.conf.json');
+    const cargoTomlPath = path.join(process.cwd(), 'desktop', 'src-tauri', 'Cargo.toml');
+
+    // Update tauri.conf.json
+    if (fs.existsSync(tauriConfigPath)) {
+        const tauriConfig = JSON.parse(fs.readFileSync(tauriConfigPath, 'utf8'));
+        tauriConfig.version = newVersion;
+
+        if (!dryRun) {
+            fs.writeFileSync(tauriConfigPath, JSON.stringify(tauriConfig, null, 2) + '\n');
+            log(`✅ Updated version in tauri.conf.json`, colors.green);
+        } else {
+            log(`[DRY RUN] Would update version in tauri.conf.json to ${newVersion}`, colors.magenta);
+        }
+    } else {
+        log(`⚠️  Tauri config not found: ${tauriConfigPath}`, colors.yellow);
+    }
+
+    // Update Cargo.toml
+    if (fs.existsSync(cargoTomlPath)) {
+        let cargoContent = fs.readFileSync(cargoTomlPath, 'utf8');
+        cargoContent = cargoContent.replace(
+            /^version = "[\d.]+"/m,
+            `version = "${newVersion}"`
+        );
+
+        if (!dryRun) {
+            fs.writeFileSync(cargoTomlPath, cargoContent);
+            log(`✅ Updated version in Cargo.toml`, colors.green);
+        } else {
+            log(`[DRY RUN] Would update version in Cargo.toml to ${newVersion}`, colors.magenta);
+        }
+    } else {
+        log(`⚠️  Cargo.toml not found: ${cargoTomlPath}`, colors.yellow);
+    }
+
+    // Update package.json in desktop folder
+    const desktopPackageJsonPath = path.join(process.cwd(), 'desktop', 'package.json');
+    if (fs.existsSync(desktopPackageJsonPath)) {
+        const desktopPackageJson = JSON.parse(fs.readFileSync(desktopPackageJsonPath, 'utf8'));
+        desktopPackageJson.version = newVersion;
+
+        if (!dryRun) {
+            fs.writeFileSync(desktopPackageJsonPath, JSON.stringify(desktopPackageJson, null, 2) + '\n');
+            log(`✅ Updated version in desktop/package.json`, colors.green);
+        } else {
+            log(`[DRY RUN] Would update version in desktop/package.json to ${newVersion}`, colors.magenta);
+        }
+    }
+}
+
+async function createZipArchive(sourceDir, outputPath) {
+    const archiver = await import('archiver').catch(() => null);
+
+    if (!archiver) {
+        log('⚠️  archiver package not found. Installing...', colors.yellow);
+        execCommand('npm install --no-save archiver');
+        return createZipArchive(sourceDir, outputPath);
+    }
+
+    return new Promise((resolve, reject) => {
+        const output = createWriteStream(outputPath);
+        const archive = archiver.default('zip', {
+            zlib: { level: 9 }
+        });
+
+        output.on('close', () => {
+            log(`✅ Created zip archive: ${outputPath} (${(archive.pointer() / 1024 / 1024).toFixed(2)} MB)`, colors.green);
+            resolve();
+        });
+
+        archive.on('error', reject);
+        archive.pipe(output);
+        archive.directory(sourceDir, false);
+        archive.finalize();
+    });
+}
+
+async function createGitHubRelease(version, artifacts) {
+    const { Octokit } = await import('@octokit/rest').catch(() => null);
+
+    if (!Octokit) {
+        log('⚠️  @octokit/rest package not found. Installing...', colors.yellow);
+        execCommand('npm install --no-save @octokit/rest');
+        return createGitHubRelease(version, artifacts);
+    }
+
+    // Get GitHub token from environment (dotenv will have loaded it from .env if available)
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) {
+        log('⚠️  GITHUB_TOKEN not found in environment or .env file.', colors.yellow);
+        log('   Add it to .env file:', colors.cyan);
+        log('   GITHUB_TOKEN=your_token', colors.cyan);
+        log('   Or set it in environment:', colors.cyan);
+        log('   export GITHUB_TOKEN=your_token', colors.cyan);
+
+        // Ask if user wants to install dotenv
+        const installDotenv = await askQuestion('\nInstall dotenv package for .env file support? (y/n): ');
+        if (installDotenv.toLowerCase() === 'y') {
+            execCommand('npm install --save-dev dotenv');
+            log('✅ Installed dotenv. Please create a .env file with your GITHUB_TOKEN and run again.', colors.green);
+        }
+        return;
+    }
+
+    const octokit = new Octokit({ auth: token });
+
+    try {
+        // Create release
+        log(`\n📝 Creating GitHub release for v${version}...`, colors.yellow);
+
+        const releaseResponse = await octokit.repos.createRelease({
+            owner: "vic92548",
+            repo: "vapr",
+            tag_name: `v${version}`,
+            name: `VAPR v${version}`,
+            body: `## VAPR v${version}\n\n### Downloads\n- **Windows Installer**: VAPR_${version}_x64_en-US.msi\n- **Windows Portable**: VAPR-windows-${version}.zip\n\n### Docker\n\`\`\`bash\ndocker pull vic92548/vapr:${version}\n\`\`\`\n\n### What's New\n- [Add your release notes here]\n\n### Installation\n1. Download the appropriate file for your system\n2. For Windows: Run the MSI installer or extract the ZIP file\n3. For Docker: Use the command above\n\n---\n*Built with ❤️ by Victor Chanet*`,
+            draft: false,
+            prerelease: false
+        });
+
+        const releaseId = releaseResponse.data.id;
+        log(`✅ Created GitHub release: ${releaseResponse.data.html_url}`, colors.green);
+
+        // Upload artifacts
+        for (const artifact of artifacts) {
+            if (fs.existsSync(artifact.path)) {
+                log(`📤 Uploading ${artifact.name}...`, colors.cyan);
+
+                const fileContent = fs.readFileSync(artifact.path);
+
+                await octokit.repos.uploadReleaseAsset({
+                    owner: "vic92548",
+                    repo: "vapr",
+                    release_id: releaseId,
+                    name: artifact.name,
+                    data: fileContent,
+                    headers: {
+                        'content-type': artifact.contentType || 'application/octet-stream',
+                        'content-length': fileContent.length
+                    }
+                });
+
+                log(`✅ Uploaded ${artifact.name}`, colors.green);
+            } else {
+                log(`⚠️  Artifact not found: ${artifact.path}`, colors.yellow);
+            }
+        }
+
+        log(`\n🎉 GitHub release created successfully!`, colors.green);
+        log(`   View at: ${releaseResponse.data.html_url}`, colors.cyan);
+
+    } catch (error) {
+        log(`❌ Failed to create GitHub release: ${error.message}`, colors.red);
+        if (error.status === 401) {
+            log('   Check that your GITHUB_TOKEN is valid and has the necessary permissions', colors.yellow);
+        }
+    }
 }
 
 function showVersionPreview(currentVersion, bumpType) {
@@ -209,14 +389,149 @@ function showHelp() {
     log('  --patch          Bump patch version (0.0.x)', colors.cyan);
     log('  --minor          Bump minor version (0.x.0)', colors.cyan);
     log('  --major          Bump major version (x.0.0)', colors.cyan);
-    log('  --skip-build     Skip the build step', colors.cyan);
+    log('  --skip-build     Skip the web build step', colors.cyan);
     log('  --skip-tests     Skip running tests', colors.cyan);
+    log('  --skip-desktop   Skip building Tauri desktop app', colors.cyan);
+    log('  --skip-docker    Skip Docker build and push', colors.cyan);
+    log('  --skip-release   Skip creating GitHub release', colors.cyan);
     log('  --dry-run        Show what would be done without doing it', colors.cyan);
     log('  --help           Show this help message', colors.cyan);
+    log('\nEnvironment Variables:', colors.yellow);
+    log('  GITHUB_TOKEN     Required for creating GitHub releases', colors.cyan);
+    log('                   Can be set in .env file or environment', colors.cyan);
     log('\nExamples:', colors.yellow);
     log('  npm run deploy --patch', colors.cyan);
     log('  npm run deploy --minor --skip-tests', colors.cyan);
     log('  npm run deploy --dry-run', colors.cyan);
+    log('\n.env file example:', colors.yellow);
+    log('  GITHUB_TOKEN=ghp_your_personal_access_token', colors.cyan);
+}
+
+async function buildTauriApp(version) {
+    const desktopPath = path.join(process.cwd(), 'desktop');
+
+    // Check if desktop folder exists
+    if (!fs.existsSync(desktopPath)) {
+        log('⚠️  Desktop folder not found. Skipping Tauri build.', colors.yellow);
+        return null;
+    }
+
+    log('\n🖥️  Building Tauri Desktop App...', colors.yellow);
+
+    // Install dependencies if needed
+    const nodeModulesPath = path.join(desktopPath, 'node_modules');
+    if (!fs.existsSync(nodeModulesPath)) {
+        log('📦 Installing desktop dependencies...', colors.cyan);
+        execCommand('npm install', true, desktopPath);
+    }
+
+    // Build the Tauri app
+    log('🔨 Building Tauri app...', colors.cyan);
+    execCommand('npm run tauri build', true, desktopPath);
+
+    // Find the built artifacts
+    const artifactsPath = path.join(desktopPath, 'src-tauri', 'target', 'release');
+    const bundlePath = path.join(artifactsPath, 'bundle');
+
+    const artifacts = [];
+
+    // Look for MSI installer
+    const msiPath = path.join(bundlePath, 'msi');
+    if (fs.existsSync(msiPath)) {
+        const msiFiles = fs.readdirSync(msiPath).filter(f => f.endsWith('.msi'));
+        if (msiFiles.length > 0) {
+            const msiFile = msiFiles[0];
+            const newMsiName = `VAPR_${version}_x64_en-US.msi`;
+            const msiFullPath = path.join(msiPath, msiFile);
+            const msiDestPath = path.join(process.cwd(), newMsiName);
+
+            if (!dryRun) {
+                fs.copyFileSync(msiFullPath, msiDestPath);
+            }
+
+            artifacts.push({
+                path: msiDestPath,
+                name: newMsiName,
+                contentType: 'application/x-msi'
+            });
+
+            log(`✅ Found MSI installer: ${newMsiName}`, colors.green);
+        }
+    }
+
+    // Look for executable
+    let exePath = null;
+    const possibleExeNames = ['vapr.exe', 'VAPR.exe', 'app.exe'];
+    for (const exeName of possibleExeNames) {
+        const fullPath = path.join(artifactsPath, exeName);
+        if (fs.existsSync(fullPath)) {
+            exePath = fullPath;
+            break;
+        }
+    }
+
+    if (exePath) {
+        // Create a zip with the executable and any necessary files
+        const zipName = `VAPR-windows-${version}.zip`;
+        const zipPath = path.join(process.cwd(), zipName);
+
+        // Create temporary directory for zip contents
+        const tempDir = path.join(process.cwd(), `temp-vapr-${version}`);
+        if (!dryRun) {
+            fs.mkdirSync(tempDir, { recursive: true });
+
+            // Copy executable
+            fs.copyFileSync(exePath, path.join(tempDir, 'VAPR.exe'));
+
+            // Copy any additional required files (DLLs, resources, etc.)
+            const requiredFiles = ['WebView2Loader.dll', 'resources'];
+            for (const file of requiredFiles) {
+                const srcPath = path.join(artifactsPath, file);
+                if (fs.existsSync(srcPath)) {
+                    const destPath = path.join(tempDir, file);
+                    if (fs.statSync(srcPath).isDirectory()) {
+                        fs.cpSync(srcPath, destPath, { recursive: true });
+                    } else {
+                        fs.copyFileSync(srcPath, destPath);
+                    }
+                }
+            }
+
+            // Create README file
+            const readmeContent = `# VAPR Desktop v${version}
+
+## Installation
+1. Extract all files to a folder
+2. Run VAPR.exe
+
+## Requirements
+- Windows 10 or later
+- WebView2 (will be installed automatically if not present)
+
+## Support
+Visit: https://github.com/vic92548/vapr
+`;
+            fs.writeFileSync(path.join(tempDir, 'README.txt'), readmeContent);
+
+            // Create zip
+            await createZipArchive(tempDir, zipPath);
+
+            // Clean up temp directory
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        }
+
+        artifacts.push({
+            path: zipPath,
+            name: zipName,
+            contentType: 'application/zip'
+        });
+
+        log(`✅ Created portable ZIP: ${zipName}`, colors.green);
+    } else {
+        log('⚠️  Could not find built executable', colors.yellow);
+    }
+
+    return artifacts;
 }
 
 async function deploy() {
@@ -234,20 +549,42 @@ async function deploy() {
             log('🔍 Running in DRY RUN mode - no changes will be made', colors.magenta);
         }
 
-        // Check if Docker is installed and running
-        try {
-            execCommand('docker --version', false);
-        } catch (error) {
-            log('Docker is not installed or not running!', colors.red);
-            process.exit(1);
+        // Check if .env file exists and suggest creating one if GITHUB_TOKEN is not set
+        if (!process.env.GITHUB_TOKEN && !skipRelease) {
+            const envPath = path.join(process.cwd(), '.env');
+            if (!fs.existsSync(envPath)) {
+                log('\n💡 Tip: Create a .env file to store your GITHUB_TOKEN securely', colors.yellow);
+                log('   echo "GITHUB_TOKEN=your_token" > .env', colors.cyan);
+
+                // Check if .env is in .gitignore
+                const gitignorePath = path.join(process.cwd(), '.gitignore');
+                if (fs.existsSync(gitignorePath)) {
+                    const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+                    if (!gitignoreContent.includes('.env')) {
+                        log('   ⚠️  Remember to add .env to your .gitignore file!', colors.yellow);
+                    }
+                }
+            }
         }
 
-        // Check if user is logged in to Docker Hub
-        try {
-            execCommand('docker info', false);
-        } catch (error) {
-            log('Please login to Docker Hub first: docker login', colors.red);
-            process.exit(1);
+        // Check if Docker is installed and running (only if not skipping Docker)
+        if (!skipDocker) {
+            try {
+                execCommand('docker --version', false);
+            } catch (error) {
+                log('Docker is not installed or not running!', colors.red);
+                log('Use --skip-docker to skip Docker deployment', colors.yellow);
+                process.exit(1);
+            }
+
+            // Check if user is logged in to Docker Hub
+            try {
+                execCommand('docker info', false);
+            } catch (error) {
+                log('Please login to Docker Hub first: docker login', colors.red);
+                log('Use --skip-docker to skip Docker deployment', colors.yellow);
+                process.exit(1);
+            }
         }
 
         // Check for uncommitted changes
@@ -334,9 +671,19 @@ async function deploy() {
             log('\n📝 Updating version in HTML files...', colors.yellow);
             updateVersionInHTML(newVersion);
 
+            // Update version in Tauri files
+            if (!skipDesktop) {
+                log('\n📝 Updating version in Tauri files...', colors.yellow);
+                updateVersionInTauri(newVersion);
+            }
+
             // Commit version change
             try {
-                execCommand(`git add package.json src/components/menu.html src/components/forms/register.html`);
+                let filesToCommit = 'package.json src/components/menu.html src/components/forms/register.html';
+                if (!skipDesktop) {
+                    filesToCommit += ' desktop/package.json desktop/src-tauri/tauri.conf.json desktop/src-tauri/Cargo.toml';
+                }
+                execCommand(`git add ${filesToCommit}`);
                 execCommand(`git commit -m "chore: bump version to ${newVersion}"`);
                 log('✅ Committed version change', colors.green);
             } catch (error) {
@@ -368,35 +715,49 @@ async function deploy() {
             }
         }
 
-        // Build the project
+        // Build the web project
         if (!skipBuild) {
-            log('\n📦 Building project...', colors.yellow);
+            log('\n📦 Building web project...', colors.yellow);
             execCommand('npm run build');
-            log('✅ Build completed', colors.green);
+            log('✅ Web build completed', colors.green);
         } else {
-            log('\n⏩ Skipping build step', colors.yellow);
+            log('\n⏩ Skipping web build step', colors.yellow);
         }
 
-        // Docker repository details
+        // Build Tauri desktop app
+        let desktopArtifacts = [];
+        if (!skipDesktop) {
+            desktopArtifacts = await buildTauriApp(newVersion) || [];
+        } else {
+            log('\n⏩ Skipping desktop build', colors.yellow);
+        }
+
         const dockerRepo = 'vic92548/vapr';
-        const imageName = `${dockerRepo}:${newVersion}`;
-        const latestTag = `${dockerRepo}:latest`;
+        // Docker build and push
+        if (!skipDocker) {
+            // Docker repository details
 
-        // Show Docker tags that will be created
-        log('\n🏷️  Docker Tags:', colors.bright + colors.yellow);
-        log(`   • ${imageName}`, colors.cyan);
-        log(`   • ${latestTag}`, colors.cyan);
+            const imageName = `${dockerRepo}:${newVersion}`;
+            const latestTag = `${dockerRepo}:latest`;
 
-        // Build Docker image
-        log('\n🐳 Building Docker image...', colors.yellow);
-        execCommand(`docker build -t ${imageName} -t ${latestTag} .`);
-        log('✅ Docker image built successfully', colors.green);
+            // Show Docker tags that will be created
+            log('\n🏷️  Docker Tags:', colors.bright + colors.yellow);
+            log(`   • ${imageName}`, colors.cyan);
+            log(`   • ${latestTag}`, colors.cyan);
 
-        // Push to Docker Hub
-        log('\n📤 Pushing to Docker Hub...', colors.yellow);
-        execCommand(`docker push ${imageName}`);
-        execCommand(`docker push ${latestTag}`);
-        log('✅ Docker images pushed successfully', colors.green);
+            // Build Docker image
+            log('\n🐳 Building Docker image...', colors.yellow);
+            execCommand(`docker build -t ${imageName} -t ${latestTag} .`);
+            log('✅ Docker image built successfully', colors.green);
+
+            // Push to Docker Hub
+            log('\n📤 Pushing to Docker Hub...', colors.yellow);
+            execCommand(`docker push ${imageName}`);
+            execCommand(`docker push ${latestTag}`);
+            log('✅ Docker images pushed successfully', colors.green);
+        } else {
+            log('\n⏩ Skipping Docker build and push', colors.yellow);
+        }
 
         // Create git tag
         if (newVersion !== currentVersion) {
@@ -404,31 +765,50 @@ async function deploy() {
                 execCommand(`git tag -a v${newVersion} -m "Release version ${newVersion}"`);
                 log(`✅ Created git tag: v${newVersion}`, colors.green);
 
-                // Ask if user wants to push the tag
+                // Push tag and commits
                 if (!dryRun) {
-                    const pushTag = await askQuestion('\nPush git tag to remote? (y/n): ');
-                    if (pushTag.toLowerCase() === 'y') {
-                        execCommand(`git push origin v${newVersion}`);
-                        execCommand(`git push origin main`); // or master, depending on your branch
-                        log('✅ Pushed tag and commits to remote', colors.green);
-                    }
+                    execCommand(`git push origin v${newVersion}`);
+                    execCommand(`git push origin main`); // or master, depending on your branch
+                    log('✅ Pushed tag and commits to remote', colors.green);
                 }
             } catch (error) {
                 log('Warning: Could not create/push git tag', colors.yellow);
             }
         }
 
+        // Create GitHub release
+        if (!skipRelease && desktopArtifacts.length > 0 && newVersion !== currentVersion) {
+            await createGitHubRelease(newVersion, desktopArtifacts);
+        } else if (skipRelease) {
+            log('\n⏩ Skipping GitHub release', colors.yellow);
+        } else if (desktopArtifacts.length === 0 && !skipDesktop) {
+            log('\n⚠️  No desktop artifacts found, skipping GitHub release', colors.yellow);
+        }
+
         // Summary with version highlight
         log('\n🎉 Deployment Complete!', colors.bright + colors.green);
         log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', colors.dim);
         log(`Deployed Version: ${colors.bright}${colors.green}${newVersion}${colors.reset}`, colors.bright);
-        log(`Docker Image: ${imageName}`, colors.cyan);
-        log(`Docker Hub: https://hub.docker.com/r/${dockerRepo}`, colors.cyan);
+
+        if (!skipDocker) {
+            log(`Docker Image: ${dockerRepo}:${newVersion}`, colors.cyan);
+            log(`Docker Hub: https://hub.docker.com/r/${dockerRepo}`, colors.cyan);
+        }
+
+        if (desktopArtifacts.length > 0) {
+            log('\nDesktop Artifacts:', colors.yellow);
+            desktopArtifacts.forEach(artifact => {
+                log(`  • ${artifact.name}`, colors.cyan);
+            });
+        }
+
         log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', colors.dim);
 
         // Show commands to run the container
-        log('\n📝 To run the container:', colors.yellow);
-        log(`docker run -p 8080:8080 -e DATABASE_URL="your-mongodb-url" ${imageName}`, colors.cyan);
+        if (!skipDocker) {
+            log('\n📝 To run the container:', colors.yellow);
+            log(`docker run -p 8080:8080 -e DATABASE_URL="your-mongodb-url" ${dockerRepo}:${newVersion}`, colors.cyan);
+        }
 
         // Version history
         if (newVersion !== currentVersion) {
@@ -437,11 +817,26 @@ async function deploy() {
             log(`    Current: ${newVersion}`, colors.green);
         }
 
-        // Clean up old images (optional)
-        const cleanup = await askQuestion('\nClean up old Docker images? (y/n): ');
-        if (cleanup.toLowerCase() === 'y') {
-            execCommand('docker image prune -f');
-            log('✅ Cleaned up old images', colors.green);
+        // Clean up
+        if (!skipDocker) {
+            const cleanup = await askQuestion('\nClean up old Docker images? (y/n): ');
+            if (cleanup.toLowerCase() === 'y') {
+                execCommand('docker image prune -f');
+                log('✅ Cleaned up old images', colors.green);
+            }
+        }
+
+        // Clean up desktop build artifacts
+        if (desktopArtifacts.length > 0 && !dryRun) {
+            const cleanupDesktop = await askQuestion('\nRemove local desktop build artifacts? (y/n): ');
+            if (cleanupDesktop.toLowerCase() === 'y') {
+                desktopArtifacts.forEach(artifact => {
+                    if (fs.existsSync(artifact.path)) {
+                        fs.unlinkSync(artifact.path);
+                    }
+                });
+                log('✅ Cleaned up local build artifacts', colors.green);
+            }
         }
 
     } catch (error) {
@@ -454,6 +849,7 @@ async function deploy() {
         log('2. If version was bumped, you may need to:', colors.cyan);
         log('   - Revert the version in package.json', colors.cyan);
         log('   - Revert the version in HTML files', colors.cyan);
+        log('   - Revert the version in Tauri files', colors.cyan);
         log('   - Delete the git tag: git tag -d v<version>', colors.cyan);
         log('3. Run the deploy script again', colors.cyan);
 

@@ -3863,6 +3863,30 @@ article.vapr-article-fixed {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.2);
 }
+
+.menu-item-icon.download {
+    background: rgba(78, 205, 196, 0.1);
+    border-color: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+}
+
+.menu-item:hover .menu-item-icon.download {
+    background: rgba(78, 205, 196, 0.15);
+    box-shadow: 0 5px 20px rgba(78, 205, 196, 0.2);
+}
+
+@keyframes downloadPulse {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(3px);
+    }
+}
+
+.menu-item-icon.download:hover i {
+    animation: downloadPulse 1s ease-in-out infinite;
+}
 @media only screen and (min-width: 768px) {
     main {
         margin: 0 auto;

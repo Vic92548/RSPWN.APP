@@ -19,6 +19,8 @@ function initMenu() {
         initMenuCollapseState();
         addCollapsedMenuInteractions();
     }
+
+    initDesktopDownloadButton();
 }
 
 function toggleMenuCollapse() {
@@ -228,6 +230,71 @@ function addMenuAnimations() {
     });
 }
 
+function isRunningInTauri() {
+    return typeof window.__TAURI__ !== 'undefined';
+}
+
+function initDesktopDownloadButton() {
+    const downloadItem = document.getElementById('desktop-download-item');
+
+    if (downloadItem && !isRunningInTauri()) {
+        downloadItem.style.display = 'flex';
+
+        setTimeout(() => {
+            downloadItem.style.opacity = '0';
+            downloadItem.style.transform = 'translateX(-20px)';
+
+            setTimeout(() => {
+                downloadItem.style.transition = 'all 0.3s ease';
+                downloadItem.style.opacity = '1';
+                downloadItem.style.transform = 'translateX(0)';
+            }, 100);
+        }, 300);
+    }
+}
+
+function getLatestVersion() {
+    const versionElement = document.querySelector('.menu-version span');
+    if (versionElement) {
+        const versionText = versionElement.textContent;
+        const versionMatch = versionText.match(/v(\d+\.\d+\.\d+)/);
+        if (versionMatch) {
+            return versionMatch[1];
+        }
+    }
+    return '1.1.19';
+}
+
+function downloadDesktopApp() {
+    const version = getLatestVersion();
+    const downloadUrl = `https://github.com/Vic92548/VAPR/releases/download/v${version}/VAPR_${version}_x64_en-US.msi`;
+
+    if (window.analytics && window.analytics.track) {
+        window.analytics.track('desktop_app_download_clicked', {
+            version: version,
+            platform: 'windows'
+        });
+    }
+
+    window.open(downloadUrl, '_blank');
+
+    if (typeof Swal !== 'undefined') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true
+        });
+
+        Toast.fire({
+            icon: "info",
+            title: "Download started!",
+            html: `The VAPR desktop app download should begin shortly.<br><small>Windows 64-bit • v${version}</small>`
+        });
+    }
+}
+
 function openMenu() {
     const menu = document.getElementById('menu');
     if (!menu) return;
@@ -252,6 +319,8 @@ function openMenu() {
     }
 
     addMenuAnimations();
+
+    initDesktopDownloadButton();
 }
 
 function hideMenu() {
@@ -354,3 +423,4 @@ window.toggleMenuCollapse = toggleMenuCollapse;
 window.openMenu = openMenu;
 window.hideMenu = hideMenu;
 window.logout = logout;
+window.downloadDesktopApp = downloadDesktopApp;
