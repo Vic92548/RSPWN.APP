@@ -6,6 +6,7 @@ use tauri::Emitter;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct DownloadProgress {
+    game_id: String,
     downloaded: u64,
     total: u64,
     percentage: f32,
@@ -88,6 +89,7 @@ async fn download_and_install_game(
         };
 
         let progress = DownloadProgress {
+            game_id: game_id.clone(),
             downloaded,
             total: total_size,
             percentage: (downloaded as f32 / total_size as f32) * 100.0,
@@ -101,7 +103,10 @@ async fn download_and_install_game(
     }
 
     window
-        .emit("download-status", "Extracting game files...")
+        .emit("download-status", serde_json::json!({
+            "game_id": game_id.clone(),
+            "status": "Extracting game files..."
+        }))
         .map_err(|e| format!("Failed to emit status: {}", e))?;
 
     let cursor = Cursor::new(file_data);
@@ -253,13 +258,13 @@ async fn launch_game(executable_path: String) -> Result<bool, String> {
 #[tauri::command]
 async fn get_installed_games() -> Result<Vec<serde_json::Value>, String> {
     let vapr_games_dir = get_games_directory()?;
-    
+
     if !vapr_games_dir.exists() {
         return Ok(vec![]);
     }
-    
+
     let mut games = Vec::new();
-    
+
     if let Ok(entries) = fs::read_dir(&vapr_games_dir) {
         for entry in entries.flatten() {
             let path = entry.path();
@@ -275,8 +280,35 @@ async fn get_installed_games() -> Result<Vec<serde_json::Value>, String> {
             }
         }
     }
-    
+
     Ok(games)
+}
+
+#[tauri::command]
+async fn uninstall_game(game_id: String) -> Result<bool, String> {
+    let vapr_games_dir = get_games_directory()?;
+
+    if let Ok(entries) = fs::read_dir(&vapr_games_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                let info_file = path.join("vapr_game_info.json");
+                if info_file.exists() {
+                    if let Ok(content) = fs::read_to_string(&info_file) {
+                        if let Ok(game_info) = serde_json::from_str::<serde_json::Value>(&content) {
+                            if game_info.get("id").and_then(|v| v.as_str()) == Some(&game_id) {
+                                fs::remove_dir_all(&path)
+                                    .map_err(|e| format!("Failed to remove game directory: {}", e))?;
+                                return Ok(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Err("Game not found".to_string())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -291,7 +323,8 @@ pub fn run() {
             greet,
             download_and_install_game,
             launch_game,
-            get_installed_games
+            get_installed_games,
+            uninstall_game
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

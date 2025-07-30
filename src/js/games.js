@@ -2,7 +2,8 @@ let gamesData = {
     allGames: [],
     userGames: [],
     currentManagingGame: null,
-    installedGames: []
+    installedGames: [],
+    downloadingGames: new Map()
 };
 
 cardManager.register('games-card', {
@@ -156,28 +157,55 @@ function displayLibrary() {
     gamesData.userGames.forEach(game => {
         const gameEl = document.createElement('div');
         gameEl.className = 'game-item';
+        gameEl.id = `game-item-${game.id}`;
 
         const isTauri = isRunningInTauri();
         const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
+        const isDownloading = gamesData.downloadingGames.has(game.id);
 
-        let actionButton = '';
+        let actionContent = '';
         if (game.downloadUrl) {
             if (isTauri) {
-                if (isInstalled) {
+                if (isDownloading) {
+                    const progress = gamesData.downloadingGames.get(game.id) || 0;
+                    actionContent = `
+                        <div class="download-progress-overlay">
+                            <div class="download-progress-info">
+                                <span class="download-status">Downloading...</span>
+                                <span class="download-percentage">${Math.round(progress)}%</span>
+                            </div>
+                            <div class="download-progress-bar">
+                                <div class="download-progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                            <button class="cancel-download-btn" onclick="window.cancelDownload('${game.id}')">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    `;
+                } else if (isInstalled) {
                     const installedGame = gamesData.installedGames.find(g => g.id === game.id);
                     if (installedGame && installedGame.executable) {
-                        actionButton = `<button class="download-button play-button" onclick="window.launchGame(event, '${installedGame.executable.replace(/\\/g, '\\\\')}')"><i class="fa-solid fa-play"></i> Play</button>`;
+                        actionContent = `
+                            <div class="game-actions">
+                                <button class="download-button play-button" onclick="window.launchGame(event, '${installedGame.executable.replace(/\\/g, '\\\\')}')">
+                                    <i class="fa-solid fa-play"></i> Play
+                                </button>
+                                <button class="uninstall-button" onclick="window.uninstallGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
                     }
                 } else {
-                    actionButton = `<button class="download-button" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')"><i class="fa-solid fa-download"></i> Install</button>`;
+                    actionContent = `<button class="download-button" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')"><i class="fa-solid fa-download"></i> Install</button>`;
                 }
             } else {
-                actionButton = `<button class="download-button" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')"><i class="fa-solid fa-download"></i> Download</button>`;
+                actionContent = `<button class="download-button" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')"><i class="fa-solid fa-download"></i> Download</button>`;
             }
         }
 
         gameEl.innerHTML = `
-            ${actionButton}
+            ${actionContent}
             <div class="game-cover-wrapper">
                 <img src="${game.coverImage}" class="game-cover" alt="${game.title}">
             </div>
@@ -375,60 +403,22 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
         return;
     }
 
-    const button = event.target.closest('button');
-    const originalContent = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing...';
-
-    const progressModal = Swal.fire({
-        title: `Installing ${gameTitle}`,
-        html: `
-            <div class="download-progress-container">
-                <div class="download-info">
-                    <span class="download-status">Starting download...</span>
-                    <span class="download-speed"></span>
-                </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: 0%"></div>
-                </div>
-                <div class="download-stats">
-                    <span class="download-percentage">0%</span>
-                    <span class="download-eta">Calculating...</span>
-                </div>
-            </div>
-        `,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    gamesData.downloadingGames.set(gameId, 0);
+    displayLibrary();
 
     try {
         const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
             const progress = event.payload;
-            const modal = Swal.getHtmlContainer();
-            if (modal) {
-                const progressBar = modal.querySelector('.progress-bar-fill');
-                const percentage = modal.querySelector('.download-percentage');
-                const speed = modal.querySelector('.download-speed');
-                const eta = modal.querySelector('.download-eta');
-                const status = modal.querySelector('.download-status');
-
-                if (progressBar) progressBar.style.width = `${progress.percentage}%`;
-                if (percentage) percentage.textContent = `${Math.round(progress.percentage)}%`;
-                if (speed) speed.textContent = `${progress.speed.toFixed(2)} MB/s`;
-                if (eta) eta.textContent = formatTime(progress.eta);
-                if (status) status.textContent = 'Downloading...';
+            if (progress.game_id === gameId) {
+                gamesData.downloadingGames.set(gameId, progress.percentage);
+                updateGameDownloadProgress(gameId, progress);
             }
         });
 
         const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
-            const modal = Swal.getHtmlContainer();
-            if (modal) {
-                const status = modal.querySelector('.download-status');
-                if (status) status.textContent = event.payload;
+            const data = event.payload;
+            if (data.game_id === gameId) {
+                updateGameDownloadStatus(gameId, data.status);
             }
         });
 
@@ -442,17 +432,18 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
         statusUnlisten();
 
         if (result.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Installation Complete!',
-                text: `${gameTitle} has been installed successfully.`,
-                confirmButtonText: 'Play Now',
-                showCancelButton: true,
-                cancelButtonText: 'Close'
-            }).then((swalResult) => {
-                if (swalResult.isConfirmed && result.executable) {
-                    window.launchGame(event, result.executable);
-                }
+            gamesData.downloadingGames.delete(gameId);
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: "success",
+                title: `${gameTitle} installed successfully!`
             });
 
             await loadLibraryData();
@@ -461,14 +452,82 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
         }
     } catch (error) {
         console.error('Error downloading game:', error);
+        gamesData.downloadingGames.delete(gameId);
+        displayLibrary();
+
         Swal.fire({
             icon: 'error',
             title: 'Download Failed',
             text: error.message || 'Failed to download the game. Please try again.'
         });
-    } finally {
-        button.disabled = false;
-        button.innerHTML = originalContent;
+    }
+}
+
+function updateGameDownloadProgress(gameId, progress) {
+    const gameEl = document.getElementById(`game-item-${gameId}`);
+    if (!gameEl) return;
+
+    const progressFill = gameEl.querySelector('.download-progress-fill');
+    const percentage = gameEl.querySelector('.download-percentage');
+    const status = gameEl.querySelector('.download-status');
+
+    if (progressFill) progressFill.style.width = `${progress.percentage}%`;
+    if (percentage) percentage.textContent = `${Math.round(progress.percentage)}%`;
+    if (status) status.textContent = `Downloading... ${progress.speed.toFixed(2)} MB/s`;
+}
+
+function updateGameDownloadStatus(gameId, statusText) {
+    const gameEl = document.getElementById(`game-item-${gameId}`);
+    if (!gameEl) return;
+
+    const status = gameEl.querySelector('.download-status');
+    if (status) status.textContent = statusText;
+}
+
+window.cancelDownload = function(gameId) {
+    gamesData.downloadingGames.delete(gameId);
+    displayLibrary();
+}
+
+window.uninstallGame = async function(event, gameId, gameTitle) {
+    event.stopPropagation();
+
+    const result = await Swal.fire({
+        title: 'Uninstall Game?',
+        html: `<p>Are you sure you want to uninstall <strong>${gameTitle}</strong>?</p>
+               <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7); margin-top: 10px;">This will remove all game files from your computer.</p>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, uninstall',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#e74c3c'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            await window.__TAURI__.core.invoke('uninstall_game', { gameId });
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: "success",
+                title: `${gameTitle} uninstalled successfully`
+            });
+
+            await loadLibraryData();
+        } catch (error) {
+            console.error('Error uninstalling game:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Uninstall Failed',
+                text: error.message || 'Failed to uninstall the game. Please try again.'
+            });
+        }
     }
 }
 

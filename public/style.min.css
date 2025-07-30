@@ -3435,10 +3435,16 @@ article.vapr-article-fixed {
     z-index: 10;
 }
 
-.download-button, .manage-button {
+.game-actions {
     position: absolute;
     top: 10px;
     left: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.download-button, .manage-button, .uninstall-button {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -3450,7 +3456,6 @@ article.vapr-article-fixed {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 10;
     border: none;
 }
 
@@ -3458,6 +3463,116 @@ article.vapr-article-fixed {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+.play-button {
+    background: rgba(78, 205, 196, 0.2);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.play-button:hover {
+    background: rgba(78, 205, 196, 0.3);
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.2);
+}
+
+.uninstall-button {
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    padding: 6px 10px;
+}
+
+.uninstall-button:hover {
+    background: rgba(231, 76, 60, 0.3);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+}
+
+.download-progress-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 15;
+}
+
+.download-progress-info {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.download-status {
+    font-weight: 600;
+}
+
+.download-percentage {
+    color: #4ecdc4;
+    font-weight: 700;
+}
+
+.download-progress-bar {
+    width: 80%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.download-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a3aa);
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.download-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.cancel-download-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-download-btn:hover {
+    background: rgba(231, 76, 60, 0.3);
+    transform: scale(1.1);
 }
 
 .games-loading, .library-loading {
