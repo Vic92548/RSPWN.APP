@@ -3,6 +3,7 @@ use std::fs;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use tauri::Emitter;
+use semver::Version;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct DownloadProgress {
@@ -22,9 +23,54 @@ struct GameInstallResult {
     error: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct VersionCheckResult {
+    is_compatible: bool,
+    current_version: String,
+    required_version: String,
+    download_url: String,
+}
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+async fn check_version_compatibility() -> Result<VersionCheckResult, String> {
+    let current_version = env!("CARGO_PKG_VERSION");
+
+    let response = reqwest::get("https://vapr.club/api/desktop-version")
+        .await
+        .map_err(|e| format!("Failed to check version: {}", e))?;
+
+    let version_info: serde_json::Value = response.json()
+        .await
+        .map_err(|e| format!("Failed to parse version info: {}", e))?;
+
+    let required_version = version_info["minimum_version"]
+        .as_str()
+        .ok_or("Invalid version format")?;
+
+    let current = Version::parse(current_version)
+        .map_err(|e| format!("Failed to parse current version: {}", e))?;
+    let required = Version::parse(required_version)
+        .map_err(|e| format!("Failed to parse required version: {}", e))?;
+
+    let is_compatible = current >= required;
+
+    let download_url = format!(
+        "https://github.com/Vic92548/VAPR/releases/download/v{}/VAPR_{}_x64_en-US.msi",
+        required_version,
+        required_version
+    );
+
+    Ok(VersionCheckResult {
+        is_compatible,
+        current_version: current_version.to_string(),
+        required_version: required_version.to_string(),
+        download_url,
+    })
 }
 
 fn get_games_directory() -> Result<PathBuf, String> {
@@ -321,6 +367,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
             greet,
+            check_version_compatibility,
             download_and_install_game,
             launch_game,
             get_installed_games,
