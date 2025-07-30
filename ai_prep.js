@@ -13,6 +13,7 @@ const rl = readline.createInterface({
 // Configuration
 const BACKEND_DIR = 'server_modules';
 const FRONTEND_DIR = 'src';
+const DESKTOP_DIR = 'desktop';
 const ROOT_FILES = ['server.js', 'build.js'];
 const OUTPUT_FILE = 'output.txt';
 
@@ -20,7 +21,10 @@ const OUTPUT_FILE = 'output.txt';
 const EXTENSIONS = {
     html: ['.html'],
     css: ['.css'],
-    js: ['.js']
+    js: ['.js', '.jsx', '.ts', '.tsx'],
+    rust: ['.rs'],
+    config: ['.toml', '.json', '.conf.json'],
+    desktopConfig: ['.toml', '.conf.json']  // Specific config for desktop/Tauri
 };
 
 let output = '';
@@ -38,9 +42,13 @@ function walkDir(dirPath, allowedExtensions) {
     for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
 
+        // Skip common directories to ignore
         if (entry.isDirectory()) {
+            if (['node_modules', 'target', 'dist', '.git'].includes(entry.name)) {
+                continue;
+            }
             walkDir(fullPath, allowedExtensions);
-        } else if (allowedExtensions.includes(path.extname(entry.name))) {
+        } else if (allowedExtensions.some(ext => entry.name.endsWith(ext))) {
             const content = fs.readFileSync(fullPath, 'utf-8');
             output += `\n--- FILE: ${fullPath} ---\n`;
             output += content + '\n';
@@ -86,6 +94,16 @@ function processFrontend(extensions) {
     }
 }
 
+// Process desktop (Tauri) files
+function processDesktop(extensions) {
+    console.log('\n🖥️  Processing desktop (Tauri) files...');
+    if (fs.existsSync(DESKTOP_DIR)) {
+        walkDir(DESKTOP_DIR, extensions);
+    } else {
+        console.warn(`  ⚠️  Desktop directory not found: ${DESKTOP_DIR}`);
+    }
+}
+
 // Main interactive function
 async function main() {
     console.log('🚀 VAPR Project File Merger\n');
@@ -95,22 +113,34 @@ async function main() {
         // Main menu
         const mainChoice = await question(
             'What would you like to merge?\n' +
-            '  1) Everything (Backend + Frontend)\n' +
+            '  1) Everything (Backend + Frontend + Desktop)\n' +
             '  2) Backend only (server_modules + root files)\n' +
             '  3) Frontend only (src directory)\n' +
-            '  4) Custom selection\n' +
-            '\nEnter your choice (1-4): '
+            '  4) Desktop only (Tauri app)\n' +
+            '  5) Backend + Frontend (no desktop)\n' +
+            '  6) Backend + Desktop\n' +
+            '  7) Frontend + Desktop\n' +
+            '  8) Custom selection\n' +
+            '\nEnter your choice (1-8): '
         );
 
         let includeBackend = false;
         let includeFrontend = false;
+        let includeDesktop = false;
         let extensions = [];
 
         switch (mainChoice) {
             case '1':
                 includeBackend = true;
                 includeFrontend = true;
-                extensions = [...EXTENSIONS.html, ...EXTENSIONS.css, ...EXTENSIONS.js];
+                includeDesktop = true;
+                extensions = [...new Set([
+                    ...EXTENSIONS.html,
+                    ...EXTENSIONS.css,
+                    ...EXTENSIONS.js,
+                    ...EXTENSIONS.rust,
+                    ...EXTENSIONS.desktopConfig
+                ])];
                 break;
 
             case '2':
@@ -161,6 +191,68 @@ async function main() {
                 break;
 
             case '4':
+                includeDesktop = true;
+                const desktopChoice = await question(
+                    '\nWhich desktop files to include?\n' +
+                    '  1) All (Rust + JS/TS + Config)\n' +
+                    '  2) Rust files only\n' +
+                    '  3) JS/TS files only\n' +
+                    '  4) Config files only (TOML + .conf.json)\n' +
+                    '  5) Rust + Config\n' +
+                    '  6) JS/TS + Config\n' +
+                    '\nEnter your choice (1-6): '
+                );
+
+                switch (desktopChoice) {
+                    case '1':
+                        extensions = [...EXTENSIONS.rust, ...EXTENSIONS.js, ...EXTENSIONS.desktopConfig];
+                        break;
+                    case '2':
+                        extensions = [...EXTENSIONS.rust];
+                        break;
+                    case '3':
+                        extensions = [...EXTENSIONS.js];
+                        break;
+                    case '4':
+                        extensions = [...EXTENSIONS.desktopConfig];
+                        break;
+                    case '5':
+                        extensions = [...EXTENSIONS.rust, ...EXTENSIONS.desktopConfig];
+                        break;
+                    case '6':
+                        extensions = [...EXTENSIONS.js, ...EXTENSIONS.desktopConfig];
+                        break;
+                    default:
+                        console.log('Invalid choice. Including all desktop files.');
+                        extensions = [...EXTENSIONS.rust, ...EXTENSIONS.js, ...EXTENSIONS.desktopConfig];
+                }
+                break;
+
+            case '5':
+                includeBackend = true;
+                includeFrontend = true;
+                extensions = [...EXTENSIONS.html, ...EXTENSIONS.css, ...EXTENSIONS.js];
+                break;
+
+            case '6':
+                includeBackend = true;
+                includeDesktop = true;
+                extensions = [...new Set([...EXTENSIONS.js, ...EXTENSIONS.rust, ...EXTENSIONS.desktopConfig])];
+                break;
+
+            case '7':
+                includeFrontend = true;
+                includeDesktop = true;
+                extensions = [...new Set([
+                    ...EXTENSIONS.html,
+                    ...EXTENSIONS.css,
+                    ...EXTENSIONS.js,
+                    ...EXTENSIONS.rust,
+                    ...EXTENSIONS.desktopConfig
+                ])];
+                break;
+
+            case '8':
                 // Custom selection
                 const backendChoice = await question('\nInclude backend files? (y/n): ');
                 includeBackend = backendChoice.toLowerCase() === 'y';
@@ -168,33 +260,53 @@ async function main() {
                 const frontendChoice2 = await question('Include frontend files? (y/n): ');
                 includeFrontend = frontendChoice2.toLowerCase() === 'y';
 
+                const desktopChoice2 = await question('Include desktop (Tauri) files? (y/n): ');
+                includeDesktop = desktopChoice2.toLowerCase() === 'y';
+
                 if (includeFrontend) {
                     const htmlChoice = await question('  Include HTML files? (y/n): ');
                     if (htmlChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.html);
 
                     const cssChoice = await question('  Include CSS files? (y/n): ');
                     if (cssChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.css);
+                }
 
-                    const jsChoice = await question('  Include JS files? (y/n): ');
+                if (includeFrontend || includeBackend || includeDesktop) {
+                    const jsChoice = await question('  Include JS/TS files? (y/n): ');
                     if (jsChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.js);
                 }
 
-                if (includeBackend && !extensions.includes('.js')) {
-                    extensions.push(...EXTENSIONS.js);
+                if (includeDesktop) {
+                    const rustChoice = await question('  Include Rust files? (y/n): ');
+                    if (rustChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.rust);
+
+                    const configChoice = await question('  Include config files (TOML/.conf.json)? (y/n): ');
+                    if (configChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.desktopConfig);
                 }
+
+                // Remove duplicates
+                extensions = [...new Set(extensions)];
                 break;
 
             default:
                 console.log('Invalid choice. Merging everything by default.');
                 includeBackend = true;
                 includeFrontend = true;
-                extensions = [...EXTENSIONS.html, ...EXTENSIONS.css, ...EXTENSIONS.js];
+                includeDesktop = true;
+                extensions = [...new Set([
+                    ...EXTENSIONS.html,
+                    ...EXTENSIONS.css,
+                    ...EXTENSIONS.js,
+                    ...EXTENSIONS.rust,
+                    ...EXTENSIONS.desktopConfig
+                ])];
         }
 
         // Show summary
         console.log('\n📋 Summary:');
         console.log(`  Backend: ${includeBackend ? '✅' : '❌'}`);
         console.log(`  Frontend: ${includeFrontend ? '✅' : '❌'}`);
+        console.log(`  Desktop: ${includeDesktop ? '✅' : '❌'}`);
         console.log(`  File types: ${extensions.join(', ')}`);
 
         const confirm = await question('\nProceed with merge? (y/n): ');
@@ -215,6 +327,10 @@ async function main() {
 
         if (includeFrontend) {
             processFrontend(extensions);
+        }
+
+        if (includeDesktop) {
+            processDesktop(extensions);
         }
 
         // Write output
