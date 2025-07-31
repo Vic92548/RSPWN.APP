@@ -19,8 +19,6 @@ function initMenu() {
         initMenuCollapseState();
         addCollapsedMenuInteractions();
     }
-
-    initDesktopDownloadButton();
 }
 
 function toggleMenuCollapse() {
@@ -234,25 +232,6 @@ function isRunningInTauri() {
     return typeof window.__TAURI__ !== 'undefined';
 }
 
-function initDesktopDownloadButton() {
-    const downloadItem = document.getElementById('desktop-download-item');
-
-    if (downloadItem && !isRunningInTauri()) {
-        downloadItem.style.display = 'flex';
-
-        setTimeout(() => {
-            downloadItem.style.opacity = '0';
-            downloadItem.style.transform = 'translateX(-20px)';
-
-            setTimeout(() => {
-                downloadItem.style.transition = 'all 0.3s ease';
-                downloadItem.style.opacity = '1';
-                downloadItem.style.transform = 'translateX(0)';
-            }, 100);
-        }, 300);
-    }
-}
-
 function getLatestVersion() {
     const versionElement = document.querySelector('.menu-version span');
     if (versionElement) {
@@ -319,8 +298,6 @@ function openMenu() {
     }
 
     addMenuAnimations();
-
-    initDesktopDownloadButton();
 }
 
 function hideMenu() {
