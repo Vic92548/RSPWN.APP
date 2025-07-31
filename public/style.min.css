@@ -3695,6 +3695,31 @@ article.vapr-article-fixed {
     border-color: rgba(52, 152, 219, 0.2);
     color: #5cadff;
 }
+
+.download-keys-btn {
+    background: rgba(78, 205, 196, 0.2);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-keys-btn:hover {
+    background: rgba(78, 205, 196, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.2);
+}
+
+.download-keys-btn i {
+    font-size: 16px;
+}
 .menu-container {
     width: 100%;
     max-width: 480px;

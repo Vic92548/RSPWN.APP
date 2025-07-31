@@ -45,7 +45,7 @@
       "icons/icon.ico"
     ],
     "windows": {
-      "certificateThumbprint": null,
+      "signCommand": "relic sign --file %1 --key azure --config relic.conf",
       "digestAlgorithm": "sha256",
       "timestampUrl": "",
       "webviewInstallMode": {

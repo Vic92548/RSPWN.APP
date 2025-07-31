@@ -369,6 +369,65 @@ function copyKey(key) {
     });
 }
 
+async function downloadAvailableKeys() {
+    if (!gamesData.currentManagingGame) return;
+
+    try {
+        const response = await api.request(`/api/games/${gamesData.currentManagingGame.id}/keys`);
+
+        if (response.success && response.keys) {
+            const availableKeys = response.keys.filter(key => !key.usedBy);
+
+            if (availableKeys.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Available Keys',
+                    text: 'There are no available keys to download.'
+                });
+                return;
+            }
+
+            const keysText = availableKeys.map(key => key.key).join(',\n');
+
+            const blob = new Blob([keysText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys.txt`;
+
+            document.body.appendChild(a);
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            if (typeof Swal !== 'undefined') {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: `Downloaded ${availableKeys.length} available keys!`
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error downloading keys:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Download Failed',
+            text: 'Failed to download keys. Please try again.'
+        });
+    }
+}
+
+window.downloadAvailableKeys = downloadAvailableKeys;
+
 window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
     event.stopPropagation();
 
@@ -600,3 +659,4 @@ window.closeRedeemModal = closeRedeemModal;
 window.redeemKey = redeemKey;
 window.generateKeys = generateKeys;
 window.copyKey = copyKey;
+window.downloadAvailableKeys = downloadAvailableKeys;
