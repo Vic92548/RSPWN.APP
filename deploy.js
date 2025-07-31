@@ -418,6 +418,9 @@ async function buildTauriApp(version) {
 
     log('\n🖥️  Building Tauri Desktop App...', colors.yellow);
 
+    log('🧹 Cleaning Cargo cache...', colors.cyan);
+    execCommand('cargo clean', true, path.join(desktopPath, 'src-tauri'));
+
     // Install dependencies if needed
     const nodeModulesPath = path.join(desktopPath, 'node_modules');
     if (!fs.existsSync(nodeModulesPath)) {
