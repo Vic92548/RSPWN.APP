@@ -35,7 +35,7 @@ async function checkDesktopVersion() {
             return;
         }
 
-        if (webVersion !== desktopVersion && hasSkippedVersion !== webVersion) {
+        if (webVersion !== desktopVersion) {
             showVersionUpdateModal({
                 current_version: desktopVersion,
                 required_version: webVersion
@@ -106,8 +106,6 @@ function skipVersionUpdate(skippedVersion) {
     }
 
     isVersionCheckModalOpen = false;
-    hasSkippedVersion = skippedVersion;
-    localStorage.setItem('vapr_skipped_version', skippedVersion);
 }
 
 function downloadLatestDesktopVersion(downloadUrl) {
@@ -130,8 +128,6 @@ function downloadLatestDesktopVersion(downloadUrl) {
 
 function initVersionCheck() {
     if (!isRunningInTauri()) return;
-
-    hasSkippedVersion = localStorage.getItem('vapr_skipped_version');
 
     setTimeout(() => {
         checkDesktopVersion();
