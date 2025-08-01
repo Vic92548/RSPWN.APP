@@ -38,35 +38,6 @@ function hideLoading(){
 function showLoading(){
 }
 
-function timeAgo(dateParam) {
-    if (!dateParam) {
-        return null;
-    }
-
-    const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
-    const today = new Date();
-    const seconds = Math.round((today - date) / 1000);
-    const minutes = Math.round(seconds / 60);
-    const hours = Math.round(minutes / 60);
-    const days = Math.round(hours / 24);
-    const months = Math.round(days / 30.4);
-    const years = Math.round(days / 365);
-
-    if (seconds < 60) {
-        return `${seconds} seconds ago`;
-    } else if (minutes < 60) {
-        return `${minutes} minutes ago`;
-    } else if (hours < 24) {
-        return `${hours} hours ago`;
-    } else if (days < 30) {
-        return `${days} days ago`;
-    } else if (months < 12) {
-        return `${months} months ago`;
-    } else {
-        return `${years} years ago`;
-    }
-}
-
 function setupSocialLink(id, link){
     const link_bt = document.getElementById(id);
     link_bt.style.display = "inline-block";
@@ -227,18 +198,6 @@ async function checkUserFollowsCreator(creatorId) {
     } catch (error) {
         console.error('Error checking follow status:', error);
         return false;
-    }
-}
-
-function formatViews(viewCount) {
-    if (viewCount < 1000) {
-        return viewCount;
-    } else if (viewCount < 1000000) {
-        return (viewCount / 1000).toFixed(2) + 'K';
-    } else if (viewCount < 1000000000) {
-        return (viewCount / 1000000).toFixed(2) + 'M';
-    } else {
-        return (viewCount / 1000000000).toFixed(2) + 'B';
     }
 }
 

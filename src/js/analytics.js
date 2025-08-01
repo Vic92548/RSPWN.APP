@@ -48,7 +48,6 @@ async function loadAnalyticsData() {
 
         analyticsData.posts = fallbackData;
 
-        // Wait for DOM to be ready
         setTimeout(() => {
             calculateOverviewMetrics();
             populatePostsList();
@@ -79,7 +78,6 @@ function calculateOverviewMetrics() {
 
     console.log('Total views calculated:', totalViews);
 
-    // Be more specific - look for elements inside the analytics card
     const analyticsCard = document.getElementById('analytics-card');
     if (!analyticsCard) {
         console.error('Analytics card not found!');
@@ -93,7 +91,6 @@ function calculateOverviewMetrics() {
         clicks: analyticsCard.querySelector('#total_clicks')
     };
 
-    // Animate the counters
     if (elements.views) animateCounter(elements.views, 0, totalViews, 1000);
     if (elements.likes) animateCounter(elements.likes, 0, totalLikes, 1000);
     if (elements.followers) animateCounter(elements.followers, 0, totalFollows, 1000);
@@ -114,32 +111,6 @@ function calculateOverviewMetrics() {
     }, 700);
 
     document.getElementById("reaction_pills").innerHTML = '<span style="font-size: 12px; color: rgba(255, 255, 255, 0.5);">No reactions data available</span>';
-}
-
-function animateCounter(element, start, end, duration) {
-    if (!element) {
-        console.error('Element not found for counter animation');
-        return;
-    }
-
-    const startTime = performance.now();
-
-    function updateCounter(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-
-        const currentValue = Math.floor(start + (end - start) * easeOutQuart);
-
-        element.textContent = formatNumber(currentValue);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateCounter);
-        }
-    }
-
-    requestAnimationFrame(updateCounter);
 }
 
 function populatePostsList(sortBy = 'views') {
@@ -249,46 +220,6 @@ function setupEventListeners() {
         newDropdown.addEventListener('change', (e) => {
             populatePostsList(e.target.value);
         });
-    }
-}
-
-function formatNumber(num) {
-    if (num < 1000) return num.toString();
-    if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-    if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
-    return (num / 1000000000).toFixed(1) + 'B';
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function timeAgo(dateParam) {
-    if (!dateParam) return null;
-
-    const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
-    const today = new Date();
-    const seconds = Math.round((today - date) / 1000);
-    const minutes = Math.round(seconds / 60);
-    const hours = Math.round(minutes / 60);
-    const days = Math.round(hours / 24);
-    const months = Math.round(days / 30.4);
-    const years = Math.round(days / 365);
-
-    if (seconds < 60) {
-        return `${seconds}s ago`;
-    } else if (minutes < 60) {
-        return `${minutes}m ago`;
-    } else if (hours < 24) {
-        return `${hours}h ago`;
-    } else if (days < 30) {
-        return `${days}d ago`;
-    } else if (months < 12) {
-        return `${months}mo ago`;
-    } else {
-        return `${years}y ago`;
     }
 }
 

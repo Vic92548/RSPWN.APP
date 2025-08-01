@@ -81,7 +81,6 @@ function initMenuCollapseState() {
 function addCollapsedMenuInteractions() {
     const menuContainer = document.querySelector('.menu-container');
     if (!menuContainer) return;
-
 }
 
 function updateMenuUserInfo() {
@@ -169,32 +168,6 @@ async function updateQuickStats() {
     } catch (error) {
         console.error('Error updating quick stats:', error);
     }
-}
-
-function animateCounter(element, start, end, duration) {
-    const startTime = performance.now();
-
-    function updateCounter(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-
-        const currentValue = Math.floor(start + (end - start) * easeOutQuart);
-        element.textContent = formatNumber(currentValue);
-
-        if (progress < 1) {
-            requestAnimationFrame(updateCounter);
-        }
-    }
-
-    requestAnimationFrame(updateCounter);
-}
-
-function formatNumber(num) {
-    if (num < 1000) return num.toString();
-    if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
-    return (num / 1000000).toFixed(1) + 'M';
 }
 
 async function updateOnlineUsers() {
