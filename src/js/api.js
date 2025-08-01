@@ -220,15 +220,8 @@ class APIHandler {
                 setXPProgress(oldUser);
             }
 
-            if (successMessage && typeof Swal !== 'undefined') {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-                Toast.fire({ icon: "success", title: successMessage });
+            if (successMessage && window.notify) {
+                window.notify.success(successMessage);
             }
 
             await onSuccess(data);
@@ -239,12 +232,8 @@ class APIHandler {
 
             if (onError) {
                 await onError(error);
-            } else if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
-                });
+            } else if (window.notify) {
+                window.notify.error('Error', errorMessage);
             }
 
             throw error;

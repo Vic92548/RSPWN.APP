@@ -14,20 +14,16 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
 
         const xp_bar_progress_visual = document.getElementById("xp_bar_progress_visual");
         const xp_bar_progress = document.getElementById("xp_bar_progress");
-        const notification = document.getElementById('xp-notification');
 
         xp_bar_progress_visual.style.width = diff + "%";
         xp_bar_progress_visual.style.left = (new_value - diff) + "%";
 
         if (!disable_xp_notif) {
-            notification.style.animation = 'xpNotificationAnimation 1.5s';
-            notification.textContent = "+" + xp + " XP";
+            notify.showXP(xp);
 
             setTimeout(() => {
-                notification.style.animation = 'none';
-
                 if (old_user.level < user.level) {
-                    showLevelUpNotification(user.level);
+                    notify.levelUp(user.level);
                     setXPProgress(window.user, true, true);
                 }
             }, 1500);
@@ -60,33 +56,4 @@ function updateXPDisplay() {
 
     const oldUsername = document.querySelector('.username');
     if (oldUsername) oldUsername.textContent = user.username || 'username';
-}
-
-function showLevelUpNotification(newLevel) {
-    if (typeof confetti !== 'undefined') {
-        confetti({
-            particleCount: 50,
-            spread: 50,
-            origin: { y: 0.3 },
-            colors: ['#ffffff', '#4ecdc4', '#667eea']
-        });
-    }
-
-    if (typeof Swal !== 'undefined') {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-        Toast.fire({
-            icon: "success",
-            title: `Level ${newLevel} reached! 🎉`
-        });
-    }
 }

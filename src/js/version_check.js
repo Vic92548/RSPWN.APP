@@ -263,20 +263,17 @@ function downloadLatestDesktopVersion(downloadUrl) {
     window.open(downloadUrl, '_blank');
 
     setTimeout(() => {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'info',
-                title: 'Download Started',
-                html: `
-                    <p>The download should begin shortly.</p>
-                    <p style="margin-top: 15px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
-                        After installing the new version, please restart VAPR to continue.
-                    </p>
-                `,
+        notify.info(
+            'Download Started',
+            `<p>The download should begin shortly.</p>
+            <p style="margin-top: 15px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+                After installing the new version, please restart VAPR to continue.
+            </p>`,
+            {
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#4ecdc4'
-            });
-        }
+            }
+        );
     }, 500);
 }
 

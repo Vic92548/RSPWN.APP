@@ -129,13 +129,7 @@ function updateBackgroundId(newBackgroundId) {
             equipBackground(bg.image_url, true);
         }
 
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'info',
-                title: 'Offline Mode',
-                text: 'Background will be synced when you\'re back online'
-            });
-        }
+        notify.info('Offline Mode', 'Background will be synced when you\'re back online');
         return;
     }
 
@@ -147,20 +141,7 @@ function updateBackgroundId(newBackgroundId) {
                 window.user.backgroundId = newBackgroundId;
             }
 
-            if (typeof Swal !== 'undefined') {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-
-                Toast.fire({
-                    icon: "success",
-                    title: "Background equipped!"
-                });
-            }
+            notify.success("Background equipped!");
         })
         .catch(error => {
             console.error('Failed to update background:', error);

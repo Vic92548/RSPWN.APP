@@ -53,11 +53,7 @@ if(MainPage){
         const previewVideo = document.getElementById('preview_video');
 
         if (file.size > 50 * 1024 * 1024) {
-            Swal.fire({
-                icon: 'error',
-                title: 'File too large',
-                text: 'Please select a file under 50MB'
-            });
+            notify.error('File too large', 'Please select a file under 50MB');
             return;
         }
 
@@ -75,11 +71,7 @@ if(MainPage){
                 previewImage.style.display = 'block';
                 previewVideo.style.display = 'none';
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid file type',
-                    text: 'Please upload an image or video file'
-                });
+                notify.error('Invalid file type', 'Please upload an image or video file');
                 placeholder.style.display = 'flex';
                 preview.style.display = 'none';
                 return;
@@ -110,11 +102,7 @@ window.submitPost = async function(event) {
     const file = document.getElementById('file').files[0];
 
     if (!file) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'No media selected',
-            text: 'Please select an image or video to upload'
-        });
+        notify.warning('No media selected', 'Please select an image or video to upload');
         return;
     }
 
@@ -167,18 +155,7 @@ window.submitPost = async function(event) {
                 titleCount.textContent = '0';
             }
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-
-            Toast.fire({
-                icon: "success",
-                title: "Post published successfully!"
-            });
+            notify.success("Post published successfully!");
 
             if (window.user && result.user) {
                 const oldUser = {
@@ -202,11 +179,7 @@ window.submitPost = async function(event) {
     } catch (error) {
         console.error('Failed to submit post:', error);
 
-        Swal.fire({
-            icon: 'error',
-            title: 'Upload failed',
-            text: error.message || 'Failed to create post. Please try again.'
-        });
+        notify.error('Upload failed', error.message || 'Failed to create post. Please try again.');
 
     } finally {
         submitBtn.disabled = false;

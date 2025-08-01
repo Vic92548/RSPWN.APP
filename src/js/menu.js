@@ -230,21 +230,9 @@ function downloadDesktopApp() {
 
     window.open(downloadUrl, '_blank');
 
-    if (typeof Swal !== 'undefined') {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 5000,
-            timerProgressBar: true
-        });
-
-        Toast.fire({
-            icon: "info",
-            title: "Download started!",
-            html: `The VAPR desktop app download should begin shortly.<br><small>Windows 64-bit • v${version}</small>`
-        });
-    }
+    notify.info("Download started!", `The VAPR desktop app download should begin shortly.<br><small>Windows 64-bit • v${version}</small>`, {
+        timer: 5000
+    });
 }
 
 function openMenu() {
@@ -292,7 +280,9 @@ function hideMenu() {
 }
 
 async function logout() {
-    if (confirm('Are you sure you want to logout?')) {
+    const confirmed = await notify.confirm('Logout', 'Are you sure you want to logout?');
+
+    if (confirmed) {
         try {
             await fetch('/logout', {
                 method: 'POST',

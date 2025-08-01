@@ -265,32 +265,7 @@ function closeTextModal() {
 function copyReferrerId() {
     if(isUserLoggedIn()){
         const referralUrl = `https://vapr.club?join=${user.id}`;
-        const textArea = document.createElement('textarea');
-        textArea.value = referralUrl;
-        textArea.style.position = 'absolute';
-        textArea.style.left = '-9999px';
-        document.body.appendChild(textArea);
-        textArea.select();
-        textArea.setSelectionRange(0, 99999);
-
-        try {
-            const successful = document.execCommand('copy');
-            console.log(successful ? 'Referral URL copied to clipboard!' : 'Failed to copy the URL');
-            Swal.fire({
-                title: "Invitation copied to clipboard!",
-                text: "Your invitation link (" + referralUrl + "), has been copied to clipboard!",
-                icon: "success"
-            });
-        } catch (err) {
-            console.error('Error copying to clipboard: ', err);
-            Swal.fire({
-                title: "Failed to copy to clipboard!",
-                text: "Your invitation link (" + referralUrl + "), has failed to copy to clipboard!",
-                icon: "error"
-            });
-        }
-
-        document.body.removeChild(textArea);
+        notify.copyToClipboard(referralUrl, "Invitation link copied to clipboard!");
     }else{
         openRegisterModal();
     }

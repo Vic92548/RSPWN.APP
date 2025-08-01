@@ -290,30 +290,22 @@ async function redeemKey(event) {
         if (response.success) {
             closeRedeemModal();
 
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
+            await notify.confirm(
+                'Success!',
+                `You now own ${response.game.title}!`,
+                {
                     icon: 'success',
-                    title: 'Success!',
-                    text: `You now own ${response.game.title}!`,
-                    confirmButtonText: 'View Library'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        closeGamesCard();
-                        openMyLibrary();
-                    }
-                });
-            }
+                    confirmButtonText: 'View Library',
+                    showCancelButton: false
+                }
+            );
 
+            closeGamesCard();
+            openMyLibrary();
             await loadLibraryData();
         }
     } catch (error) {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Key',
-                text: error.message || 'The key you entered is invalid or has already been used.'
-            });
-        }
+        notify.error('Invalid Key', error.message || 'The key you entered is invalid or has already been used.');
     }
 }
 
@@ -432,20 +424,7 @@ async function generateKeys() {
         });
 
         if (response.success) {
-            if (typeof Swal !== 'undefined') {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-                Toast.fire({
-                    icon: "success",
-                    title: `${count} keys generated successfully!`
-                });
-            }
-
+            notify.success(`${count} keys generated successfully!`);
             await loadGameKeys(gamesData.currentManagingGame.id);
         }
     } catch (error) {
@@ -454,21 +433,7 @@ async function generateKeys() {
 }
 
 function copyKey(key) {
-    navigator.clipboard.writeText(key).then(() => {
-        if (typeof Swal !== 'undefined') {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
-            });
-            Toast.fire({
-                icon: "success",
-                title: "Key copied to clipboard!"
-            });
-        }
-    });
+    notify.copyToClipboard(key, "Key copied to clipboard!");
 }
 
 async function downloadFilteredKeys() {
@@ -502,26 +467,10 @@ async function downloadFilteredKeys() {
         window.URL.revokeObjectURL(downloadUrl);
         document.body.removeChild(a);
 
-        if (typeof Swal !== 'undefined') {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            Toast.fire({
-                icon: "success",
-                title: "Keys downloaded successfully!"
-            });
-        }
+        notify.success("Keys downloaded successfully!");
     } catch (error) {
         console.error('Error downloading keys:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Download Failed',
-            text: 'Failed to download keys. Please try again.'
-        });
+        notify.error('Download Failed', 'Failed to download keys. Please try again.');
     }
 }
 
@@ -532,33 +481,7 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
     event.stopPropagation();
 
     if (!isRunningInTauri()) {
-        Swal.fire({
-            title: 'Desktop App Required',
-            html: `
-                <p>To download and play games, you need the VAPR desktop app.</p>
-                <p style="margin-top: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
-                    The desktop app allows you to:
-                </p>
-                <ul style="text-align: left; margin: 10px 0; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
-                    <li>Download and install games directly</li>
-                    <li>Launch games with one click</li>
-                    <li>Track your playtime</li>
-                    <li>Get automatic updates</li>
-                </ul>
-            `,
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: '<i class="fa-solid fa-download"></i> Download Desktop App',
-            cancelButtonText: 'Maybe Later',
-            confirmButtonColor: '#4ecdc4',
-            customClass: {
-                container: 'download-prompt-container'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                downloadDesktopApp();
-            }
-        });
+        notify.desktopAppPrompt(() => downloadDesktopApp());
         return;
     }
 
@@ -592,19 +515,7 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
 
         if (result.success) {
             gamesData.downloadingGames.delete(gameId);
-
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            Toast.fire({
-                icon: "success",
-                title: `${gameTitle} installed successfully!`
-            });
-
+            notify.success(`${gameTitle} installed successfully!`);
             await loadLibraryData();
         } else {
             throw new Error(result.error || 'Installation failed');
@@ -613,12 +524,7 @@ window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
         console.error('Error downloading game:', error);
         gamesData.downloadingGames.delete(gameId);
         displayLibrary();
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Download Failed',
-            text: error.message || 'Failed to download the game. Please try again.'
-        });
+        notify.error('Download Failed', error.message || 'Failed to download the game. Please try again.');
     }
 }
 
@@ -663,41 +569,20 @@ window.cancelDownload = function(gameId) {
 window.uninstallGame = async function(event, gameId, gameTitle) {
     event.stopPropagation();
 
-    const result = await Swal.fire({
-        title: 'Uninstall Game?',
-        html: `<p>Are you sure you want to uninstall <strong>${gameTitle}</strong>?</p>
-               <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7); margin-top: 10px;">This will remove all game files from your computer.</p>`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, uninstall',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#e74c3c'
-    });
+    const confirmed = await notify.confirmDanger(
+        'Uninstall Game?',
+        `Are you sure you want to uninstall ${gameTitle}? This will remove all game files from your computer.`,
+        'Yes, uninstall'
+    );
 
-    if (result.isConfirmed) {
+    if (confirmed) {
         try {
             await window.__TAURI__.core.invoke('uninstall_game', { gameId });
-
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            Toast.fire({
-                icon: "success",
-                title: `${gameTitle} uninstalled successfully`
-            });
-
+            notify.success(`${gameTitle} uninstalled successfully`);
             await loadLibraryData();
         } catch (error) {
             console.error('Error uninstalling game:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Uninstall Failed',
-                text: error.message || 'Failed to uninstall the game. Please try again.'
-            });
+            notify.error('Uninstall Failed', error.message || 'Failed to uninstall the game. Please try again.');
         }
     }
 }
@@ -716,25 +601,10 @@ window.launchGame = async function(event, executablePath) {
         await window.__TAURI__.core.invoke('launch_game', {
             executablePath: executablePath
         });
-
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-        Toast.fire({
-            icon: "success",
-            title: "Game launched!"
-        });
+        notify.success("Game launched!");
     } catch (error) {
         console.error('Error launching game:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Launch Failed',
-            text: error.message || 'Failed to launch the game. Please try again.'
-        });
+        notify.error('Launch Failed', error.message || 'Failed to launch the game. Please try again.');
     } finally {
         button.disabled = false;
         button.innerHTML = originalContent;

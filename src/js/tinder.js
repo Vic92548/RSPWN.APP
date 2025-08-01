@@ -80,24 +80,12 @@ function setInitialTransform(post) {
     post.style.transition = 'all 1s ease-in-out';
 }
 
-function showActionFeedback(action) {
-    const feedback = document.createElement('div');
-    feedback.className = 'action-feedback ' + action;
-    feedback.innerHTML = `<i class="fa-solid fa-${action === 'liked' ? 'heart' : action === 'passed' ? 'heart-crack' : 'forward'}"></i> ${action.charAt(0).toUpperCase() + action.slice(1)}!`;
-
-    document.body.appendChild(feedback);
-
-    setTimeout(() => {
-        feedback.remove();
-    }, 1000);
-}
-
 function displayLikeAnimation() {
     const post = document.getElementsByClassName("post")[0];
     post.style.animation = 'swipeRight 0.6s';
     post.style.transform = "translateY(100vh)";
 
-    showActionFeedback('liked');
+    notify.showActionFeedback('liked');
 
     confetti({
         particleCount: 100,
@@ -112,7 +100,7 @@ function displayDislikeAnimation() {
     post.style.animation = 'swipeLeft 0.6s';
     post.style.transform = "translateY(100vh)";
 
-    showActionFeedback('passed');
+    notify.showActionFeedback('passed');
 }
 
 function displaySkipAnimation() {
@@ -120,7 +108,7 @@ function displaySkipAnimation() {
     post.style.animation = 'skip 0.6s';
     post.style.transform = "translateY(100vh)";
 
-    showActionFeedback('skipped');
+    notify.showActionFeedback('skipped');
 }
 
 function likePost() {
