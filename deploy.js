@@ -255,7 +255,7 @@ async function createGitHubRelease(version, artifacts) {
             repo: "vapr",
             tag_name: `v${version}`,
             name: `VAPR v${version}`,
-            body: `## VAPR v${version}\n\n### Downloads\n- **Windows Installer**: VAPR_${version}_x64_en-US.msi\n- **Windows Portable**: VAPR-windows-${version}.zip\n\n### Docker\n\`\`\`bash\ndocker pull vic92548/vapr:${version}\n\`\`\`\n\n### What's New\n- [Add your release notes here]\n\n### Installation\n1. Download the appropriate file for your system\n2. For Windows: Run the MSI installer or extract the ZIP file\n3. For Docker: Use the command above\n\n---\n*Built with ❤️ by Victor Chanet*`,
+            body: `## VAPR v${version}\n\n### Downloads\n- **Windows Installer**: VAPR_${version}_x64_en-US.msi\n### Installation\n1. Run the MSI installer\n*Built with ❤️ by Victor Chanet*`,
             draft: false,
             prerelease: false
         });
@@ -552,24 +552,6 @@ async function deploy() {
             log('🔍 Running in DRY RUN mode - no changes will be made', colors.magenta);
         }
 
-        // Check if .env file exists and suggest creating one if GITHUB_TOKEN is not set
-        if (!process.env.GITHUB_TOKEN && !skipRelease) {
-            const envPath = path.join(process.cwd(), '.env');
-            if (!fs.existsSync(envPath)) {
-                log('\n💡 Tip: Create a .env file to store your GITHUB_TOKEN securely', colors.yellow);
-                log('   echo "GITHUB_TOKEN=your_token" > .env', colors.cyan);
-
-                // Check if .env is in .gitignore
-                const gitignorePath = path.join(process.cwd(), '.gitignore');
-                if (fs.existsSync(gitignorePath)) {
-                    const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
-                    if (!gitignoreContent.includes('.env')) {
-                        log('   ⚠️  Remember to add .env to your .gitignore file!', colors.yellow);
-                    }
-                }
-            }
-        }
-
         // Check if Docker is installed and running (only if not skipping Docker)
         if (!skipDocker) {
             try {
@@ -588,21 +570,6 @@ async function deploy() {
                 log('Use --skip-docker to skip Docker deployment', colors.yellow);
                 process.exit(1);
             }
-        }
-
-        // Check for uncommitted changes
-        try {
-            const gitStatus = execCommand('git status --porcelain', false);
-            if (gitStatus && !dryRun) {
-                log('\n⚠️  Warning: You have uncommitted changes:', colors.yellow);
-                console.log(gitStatus);
-                const proceed = await askQuestion('Continue anyway? (y/n): ');
-                if (proceed.toLowerCase() !== 'y') {
-                    process.exit(1);
-                }
-            }
-        } catch (error) {
-            log('Warning: Not a git repository or git not installed', colors.yellow);
         }
 
         // Read current package.json
@@ -679,28 +646,6 @@ async function deploy() {
                 log('\n📝 Updating version in Tauri files...', colors.yellow);
                 updateVersionInTauri(newVersion);
             }
-
-            // Commit version change
-            try {
-                let filesToCommit = 'package.json src/components/menu.html src/components/forms/register.html';
-                if (!skipDesktop) {
-                    filesToCommit += ' desktop/package.json desktop/src-tauri/tauri.conf.json desktop/src-tauri/Cargo.toml';
-                }
-                execCommand(`git add ${filesToCommit}`);
-                execCommand(`git commit -m "chore: bump version to ${newVersion}"`);
-                log('✅ Committed version change', colors.green);
-            } catch (error) {
-                if (!dryRun) {
-                    log('Warning: Could not commit version change. Continue anyway? (y/n)', colors.yellow);
-                    const answer = await askQuestion('');
-                    if (answer.toLowerCase() !== 'y') {
-                        // Revert package.json
-                        packageJson.version = currentVersion;
-                        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
-                        process.exit(1);
-                    }
-                }
-            }
         }
 
         // Run tests (if not skipped)
@@ -760,23 +705,6 @@ async function deploy() {
             log('✅ Docker images pushed successfully', colors.green);
         } else {
             log('\n⏩ Skipping Docker build and push', colors.yellow);
-        }
-
-        // Create git tag
-        if (newVersion !== currentVersion) {
-            try {
-                execCommand(`git tag -a v${newVersion} -m "Release version ${newVersion}"`);
-                log(`✅ Created git tag: v${newVersion}`, colors.green);
-
-                // Push tag and commits
-                if (!dryRun) {
-                    execCommand(`git push origin v${newVersion}`);
-                    execCommand(`git push origin main`); // or master, depending on your branch
-                    log('✅ Pushed tag and commits to remote', colors.green);
-                }
-            } catch (error) {
-                log('Warning: Could not create/push git tag', colors.yellow);
-            }
         }
 
         // Create GitHub release

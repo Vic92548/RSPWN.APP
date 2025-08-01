@@ -554,7 +554,7 @@ import {
     redeemGameKey,
     generateGameKeys,
     getGameKeys,
-    getGameDownloadUrl
+    getGameDownloadUrl, downloadKeysAsCSV
 } from './server_modules/games.js';
 
 app.get('/api/games', async (req, res) => {
@@ -582,9 +582,28 @@ app.post('/api/games/redeem-key', authMiddleware, async (req, res) => {
 app.post('/api/games/:id/generate-keys', authMiddleware, async (req, res) => {
     const gameId = req.params.id;
     const count = parseInt(req.body.count) || 5;
-    const response = await generateGameKeys(gameId, req.userData.id, count);
+    const tag = req.body.tag || null;
+    const response = await generateGameKeys(gameId, req.userData.id, count, tag);
     const data = await response.json();
     res.status(response.status).json(data);
+});
+
+app.get('/api/games/:id/keys/download', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const tag = req.query.tag || null;
+    const response = await downloadKeysAsCSV(gameId, req.userData.id, tag);
+
+    if (response.headers.get('Content-Type') === 'text/csv') {
+        const csv = await response.text();
+        res.set({
+            'Content-Type': response.headers.get('Content-Type'),
+            'Content-Disposition': response.headers.get('Content-Disposition')
+        });
+        res.send(csv);
+    } else {
+        const data = await response.json();
+        res.status(response.status).json(data);
+    }
 });
 
 app.get('/api/games/:id/keys', authMiddleware, async (req, res) => {

@@ -80,12 +80,51 @@
         </div>
 
         <div class="management-actions vapr-padding-x">
-            <button class="glass-button" onclick="generateKeys()">
-                <i class="fa-solid fa-plus"></i> Generate 5 Keys
-            </button>
-            <button class="download-keys-btn" onclick="downloadAvailableKeys()">
-                <i class="fa-solid fa-download"></i> Download Available Keys
-            </button>
+            <div class="key-generation-form">
+                <h4>Generate New Keys</h4>
+                <div class="generation-inputs">
+                    <div class="input-group">
+                        <label for="key-count">Number of Keys</label>
+                        <input type="number" id="key-count" min="1" max="100" value="5" class="glass-input">
+                    </div>
+                    <div class="input-group">
+                        <label for="key-tag">Tag</label>
+                        <select id="key-tag" class="glass-input">
+                            <option value="">No Tag</option>
+                            <option value="tebex">Tebex</option>
+                            <option value="keymailer">Keymailer</option>
+                        </select>
+                    </div>
+                    <button class="glass-button" onclick="generateKeys()">
+                        <i class="fa-solid fa-plus"></i> Generate
+                    </button>
+                </div>
+            </div>
+
+            <div class="key-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="total-keys">0</span>
+                    <span class="stat-label">Total Keys</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="available-keys">0</span>
+                    <span class="stat-label">Available</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="used-keys">0</span>
+                    <span class="stat-label">Used</span>
+                </div>
+            </div>
+
+            <div class="tag-filter">
+                <button class="tag-filter-btn active" onclick="filterKeys('all')">All</button>
+                <button class="tag-filter-btn" onclick="filterKeys('')">No Tag</button>
+                <button class="tag-filter-btn" onclick="filterKeys('tebex')">Tebex</button>
+                <button class="tag-filter-btn" onclick="filterKeys('keymailer')">Keymailer</button>
+                <button class="download-keys-btn" onclick="downloadFilteredKeys()">
+                    <i class="fa-solid fa-download"></i> Download Available Keys
+                </button>
+            </div>
         </div>
 
         <div class="management-body vapr-padding-body vapr-scrollbar">

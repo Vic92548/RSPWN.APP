@@ -3,7 +3,9 @@ let gamesData = {
     userGames: [],
     currentManagingGame: null,
     installedGames: [],
-    downloadingGames: new Map()
+    downloadingGames: new Map(),
+    currentKeyFilter: 'all',
+    allKeys: []
 };
 
 cardManager.register('games-card', {
@@ -332,6 +334,8 @@ async function loadGameKeys(gameId) {
         const response = await api.request(`/api/games/${gameId}/keys`);
 
         if (response.success) {
+            gamesData.allKeys = response.keys;
+            updateKeyStats();
             displayKeys(response.keys);
         }
     } catch (error) {
@@ -339,22 +343,77 @@ async function loadGameKeys(gameId) {
     }
 }
 
+function updateKeyStats() {
+    const totalKeys = gamesData.allKeys.length;
+    const usedKeys = gamesData.allKeys.filter(k => k.usedBy).length;
+    const availableKeys = totalKeys - usedKeys;
+
+    document.getElementById('total-keys').textContent = totalKeys;
+    document.getElementById('used-keys').textContent = usedKeys;
+    document.getElementById('available-keys').textContent = availableKeys;
+}
+
+function filterKeys(tag) {
+    gamesData.currentKeyFilter = tag;
+
+    document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    let filteredKeys = gamesData.allKeys;
+
+    if (tag !== 'all') {
+        filteredKeys = gamesData.allKeys.filter(key => {
+            if (tag === '') return !key.tag || key.tag === null;
+            return key.tag === tag;
+        });
+    }
+
+    displayKeys(filteredKeys);
+}
+
 function displayKeys(keys) {
     const container = document.getElementById('keys-list');
     container.innerHTML = '';
 
     if (keys.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.6);">No keys generated yet</div>';
+        container.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.6);">No keys found</div>';
         return;
     }
 
     keys.forEach(key => {
         const keyEl = document.createElement('div');
         keyEl.className = 'key-item';
+
+        let userInfo = '';
+        if (key.usedBy && key.userInfo) {
+            const avatarUrl = key.userInfo.avatar
+                ? `https://cdn.discordapp.com/avatars/${key.userInfo.id}/${key.userInfo.avatar}.png?size=64`
+                : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
+
+            userInfo = `
+                <div class="key-user-info">
+                    <div class="key-user-avatar">
+                        <img src="${avatarUrl}" alt="${key.userInfo.username}">
+                    </div>
+                    <a href="/@${key.userInfo.username}" class="key-user-name" target="_blank">
+                        @${key.userInfo.username}
+                    </a>
+                    <span class="key-used-date">${new Date(key.usedAt).toLocaleDateString()}</span>
+                </div>
+            `;
+        }
+
         keyEl.innerHTML = `
-            <span class="key-code">${key.key}</span>
-            <span class="key-status ${key.usedBy ? 'used' : 'available'}">${key.usedBy ? 'Used' : 'Available'}</span>
-            ${!key.usedBy ? `<button class="copy-key-btn" onclick="copyKey('${key.key}')"><i class="fa-solid fa-copy"></i> Copy</button>` : ''}
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="key-code">${key.key}</span>
+                ${key.tag ? `<span class="key-tag">${key.tag}</span>` : ''}
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                ${key.usedBy ? userInfo : `<span class="key-status available">Available</span>`}
+                ${!key.usedBy ? `<button class="copy-key-btn" onclick="copyKey('${key.key}')"><i class="fa-solid fa-copy"></i> Copy</button>` : ''}
+            </div>
         `;
         container.appendChild(keyEl);
     });
@@ -363,10 +422,13 @@ function displayKeys(keys) {
 async function generateKeys() {
     if (!gamesData.currentManagingGame) return;
 
+    const count = parseInt(document.getElementById('key-count').value) || 5;
+    const tag = document.getElementById('key-tag').value || null;
+
     try {
         const response = await api.request(`/api/games/${gamesData.currentManagingGame.id}/generate-keys`, {
             method: 'POST',
-            body: { count: 5 }
+            body: { count, tag }
         });
 
         if (response.success) {
@@ -380,7 +442,7 @@ async function generateKeys() {
                 });
                 Toast.fire({
                     icon: "success",
-                    title: "5 keys generated successfully!"
+                    title: `${count} keys generated successfully!`
                 });
             }
 
@@ -409,52 +471,49 @@ function copyKey(key) {
     });
 }
 
-async function downloadAvailableKeys() {
+async function downloadFilteredKeys() {
     if (!gamesData.currentManagingGame) return;
 
+    const tag = gamesData.currentKeyFilter === 'all' ? null : gamesData.currentKeyFilter;
+
     try {
-        const response = await api.request(`/api/games/${gamesData.currentManagingGame.id}/keys`);
+        const url = `/api/games/${gamesData.currentManagingGame.id}/keys/download${tag !== null ? `?tag=${encodeURIComponent(tag)}` : ''}`;
 
-        if (response.success && response.keys) {
-            const availableKeys = response.keys.filter(key => !key.usedBy);
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include'
+        });
 
-            if (availableKeys.length === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'No Available Keys',
-                    text: 'There are no available keys to download.'
-                });
-                return;
-            }
+        if (!response.ok) {
+            throw new Error('Failed to download keys');
+        }
 
-            const keysText = availableKeys.map(key => key.key).join(',\n');
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
 
-            const blob = new Blob([keysText], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys.txt`;
+        const filename = `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys${tag ? `_${tag}` : ''}.csv`;
+        a.download = filename;
 
-            document.body.appendChild(a);
-            a.click();
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(downloadUrl);
+        document.body.removeChild(a);
 
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-
-            if (typeof Swal !== 'undefined') {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-                Toast.fire({
-                    icon: "success",
-                    title: `Downloaded ${availableKeys.length} available keys!`
-                });
-            }
+        if (typeof Swal !== 'undefined') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: "success",
+                title: "Keys downloaded successfully!"
+            });
         }
     } catch (error) {
         console.error('Error downloading keys:', error);
@@ -466,7 +525,8 @@ async function downloadAvailableKeys() {
     }
 }
 
-window.downloadAvailableKeys = downloadAvailableKeys;
+window.downloadFilteredKeys = downloadFilteredKeys;
+window.filterKeys = filterKeys;
 
 window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
     event.stopPropagation();
@@ -711,4 +771,3 @@ window.closeRedeemModal = closeRedeemModal;
 window.redeemKey = redeemKey;
 window.generateKeys = generateKeys;
 window.copyKey = copyKey;
-window.downloadAvailableKeys = downloadAvailableKeys;

@@ -1,4 +1,4 @@
-import { gamesCollection, gameKeysCollection, userGamesCollection } from './database.js';
+import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollection } from './database.js';
 
 export async function getAllGames() {
     try {
@@ -83,7 +83,8 @@ export async function redeemGameKey(userId, key) {
             userId,
             gameId: gameKey.gameId,
             ownedAt: new Date(),
-            acquiredBy: 'key'
+            acquiredBy: 'key',
+            keyTag: gameKey.tag || null
         });
 
         const game = await gamesCollection.findOne({ id: gameKey.gameId });
@@ -101,7 +102,7 @@ export async function redeemGameKey(userId, key) {
     }
 }
 
-export async function generateGameKeys(gameId, ownerId, count = 5) {
+export async function generateGameKeys(gameId, ownerId, count = 5, tag = null) {
     try {
         const game = await gamesCollection.findOne({ id: gameId });
 
@@ -128,7 +129,8 @@ export async function generateGameKeys(gameId, ownerId, count = 5) {
                 createdBy: ownerId,
                 createdAt: new Date(),
                 usedBy: null,
-                usedAt: null
+                usedAt: null,
+                tag: tag
             });
         }
 
@@ -165,9 +167,38 @@ export async function getGameKeys(gameId, ownerId) {
             });
         }
 
-        const keys = await gameKeysCollection.find({ gameId }).toArray();
+        const keys = await gameKeysCollection.aggregate([
+            { $match: { gameId } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "usedBy",
+                    foreignField: "id",
+                    as: "user"
+                }
+            },
+            {
+                $project: {
+                    key: 1,
+                    createdAt: 1,
+                    usedBy: 1,
+                    usedAt: 1,
+                    tag: 1,
+                    user: { $arrayElemAt: ["$user", 0] }
+                }
+            }
+        ]).toArray();
 
-        return new Response(JSON.stringify({ success: true, keys }), {
+        const keysWithUserInfo = keys.map(key => ({
+            ...key,
+            userInfo: key.user ? {
+                id: key.user.id,
+                username: key.user.username,
+                avatar: key.user.avatar
+            } : null
+        }));
+
+        return new Response(JSON.stringify({ success: true, keys: keysWithUserInfo }), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
@@ -207,6 +238,49 @@ export async function getGameDownloadUrl(gameId, userId) {
     } catch (error) {
         console.error('Error getting download URL:', error);
         return new Response(JSON.stringify({ success: false, error: 'Failed to get download URL' }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function downloadKeysAsCSV(gameId, ownerId, tag = null) {
+    try {
+        const game = await gamesCollection.findOne({ id: gameId });
+
+        if (!game) {
+            return new Response(JSON.stringify({ success: false, error: 'Game not found' }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        if (game.ownerId !== ownerId) {
+            return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const query = { gameId, usedBy: null };
+        if (tag) {
+            query.tag = tag;
+        }
+
+        const keys = await gameKeysCollection.find(query).toArray();
+
+        const csvContent = keys.map(key => key.key).join(',\n');
+
+        return new Response(csvContent, {
+            status: 200,
+            headers: {
+                "Content-Type": "text/csv",
+                "Content-Disposition": `attachment; filename="${game.title.replace(/[^a-z0-9]/gi, '_')}_keys${tag ? `_${tag}` : ''}.csv"`
+            }
+        });
+    } catch (error) {
+        console.error('Error downloading keys:', error);
+        return new Response(JSON.stringify({ success: false, error: 'Failed to download keys' }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
