@@ -9,23 +9,23 @@
     width: 90%;
     max-width: 440px;
     padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    transition: all 0.4s ease;
+    background: var(--glass-bg-primary);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
 }
 
 .xp-container:hover {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow-hover);
 }
 
 .xp-level {
     font-size: 18px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     min-width: 30px;
     text-align: center;
 }
@@ -33,7 +33,7 @@
 .xp-track {
     flex: 1;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-tertiary);
     border-radius: 3px;
     position: relative;
     overflow: hidden;
@@ -64,23 +64,23 @@
 .xp-text {
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-faint);
     white-space: nowrap;
 }
 
 .xp-current {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .xp-username {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
 }
 
 .xp-username::before {
     content: '@';
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-weak);
 }
 
 .xp-notification {
@@ -92,7 +92,7 @@
     color: #4ecdc4;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     pointer-events: none;
 }
 

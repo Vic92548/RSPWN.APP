@@ -44,7 +44,6 @@
     padding: 20px;
 }
 
-
 .vapr-padding-x {
     padding: 0 20px;
 }
@@ -85,9 +84,6 @@
     margin-bottom: 20px;
 }
 
-.xp-container {
-}
-
 .post {
     width: 90% !important;
     max-width: 480px !important;
@@ -103,12 +99,6 @@
     width: 90% !important;
     max-width: 480px !important;
     margin: 20px auto !important;
-}
-
-.analytics-card {
-}
-
-.backgrounds-card {
 }
 
 .discord_login {
@@ -152,12 +142,6 @@
     .post {
         margin: 20px auto !important;
     }
-
-    #menu.glass_modal {
-    }
-
-    main {
-    }
 }
 
 .vapr-center {
@@ -166,15 +150,15 @@
 }
 
 .vapr-rounded {
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
 
 .vapr-rounded-sm {
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
 }
 
 .vapr-rounded-lg {
-    border-radius: 24px;
+    border-radius: var(--radius-xl);
 }
 
 .vapr-mt-1 { margin-top: 10px; }
@@ -194,11 +178,11 @@
 .vapr-pb-3 { padding-bottom: 30px; }
 
 .vapr-transition {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition-cubic);
 }
 
 .vapr-transition-fast {
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
 }
 
 .vapr-transition-slow {
@@ -227,7 +211,7 @@ article.vapr-article-fixed {
 }
 
 .vapr-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-tertiary);
     border-radius: 4px;
 }
 

@@ -16,7 +16,7 @@
 }
 
 #background_images_container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-tertiary);
     border-radius: 4px;
 }
 
@@ -30,8 +30,8 @@
     border-radius: 8px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
     border: 2px solid transparent;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     transition: transform 0.4s, box-shadow 0.4s;
@@ -66,8 +66,8 @@
     top: 10px;
     right: 10px;
     background: rgba(78, 205, 196, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
     color: #fff;
     padding: 4px 12px;
     border-radius: 20px;
@@ -108,7 +108,7 @@
 
 .background-description {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     margin: 0 0 10px 0;
     line-height: 1.4;
     display: -webkit-box;
@@ -128,12 +128,12 @@
     text-decoration: none;
     font-size: 11px;
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .background-link:hover {
     background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .background-link i {
@@ -159,12 +159,12 @@
 
 .lock-icon {
     font-size: 40px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     margin-bottom: 10px;
 }
 
 .unlock-text {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -201,8 +201,8 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     z-index: 4;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -234,8 +234,8 @@
     top: 10px;
     right: 10px;
     background: rgba(231, 76, 60, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
     color: #fff;
     padding: 4px 8px;
     border-radius: 7px;
@@ -262,7 +262,7 @@
 }
 
 .backgrounds-subtitle {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
     font-size: 14px;
     margin-bottom: 20px;
 }
@@ -300,7 +300,7 @@
         left: 50%;
         transform: translateX(-50%);
         font-size: 11px;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--text-secondary);
         opacity: 1;
         transition: opacity 0.4s;
     }

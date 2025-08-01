@@ -12,9 +12,6 @@
         z-index: 21;
     }
 
-    h1 {
-    }
-
     #feed {
         display: flex;
         flex-direction: column;
@@ -38,7 +35,7 @@
         width: 440px;
     }
 
-    #xp_bar{
+    #xp_bar {
         width: 440px;
     }
 
@@ -59,15 +56,15 @@
         width: 120px;
     }
 
-    #menu form{
+    #menu form {
         background: rgba(255, 255, 255, 0.4);
         box-shadow: rgba(255, 255, 255, 0.3) 0px 0px 15px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: var(--blur-md);
+        -webkit-backdrop-filter: var(--blur-md);
         animation: menu-shadow 8s infinite;
     }
 
-    #menu li{
+    #menu li {
         font-size: 14px;
         text-align: left;
         font-weight: 500;
@@ -80,39 +77,39 @@
         padding: 10px;
     }
 
-    #close_menu{
+    #close_menu {
         display: none;
     }
 
-    .background_image_div{
+    .background_image_div {
         margin-left: 50px;
     }
 
-    .big_image{
+    .big_image {
         transform: scale(3) translateZ(30px);
     }
 
-    .reactions .glass_bt{
+    .reactions .glass_bt {
         padding: 5px;
     }
 
-    .reactions .reaction_icon{
+    .reactions .reaction_icon {
         display: inline-block;
         margin-right: 5px;
     }
 
-    .reactions span{
+    .reactions span {
         font-size: 18px;
     }
 
     @keyframes swipeRight {
         0% {
             transform: rotate(0deg) translate(0, 0);
-            background-color: rgba(255,255,255,0.4);
+            background-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
             opacity: 1;
         }
-        25%{
+        25% {
             background-color: rgba(46, 204, 113, 0.4);
             box-shadow: 0 0px 15px rgba(46, 204, 113, 0.3);
         }
@@ -125,11 +122,11 @@
     @keyframes swipeLeft {
         0% {
             transform: rotate(0deg) translate(0, 0);
-            background-color: rgba(255,255,255,0.4);
+            background-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0px 15px rgba(255, 255, 255, 0.3);
             opacity: 1;
         }
-        25%{
+        25% {
             background-color: rgba(231, 76, 60, 0.4);
             box-shadow: 0 0px 15px rgba(231, 76, 60, 0.3);
         }
@@ -145,7 +142,7 @@
             opacity: 1;
         }
         100% {
-            transform: translate(0px,-100px);
+            transform: translate(0px, -100px);
             opacity: 0;
         }
     }

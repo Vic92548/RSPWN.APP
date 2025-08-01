@@ -15,7 +15,7 @@
     margin: 0 0 5px 0;
     font-size: 24px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -28,7 +28,7 @@
 }
 
 .analytics-card .header-content h2 i {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
 }
 
 .analytics-card .header-content p {
@@ -51,9 +51,9 @@
 
 .metric-card {
     padding: 16px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     text-align: center;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
 }
 
 .metric-header {
@@ -66,24 +66,24 @@
 
 .metric-header i {
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-faint);
 }
 
 .metric-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     font-weight: 600;
 }
 
 .metric-value {
     font-size: 28px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .engagement-summary {
     padding: 20px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     margin-bottom: 20px;
 }
 
@@ -97,7 +97,7 @@
 .engagement-title {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
 }
 
 .engagement-percentage {
@@ -130,19 +130,19 @@
 
 .breakdown-item {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-faint);
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
 .breakdown-item strong {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .reactions-summary {
     padding: 20px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     margin-bottom: 20px;
 }
 
@@ -150,7 +150,7 @@
     margin: 0 0 12px 0;
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
 }
 
 .reaction-pills {
@@ -164,8 +164,8 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-secondary);
+    border: 1px solid var(--glass-border-light);
     border-radius: 20px;
     font-size: 13px;
 }
@@ -176,7 +176,7 @@
 
 .reaction-pill .count {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .posts-section {
@@ -194,16 +194,16 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .sort-select {
     padding: 6px 12px;
     font-size: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-secondary);
+    border: 1px solid var(--glass-border-light);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-muted);
     cursor: pointer;
 }
 
@@ -214,16 +214,16 @@
 }
 
 .post-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    background: var(--glass-bg-secondary);
+    border: 1px solid var(--glass-border-light);
+    border-radius: var(--radius-md);
     padding: 16px;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     cursor: pointer;
 }
 
 .post-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg-primary);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
 }
@@ -238,7 +238,7 @@
 .post-title {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     margin: 0;
     flex: 1;
     margin-right: 12px;
@@ -268,7 +268,7 @@
     display: block;
     font-size: 16px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     margin-bottom: 2px;
 }
 
@@ -278,7 +278,7 @@
     justify-content: center;
     gap: 4px;
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
 }
 
 .post-metric-label i {
@@ -296,7 +296,7 @@
 
 .post-date {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-weak);
 }
 
 .view-post-link {
@@ -319,12 +319,11 @@
 
 .loading-spinner {
     font-size: 48px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     margin-bottom: 20px;
 }
 
 @media (min-width: 768px) {
-
     .post-metrics {
         display: flex;
         justify-content: space-around;

@@ -34,7 +34,7 @@ main {
     width: 90%;
 }
 
-.discord_login:hover{
+.discord_login:hover {
     background-color: #5865f294;
     box-shadow: 0 0 10px #5865f294;
 }

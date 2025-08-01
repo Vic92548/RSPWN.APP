@@ -7,7 +7,7 @@
     color: #fff;
     border: none;
     cursor: pointer;
-    transition: all 0.4s;
+    transition: var(--transition-base);
     width: 38px;
     height: 38px;
     overflow: hidden;
@@ -22,7 +22,7 @@
     box-shadow: 0 0 10px #0d8eff83;
 }
 
-.create-post-btn i{
+.create-post-btn i {
     margin: 0;
 }
 
@@ -34,8 +34,8 @@
 @keyframes swipeRight {
     0% {
         transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
-        background-color: rgba(255,255,255,0.08);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        background-color: var(--glass-bg-primary);
+        box-shadow: var(--shadow-md);
         opacity: 1;
     }
     25% {
@@ -51,8 +51,8 @@
 @keyframes swipeLeft {
     0% {
         transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
-        background-color: rgba(255,255,255,0.08);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        background-color: var(--glass-bg-primary);
+        box-shadow: var(--shadow-md);
         opacity: 1;
     }
     25% {
@@ -77,7 +77,7 @@
 }
 
 .post-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--glass-border-light);
 }
 
 .post-info {
@@ -89,19 +89,19 @@
     font-size: 20px;
     font-weight: 700;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-strong);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
 }
 
 #post_username,
 #post_time,
-#follow{
+#follow {
     font-size: 12px;
-    color: rgba(255,255,255,0.6);
+    color: var(--text-secondary);
 }
 
 #post_title {
@@ -119,11 +119,11 @@
     max-height: 100vh;
 }
 
-#post_title_show_more{
+#post_title_show_more {
     display: inline-block;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: var(--transition-fast);
     margin-top: 8px;
 }
 
@@ -143,9 +143,9 @@
     gap: 12px;
     padding: 8px;
     margin: -8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     position: relative;
     flex: 1;
 }
@@ -154,8 +154,8 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    background: var(--glass-bg-secondary);
+    border-radius: var(--radius-sm);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -186,7 +186,7 @@
     color: white;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -210,7 +210,7 @@
 }
 
 #post_username {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     transition: color 0.2s ease;
     font-size: 15px;
     font-weight: 700;
@@ -225,18 +225,18 @@
 
 #post_time {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-weak);
     display: block;
     margin-top: 2px;
 }
 
-#follow{
+#follow {
     margin-left: 16px;
     padding: 6px 16px;
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     font-size: 12px;
-    transition: all 0.3s;
+    transition: var(--transition-fast);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -256,7 +256,7 @@
     gap: 12px;
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--glass-border-light);
 }
 
 .actions {
@@ -270,7 +270,7 @@
     cursor: pointer;
     font-size: 16px;
     margin: 0;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -356,9 +356,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
@@ -399,7 +399,7 @@
     align-items: center;
     gap: 6px;
     z-index: 10;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
 }
 
 .view-count-overlay:hover {
@@ -408,16 +408,16 @@
 
 .view-count-overlay i {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-faint);
 }
 
 #post_views {
     font-weight: 600;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
-#post_image{
+#post_image {
     width: 100%;
     max-height: 400px;
     object-fit: contain;
@@ -449,132 +449,62 @@
     display: none;
 }
 
-#post_link a{
+#post_link a {
     display: none;
 }
 
-#post_steam{
-    background-color: #1b2838;
-    box-shadow: 0 0 5px #1b2838;
-}
+#post_steam { --platform-color: #1b2838; }
+#post_itch { --platform-color: #fa5c5c; }
+#post_discord { --platform-color: #5865F2; }
+#post_reddit { --platform-color: #ff6314; }
+#post_x { --platform-color: #000000; }
+#post_threads { --platform-color: #111; }
+#post_pinterest { --platform-color: #E60023; }
+#post_twitch { --platform-color: #6441a5; }
+#post_youtube { --platform-color: #FF0000; }
+#post_instagram { --platform-color: #5B51D8; }
+#post_epic { --platform-color: #2F2D2E; }
+#post_kick { --platform-color: #00e701; }
+#post_kickstarter { --platform-color: #05ce78; }
+#post_patreon { --platform-color: #F96854; }
+#post_fortnite { --platform-color: #1B90DD; }
+#post_nintendo { --platform-color: #e60012; }
+#post_ubisoft { --platform-color: #0351A1; }
+#post_gumroad { --platform-color: #ff6d7b; }
+#post_garryhost { --platform-color: #222222; }
+#post_hayarobi { --platform-color: #c7a7e8; }
 
-#post_itch{
-    background-color: #fa5c5c;
-    box-shadow: 0 0 5px #fa5c5c;
-}
-
-#post_discord{
-    background-color: #5865F2;
-    box-shadow: 0 0 5px #5865F2;
-}
-
-#post_reddit{
-    background-color: #ff6314;
-    box-shadow: 0 0 5px #ff6314;
-}
-
-#post_x{
-    background-color: #000000;
-    box-shadow: 0 0 5px #000000;
-}
-
-#post_threads{
-    background-color: #111;
-    box-shadow: 0 0 5px #111;
-}
-
-#post_pinterest{
-    background-color: #E60023;
-    box-shadow: 0 0 5px #E60023;
-}
-
-#post_twitch{
-    background-color: #6441a5 ;
-    box-shadow: 0 0 5px #6441a5 ;
-}
-
-#post_youtube{
-    background-color: #FF0000 ;
-    box-shadow: 0 0 5px #FF0000 ;
-}
-
-#post_instagram{
-    background-color: #5B51D8 ;
-    box-shadow: 0 0 5px #5B51D8 ;
-}
-
-#post_epic{
-    background-color: #2F2D2E ;
-    box-shadow: 0 0 5px #2F2D2E ;
-}
-
-#post_kick{
-    background-color: #00e701 ;
-    box-shadow: 0 0 5px #00e701 ;
-}
-
-#post_kickstarter{
-    background-color: #05ce78 ;
-    box-shadow: 0 0 5px #05ce78 ;
-}
-
-#post_patreon{
-    background-color: #F96854 ;
-    box-shadow: 0 0 5px #F96854 ;
-}
-
-#post_fortnite{
-    background-color: #1B90DD ;
-    box-shadow: 0 0 5px #1B90DD ;
-}
-
-#post_nintendo{
-    background-color: #e60012 ;
-    box-shadow: 0 0 5px #e60012 ;
-}
-
-#post_ubisoft{
-    background-color: #0351A1 ;
-    box-shadow: 0 0 5px #0351A1 ;
-}
-
-#post_gumroad{
-    background-color: #ff6d7b ;
-    box-shadow: 0 0 5px #ff6d7b ;
-}
-
-#post_garryhost{
-    background-color: #222222 ;
-    box-shadow: 0 0 5px #222222 ;
-}
-
-#post_hayarobi{
-    background-color: #c7a7e8;
-    box-shadow: 0 0 5px #c7a7e8;
+#post_steam, #post_itch, #post_discord, #post_reddit, #post_x,
+#post_threads, #post_pinterest, #post_twitch, #post_youtube,
+#post_instagram, #post_epic, #post_kick, #post_kickstarter,
+#post_patreon, #post_fortnite, #post_nintendo, #post_ubisoft,
+#post_gumroad, #post_garryhost, #post_hayarobi {
+    background-color: var(--platform-color);
+    box-shadow: 0 0 5px var(--platform-color);
 }
 
 .reactions-wrapper {
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--glass-border-light);
 }
 
-.reactions{
+.reactions {
     display: flex;
     justify-content: space-around;
     gap: 4px;
     padding: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg-secondary);
     position: relative;
 }
 
-.reactions button{
+.reactions button {
     position: relative;
     background: transparent;
     border: none;
     padding: 8px 16px;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-fast);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -584,7 +514,7 @@
 }
 
 .reactions button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg-tertiary);
     transform: translateY(-2px);
 }
 
@@ -602,7 +532,7 @@
     50% { transform: scale(1.3); }
 }
 
-.reactions .reaction_icon{
+.reactions .reaction_icon {
     display: block;
     font-size: 24px;
     transition: transform 0.2s ease;
@@ -612,7 +542,7 @@
     transform: scale(1.2);
 }
 
-.reactions span{
+.reactions span {
     font-size: 14px;
     display: block;
     min-width: 20px;
