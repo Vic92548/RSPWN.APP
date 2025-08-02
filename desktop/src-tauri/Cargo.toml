@@ -1,6 +1,6 @@
 [package]
 name = "vapr-desktop"
-version = "1.2.10"
+version = "1.2.11"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -28,3 +28,6 @@ zip = "0.6"
 dirs = "5.0"
 chrono = "0.4"
 semver = "1.0"
+tokio-tungstenite = "0.24"
+tungstenite = "0.24"
+uuid = { version = "1.10", features = ["v4", "serde"] }

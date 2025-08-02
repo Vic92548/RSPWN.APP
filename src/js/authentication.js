@@ -16,6 +16,10 @@ function loadUserData(){
         .then(data => {
             window.user = data;
 
+            if (window.updateSDKUserInfo) {
+                window.updateSDKUserInfo();
+            }
+
             if(!MainPage){
                 return;
             }

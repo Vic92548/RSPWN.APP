@@ -1,9 +1,13 @@
+mod websocket;
+
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
-use tauri::Emitter;
+use std::sync::Arc;
+use tauri::{Emitter, State};
 use semver::Version;
+use websocket::{UserInfo, WebSocketServer};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct DownloadProgress {
@@ -357,22 +361,79 @@ async fn uninstall_game(game_id: String) -> Result<bool, String> {
     Err("Game not found".to_string())
 }
 
+// New WebSocket-related commands
+#[tauri::command]
+async fn update_sdk_user_info(
+    ws_server: State<'_, Arc<WebSocketServer>>,
+    user_id: String,
+    username: String,
+    level: u32,
+    xp: u32,
+    xp_required: u32,
+    avatar: Option<String>,
+) -> Result<(), String> {
+    let user_info = UserInfo {
+        id: user_id,
+        username,
+        level,
+        xp,
+        xp_required,
+        avatar,
+    };
+
+    ws_server.update_user_info(user_info).await;
+    Ok(())
+}
+
+#[tauri::command]
+async fn clear_sdk_user_info(ws_server: State<'_, Arc<WebSocketServer>>) -> Result<(), String> {
+    ws_server.clear_user_info().await;
+    Ok(())
+}
+
+#[tauri::command]
+async fn get_sdk_connected_sessions(
+    ws_server: State<'_, Arc<WebSocketServer>>,
+) -> Result<Vec<String>, String> {
+    Ok(ws_server.get_connected_sessions().await)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Create WebSocket server
+    let ws_server = Arc::new(WebSocketServer::new());
+    let ws_server_clone = ws_server.clone();
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_shell::init())
+        .manage(ws_server)
         .invoke_handler(tauri::generate_handler![
             greet,
             check_version_compatibility,
             download_and_install_game,
             launch_game,
             get_installed_games,
-            uninstall_game
+            uninstall_game,
+            update_sdk_user_info,
+            clear_sdk_user_info,
+            get_sdk_connected_sessions
         ])
+        .setup(|app| {
+            let ws_server = ws_server_clone;
+
+            // Start WebSocket server after Tauri has initialized
+            tauri::async_runtime::spawn(async move {
+                if let Err(e) = ws_server.start(7878).await {
+                    eprintln!("Failed to start WebSocket server: {}", e);
+                }
+            });
+
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

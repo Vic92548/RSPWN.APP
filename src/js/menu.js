@@ -290,6 +290,11 @@ async function logout() {
             });
 
             localStorage.removeItem('userData');
+
+            if (window.clearSDKUserInfo) {
+                window.clearSDKUserInfo();
+            }
+
             window.user = null;
             window.location.href = '/';
         } catch (error) {
