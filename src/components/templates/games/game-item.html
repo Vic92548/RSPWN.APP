@@ -1,0 +1,16 @@
+<template data-vapr="game-item">
+    <div class="game-item" id="game-item-{{game-id}}">
+        {{#is-owned}}<div class="owned-badge">OWNED</div>{{/is-owned}}
+        <div class="game-cover-wrapper">
+            <img src="{{cover-image}}" class="game-cover" alt="{{title}}">
+        </div>
+        <div class="game-content">
+            <h4 class="game-title">{{title}}</h4>
+            <p class="game-description">{{description}}</p>
+            <div class="game-actions">
+                {{#external-link}}<button class="game-action-button" onclick="window.open('{{external-link}}', '_blank'); event.stopPropagation();"><i class="fa-solid fa-external-link"></i> Learn More</button>{{/external-link}}
+                {{#is-owner}}<button class="game-action-button secondary" onclick="window.openGameManagement(event, '{{game-id}}')"><i class="fa-solid fa-key"></i> Manage</button>{{/is-owner}}
+            </div>
+        </div>
+    </div>
+</template>

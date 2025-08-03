@@ -6,13 +6,17 @@ async function updateGithubStars(element) {
         const data = await response.json();
         const stars = data.stargazers_count;
 
-        element.textContent = `${stars} ⭐`;
+        element.innerHTML = `<i class="fa-solid fa-star"></i> ${stars}`;
     } catch (error) {
         console.error('Failed to fetch GitHub stars:', error);
-        element.textContent = '⭐️ N/A';
+        element.innerHTML = '<i class="fa-solid fa-star"></i> N/A';
     }
 }
 
-if(MainPage){
-    updateGithubStars(document.getElementById('github_stars'));
+if (window.VAPR) {
+    VAPR.on('#github_stars', 'mounted', (element) => {
+        console.log({element});
+        console.log(element.querySelector('.menu-badge'));
+        updateGithubStars(element.querySelector('.menu-badge'));
+    });
 }

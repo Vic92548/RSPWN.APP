@@ -1,0 +1,15 @@
+<template data-vapr="vapr-card">
+    <article class="vapr-card glass-primary vapr-rounded">
+        <div class="vapr-card-header glass-section-bg">
+            <h2>{{title}}</h2>
+            {{#closeable}}
+            <button class="glass-close-btn" onclick="{{onclose}}">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            {{/closeable}}
+        </div>
+        <div class="vapr-card-body">
+            <slot/>
+        </div>
+    </article>
+</template>

@@ -17,179 +17,101 @@
             <i class="fa-solid fa-angles-left"></i>
         </button>
 
-        <div class="user-info-card glass-secondary" id="menu_user_info" style="display: none;">
-            <div class="user-avatar-large">
-                <img id="menu_user_avatar" src="" alt="Avatar">
-                <div class="level-badge-overlay">
-                    <span id="menu_user_level">0</span>
-                </div>
-            </div>
-            <div class="user-details-menu">
-                <h3 id="menu_username">@username</h3>
-                <div class="xp-progress-mini">
-                    <div class="xp-bar-mini">
-                        <div class="xp-fill-mini" id="menu_xp_bar"></div>
-                    </div>
-                    <span class="xp-text-mini" id="menu_xp_text">0 / 700 XP</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="quick-stats" id="quick_stats" style="display: none;">
-            <div class="stat-mini glass-stat-mini">
-                <i class="fa-solid fa-fire"></i>
-                <div>
-                    <span class="stat-value" id="daily_xp">0</span>
-                    <span class="stat-label">Today's XP</span>
-                </div>
-            </div>
-            <div class="stat-mini glass-stat-mini">
-                <i class="fa-solid fa-users"></i>
-                <div>
-                    <span class="stat-value" id="follower_count">0</span>
-                    <span class="stat-label">Followers</span>
-                </div>
-            </div>
-            <div class="stat-mini glass-stat-mini">
-                <i class="fa-solid fa-eye"></i>
-                <div>
-                    <span class="stat-value" id="total_views">0</span>
-                    <span class="stat-label">Total Views</span>
-                </div>
-            </div>
-        </div>
-
         <nav class="menu-nav glass-scrollbar">
+            <menu-section title="Games">
+                <menu-item
+                        icon="fa-solid fa-gamepad"
+                        icon-class="games"
+                        description="Explore available games"
+                        arrow="true"
+                        onclick="openGamesShowcase()">
+                    Browse Games
+                </menu-item>
+                <menu-item
+                        icon="fa-solid fa-bookmark"
+                        icon-class="library"
+                        description="Your owned games"
+                        arrow="true"
+                        onclick="openMyLibrary()">
+                    My Library
+                </menu-item>
+            </menu-section>
 
-            <div class="menu-section">
-                <h4 class="menu-section-title">Games</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="openGamesShowcase()">
-                        <div class="menu-item-icon games">
-                            <i class="fa-solid fa-gamepad"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Browse Games</span>
-                            <span class="menu-item-desc">Explore available games</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
-                    </li>
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="openMyLibrary()">
-                        <div class="menu-item-icon library">
-                            <i class="fa-solid fa-bookmark"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">My Library</span>
-                            <span class="menu-item-desc">Your owned games</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
-                    </li>
-                </ul>
-            </div>
+            <menu-section title="Create & Share">
+                <menu-item
+                        icon="fa-solid fa-plus"
+                        description="Share your content"
+                        arrow="true"
+                        onclick="opeNewPostModel()">
+                    Create Post
+                </menu-item>
+                <menu-item
+                        icon="fa-solid fa-chart-line"
+                        icon-class="analytics"
+                        description="Track performance"
+                        arrow="true"
+                        onclick="openAnalytics()">
+                    Analytics
+                </menu-item>
+            </menu-section>
 
-            <div class="menu-section">
-                <h4 class="menu-section-title">Create & Share</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="opeNewPostModel()">
-                        <div class="menu-item-icon">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Create Post</span>
-                            <span class="menu-item-desc">Share your content</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
-                    </li>
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="openAnalytics()">
-                        <div class="menu-item-icon analytics">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Analytics</span>
-                            <span class="menu-item-desc">Track performance</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
-                    </li>
-                </ul>
-            </div>
+            <menu-section title="Community">
+                <menu-item
+                        icon="fa-solid fa-user-plus"
+                        icon-class="invite"
+                        description="Grow your network"
+                        badge="+650 XP"
+                        badge-class="glass-badge"
+                        onclick="copyReferrerId()">
+                    Invite Friends
+                </menu-item>
+            </menu-section>
 
-            <div class="menu-section">
-                <h4 class="menu-section-title">Community</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="copyReferrerId()">
-                        <div class="menu-item-icon invite">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Invite Friends</span>
-                            <span class="menu-item-desc">Grow your network</span>
-                        </div>
-                        <span class="menu-badge glass-badge">+650 XP</span>
-                    </li>
-                </ul>
-            </div>
+            <menu-section title="Customize">
+                <menu-item
+                        icon="fa-solid fa-image"
+                        icon-class="backgrounds"
+                        description="Personalize your view"
+                        badge="NEW"
+                        badge-class="new glass-badge"
+                        onclick="openCustomizationMenu()">
+                    Backgrounds
+                </menu-item>
+            </menu-section>
 
-            <div class="menu-section">
-                <h4 class="menu-section-title">Customize</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="openCustomizationMenu()">
-                        <div class="menu-item-icon backgrounds">
-                            <i class="fa-solid fa-image"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Backgrounds</span>
-                            <span class="menu-item-desc">Personalize your view</span>
-                        </div>
-                        <span class="menu-badge new glass-badge">NEW</span>
-                    </li>
-                </ul>
-            </div>
+            <menu-section title="About">
+                <menu-item
+                        icon="fa-brands fa-github"
+                        icon-class="github"
+                        description="View on GitHub"
+                        badge='<i class="fa-solid fa-star"></i> ...'
+                        badge-class="stars glass-badge"
+                        id="github_stars"
+                        onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');">
+                    Open Source
+                </menu-item>
+                <menu-item
+                        icon="fa-brands fa-discord"
+                        icon-class="discord"
+                        description="Chat with community"
+                        arrow="true"
+                        onclick="window.open('https://discord.gg/vtsnj3zphd', '_blank');">
+                    Join Discord
+                </menu-item>
+            </menu-section>
 
-            <div class="menu-section">
-                <h4 class="menu-section-title">About</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="window.open('https://github.com/Vic92548/VAPR', '_blank');">
-                        <div class="menu-item-icon github">
-                            <i class="fa-brands fa-github"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Open Source</span>
-                            <span class="menu-item-desc">View on GitHub</span>
-                        </div>
-                        <span class="menu-badge stars glass-badge" id="github_stars">
-                            <i class="fa-solid fa-star"></i> ...
-                        </span>
-                    </li>
-                    <li class="menu-item glass-secondary glass-shimmer" onclick="window.open('https://discord.gg/vtsnj3zphd', '_blank');">
-                        <div class="menu-item-icon discord">
-                            <i class="fa-brands fa-discord"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Join Discord</span>
-                            <span class="menu-item-desc">Chat with community</span>
-                        </div>
-                        <i class="fa-solid fa-external-link menu-item-arrow"></i>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="menu-section webOnly">
-                <h4 class="menu-section-title">Desktop App</h4>
-                <ul class="menu-list">
-                    <li class="menu-item glass-secondary glass-shimmer" id="desktop-download-item" onclick="downloadDesktopApp()">
-                        <div class="menu-item-icon download">
-                            <i class="fa-solid fa-download"></i>
-                        </div>
-                        <div class="menu-item-content">
-                            <span class="menu-item-title">Download</span>
-                            <span class="menu-item-desc">Get the native app</span>
-                        </div>
-                        <span class="menu-badge glass-badge">
-                            <i class="fa-brands fa-windows"></i> Windows
-                        </span>
-                    </li>
-                </ul>
-            </div>
+            <menu-section title="Desktop App" class="webOnly">
+                <menu-item
+                        icon="fa-solid fa-download"
+                        icon-class="download"
+                        description="Get the native app"
+                        badge='<i class="fa-brands fa-windows"></i> Windows'
+                        badge-class="glass-badge"
+                        onclick="downloadDesktopApp()"
+                        id="desktop-download-item">
+                    Download
+                </menu-item>
+            </menu-section>
         </nav>
 
         <div class="menu-footer glass-section-bg">

@@ -1,0 +1,32 @@
+<template data-vapr="post-item">
+    <div class="post-item">
+        <div class="post-item-header">
+            <h4 class="post-title">{{title}}</h4>
+            <span class="post-engagement-badge">{{engagement}}%</span>
+        </div>
+        <div class="post-metrics">
+            <div class="post-metric">
+                <span class="post-metric-value">{{views}}</span>
+                <span class="post-metric-label"><i class="fa-solid fa-eye"></i> Views</span>
+            </div>
+            <div class="post-metric">
+                <span class="post-metric-value">{{likes}}</span>
+                <span class="post-metric-label"><i class="fa-solid fa-heart"></i> Likes</span>
+            </div>
+            <div class="post-metric">
+                <span class="post-metric-value">{{followers}}</span>
+                <span class="post-metric-label"><i class="fa-solid fa-user-plus"></i> Follows</span>
+            </div>
+            <div class="post-metric">
+                <span class="post-metric-value">{{clicks}}</span>
+                <span class="post-metric-label"><i class="fa-solid fa-link"></i> Clicks</span>
+            </div>
+        </div>
+        <div class="post-item-footer">
+            <span class="post-date">{{date}}</span>
+            <a href="{{link}}" class="view-post-link" target="_blank">
+                View Post <i class="fa-solid fa-external-link-alt"></i>
+            </a>
+        </div>
+    </div>
+</template>

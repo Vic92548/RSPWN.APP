@@ -117,28 +117,19 @@ function displayGames() {
         const isOwned = userGameIds.includes(game.id);
         const isOwner = isUserLoggedIn() && game.ownerId === window.user.id;
 
-        const gameEl = document.createElement('div');
-        gameEl.className = 'game-item';
-
-        const manageButton = isOwner ? `<button class="game-action-button secondary" onclick="window.openGameManagement(event, '${game.id}')"><i class="fa-solid fa-key"></i> Manage</button>` : '';
-
-        gameEl.innerHTML = `
-            ${isOwned ? '<div class="owned-badge">OWNED</div>' : ''}
-            <div class="game-cover-wrapper">
-                <img src="${game.coverImage}" class="game-cover" alt="${game.title}">
-            </div>
-            <div class="game-content">
-                <h4 class="game-title">${game.title}</h4>
-                <p class="game-description">${game.description}</p>
-                <div class="game-actions">
-                    ${game.externalLink ? `<button class="game-action-button" onclick="window.open('${game.externalLink}', '_blank'); event.stopPropagation();"><i class="fa-solid fa-external-link"></i> Learn More</button>` : ''}
-                    ${manageButton}
-                </div>
-            </div>
-        `;
+        const gameEl = document.createElement('game-item');
+        gameEl.setAttribute('game-id', game.id);
+        gameEl.setAttribute('title', game.title);
+        gameEl.setAttribute('description', game.description);
+        gameEl.setAttribute('cover-image', game.coverImage);
+        gameEl.setAttribute('is-owned', isOwned);
+        gameEl.setAttribute('is-owner', isOwner);
+        gameEl.setAttribute('external-link', game.externalLink || '');
 
         container.appendChild(gameEl);
     });
+
+    VAPR.refresh();
 }
 
 function displayLibrary() {
@@ -151,118 +142,35 @@ function displayLibrary() {
     }
 
     gamesData.userGames.forEach(game => {
-        const gameEl = document.createElement('div');
-        gameEl.className = 'game-item';
-        gameEl.id = `game-item-${game.id}`;
+        const gameEl = document.createElement('library-game-item');
+        gameEl.setAttribute('game-id', game.id);
+        gameEl.setAttribute('title', game.title);
+        gameEl.setAttribute('description', game.description);
+        gameEl.setAttribute('cover-image', game.coverImage);
+        gameEl.setAttribute('download-url', game.downloadUrl || '');
+        gameEl.setAttribute('owned-at', game.ownedAt);
 
-        const isTauri = isRunningInTauri();
         const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
         const isDownloading = gamesData.downloadingGames.has(game.id);
 
-        let statusBadge = '';
-        let actionContent = '';
+        gameEl.setAttribute('is-installed', isInstalled);
+        gameEl.setAttribute('is-downloading', isDownloading);
 
         if (isInstalled) {
-            statusBadge = '<div class="game-status-badge installed"><i class="fa-solid fa-check-circle"></i> Installed</div>';
-        }
-
-        if (isDownloading) {
-            const progress = gamesData.downloadingGames.get(game.id) || 0;
-            actionContent = `
-                <div class="download-progress-overlay">
-                    <div class="download-progress-container">
-                        <div class="download-progress-header">
-                            <div class="download-progress-icon">
-                                <i class="fa-solid fa-download"></i>
-                            </div>
-                            <div class="download-progress-title">Downloading Game</div>
-                            <div class="download-progress-subtitle">${game.title}</div>
-                        </div>
-                        <div class="download-progress-stats">
-                            <div class="download-stat">
-                                <span class="download-stat-value">${Math.round(progress)}%</span>
-                                <span class="download-stat-label">Progress</span>
-                            </div>
-                            <div class="download-stat">
-                                <span class="download-stat-value" id="download-speed-${game.id}">0 MB/s</span>
-                                <span class="download-stat-label">Speed</span>
-                            </div>
-                        </div>
-                        <div class="download-progress-bar-wrapper">
-                            <div class="download-progress-bar">
-                                <div class="download-progress-fill" style="width: ${progress}%"></div>
-                            </div>
-                            <div class="download-info">
-                                <span><i class="fa-solid fa-database"></i> <span id="download-size-${game.id}">0 MB / 0 MB</span></span>
-                                <span><i class="fa-solid fa-clock"></i> <span id="download-eta-${game.id}">Calculating...</span></span>
-                            </div>
-                        </div>
-                        <button class="cancel-download-btn" onclick="window.cancelDownload('${game.id}')">
-                            <i class="fa-solid fa-xmark"></i> Cancel Download
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        let gameActions = '';
-        if (game.downloadUrl && !isDownloading) {
-            if (isTauri) {
-                if (isInstalled) {
-                    const installedGame = gamesData.installedGames.find(g => g.id === game.id);
-                    if (installedGame && installedGame.executable) {
-                        gameActions = `
-                            <div class="game-actions">
-                                <button class="game-action-button play" onclick="window.launchGame(event, '${installedGame.executable.replace(/\\/g, '\\\\')}')">
-                                    <i class="fa-solid fa-play"></i> Play
-                                </button>
-                                <button class="game-action-button icon-only danger" onclick="window.uninstallGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        `;
-                    }
-                } else {
-                    gameActions = `
-                        <div class="game-actions">
-                            <button class="game-action-button primary" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')">
-                                <i class="fa-solid fa-download"></i> Install
-                            </button>
-                        </div>
-                    `;
-                }
-            } else {
-                gameActions = `
-                    <div class="game-actions">
-                        <button class="game-action-button primary" onclick="window.downloadGame(event, '${game.id}', '${game.title.replace(/'/g, "\\'")}', '${game.downloadUrl}')">
-                            <i class="fa-solid fa-download"></i> Download
-                        </button>
-                    </div>
-                `;
+            const installedGame = gamesData.installedGames.find(g => g.id === game.id);
+            if (installedGame && installedGame.executable) {
+                gameEl.setAttribute('executable', installedGame.executable);
             }
         }
 
-        gameEl.innerHTML = `
-            ${statusBadge}
-            <div class="game-cover-wrapper">
-                <img src="${game.coverImage}" class="game-cover" alt="${game.title}">
-            </div>
-            <div class="game-content">
-                <h4 class="game-title">${game.title}</h4>
-                <p class="game-description">${game.description}</p>
-                <div class="game-meta">
-                    <div class="game-meta-item">
-                        <i class="fa-solid fa-calendar"></i>
-                        <span>Owned ${new Date(game.ownedAt).toLocaleDateString()}</span>
-                    </div>
-                </div>
-                ${gameActions}
-            </div>
-            ${actionContent}
-        `;
+        if (isDownloading) {
+            gameEl.setAttribute('download-progress', gamesData.downloadingGames.get(game.id) || 0);
+        }
 
         container.appendChild(gameEl);
     });
+
+    VAPR.refresh();
 }
 
 function openRedeemModal() {
@@ -375,40 +283,22 @@ function displayKeys(keys) {
     }
 
     keys.forEach(key => {
-        const keyEl = document.createElement('div');
-        keyEl.className = 'key-item';
+        const keyEl = document.createElement('game-key-item');
+        keyEl.setAttribute('key-code', key.key);
+        keyEl.setAttribute('tag', key.tag || '');
+        keyEl.setAttribute('is-used', key.usedBy ? 'true' : 'false');
 
-        let userInfo = '';
         if (key.usedBy && key.userInfo) {
-            const avatarUrl = key.userInfo.avatar
-                ? `https://cdn.discordapp.com/avatars/${key.userInfo.id}/${key.userInfo.avatar}.png?size=64`
-                : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
-
-            userInfo = `
-                <div class="key-user-info">
-                    <div class="key-user-avatar">
-                        <img src="${avatarUrl}" alt="${key.userInfo.username}">
-                    </div>
-                    <a href="/@${key.userInfo.username}" class="key-user-name" target="_blank">
-                        @${key.userInfo.username}
-                    </a>
-                    <span class="key-used-date">${new Date(key.usedAt).toLocaleDateString()}</span>
-                </div>
-            `;
+            keyEl.setAttribute('used-by-username', key.userInfo.username);
+            keyEl.setAttribute('used-by-id', key.userInfo.id);
+            keyEl.setAttribute('used-by-avatar', key.userInfo.avatar || '');
+            keyEl.setAttribute('used-at', key.usedAt);
         }
 
-        keyEl.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span class="key-code">${key.key}</span>
-                ${key.tag ? `<span class="key-tag">${key.tag}</span>` : ''}
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                ${key.usedBy ? userInfo : `<span class="key-status available">Available</span>`}
-                ${!key.usedBy ? `<button class="copy-key-btn" onclick="copyKey('${key.key}')"><i class="fa-solid fa-copy"></i> Copy</button>` : ''}
-            </div>
-        `;
         container.appendChild(keyEl);
     });
+
+    VAPR.refresh();
 }
 
 async function generateKeys() {
@@ -631,6 +521,34 @@ function isRunningInTauri() {
     return typeof window.__TAURI__ !== 'undefined';
 }
 
+// VAPR hooks for dynamic content
+VAPR.on('library-game-item', 'mounted', (element) => {
+    const ownedAt = element.getAttribute('owned-at');
+    if (ownedAt) {
+        const dateEl = element.querySelector('.owned-date');
+        if (dateEl) {
+            dateEl.textContent = new Date(ownedAt).toLocaleDateString();
+        }
+    }
+
+    // Update download button text based on environment
+    const downloadBtn = element.querySelector('.download-button-text');
+    if (downloadBtn) {
+        downloadBtn.textContent = isRunningInTauri() ? 'Install' : 'Download';
+    }
+});
+
+VAPR.on('game-key-item', 'mounted', (element) => {
+    const usedAt = element.getAttribute('used-at');
+    if (usedAt) {
+        const dateEl = element.querySelector('.key-used-date');
+        if (dateEl) {
+            dateEl.textContent = new Date(usedAt).toLocaleDateString();
+        }
+    }
+});
+
+// Export functions
 window.openGamesShowcase = openGamesShowcase;
 window.openMyLibrary = openMyLibrary;
 window.closeGamesCard = closeGamesCard;

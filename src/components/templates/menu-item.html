@@ -1,0 +1,19 @@
+<template data-vapr="menu-item">
+    <li class="menu-item glass-secondary glass-shimmer" onclick="{{onclick}}">
+        <div class="menu-item-icon {{icon-class}}">
+            <i class="{{icon}}"></i>
+        </div>
+        <div class="menu-item-content">
+            <span class="menu-item-title"><slot/></span>
+            {{#description}}
+            <span class="menu-item-desc">{{description}}</span>
+            {{/description}}
+        </div>
+        {{#badge}}
+        <span class="menu-badge {{badge-class}}">{{badge}}</span>
+        {{/badge}}
+        {{#arrow}}
+        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        {{/arrow}}
+    </li>
+</template>

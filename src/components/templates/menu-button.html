@@ -1,0 +1,10 @@
+<template data-vapr="menu-button">
+    <li class="menu-item glass-secondary glass-shimmer" onclick="{{onclick}}">
+        <div class="menu-item-icon {{icon-class}}">
+            <slot/>
+        </div>
+        {{#arrow}}
+        <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+        {{/arrow}}
+    </li>
+</template>

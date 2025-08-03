@@ -1,0 +1,19 @@
+<template data-vapr="user-info-card">
+    <div class="user-info-card glass-secondary" id="{{id}}">
+        <div class="user-avatar-large">
+            <img src="{{avatar}}" alt="Avatar">
+            <div class="level-badge-overlay">
+                <span>{{level}}</span>
+            </div>
+        </div>
+        <div class="user-details-menu">
+            <h3>{{username}}</h3>
+            <div class="xp-progress-mini">
+                <div class="xp-bar-mini">
+                    <div class="xp-fill-mini" style="width: {{xp-percent}}%"></div>
+                </div>
+                <span class="xp-text-mini">{{xp}} / {{xp-required}} XP</span>
+            </div>
+        </div>
+    </div>
+</template>

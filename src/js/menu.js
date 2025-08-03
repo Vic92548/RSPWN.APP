@@ -8,12 +8,7 @@ function initMenu() {
     }
 
     updateOnlineUsers();
-
     addMenuAnimations();
-
-    if (document.getElementById('github_stars')) {
-        updateGithubStars(document.getElementById('github_stars'));
-    }
 
     if (window.innerWidth >= 769) {
         initMenuCollapseState();
@@ -355,13 +350,79 @@ if (typeof document !== 'undefined') {
         if (window.innerWidth >= 769) {
             initMenuCollapseState();
         }
+
+        if (window.user && window.VAPR) {
+            insertVAPRUserInfo();
+            insertVAPRQuickStats();
+        }
     });
 
     const originalLoadUserData = window.loadUserData;
     window.loadUserData = function() {
         originalLoadUserData();
-        setTimeout(initMenu, 500);
+        setTimeout(() => {
+            initMenu();
+            if (window.user && window.VAPR) {
+                insertVAPRUserInfo();
+                insertVAPRQuickStats();
+            }
+        }, 500);
     };
+}
+
+function insertVAPRUserInfo() {
+    const menuHeader = document.querySelector('.menu-header');
+    if (!menuHeader) return;
+
+    const container = menuHeader.parentElement;
+    const menuNav = container.querySelector('.menu-nav');
+
+    const existingUserInfo = document.getElementById('menu_user_info');
+    if (existingUserInfo) existingUserInfo.remove();
+
+    const avatarUrl = window.user.avatar
+        ? `https://cdn.discordapp.com/avatars/${window.user.id}/${window.user.avatar}.png?size=128`
+        : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
+
+    const xpPercent = ((window.user.xp || 0) / (window.user.xp_required || 700)) * 100;
+
+    const userInfo = document.createElement('user-info-card');
+    userInfo.setAttribute('id', 'menu_user_info');
+    userInfo.setAttribute('avatar', avatarUrl);
+    userInfo.setAttribute('username', '@' + window.user.username);
+    userInfo.setAttribute('level', window.user.level || 0);
+    userInfo.setAttribute('xp', window.user.xp || 0);
+    userInfo.setAttribute('xp-required', window.user.xp_required || 700);
+    userInfo.setAttribute('xp-percent', xpPercent.toFixed(1));
+
+    container.insertBefore(userInfo, menuNav);
+}
+
+function insertVAPRQuickStats() {
+    const menuHeader = document.querySelector('.menu-header');
+    if (!menuHeader) return;
+
+    const container = menuHeader.parentElement;
+    const menuNav = container.querySelector('.menu-nav');
+
+    const existingStats = document.getElementById('quick_stats');
+    if (existingStats) existingStats.remove();
+
+    const quickStats = document.createElement('quick-stats');
+    quickStats.setAttribute('id', 'quick_stats');
+    quickStats.innerHTML = `
+        <stat-card icon="fa-solid fa-fire" color="#f39c12" value="0" value-id="daily_xp">
+            Today's XP
+        </stat-card>
+        <stat-card icon="fa-solid fa-users" color="#e74c3c" value="0" value-id="follower_count">
+            Followers
+        </stat-card>
+        <stat-card icon="fa-solid fa-eye" color="#3498db" value="0" value-id="total_views">
+            Total Views
+        </stat-card>
+    `;
+
+    container.insertBefore(quickStats, menuNav);
 }
 
 window.toggleMenuCollapse = toggleMenuCollapse;
