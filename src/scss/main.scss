@@ -1,23 +1,550 @@
 @use 'sass:meta';
 @use 'sass:string';
+@use 'sass:map';
 @use 'variables' as *;
 @use 'mixins' as *;
+@use 'components' as *;
 @use 'base/base';
-@use 'components/glass-system';
-@use 'components/size-system';
-@use 'components/vapr-card';
-@use 'components/feed';
 @use 'components/post';
-@use 'components/character';
-@use 'components/customization';
+@use 'components/menu';
 @use 'components/add-post';
 @use 'components/analytics';
-@use 'components/animations';
 @use 'components/backgrounds';
-@use 'components/desktop-download';
-@use 'components/errors';
 @use 'components/games';
-@use 'components/menu';
 @use 'components/profile';
-@use 'components/responsive';
+@use 'components/customization';
+@use 'components/errors';
 @use 'components/version-modal';
+@use 'components/responsive';
+
+.glass-primary {
+  @include glass-effect();
+}
+
+.glass-secondary {
+  @include glass-effect(secondary, sm, light);
+}
+
+.glass_bt, .glass-button {
+  @extend %button-base;
+}
+
+.glass-input {
+  @extend %input-base;
+}
+
+.glass-overlay {
+  backdrop-filter: map.get($blur, md);
+  -webkit-backdrop-filter: map.get($blur, md);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.glass_modal {
+  width: 100%;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  backdrop-filter: map.get($blur, md);
+  -webkit-backdrop-filter: map.get($blur, md);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  position: fixed;
+  z-index: 100;
+  @include flex-center;
+
+  form {
+    width: 90% !important;
+    max-width: 480px !important;
+  }
+}
+
+.glass-hover-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: map.get($shadows, hover);
+}
+
+.glass-hover-scale:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: map.get($shadows, xl);
+}
+
+@each $name, $value in $radius {
+  .glass-rounded-#{$name} { border-radius: $value; }
+}
+
+.glass-progress-track {
+  background: map.get($glass-bg, tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.glass-progress-fill {
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 0.5s ease-out;
+}
+
+.glass-badge {
+  @include badge-style(map.get($glass-bg, tertiary), transparent, map.get($text, primary));
+}
+
+.glass-shimmer {
+  @include shimmer-effect;
+}
+
+.glass-scrollbar {
+  @include scrollbar-style;
+}
+
+@each $name, $value in $text {
+  .glass-text-#{$name} { color: $value; }
+}
+
+.glass-border-top { border-top: 1px solid map.get($glass-border, light); }
+.glass-border-bottom { border-bottom: 1px solid map.get($glass-border, light); }
+
+.glass-section-bg {
+  background: map.get($glass-bg, light);
+}
+
+.glass-close-btn {
+  @include glass-effect(tertiary, md, heavy);
+  color: map.get($text, muted);
+  @include icon-button(36px);
+  border-radius: 10px;
+  font-size: 18px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: rotate(90deg);
+    box-shadow: map.get($shadows, sm);
+  }
+}
+
+.glass-stat-mini {
+  @include glass-effect();
+  border-radius: 14px;
+  transition: map.get($transitions, cubic);
+}
+
+@keyframes glass-slide-up {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(0); }
+}
+
+.glass-focus:focus-visible {
+  outline: none;
+  box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.2),
+          0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+@include generate-spacing(padding, vapr-padding);
+@include generate-spacing(margin, vapr-margin);
+@include generate-radius-classes;
+
+.vapr-container {
+  @include container-width(90%, 440px);
+}
+
+.vapr-container-full {
+  @include container-width(90%, 480px);
+}
+
+.vapr-container-wide {
+  @include container-width(90%, 600px);
+}
+
+.vapr-container-xl {
+  @include container-width(90%, 1200px);
+}
+
+.vapr-height-card {
+  max-height: calc(85vh - 20px);
+  overflow: hidden;
+}
+
+.vapr-height-modal {
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.vapr-height-full {
+  height: 100vh;
+}
+
+.post,
+.menu-container,
+.add-post-card,
+.discord_login {
+  @include container-width();
+}
+
+.glass_modal form {
+  width: 90% !important;
+  max-width: 480px !important;
+}
+
+@include responsive(tablet) {
+  .vapr-container,
+  .vapr-container-wide,
+  .vapr-container-xl {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+
+  .vapr-height-card {
+    max-height: 90vh;
+  }
+
+  .vapr-height-modal {
+    max-height: 95vh;
+  }
+}
+
+@include responsive-min(desktop) {
+  .post {
+    margin: 20px auto !important;
+  }
+}
+
+.vapr-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@each $name, $value in $radius {
+  .vapr-rounded-#{$name} { border-radius: $value; }
+}
+
+@for $i from 1 through 3 {
+  .vapr-mt-#{$i} { margin-top: $i * 10px; }
+  .vapr-mb-#{$i} { margin-bottom: $i * 10px; }
+  .vapr-pt-#{$i} { padding-top: $i * 10px; }
+  .vapr-pb-#{$i} { padding-bottom: $i * 10px; }
+}
+
+@each $name, $value in $transitions {
+  .vapr-transition-#{$name} { transition: $value; }
+}
+.vapr-transition-slow { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+article {
+  width: 90%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &.vapr-article-fixed {
+    height: 600px;
+    overflow-y: auto;
+  }
+}
+
+.vapr-scrollbar {
+  @include scrollbar-style;
+}
+
+$z-indexes: (
+        base: 1,
+        dropdown: 10,
+        sticky: 20,
+        modal: 100,
+        notification: 1000,
+        tooltip: 10000
+);
+
+@each $name, $value in $z-indexes {
+  .vapr-z-#{$name} { z-index: $value; }
+}
+
+.vapr-card {
+  transform: translateY(100vh);
+  position: relative;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.show {
+    transform: translateY(0);
+  }
+}
+
+.vapr-card-header {
+  @extend %card-header;
+
+  .header-content {
+    flex: 1;
+  }
+
+  h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: map.get($text, primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    i {
+      color: map.get($text, muted);
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: map.get($text, secondary);
+  }
+}
+
+.vapr-card-body {
+  @extend %card-body;
+}
+
+.vapr-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.vapr-loading-spinner {
+  font-size: 48px;
+  color: map.get($text, secondary);
+  margin-bottom: 20px;
+}
+
+.vapr-loading-text {
+  font-size: 16px;
+  color: map.get($text, muted);
+}
+
+.vapr-action-button {
+  @extend %button-base;
+
+  &.primary {
+    background: linear-gradient(135deg, map.get($colors, primary) 0%, map.get($colors, secondary) 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #5eded6 0%, #52b5bc 100%);
+      box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+    }
+  }
+}
+
+.vapr-grid {
+  @extend %grid-base;
+
+  &-2 { grid-template-columns: repeat(2, 1fr); }
+  &-3 { grid-template-columns: repeat(3, 1fr); }
+  &-auto { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+  @include responsive(tablet) {
+    &-2, &-3 {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+#feed {
+  position: relative;
+
+  @include responsive-min(desktop) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 0;
+    max-width: 600px;
+    margin: 80px auto 0;
+  }
+}
+
+.post-info {
+  h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+}
+
+.user-details {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  time {
+    display: block;
+  }
+}
+
+.username {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.desc {
+  margin: 0;
+}
+
+.xp-container {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 90%;
+  max-width: 440px;
+  padding: 12px 20px;
+  @include glass-effect();
+  border-radius: map.get($radius, sm);
+
+  &:hover {
+    box-shadow: map.get($shadows, hover);
+  }
+
+  @include responsive(tablet) {
+    width: calc(100% - 160px);
+    padding: 10px 15px;
+    gap: 12px;
+  }
+
+  @include responsive(mobile) {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+}
+
+.xp-level {
+  font-size: 18px;
+  font-weight: 900;
+  color: map.get($text, primary);
+  min-width: 30px;
+  text-align: center;
+
+  @include responsive(tablet) {
+    font-size: 16px;
+    min-width: 25px;
+  }
+}
+
+.xp-track {
+  flex: 1;
+  height: 6px;
+  background: map.get($glass-bg, tertiary);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+
+  @include responsive(tablet) {
+    height: 5px;
+  }
+}
+
+.xp-progress {
+  @include absolute-fill;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s ease-out;
+}
+
+.xp-progress-visual {
+  @include absolute-fill;
+  background: rgba(78, 205, 196, 0.6);
+  border-radius: 3px;
+  width: 0%;
+  transition: all 0.3s ease-out;
+}
+
+.xp-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: map.get($text, faint);
+  white-space: nowrap;
+
+  @include responsive(tablet) {
+    font-size: 12px;
+  }
+}
+
+.xp-current {
+  color: map.get($text, primary);
+}
+
+.xp-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: map.get($text, muted);
+
+  &::before {
+    content: '@';
+    color: map.get($text, weak);
+  }
+
+  @include responsive(tablet) {
+    font-size: 13px;
+  }
+}
+
+.xp-notification {
+  position: absolute;
+  right: 20px;
+  top: -25px;
+  font-size: 13px;
+  font-weight: 700;
+  color: map.get($colors, primary);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: map.get($transitions, fast);
+  pointer-events: none;
+
+  @include responsive(tablet) {
+    font-size: 12px;
+    right: 15px;
+  }
+}
+
+@keyframes xpNotificationAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glowing-shadow {
+  0%, 100% { box-shadow: 0 0 30px rgb(154, 172, 255); }
+  33% { box-shadow: 0 0 35px rgb(200, 100, 255); }
+  66% { box-shadow: 0 0 40px rgb(100, 255, 150); }
+}
+
+@keyframes menu-shadow {
+  0%, 100% { box-shadow: 0 0 10px rgba(27, 40, 56, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(27, 40, 56, 0.5); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

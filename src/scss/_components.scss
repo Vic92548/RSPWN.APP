@@ -1,0 +1,96 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+%card-header {
+  padding: map.get($spacing, md) map.get($spacing, lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+%card-body {
+  padding: map.get($spacing, lg);
+  max-height: calc(85vh - 140px);
+  overflow-y: auto;
+}
+
+%button-base {
+  @include glass-effect(tertiary, md, heavy);
+  color: map.get($text, primary);
+  padding: 12px 20px;
+  border-radius: map.get($radius, sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  @include flex-center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  @include shimmer-effect;
+  transition: map.get($transitions, fast);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+%section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: map.get($text, muted);
+  margin: 0 0 12px 0;
+}
+
+%meta-text {
+  font-size: 12px;
+  color: map.get($text, secondary);
+}
+
+%overlay-base {
+  @include absolute-fill;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: map.get($blur, sm);
+  -webkit-backdrop-filter: map.get($blur, sm);
+  @include flex-center;
+  z-index: 5;
+}
+
+%input-base {
+  width: calc(100% - 34px);
+  padding: 12px 16px;
+  @include glass-effect(secondary, sm, light);
+  border-radius: map.get($radius, sm);
+  color: map.get($text, primary) !important;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus {
+    outline: none;
+    background: map.get($glass-bg, primary);
+    border-color: map.get($glass-border, heavy);
+    box-shadow: map.get($shadows, md);
+  }
+}
+
+%icon-style {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+%grid-base {
+  display: grid;
+  gap: 20px;
+}
