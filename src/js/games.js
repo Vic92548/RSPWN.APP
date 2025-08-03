@@ -113,21 +113,17 @@ function displayGames() {
 
     const userGameIds = gamesData.userGames.map(g => g.id);
 
-    gamesData.allGames.forEach(game => {
-        const isOwned = userGameIds.includes(game.id);
-        const isOwner = isUserLoggedIn() && game.ownerId === window.user.id;
-
-        const gameEl = document.createElement('game-item');
-        gameEl.setAttribute('game-id', game.id);
-        gameEl.setAttribute('title', game.title);
-        gameEl.setAttribute('description', game.description);
-        gameEl.setAttribute('cover-image', game.coverImage);
-        gameEl.setAttribute('is-owned', isOwned);
-        gameEl.setAttribute('is-owner', isOwner);
-        gameEl.setAttribute('external-link', game.externalLink || '');
-
-        container.appendChild(gameEl);
-    });
+    VAPR.appendElements(container, 'game-item',
+        gamesData.allGames.map(game => ({
+            gameId: game.id,
+            title: game.title,
+            description: game.description,
+            coverImage: game.coverImage,
+            isOwned: userGameIds.includes(game.id),
+            isOwner: isUserLoggedIn() && game.ownerId === window.user.id,
+            externalLink: game.externalLink || ''
+        }))
+    );
 
     VAPR.refresh();
 }
@@ -141,34 +137,26 @@ function displayLibrary() {
         return;
     }
 
-    gamesData.userGames.forEach(game => {
-        const gameEl = document.createElement('library-game-item');
-        gameEl.setAttribute('game-id', game.id);
-        gameEl.setAttribute('title', game.title);
-        gameEl.setAttribute('description', game.description);
-        gameEl.setAttribute('cover-image', game.coverImage);
-        gameEl.setAttribute('download-url', game.downloadUrl || '');
-        gameEl.setAttribute('owned-at', game.ownedAt);
+    VAPR.appendElements(container, 'library-game-item',
+        gamesData.userGames.map(game => {
+            const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
+            const isDownloading = gamesData.downloadingGames.has(game.id);
+            const installedGame = isInstalled ? gamesData.installedGames.find(g => g.id === game.id) : null;
 
-        const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
-        const isDownloading = gamesData.downloadingGames.has(game.id);
-
-        gameEl.setAttribute('is-installed', isInstalled);
-        gameEl.setAttribute('is-downloading', isDownloading);
-
-        if (isInstalled) {
-            const installedGame = gamesData.installedGames.find(g => g.id === game.id);
-            if (installedGame && installedGame.executable) {
-                gameEl.setAttribute('executable', installedGame.executable);
-            }
-        }
-
-        if (isDownloading) {
-            gameEl.setAttribute('download-progress', gamesData.downloadingGames.get(game.id) || 0);
-        }
-
-        container.appendChild(gameEl);
-    });
+            return {
+                gameId: game.id,
+                title: game.title,
+                description: game.description,
+                coverImage: game.coverImage,
+                downloadUrl: game.downloadUrl || '',
+                ownedAt: game.ownedAt,
+                isInstalled: isInstalled,
+                isDownloading: isDownloading,
+                ...(installedGame?.executable && { executable: installedGame.executable }),
+                ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 })
+            };
+        })
+    );
 
     VAPR.refresh();
 }
@@ -282,21 +270,19 @@ function displayKeys(keys) {
         return;
     }
 
-    keys.forEach(key => {
-        const keyEl = document.createElement('game-key-item');
-        keyEl.setAttribute('key-code', key.key);
-        keyEl.setAttribute('tag', key.tag || '');
-        keyEl.setAttribute('is-used', key.usedBy ? 'true' : 'false');
-
-        if (key.usedBy && key.userInfo) {
-            keyEl.setAttribute('used-by-username', key.userInfo.username);
-            keyEl.setAttribute('used-by-id', key.userInfo.id);
-            keyEl.setAttribute('used-by-avatar', key.userInfo.avatar || '');
-            keyEl.setAttribute('used-at', key.usedAt);
-        }
-
-        container.appendChild(keyEl);
-    });
+    VAPR.appendElements(container, 'game-key-item',
+        keys.map(key => ({
+            keyCode: key.key,
+            tag: key.tag || '',
+            isUsed: key.usedBy ? 'true' : 'false',
+            ...(key.usedBy && key.userInfo && {
+                usedByUsername: key.userInfo.username,
+                usedById: key.userInfo.id,
+                usedByAvatar: key.userInfo.avatar || '',
+                usedAt: key.usedAt
+            })
+        }))
+    );
 
     VAPR.refresh();
 }
@@ -521,7 +507,6 @@ function isRunningInTauri() {
     return typeof window.__TAURI__ !== 'undefined';
 }
 
-// VAPR hooks for dynamic content
 VAPR.on('library-game-item', 'mounted', (element) => {
     const ownedAt = element.getAttribute('owned-at');
     if (ownedAt) {
@@ -531,7 +516,6 @@ VAPR.on('library-game-item', 'mounted', (element) => {
         }
     }
 
-    // Update download button text based on environment
     const downloadBtn = element.querySelector('.download-button-text');
     if (downloadBtn) {
         downloadBtn.textContent = isRunningInTauri() ? 'Install' : 'Download';
@@ -548,7 +532,6 @@ VAPR.on('game-key-item', 'mounted', (element) => {
     }
 });
 
-// Export functions
 window.openGamesShowcase = openGamesShowcase;
 window.openMyLibrary = openMyLibrary;
 window.closeGamesCard = closeGamesCard;

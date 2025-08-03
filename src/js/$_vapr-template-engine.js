@@ -88,7 +88,6 @@ class VAPRTemplateEngine {
     }
 
     processConditionals(html, attributes) {
-        // Process conditionals by finding matching pairs
         const processBlock = (text, isNegative) => {
             const regex = isNegative
                 ? /\{\{\^([\w-]+)\}\}/g
@@ -97,7 +96,6 @@ class VAPRTemplateEngine {
             let result = text;
             let match;
 
-            // Find all opening tags
             const openings = [];
             while ((match = regex.exec(text)) !== null) {
                 openings.push({
@@ -108,7 +106,6 @@ class VAPRTemplateEngine {
                 });
             }
 
-            // Process from last to first to handle nested conditionals
             for (let i = openings.length - 1; i >= 0; i--) {
                 const opening = openings[i];
                 const closingTag = `{{/${opening.attr}}}`;
@@ -120,16 +117,13 @@ class VAPRTemplateEngine {
 
                     let shouldShow;
                     if (isNegative) {
-                        // For negative conditionals, show if falsy
                         shouldShow = !value || value === 'false' || value === '';
                     } else {
-                        // For positive conditionals, show if truthy
                         shouldShow = value && value !== 'false' && value !== '';
                     }
 
                     const replacement = shouldShow ? this.processConditionals(content, attributes) : '';
 
-                    // Replace the entire conditional block
                     result = result.substring(0, opening.start) +
                         replacement +
                         result.substring(closingIndex + closingTag.length);
@@ -139,9 +133,7 @@ class VAPRTemplateEngine {
             return result;
         };
 
-        // Process negative conditionals first
         html = processBlock(html, true);
-        // Then process positive conditionals
         html = processBlock(html, false);
 
         return html;
@@ -160,13 +152,10 @@ class VAPRTemplateEngine {
 
         let html = template;
 
-        // Replace slot tags
         html = html.replace(/<slot\s*\/?>/gi, content);
 
-        // Process all conditionals (including nested ones)
         html = this.processConditionals(html, attributes);
 
-        // Replace simple variables
         html = html.replace(/\{\{([\w-]+)\}\}/g, (match, attrName) => {
             const value = attributes[attrName];
             return value !== undefined && value !== null ? value : '';
@@ -269,6 +258,50 @@ class VAPRTemplateEngine {
 
     querySelectorAll(selector) {
         return document.querySelectorAll(selector);
+    }
+
+    createElement(tagName, attributes = {}) {
+        const element = document.createElement(tagName);
+
+        Object.entries(attributes).forEach(([key, value]) => {
+            const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+
+            if (value === null || value === undefined) {
+                return;
+            } else if (typeof value === 'boolean') {
+                element.setAttribute(attrName, value.toString());
+            } else if (typeof value === 'object') {
+                element.setAttribute(attrName, JSON.stringify(value));
+            } else {
+                element.setAttribute(attrName, value.toString());
+            }
+        });
+
+        return element;
+    }
+
+    appendElement(container, tagName, attributes = {}) {
+        const element = this.createElement(tagName, attributes);
+        container.appendChild(element);
+        return element;
+    }
+
+    createElements(tagName, dataArray) {
+        return dataArray.map(data => this.createElement(tagName, data));
+    }
+
+    appendElements(container, tagName, dataArray) {
+        const elements = this.createElements(tagName, dataArray);
+        elements.forEach(el => container.appendChild(el));
+        return elements;
+    }
+
+    createElementWithContent(tagName, attributes = {}, content = '') {
+        const element = this.createElement(tagName, attributes);
+        if (content) {
+            element.innerHTML = content;
+        }
+        return element;
     }
 }
 
