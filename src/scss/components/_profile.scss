@@ -1,0 +1,398 @@
+.profile-body {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.profile-page {
+  min-height: 100vh;
+  padding: 20px;
+  @include flex-center;
+
+  @include responsive(tablet) {
+    padding: 10px;
+  }
+}
+
+.profile-container {
+  margin-top: 60px;
+  max-width: 900px;
+  animation: profileFadeIn 0.6s ease-out;
+
+  @include responsive(tablet) {
+    margin-top: 80px;
+  }
+}
+
+@keyframes profileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-header-section {
+  border-bottom: 1px solid $glass-border-light;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+
+  @include responsive(tablet) {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+  }
+
+  @include responsive(tablet) {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+  }
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+
+  h1 {
+    margin: 0 0 12px 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: $text-strong;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    @include responsive(tablet) {
+      font-size: 24px;
+      justify-content: center;
+    }
+
+    @include responsive(mobile) {
+      font-size: 20px;
+    }
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+}
+
+.level-badge {
+  background: rgba(78, 205, 196, 0.1);
+  border-color: rgba(78, 205, 196, 0.2);
+  color: $primary-color;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(78, 205, 196, 0.3);
+  }
+}
+
+.follow-profile-btn {
+  background-color: rgb(95, 148, 243);
+  color: white;
+  padding: 10px 20px;
+  font-weight: 700;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+
+  &.following {
+    background-color: rgba(190, 213, 255, 0.4);
+    border: 1px solid rgb(206, 220, 247, 0.42);
+    color: $text-primary;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(95, 148, 243, 0.4);
+  }
+
+  @include responsive(tablet) {
+    width: 100%;
+    margin-top: 15px;
+    justify-content: center;
+  }
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  @include responsive(tablet) {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 25px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: profileFadeIn 0.6s ease-out;
+    animation-fill-mode: both;
+
+    @for $i from 1 through 3 {
+      &:nth-child(#{$i}) { animation-delay: #{$i * 0.1}s; }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      transform: rotate(45deg);
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+
+    &:hover .stat-icon {
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    @include responsive(tablet) {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .stat-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+
+    @include responsive(tablet) {
+      font-size: 28px;
+      margin-bottom: 0;
+    }
+  }
+
+  .stat-card:nth-child(1) .stat-icon { color: $info-color; }
+  .stat-card:nth-child(2) .stat-icon { color: $danger-color; }
+  .stat-card:nth-child(3) .stat-icon { color: $warning-color; }
+
+  .stat-value {
+    display: block;
+    font-size: 36px;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+
+    @include responsive(tablet) {
+      font-size: 28px;
+    }
+
+    @include responsive(mobile) {
+      font-size: 24px;
+    }
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 14px;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+}
+
+.posts-section {
+  .section-title {
+    color: $text-primary;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, $glass-border-heavy, transparent);
+    }
+
+    @include responsive(tablet) {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    @include responsive(mobile) {
+      font-size: 18px;
+    }
+  }
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+
+  @include responsive(tablet) {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+.profile-post-card {
+  @include glass-effect($glass-bg-secondary, $blur-sm, $glass-border-light);
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  animation: profileFadeIn 0.5s ease-out;
+  animation-fill-mode: both;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.05 + 0.1}s; }
+  }
+
+  @include shimmer-effect;
+
+  &:hover {
+    background: $glass-bg-primary;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    border-color: $glass-border-lighter;
+  }
+
+  h4 {
+    margin: 0 0 15px 0;
+    @include text-truncate;
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-primary;
+
+    @include responsive(tablet) {
+      font-size: 16px;
+    }
+
+    @include responsive(mobile) {
+      font-size: 14px;
+    }
+  }
+
+  @include responsive(tablet) {
+    padding: 15px;
+  }
+
+  @include responsive(mobile) {
+    padding: 12px;
+  }
+}
+
+.post-meta {
+  font-size: 13px;
+  color: $text-secondary;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  @include responsive(tablet) {
+    font-size: 12px;
+  }
+
+  @include responsive(mobile) {
+    font-size: 11px;
+  }
+}
+
+.no-posts {
+  text-align: center;
+  color: $text-weak;
+  padding: 60px;
+  font-size: 16px;
+  grid-column: 1 / -1;
+}
+
+.profile-back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  @include glass-effect();
+  border-radius: 12px;
+  color: $text-primary;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 18px;
+  padding: 12px;
+  z-index: 100;
+  transition: all 0.4s ease;
+  @include icon-button(44px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+
+  @include responsive(tablet) {
+    top: 10px;
+    left: 10px;
+    @include icon-button(40px);
+    font-size: 16px;
+    padding: 10px;
+  }
+}

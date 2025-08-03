@@ -1,0 +1,126 @@
+@mixin glass-effect($bg: $glass-bg-primary, $blur: $blur-md, $border: $glass-border) {
+  background: $bg;
+  backdrop-filter: $blur;
+  -webkit-backdrop-filter: $blur;
+  border: 1px solid $border;
+  box-shadow: $shadow-md;
+  transition: $transition-base;
+}
+
+@mixin hover-lift($y: -2px, $shadow: $shadow-hover) {
+  &:hover {
+    transform: translateY($y);
+    box-shadow: $shadow;
+  }
+}
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $mobile) { @content; }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $tablet) { @content; }
+  } @else if $breakpoint == desktop {
+    @media (min-width: $desktop) { @content; }
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin absolute-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@mixin text-truncate($lines: 1) {
+  @if $lines == 1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@mixin button-variant($bg, $hover-bg, $color: white) {
+  background: $bg;
+  color: $color;
+  &:hover {
+    background: $hover-bg;
+  }
+}
+
+@mixin scrollbar-style {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $glass-bg-tertiary;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
+@mixin shimmer-effect {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+                    135deg,
+                    transparent 40%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    transparent 60%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+  }
+
+  &:hover::before {
+    transform: translateX(100%);
+  }
+}
+
+@mixin card-base {
+  @include glass-effect();
+  border-radius: $radius-lg;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+@mixin icon-button($size: 44px) {
+  width: $size;
+  height: $size;
+  @include flex-center;
+  cursor: pointer;
+  transition: $transition-fast;
+}

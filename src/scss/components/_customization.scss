@@ -1,0 +1,315 @@
+#background_images_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+  @include scrollbar-style;
+  list-style: none;
+  margin: 0;
+}
+
+.background-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: $blur-md;
+  -webkit-backdrop-filter: $blur-md;
+  border: 2px solid transparent;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  transition: transform 0.4s, box-shadow 0.4s;
+  cursor: pointer;
+  height: 220px;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  }
+
+  &.locked {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background: rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  &.equipped {
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+    background: rgba(78, 205, 196, 0.3);
+
+    &::before {
+      content: '✓ EQUIPPED';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(78, 205, 196, 0.8);
+      backdrop-filter: $blur-sm;
+      -webkit-backdrop-filter: $blur-sm;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+    }
+  }
+}
+
+.background-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.background-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(17, 21, 27, 0.95);
+  padding: 15px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.background-card:hover .background-info {
+  transform: translateY(0);
+}
+
+.background-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.background-description {
+  font-size: 12px;
+  color: $text-primary;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  @include text-truncate(2);
+}
+
+.background-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: $shadow-md;
+  }
+
+  i {
+    font-size: 12px;
+    margin-right: 3px;
+  }
+}
+
+.lock-overlay {
+  @include absolute-fill;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  @include flex-center;
+  flex-direction: column;
+  z-index: 5;
+}
+
+.lock-icon {
+  font-size: 40px;
+  color: $text-secondary;
+  margin-bottom: 10px;
+}
+
+.unlock-text {
+  color: $text-primary;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.unlock-progress {
+  width: 80%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.unlock-progress-fill {
+  height: 100%;
+  background: rgba(78, 205, 196, 0.8);
+  border-radius: 2px;
+  transition: width 0.5s;
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+}
+
+.rarity-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 4;
+  backdrop-filter: $blur-sm;
+  -webkit-backdrop-filter: $blur-sm;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.rarity-common {
+  background: rgba(150, 150, 150, 0.4);
+  color: #fff;
+}
+
+.rarity-rare {
+  background: rgba(41, 128, 185, 0.4);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
+}
+
+.rarity-epic {
+  background: rgba(142, 68, 173, 0.4);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(142, 68, 173, 0.3);
+}
+
+.rarity-legendary {
+  background: rgba(241, 196, 15, 0.4);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+  animation: legendary-glow 2s ease-in-out infinite;
+}
+
+@keyframes legendary-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.6); }
+}
+
+.new-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(231, 76, 60, 0.6);
+  backdrop-filter: $blur-sm;
+  -webkit-backdrop-filter: $blur-sm;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 4;
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+}
+
+.backgrounds-header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+    @include responsive(tablet) {
+      font-size: 24px;
+    }
+  }
+}
+
+.backgrounds-subtitle {
+  color: $text-muted;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.close_bt {
+  background-color: #1b2838;
+  box-shadow: 0 0 5px #1b2838;
+  margin-top: 15px;
+
+  &:hover {
+    background-color: #0d8bf0;
+    box-shadow: 0 0 10px #0d8bf0;
+  }
+}
+
+@include responsive(tablet) {
+  #background_images_container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .background-card {
+    height: 200px;
+
+    &::after {
+      content: 'Tap to see details';
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: $text-secondary;
+      opacity: 1;
+      transition: opacity 0.4s;
+    }
+
+    &:hover::after {
+      opacity: 0;
+    }
+  }
+
+  .background-title {
+    font-size: 13px;
+  }
+
+  .background-description {
+    font-size: 10px;
+  }
+
+  .lock-icon {
+    font-size: 28px;
+  }
+
+  .unlock-text {
+    font-size: 11px;
+  }
+}
+
+@include responsive(mobile) {
+  #background_images_container {
+    grid-template-columns: 1fr;
+  }
+}

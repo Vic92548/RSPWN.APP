@@ -1,0 +1,300 @@
+.metric-card {
+  padding: 16px;
+  border-radius: $radius-md;
+  text-align: center;
+  transition: $transition-fast;
+}
+
+.metric-header {
+  @include flex-center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  i {
+    font-size: 18px;
+    color: $text-faint;
+  }
+}
+
+.metric-label {
+  font-size: 12px;
+  color: $text-secondary;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text-primary;
+}
+
+.engagement-summary {
+  padding: 20px;
+  border-radius: $radius-md;
+  margin-bottom: 20px;
+}
+
+.engagement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.engagement-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-muted;
+}
+
+.engagement-percentage {
+  font-size: 24px;
+  font-weight: 700;
+  color: $primary-color;
+}
+
+.engagement-bar-wrapper {
+  margin-bottom: 12px;
+}
+
+.engagement-bar {
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.engagement-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $primary-color, $secondary-color);
+  transition: width 0.5s ease;
+}
+
+.engagement-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.breakdown-item {
+  font-size: 12px;
+  color: $text-faint;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  strong {
+    color: $text-primary;
+  }
+}
+
+.reactions-summary {
+  padding: 20px;
+  border-radius: $radius-md;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-muted;
+  }
+}
+
+.reaction-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reaction-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: 20px;
+  font-size: 13px;
+
+  .emoji {
+    font-size: 16px;
+  }
+
+  .count {
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.posts-section {
+  margin-top: 20px;
+}
+
+.posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.sort-select {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: 8px;
+  color: $text-muted;
+  cursor: pointer;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.post-item {
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: $radius-md;
+  padding: 16px;
+  transition: $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    background: $glass-bg-primary;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.post-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.post-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.post-engagement-badge {
+  padding: 4px 8px;
+  background: rgba(78, 205, 196, 0.2);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: $primary-color;
+}
+
+.post-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+
+  @include responsive(desktop) {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.post-metric {
+  text-align: center;
+
+  @include responsive(desktop) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.post-metric-value {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 2px;
+
+  @include responsive(desktop) {
+    margin-bottom: 0;
+  }
+}
+
+.post-metric-label {
+  @include flex-center;
+  gap: 4px;
+  font-size: 10px;
+  color: $text-secondary;
+
+  i {
+    font-size: 12px;
+  }
+}
+
+.post-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.post-date {
+  font-size: 11px;
+  color: $text-weak;
+}
+
+.view-post-link {
+  font-size: 12px;
+  color: $primary-color;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.analytics-card.show {
+  .metric-card,
+  .engagement-summary,
+  .reactions-summary,
+  .post-item {
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  .metric-card {
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.05 + 0.1}s; }
+    }
+  }
+
+  .engagement-summary { animation-delay: 0.3s; }
+  .reactions-summary { animation-delay: 0.35s; }
+}

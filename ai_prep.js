@@ -20,7 +20,7 @@ const OUTPUT_FILE = 'output.txt';
 // File extensions by category
 const EXTENSIONS = {
     html: ['.html'],
-    css: ['.css'],
+    css: ['.css','.scss'],
     js: ['.js', '.jsx', '.ts', '.tsx'],
     rust: ['.rs'],
     config: ['.toml', '.json', '.conf.json'],

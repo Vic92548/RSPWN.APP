@@ -1,0 +1,143 @@
+@mixin container($width: 90%, $max-width: 480px) {
+  width: $width;
+  max-width: $max-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vapr-container {
+  @include container(90%, 440px);
+}
+
+.vapr-container-full {
+  @include container(90%, 480px);
+}
+
+.vapr-container-wide {
+  @include container(90%, 600px);
+}
+
+.vapr-container-xl {
+  @include container(90%, 1200px);
+}
+
+.vapr-height-card {
+  max-height: calc(85vh - 20px);
+  overflow: hidden;
+}
+
+.vapr-height-modal {
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.vapr-height-full {
+  height: 100vh;
+}
+
+@each $name, $value in (
+        'padding': $spacing-md,
+        'padding-x': 0 $spacing-md,
+        'padding-sm': $spacing-sm,
+        'padding-lg': $spacing-lg,
+        'padding-xl': $spacing-xl,
+        'padding-header': $spacing-md $spacing-lg,
+        'padding-body': $spacing-lg,
+        'margin': $spacing-md,
+        'margin-auto': $spacing-md auto,
+        'margin-top': $spacing-md 0 0 0,
+        'margin-bottom': 0 0 $spacing-md 0
+) {
+  .vapr-#{$name} {
+    @if type-of($value) == 'list' {
+      #{str-slice($name, 1, str-index($name, '-') - 1)}: $value;
+    } @else {
+      #{$name}: $value;
+    }
+  }
+}
+
+.post,
+.menu-container,
+.add-post-card,
+.discord_login {
+  width: 90% !important;
+  max-width: 480px !important;
+  margin: 20px auto !important;
+
+  @include responsive(tablet) {
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+  }
+}
+
+.glass_modal form {
+  width: 90% !important;
+  max-width: 480px !important;
+}
+
+@include responsive(tablet) {
+  .vapr-container,
+  .vapr-container-wide,
+  .vapr-container-xl {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
+
+  .vapr-height-card {
+    max-height: 90vh;
+  }
+
+  .vapr-height-modal {
+    max-height: 95vh;
+  }
+}
+
+@include responsive(desktop) {
+  .post {
+    margin: 20px auto !important;
+  }
+}
+
+.vapr-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vapr-rounded { border-radius: $radius-lg; }
+.vapr-rounded-sm { border-radius: $radius-sm; }
+.vapr-rounded-lg { border-radius: $radius-xl; }
+
+@for $i from 1 through 3 {
+  .vapr-mt-#{$i} { margin-top: $i * 10px; }
+  .vapr-mb-#{$i} { margin-bottom: $i * 10px; }
+  .vapr-pt-#{$i} { padding-top: $i * 10px; }
+  .vapr-pb-#{$i} { padding-bottom: $i * 10px; }
+}
+
+.vapr-transition { transition: $transition-cubic; }
+.vapr-transition-fast { transition: $transition-fast; }
+.vapr-transition-slow { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+article {
+  width: 90%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &.vapr-article-fixed {
+    height: 600px;
+    overflow-y: auto;
+  }
+}
+
+.vapr-scrollbar {
+  @include scrollbar-style;
+}
+
+.vapr-z-base { z-index: 1; }
+.vapr-z-dropdown { z-index: 10; }
+.vapr-z-sticky { z-index: 20; }
+.vapr-z-modal { z-index: 100; }
+.vapr-z-notification { z-index: 1000; }
+.vapr-z-tooltip { z-index: 10000; }

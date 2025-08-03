@@ -1,0 +1,50 @@
+.error-container {
+  min-height: 100vh;
+  @include flex-center;
+  padding: 20px;
+}
+
+.error-card {
+  text-align: center;
+  max-width: 500px;
+}
+
+.error-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  color: rgba(231, 76, 60, 0.8);
+}
+
+.error-card {
+  h1 {
+    margin: 0 0 20px 0;
+    font-size: 36px;
+    color: $text-strong;
+  }
+
+  p {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+
+  strong {
+    color: $text-strong;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      background-color: rgba(52, 152, 219, 0.8);
+    }
+  }
+}

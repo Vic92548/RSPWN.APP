@@ -1,0 +1,291 @@
+.add-post-card {
+  @include glass-effect();
+  border-radius: 20px;
+  margin: 20px auto;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+  max-width: 480px;
+
+  * {
+    color: $text-primary;
+  }
+
+  #postForm {
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  @include responsive(tablet) {
+    margin: 10px;
+    border-radius: 16px;
+  }
+}
+
+.input-group {
+  margin-bottom: 20px;
+  position: relative;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+
+    i {
+      font-size: 16px;
+      color: $text-faint;
+    }
+  }
+
+  input[type="text"],
+  input[type="url"] {
+    width: calc(100% - 34px);
+    padding: 12px 16px;
+    @include glass-effect($glass-bg-secondary, $blur-sm, $glass-border-light);
+    border-radius: 12px;
+    color: $text-primary !important;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:focus {
+      outline: none;
+      background: $glass-bg-primary;
+      border-color: $glass-border-heavy;
+      box-shadow: $shadow-md;
+    }
+  }
+}
+
+.required {
+  color: $danger-color;
+  font-size: 12px;
+}
+
+.optional {
+  color: $text-weak;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.character-count {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: $text-weak;
+}
+
+.upload-area {
+  position: relative;
+  min-height: 250px;
+  @include glass-effect($glass-bg-secondary, $blur-sm);
+  border: 2px dashed $glass-border-lighter;
+  border-radius: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    background: $glass-bg-primary;
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: $shadow-md;
+  }
+
+  &.dragging {
+    background: rgba(78, 205, 196, 0.1);
+    border-color: rgba(78, 205, 196, 0.3);
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+  }
+
+  @include responsive(tablet) {
+    min-height: 200px;
+  }
+}
+
+.upload-placeholder {
+  @include flex-center;
+  flex-direction: column;
+  height: 250px;
+  text-align: center;
+  padding: 20px;
+
+  i {
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-muted;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: $text-weak;
+  }
+
+  @include responsive(tablet) {
+    height: 200px;
+  }
+}
+
+.upload-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+
+  img, video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+  }
+}
+
+.preview-overlay {
+  @include absolute-fill;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: $blur-sm;
+  -webkit-backdrop-filter: $blur-sm;
+  @include flex-center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.upload-preview:hover .preview-overlay {
+  opacity: 1;
+}
+
+.change-media-btn {
+  @include glass-effect($glass-bg-tertiary, $blur-md, $glass-border-heavy);
+  color: $text-primary;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.input-hint {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: $text-weak;
+}
+
+.submit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid $glass-border-light;
+
+  @include responsive(tablet) {
+    flex-direction: column;
+  }
+}
+
+.cancel-btn,
+.submit-btn {
+  flex: 1;
+  font-family: inherit;
+
+  @include responsive(tablet) {
+    width: 100%;
+  }
+}
+
+.upload-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: $blur-md;
+  -webkit-backdrop-filter: $blur-md;
+  padding: 20px;
+  border-top: 1px solid $glass-border-light;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: $glass-bg-tertiary;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: rgba(78, 205, 196, 0.6);
+  width: 0%;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+}
+
+.progress-text {
+  margin: 0;
+  font-size: 14px;
+  color: $text-muted;
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add-post-card.show {
+  .input-group {
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
+
+    @for $i from 1 through 3 {
+      &:nth-child(#{$i}) { animation-delay: #{$i * 0.1}s; }
+    }
+  }
+
+  .submit-actions {
+    animation: slideIn 0.5s ease forwards;
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+}

@@ -1,0 +1,51 @@
+$glass-bg-primary: rgba(255, 255, 255, 0.08);
+$glass-bg-secondary: rgba(255, 255, 255, 0.05);
+$glass-bg-tertiary: rgba(255, 255, 255, 0.1);
+$glass-bg-light: rgba(255, 255, 255, 0.03);
+$glass-border: rgba(255, 255, 255, 0.18);
+$glass-border-light: rgba(255, 255, 255, 0.1);
+$glass-border-heavy: rgba(255, 255, 255, 0.2);
+$glass-border-lighter: rgba(255, 255, 255, 0.15);
+
+$text-primary: rgba(255, 255, 255, 0.9);
+$text-secondary: rgba(255, 255, 255, 0.6);
+$text-strong: rgba(255, 255, 255, 0.95);
+$text-weak: rgba(255, 255, 255, 0.5);
+$text-muted: rgba(255, 255, 255, 0.8);
+$text-faint: rgba(255, 255, 255, 0.7);
+
+$shadow-sm: 0 0 10px rgba(255, 255, 255, 0.1);
+$shadow-md: 0 0 15px rgba(255, 255, 255, 0.1);
+$shadow-lg: 0 0 20px rgba(255, 255, 255, 0.15);
+$shadow-hover: 0 0 20px rgba(255, 255, 255, 0.15);
+$shadow-xl: 0 10px 30px rgba(255, 255, 255, 0.1);
+
+$transition-base: all 0.4s ease;
+$transition-fast: all 0.3s ease;
+$transition-cubic: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+$radius-sm: 12px;
+$radius-md: 16px;
+$radius-lg: 20px;
+$radius-xl: 24px;
+
+$blur-sm: blur(10px);
+$blur-md: blur(20px);
+$blur-lg: blur(40px);
+
+$primary-color: #4ecdc4;
+$secondary-color: #44a3aa;
+$danger-color: #e74c3c;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$info-color: #3498db;
+
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
+$spacing-xs: 10px;
+$spacing-sm: 15px;
+$spacing-md: 20px;
+$spacing-lg: 25px;
+$spacing-xl: 30px;

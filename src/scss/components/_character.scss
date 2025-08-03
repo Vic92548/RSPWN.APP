@@ -1,0 +1,138 @@
+.xp-container {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 90%;
+  max-width: 440px;
+  padding: 12px 20px;
+  @include glass-effect();
+  border-radius: $radius-sm;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+  }
+
+  @include responsive(tablet) {
+    width: calc(100% - 160px);
+    padding: 10px 15px;
+    gap: 12px;
+  }
+
+  @include responsive(mobile) {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+}
+
+.xp-level {
+  font-size: 18px;
+  font-weight: 900;
+  color: $text-primary;
+  min-width: 30px;
+  text-align: center;
+
+  @include responsive(tablet) {
+    font-size: 16px;
+    min-width: 25px;
+  }
+}
+
+.xp-track {
+  flex: 1;
+  height: 6px;
+  background: $glass-bg-tertiary;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+
+  @include responsive(tablet) {
+    height: 5px;
+  }
+}
+
+.xp-progress {
+  @include absolute-fill;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s ease-out;
+}
+
+.xp-progress-visual {
+  @include absolute-fill;
+  background: rgba(78, 205, 196, 0.6);
+  border-radius: 3px;
+  width: 0%;
+  transition: all 0.3s ease-out;
+}
+
+.xp-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-faint;
+  white-space: nowrap;
+
+  @include responsive(tablet) {
+    font-size: 12px;
+  }
+}
+
+.xp-current {
+  color: $text-primary;
+}
+
+.xp-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-muted;
+
+  &::before {
+    content: '@';
+    color: $text-weak;
+  }
+
+  @include responsive(tablet) {
+    font-size: 13px;
+  }
+}
+
+.xp-notification {
+  position: absolute;
+  right: 20px;
+  top: -25px;
+  font-size: 13px;
+  font-weight: 700;
+  color: $primary-color;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: $transition-fast;
+  pointer-events: none;
+
+  @include responsive(tablet) {
+    font-size: 12px;
+    right: 15px;
+  }
+}
+
+@keyframes xpNotificationAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

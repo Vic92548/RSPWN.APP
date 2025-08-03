@@ -1,0 +1,139 @@
+#desktop-download-item {
+  background: rgba(78, 205, 196, 0.1) !important;
+  border: 1px solid rgba(78, 205, 196, 0.2) !important;
+  margin: 15px 0 !important;
+
+  &:hover {
+    background: rgba(78, 205, 196, 0.15) !important;
+    box-shadow: 0 5px 20px rgba(78, 205, 196, 0.2) !important;
+  }
+
+  .menu-item-icon {
+    background: rgba(78, 205, 196, 0.1) !important;
+    border-color: rgba(78, 205, 196, 0.2) !important;
+    color: $primary-color !important;
+  }
+
+  .menu-item-title {
+    color: $text-primary !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+  }
+
+  .menu-item-desc {
+    color: $text-faint !important;
+  }
+
+  .menu-badge {
+    background: $glass-bg-tertiary !important;
+    color: $text-muted !important;
+    font-weight: 600 !important;
+  }
+}
+
+.download-progress-container {
+  padding: 20px;
+  min-width: 400px;
+}
+
+.download-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: $text-muted;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 20px;
+  background: $glass-bg-tertiary;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $primary-color, $secondary-color);
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.download-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.download-percentage {
+  color: $primary-color;
+}
+
+.download-eta {
+  color: $text-faint;
+}
+
+.play-button {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+
+  &:hover {
+    background: linear-gradient(135deg, #2dd66e 0%, #1bb555 100%) !important;
+    box-shadow: 0 5px 20px rgba(34, 197, 94, 0.4) !important;
+  }
+}
+
+.download-prompt-container {
+  background: rgba(23, 33, 43, 0.95) !important;
+}
+
+.swal2-popup {
+  background: $glass-bg-primary !important;
+  backdrop-filter: $blur-md !important;
+  -webkit-backdrop-filter: $blur-md !important;
+  border: 1px solid $glass-border !important;
+  color: #fff !important;
+}
+
+.swal2-title {
+  color: $text-strong !important;
+}
+
+.swal2-html-container {
+  color: $text-muted !important;
+}
+
+.swal2-confirm {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%) !important;
+  font-weight: 600 !important;
+}
+
+.swal2-cancel {
+  background: $glass-bg-tertiary !important;
+  color: $text-muted !important;
+}

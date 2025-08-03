@@ -21,6 +21,7 @@
     "mongodb": "^6.3.0",
     "multer": "^2.0.2",
     "resend": "^4.7.0",
+    "sass": "^1.89.2",
     "serve-static": "^2.2.0"
   },
   "devDependencies": {

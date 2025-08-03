@@ -1,0 +1,219 @@
+.version-modal-overlay {
+  position: fixed;
+  @include absolute-fill;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: $blur-md;
+  -webkit-backdrop-filter: $blur-md;
+  @include flex-center;
+  z-index: 100000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.version-modal-content {
+  @include glass-effect($glass-bg-primary, blur(40px));
+  border-radius: 20px;
+  padding: 0;
+  width: 90%;
+  max-width: 500px;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.3s ease;
+  overflow: hidden;
+
+  @include responsive(mobile) {
+    width: 95%;
+  }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.version-modal-header {
+  background: rgba(241, 196, 15, 0.1);
+  border-bottom: 1px solid rgba(241, 196, 15, 0.2);
+  padding: 30px;
+  text-align: center;
+
+  i {
+    font-size: 48px;
+    color: $warning-color;
+    margin-bottom: 15px;
+    display: block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: $text-strong;
+  }
+
+  @include responsive(mobile) {
+    padding: 20px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.version-modal-body {
+  padding: 30px;
+
+  p {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $text-muted;
+
+    &.version-note {
+      font-size: 14px !important;
+      color: $text-secondary !important;
+      margin-bottom: 0 !important;
+      text-align: center;
+    }
+  }
+
+  @include responsive(mobile) {
+    padding: 20px;
+  }
+}
+
+.version-info {
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.version-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+  &:first-child {
+    border-bottom: 1px solid $glass-border-light;
+    padding-bottom: 15px;
+    margin-bottom: 5px;
+  }
+}
+
+.version-label {
+  font-size: 14px;
+  color: $text-secondary;
+}
+
+.version-value {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: monospace;
+
+  &.outdated {
+    color: $danger-color;
+  }
+
+  &.required {
+    color: $primary-color;
+  }
+}
+
+.version-modal-actions {
+  padding: 20px 30px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.version-download-btn {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
+  width: 100%;
+  justify-content: center;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(78, 205, 196, 0.4);
+    background: linear-gradient(135deg, #5eded6 0%, #52b5bc 100%);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  i {
+    font-size: 20px;
+  }
+
+  @include responsive(mobile) {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+}
+
+.version-skip-btn {
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  color: $text-faint;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+
+  &:hover {
+    background: $glass-bg-primary;
+    border-color: $glass-border-heavy;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @include responsive(mobile) {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+}
+
+.skip-warning {
+  font-size: 12px;
+  color: rgba(231, 76, 60, 0.8);
+  font-weight: 400;
+  display: block;
+  margin-top: 2px;
+
+  @include responsive(mobile) {
+    font-size: 11px;
+  }
+}
