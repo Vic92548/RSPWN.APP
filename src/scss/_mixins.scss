@@ -1,52 +1,28 @@
-@use 'sass:map';
-@use 'sass:meta';
 @use 'variables' as *;
 
-@mixin glass-effect($bg: primary, $blur-key: md, $border: base) {
-  @if meta.type-of($bg) == 'string' {
-    background: map.get($glass-bg, $bg);
-  } @else {
-    background: $bg;
-  }
-
-  @if meta.type-of($blur-key) == 'string' {
-    backdrop-filter: map.get($blur, $blur-key);
-    -webkit-backdrop-filter: map.get($blur, $blur-key);
-  } @else {
-    backdrop-filter: $blur-key;
-    -webkit-backdrop-filter: $blur-key;
-  }
-
-  @if meta.type-of($border) == 'string' {
-    border: 1px solid map.get($glass-border, $border);
-  } @else {
-    border: 1px solid $border;
-  }
-
-  box-shadow: map.get($shadows, md);
-  transition: map.get($transitions, base);
+@mixin glass-effect($bg: $glass-bg-primary, $blur: $blur-md, $border: $glass-border) {
+  background: $bg;
+  backdrop-filter: $blur;
+  -webkit-backdrop-filter: $blur;
+  border: 1px solid $border;
+  box-shadow: $shadow-md;
+  transition: $transition-base;
 }
 
-@mixin hover-lift($y: -2px, $shadow: hover) {
+@mixin hover-lift($y: -2px, $shadow: $shadow-hover) {
   &:hover {
     transform: translateY($y);
-    @if meta.type-of($shadow) == 'string' {
-      box-shadow: map.get($shadows, $shadow);
-    } @else {
-      box-shadow: $shadow;
-    }
+    box-shadow: $shadow;
   }
 }
 
 @mixin responsive($breakpoint) {
-  @media (max-width: map.get($breakpoints, #{$breakpoint})) {
-    @content;
-  }
-}
-
-@mixin responsive-min($breakpoint) {
-  @media (min-width: map.get($breakpoints, #{$breakpoint})) {
-    @content;
+  @if $breakpoint == mobile {
+    @media (max-width: $mobile) { @content; }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $tablet) { @content; }
+  } @else if $breakpoint == desktop {
+    @media (min-width: $desktop) { @content; }
   }
 }
 
@@ -94,7 +70,7 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: map.get($glass-bg, tertiary);
+    background: $glass-bg-tertiary;
     border-radius: 4px;
   }
 
@@ -137,7 +113,7 @@
 
 @mixin card-base {
   @include glass-effect();
-  border-radius: map.get($radius, lg);
+  border-radius: $radius-lg;
   color: #fff;
   overflow: hidden;
   position: relative;
@@ -148,61 +124,5 @@
   height: $size;
   @include flex-center;
   cursor: pointer;
-  transition: map.get($transitions, fast);
-}
-
-@mixin generate-spacing($property, $prefix) {
-  @each $name, $value in $spacing {
-    .#{$prefix}-#{$name} {
-      #{$property}: $value;
-    }
-  }
-}
-
-@mixin generate-radius-classes {
-  @each $name, $value in $radius {
-    .radius-#{$name} {
-      border-radius: $value;
-    }
-  }
-}
-
-@mixin animation-slideIn($duration: 0.5s, $delay: 0s) {
-  animation: slideIn $duration ease forwards;
-  opacity: 0;
-  animation-delay: $delay;
-}
-
-@mixin stat-card-icon($color) {
-  font-size: 32px;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
-  color: $color;
-}
-
-@mixin badge-style($bg, $border, $color) {
-  background: $bg;
-  border: 1px solid $border;
-  color: $color;
-  padding: 6px 12px;
-  border-radius: map.get($radius, xl);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-@mixin responsive-grid($min-width, $gap: 20px) {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
-  gap: $gap;
-}
-
-@mixin container-width($width: 90%, $max-width: 480px) {
-  width: $width !important;
-  max-width: $max-width !important;
-  margin: 20px auto !important;
-
-  @include responsive(tablet) {
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
-  }
+  transition: $transition-fast;
 }

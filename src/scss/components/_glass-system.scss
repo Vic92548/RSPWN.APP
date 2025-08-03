@@ -1,0 +1,179 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+:root {
+  --glass-bg-primary: #{$glass-bg-primary};
+  --glass-bg-secondary: #{$glass-bg-secondary};
+  --glass-bg-tertiary: #{$glass-bg-tertiary};
+  --glass-bg-light: #{$glass-bg-light};
+  --glass-border: #{$glass-border};
+  --glass-border-light: #{$glass-border-light};
+  --glass-border-heavy: #{$glass-border-heavy};
+  --glass-border-lighter: #{$glass-border-lighter};
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-strong: #{$text-strong};
+  --text-weak: #{$text-weak};
+  --text-muted: #{$text-muted};
+  --text-faint: #{$text-faint};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-hover: #{$shadow-hover};
+  --shadow-xl: #{$shadow-xl};
+  --transition-base: #{$transition-base};
+  --transition-fast: #{$transition-fast};
+  --transition-cubic: #{$transition-cubic};
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --blur-sm: #{$blur-sm};
+  --blur-md: #{$blur-md};
+  --blur-lg: #{$blur-lg};
+}
+
+.glass-primary {
+  @include glass-effect();
+}
+
+.glass-secondary {
+  @include glass-effect($glass-bg-secondary, $blur-sm, $glass-border-light);
+}
+
+.glass_bt, .glass-button {
+  @include glass-effect($glass-bg-tertiary, $blur-md, $glass-border-lighter);
+  border-radius: $radius-sm;
+  color: $text-primary;
+  padding: 10px 20px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: $shadow-hover;
+    transform: translateY(-2px);
+  }
+}
+
+.glass-input {
+  @include glass-effect($glass-bg-secondary, $blur-sm, $glass-border-light);
+  border-radius: $radius-sm;
+  color: $text-primary;
+
+  &:focus {
+    outline: none;
+    background: $glass-bg-primary;
+    border-color: $glass-border-heavy;
+    box-shadow: $shadow-md;
+  }
+}
+
+.glass-overlay {
+  backdrop-filter: $blur-md;
+  -webkit-backdrop-filter: $blur-md;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.glass_modal {
+  width: 100%;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  backdrop-filter: $blur-md;
+  -webkit-backdrop-filter: $blur-md;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  position: fixed;
+  z-index: 100;
+  @include flex-center;
+
+  form {
+    width: 90% !important;
+    max-width: 480px !important;
+  }
+}
+
+.glass-hover-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: $shadow-hover;
+}
+
+.glass-hover-scale:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: $shadow-xl;
+}
+
+.glass-rounded { border-radius: $radius-sm; }
+.glass-rounded-lg { border-radius: $radius-md; }
+.glass-rounded-xl { border-radius: $radius-lg; }
+
+.glass-progress-track {
+  background: $glass-bg-tertiary;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.glass-progress-fill {
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 0.5s ease-out;
+}
+
+.glass-badge {
+  padding: 6px 12px;
+  @include glass-effect($glass-bg-tertiary);
+  border-radius: $radius-xl;
+  font-size: 11px;
+  font-weight: 700;
+  color: $text-primary;
+}
+
+.glass-shimmer {
+  @include shimmer-effect;
+}
+
+.glass-scrollbar {
+  @include scrollbar-style;
+}
+
+.glass-text { color: $text-primary; }
+.glass-text-muted { color: $text-secondary; }
+
+.glass-border-top { border-top: 1px solid $glass-border-light; }
+.glass-border-bottom { border-bottom: 1px solid $glass-border-light; }
+
+.glass-section-bg {
+  background: $glass-bg-light;
+}
+
+.glass-close-btn {
+  @include glass-effect($glass-bg-tertiary, $blur-md, $glass-border-heavy);
+  color: $text-muted;
+  @include icon-button(36px);
+  border-radius: 10px;
+  font-size: 18px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: rotate(90deg);
+    box-shadow: $shadow-sm;
+  }
+}
+
+.glass-stat-mini {
+  @include glass-effect();
+  border-radius: 14px;
+  transition: $transition-cubic;
+}
+
+@keyframes glass-slide-up {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(0); }
+}
+
+.glass-focus:focus-visible {
+  outline: none;
+  box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.2),
+          0 0 20px rgba(255, 255, 255, 0.1);
+}

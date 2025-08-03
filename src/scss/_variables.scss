@@ -1,127 +1,51 @@
-$glass-bg: (
-        primary: rgba(255, 255, 255, 0.08),
-        secondary: rgba(255, 255, 255, 0.05),
-        tertiary: rgba(255, 255, 255, 0.1),
-        light: rgba(255, 255, 255, 0.03)
-);
+$glass-bg-primary: rgba(255, 255, 255, 0.08);
+$glass-bg-secondary: rgba(255, 255, 255, 0.05);
+$glass-bg-tertiary: rgba(255, 255, 255, 0.1);
+$glass-bg-light: rgba(255, 255, 255, 0.03);
+$glass-border: rgba(255, 255, 255, 0.18);
+$glass-border-light: rgba(255, 255, 255, 0.1);
+$glass-border-heavy: rgba(255, 255, 255, 0.2);
+$glass-border-lighter: rgba(255, 255, 255, 0.15);
 
-$glass-border: (
-        base: rgba(255, 255, 255, 0.18),
-        light: rgba(255, 255, 255, 0.1),
-        heavy: rgba(255, 255, 255, 0.2),
-        lighter: rgba(255, 255, 255, 0.15)
-);
+$text-primary: rgba(255, 255, 255, 0.9);
+$text-secondary: rgba(255, 255, 255, 0.6);
+$text-strong: rgba(255, 255, 255, 0.95);
+$text-weak: rgba(255, 255, 255, 0.5);
+$text-muted: rgba(255, 255, 255, 0.8);
+$text-faint: rgba(255, 255, 255, 0.7);
 
-$text: (
-        primary: rgba(255, 255, 255, 0.9),
-        secondary: rgba(255, 255, 255, 0.6),
-        strong: rgba(255, 255, 255, 0.95),
-        weak: rgba(255, 255, 255, 0.5),
-        muted: rgba(255, 255, 255, 0.8),
-        faint: rgba(255, 255, 255, 0.7)
-);
+$shadow-sm: 0 0 10px rgba(255, 255, 255, 0.1);
+$shadow-md: 0 0 15px rgba(255, 255, 255, 0.1);
+$shadow-lg: 0 0 20px rgba(255, 255, 255, 0.15);
+$shadow-hover: 0 0 20px rgba(255, 255, 255, 0.15);
+$shadow-xl: 0 10px 30px rgba(255, 255, 255, 0.1);
 
-$shadows: (
-        sm: 0 0 10px rgba(255, 255, 255, 0.1),
-        md: 0 0 15px rgba(255, 255, 255, 0.1),
-        lg: 0 0 20px rgba(255, 255, 255, 0.15),
-        hover: 0 0 20px rgba(255, 255, 255, 0.15),
-        xl: 0 10px 30px rgba(255, 255, 255, 0.1)
-);
+$transition-base: all 0.4s ease;
+$transition-fast: all 0.3s ease;
+$transition-cubic: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-$transitions: (
-        base: all 0.4s ease,
-        fast: all 0.3s ease,
-        cubic: all 0.4s cubic-bezier(0.4, 0, 0.2, 1)
-);
+$radius-sm: 12px;
+$radius-md: 16px;
+$radius-lg: 20px;
+$radius-xl: 24px;
 
-$radius: (
-        sm: 12px,
-        md: 16px,
-        lg: 20px,
-        xl: 24px
-);
+$blur-sm: blur(10px);
+$blur-md: blur(20px);
+$blur-lg: blur(40px);
 
-$blur: (
-        sm: blur(10px),
-        md: blur(20px),
-        lg: blur(40px)
-);
+$primary-color: #4ecdc4;
+$secondary-color: #44a3aa;
+$danger-color: #e74c3c;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$info-color: #3498db;
 
-$colors: (
-        primary: #4ecdc4,
-        secondary: #44a3aa,
-        danger: #e74c3c,
-        success: #2ecc71,
-        warning: #f39c12,
-        info: #3498db
-);
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
 
-$breakpoints: (
-        mobile: 480px,
-        tablet: 768px,
-        desktop: 1024px
-);
-
-$spacing: (
-        xs: 10px,
-        sm: 15px,
-        md: 20px,
-        lg: 25px,
-        xl: 30px
-);
-
-@use 'sass:map';
-
-$glass-bg-primary: map.get($glass-bg, primary);
-$glass-bg-secondary: map.get($glass-bg, secondary);
-$glass-bg-tertiary: map.get($glass-bg, tertiary);
-$glass-bg-light: map.get($glass-bg, light);
-
-$glass-border-base: map.get($glass-border, base);
-$glass-border-light: map.get($glass-border, light);
-$glass-border-heavy: map.get($glass-border, heavy);
-$glass-border-lighter: map.get($glass-border, lighter);
-
-$text-primary: map.get($text, primary);
-$text-secondary: map.get($text, secondary);
-$text-strong: map.get($text, strong);
-$text-weak: map.get($text, weak);
-$text-muted: map.get($text, muted);
-$text-faint: map.get($text, faint);
-
-$shadow-sm: map.get($shadows, sm);
-$shadow-md: map.get($shadows, md);
-$shadow-lg: map.get($shadows, lg);
-$shadow-hover: map.get($shadows, hover);
-$shadow-xl: map.get($shadows, xl);
-
-$transition-base: map.get($transitions, base);
-$transition-fast: map.get($transitions, fast);
-$transition-cubic: map.get($transitions, cubic);
-
-$radius-sm: map.get($radius, sm);
-$radius-md: map.get($radius, md);
-$radius-lg: map.get($radius, lg);
-$radius-xl: map.get($radius, xl);
-
-$blur-sm: map.get($blur, sm);
-$blur-md: map.get($blur, md);
-$blur-lg: map.get($blur, lg);
-
-$primary-color: map.get($colors, primary);
-$secondary-color: map.get($colors, secondary);
-$danger-color: map.get($colors, danger);
-$success-color: map.get($colors, success);
-$warning-color: map.get($colors, warning);
-$info-color: map.get($colors, info);
-
-$mobile: map.get($breakpoints, mobile);
-$tablet: map.get($breakpoints, tablet);
-$desktop: map.get($breakpoints, desktop);
-
-$spacing-xs: map.get($spacing, xs);
-$spacing-sm: map.get($spacing, sm);
-$spacing-md: map.get($spacing, md);
-$spacing-lg: map.get($spacing, lg);
-$spacing-xl: map.get($spacing, xl);
+$spacing-xs: 10px;
+$spacing-sm: 15px;
+$spacing-md: 20px;
+$spacing-lg: 25px;
+$spacing-xl: 30px;

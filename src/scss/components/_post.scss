@@ -1,7 +1,5 @@
-@use 'sass:map';
 @use '../variables' as *;
 @use '../mixins' as *;
-@use '../components' as *;
 
 .create-post-btn {
   @include icon-button(38px);
@@ -25,7 +23,7 @@
     margin: 0;
   }
 
-  @include responsive-min(desktop) {
+  @include responsive(desktop) {
     display: none;
   }
 }
@@ -33,9 +31,11 @@
 .post {
   transform: translateY(100vh);
   position: relative;
-  @include container-width();
+  width: 90% !important;
+  max-width: 480px !important;
+  margin: 20px auto !important;
 
-  @include responsive-min(desktop) {
+  @include responsive(desktop) {
     width: 400px;
     margin: auto;
     margin-top: 20px;
@@ -43,17 +43,13 @@
   }
 }
 
-@mixin swipe-animation-base {
+@keyframes swipeRight {
   0% {
     transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
-    background-color: map.get($glass-bg, primary);
-    box-shadow: map.get($shadows, md);
+    background-color: $glass-bg-primary;
+    box-shadow: $shadow-md;
     opacity: 1;
   }
-}
-
-@keyframes swipeRight {
-  @include swipe-animation-base;
   25% {
     background-color: rgba(46, 204, 113, 0.4);
     box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
@@ -65,7 +61,12 @@
 }
 
 @keyframes swipeLeft {
-  @include swipe-animation-base;
+  0% {
+    transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
+    background-color: $glass-bg-primary;
+    box-shadow: $shadow-md;
+    opacity: 1;
+  }
   25% {
     background-color: rgba(231, 76, 60, 0.4);
     box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
@@ -77,7 +78,10 @@
 }
 
 @keyframes skip {
-  @include swipe-animation-base;
+  0% {
+    transform: rotate(var(--start-rotate)) translate(var(--start-translate-x), var(--start-translate-y));
+    opacity: 1;
+  }
   100% {
     transform: translate(var(--start-translate-x), calc(var(--start-translate-y) - 100px));
     opacity: 0;
@@ -85,7 +89,7 @@
 }
 
 .post-header {
-  border-bottom: 1px solid map.get($glass-border, light);
+  border-bottom: 1px solid $glass-border-light;
 }
 
 .post-info {
@@ -96,16 +100,17 @@
     font-size: 20px;
     font-weight: 700;
     line-height: 1.4;
-    color: map.get($text, strong);
+    color: $text-strong;
     @include text-truncate(2);
-    transition: map.get($transitions, fast);
+    transition: $transition-fast;
   }
 }
 
 #post_username,
 #post_time,
 #follow {
-  @extend %meta-text;
+  font-size: 12px;
+  color: $text-secondary;
 }
 
 #post_title {
@@ -123,7 +128,7 @@
   display: inline-block;
   font-size: 11px;
   cursor: pointer;
-  transition: map.get($transitions, fast);
+  transition: $transition-fast;
   margin-top: 8px;
 }
 
@@ -143,17 +148,17 @@
   gap: 12px;
   padding: 8px;
   margin: -8px;
-  border-radius: map.get($radius, sm);
+  border-radius: $radius-sm;
   cursor: pointer;
-  transition: map.get($transitions, fast);
+  transition: $transition-fast;
   position: relative;
   flex: 1;
 
   &::before {
     content: '';
     @include absolute-fill;
-    background: map.get($glass-bg, secondary);
-    border-radius: map.get($radius, sm);
+    background: $glass-bg-secondary;
+    border-radius: $radius-sm;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -169,7 +174,7 @@
     }
 
     #post_username {
-      color: map.get($colors, primary);
+      color: $primary-color;
     }
   }
 }
@@ -206,7 +211,7 @@
 }
 
 #post_username {
-  color: map.get($text, primary);
+  color: $text-primary;
   transition: color 0.2s ease;
   font-size: 15px;
   font-weight: 700;
@@ -221,7 +226,7 @@
 
 #post_time {
   font-size: 12px;
-  color: map.get($text, weak);
+  color: $text-weak;
   display: block;
   margin-top: 2px;
 }
@@ -230,9 +235,9 @@
   margin-left: 16px;
   padding: 6px 16px;
   border-radius: 20px;
-  color: map.get($text, primary);
+  color: $text-primary;
   font-size: 12px;
-  transition: map.get($transitions, fast);
+  transition: $transition-fast;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -252,7 +257,7 @@
   gap: 12px;
   margin-top: 15px;
   padding-top: 15px;
-  border-top: 1px solid map.get($glass-border, light);
+  border-top: 1px solid $glass-border-light;
 
   @include responsive(tablet) {
     gap: 8px;
@@ -269,14 +274,14 @@
     cursor: pointer;
     font-size: 16px;
     margin: 0;
-    transition: map.get($transitions, fast);
+    transition: $transition-fast;
     position: relative;
     overflow: hidden;
     @include flex-center;
     gap: 6px;
 
     i {
-      @extend %icon-style;
+      font-size: 16px;
       margin: 0;
     }
 
@@ -318,20 +323,48 @@
     }
   }
 
-  @each $name, $color in (dislike: danger, neutral: info, like: success) {
-    .#{$name} {
-      color: map.get($colors, $color);
+  .dislike {
+    color: $danger-color;
 
-      &::before {
-        background: rgba(map.get($colors, $color), 0.2);
-      }
+    &::before {
+      background: rgba(231, 76, 60, 0.2);
+    }
 
-      &:hover {
-        background: rgba(map.get($colors, $color), 0.2);
-        border-color: rgba(map.get($colors, $color), 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(map.get($colors, $color), 0.3);
-      }
+    &:hover {
+      background: rgba(231, 76, 60, 0.2);
+      border-color: rgba(231, 76, 60, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+    }
+  }
+
+  .neutral {
+    color: $info-color;
+
+    &::before {
+      background: rgba(52, 152, 219, 0.2);
+    }
+
+    &:hover {
+      background: rgba(52, 152, 219, 0.2);
+      border-color: rgba(52, 152, 219, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+    }
+  }
+
+  .like {
+    color: $success-color;
+
+    &::before {
+      background: rgba(46, 204, 113, 0.2);
+    }
+
+    &:hover {
+      background: rgba(46, 204, 113, 0.2);
+      border-color: rgba(46, 204, 113, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3);
     }
   }
 }
@@ -340,9 +373,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: map.get($transitions, fast);
+  transition: $transition-fast;
   text-decoration: none;
-  color: map.get($text, primary);
+  color: $text-primary;
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
@@ -392,7 +425,7 @@
   align-items: center;
   gap: 6px;
   z-index: 10;
-  transition: map.get($transitions, fast);
+  transition: $transition-fast;
 
   &:hover {
     transform: scale(1.05);
@@ -400,7 +433,7 @@
 
   i {
     font-size: 14px;
-    color: map.get($text, faint);
+    color: $text-faint;
   }
 
   @include responsive(tablet) {
@@ -417,7 +450,7 @@
 #post_views {
   font-weight: 600;
   font-size: 14px;
-  color: map.get($text, primary);
+  color: $text-primary;
 
   @include responsive(tablet) {
     font-size: 12px;
@@ -488,7 +521,7 @@ $platform-colors: (
 
 .reactions-wrapper {
   position: relative;
-  border-top: 1px solid map.get($glass-border, light);
+  border-top: 1px solid $glass-border-light;
 }
 
 .reactions {
@@ -496,7 +529,7 @@ $platform-colors: (
   justify-content: space-around;
   gap: 4px;
   padding: 8px;
-  background: map.get($glass-bg, secondary);
+  background: $glass-bg-secondary;
   position: relative;
 
   @include responsive(tablet) {
@@ -510,7 +543,7 @@ $platform-colors: (
     padding: 8px 16px;
     border-radius: 20px;
     cursor: pointer;
-    transition: map.get($transitions, fast);
+    transition: $transition-fast;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -519,7 +552,7 @@ $platform-colors: (
     font-weight: 600;
 
     &:hover {
-      background: map.get($glass-bg, tertiary);
+      background: $glass-bg-tertiary;
       transform: translateY(-2px);
 
       .reaction_icon {
