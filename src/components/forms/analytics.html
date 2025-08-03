@@ -1,6 +1,6 @@
-<article class="analytics-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="analytics-card" style="display:none;">
+<article class="analytics-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="analytics-card" style="display:none;">
     <div id="analyticsContent">
-        <div class="analytics-header vapr-padding-header glass-section-bg">
+        <div class="vapr-card-header glass-section-bg">
             <div class="header-content">
                 <h2><i class="fa-solid fa-chart-line"></i> Analytics</h2>
                 <p class="glass-text-muted">Your content performance</p>
@@ -10,8 +10,8 @@
             </button>
         </div>
 
-        <div class="analytics-body vapr-padding-body vapr-scrollbar">
-            <div class="metrics-grid">
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="vapr-grid vapr-grid-2">
                 <div class="metric-card glass-secondary">
                     <div class="metric-header">
                         <i class="fa-solid fa-eye"></i>
@@ -19,7 +19,6 @@
                     </div>
                     <div class="metric-value" id="total_views">0</div>
                 </div>
-
                 <div class="metric-card glass-secondary">
                     <div class="metric-header">
                         <i class="fa-solid fa-heart"></i>
@@ -27,7 +26,6 @@
                     </div>
                     <div class="metric-value" id="total_likes">0</div>
                 </div>
-
                 <div class="metric-card glass-secondary">
                     <div class="metric-header">
                         <i class="fa-solid fa-users"></i>
@@ -35,7 +33,6 @@
                     </div>
                     <div class="metric-value" id="total_followers">0</div>
                 </div>
-
                 <div class="metric-card glass-secondary">
                     <div class="metric-header">
                         <i class="fa-solid fa-link"></i>
@@ -65,8 +62,7 @@
 
             <div class="reactions-summary glass-secondary">
                 <h3>Top Reactions</h3>
-                <div class="reaction-pills" id="reaction_pills">
-                </div>
+                <div class="reaction-pills" id="reaction_pills"></div>
             </div>
 
             <div class="posts-section">
@@ -79,17 +75,15 @@
                         <option value="recent">Most Recent</option>
                     </select>
                 </div>
-
-                <div class="posts-list" id="posts_list">
-                </div>
+                <div class="posts-list" id="posts_list"></div>
             </div>
         </div>
 
-        <div class="analytics-loading" id="analytics-loading" style="display:none;">
-            <div class="loading-spinner">
+        <div class="vapr-loading" id="analytics-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
                 <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
-            <p class="loading-text glass-text-muted">Loading analytics...</p>
+            <p class="vapr-loading-text glass-text-muted">Loading analytics...</p>
         </div>
     </div>
 </article>

@@ -242,3 +242,125 @@
             0 0 0 2px rgba(255, 255, 255, 0.2),
             0 0 20px rgba(255, 255, 255, 0.1);
 }
+
+.vapr-card {
+    transform: translateY(100vh);
+    position: relative;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vapr-card.show {
+    transform: translateY(0);
+}
+
+.vapr-card-header {
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vapr-card-header .header-content {
+    flex: 1;
+}
+
+.vapr-card-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vapr-card-header h2 i {
+    color: var(--text-muted);
+}
+
+.vapr-card-header p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.vapr-card-body {
+    padding: 25px;
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+}
+
+.vapr-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.vapr-loading-spinner {
+    font-size: 48px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.vapr-loading-text {
+    font-size: 16px;
+}
+
+.vapr-action-button {
+    background: var(--glass-bg-tertiary);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 1px solid var(--glass-border-lighter);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: var(--transition-base);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vapr-action-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.vapr-action-button.primary {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a3aa 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.vapr-action-button.primary:hover {
+    background: linear-gradient(135deg, #5eded6 0%, #52b5bc 100%);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+.vapr-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.vapr-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.vapr-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.vapr-grid-auto {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+@media (max-width: 768px) {
+    .vapr-grid-2,
+    .vapr-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}

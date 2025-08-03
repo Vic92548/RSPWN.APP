@@ -7,9 +7,6 @@
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     margin: 20px auto;
     color: #fff;
-    transform: translateY(100vh);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 85vh;
     overflow: hidden;
     position: relative;
     max-width: 480px;
@@ -28,84 +25,9 @@
     border-radius: 0;
 }
 
-.add-post-card.show {
-    transform: translateY(0);
-}
-
-.add-post-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-content h2 {
-    margin: 0 0 5px 0;
-    font-size: 24px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-content h2 i {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.header-content p {
-    margin: 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.close-card-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
-
-.close-card-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: rotate(90deg);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.add-post-body {
-    padding: 25px;
-    max-height: calc(85vh - 200px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-
-.add-post-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.add-post-body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.add-post-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
 .input-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .input-group label {
@@ -169,10 +91,6 @@
     transform: translateY(-50%);
     font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
-}
-
-.input-group {
-    position: relative;
 }
 
 .upload-area {
@@ -308,61 +226,7 @@
 .cancel-btn,
 .submit-btn {
     flex: 1;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     font-family: inherit;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.cancel-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-}
-
-.cancel-btn i {
-    color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-.submit-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9) !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-.submit-btn i,
-.submit-btn span {
-    color: rgba(255, 255, 255, 0.9) !important;
-}
-
-.submit-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-.submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .upload-progress {
@@ -401,54 +265,10 @@
     text-align: center;
 }
 
-.add-post-card button:not(:disabled),
-.add-post-card input,
-.upload-area {
-    position: relative;
-    overflow: hidden;
-}
-
-.add-post-card button:not(:disabled)::before,
-.upload-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-            135deg,
-            transparent 40%,
-            rgba(255, 255, 255, 0.1) 50%,
-            transparent 60%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-    pointer-events: none;
-}
-
-.add-post-card button:not(:disabled):hover::before,
-.upload-area:hover::before {
-    transform: translateX(100%);
-}
-
 @media (max-width: 768px) {
     .add-post-card {
         margin: 10px;
         border-radius: 16px;
-        max-height: 90vh;
-    }
-
-    .add-post-header {
-        padding: 20px;
-    }
-
-    .header-content h2 {
-        font-size: 20px;
-    }
-
-    .add-post-body {
-        padding: 20px;
     }
 
     .upload-area {
@@ -492,31 +312,4 @@
     animation: slideIn 0.5s ease forwards;
     animation-delay: 0.4s;
     opacity: 0;
-}
-
-@keyframes rippleEffect {
-    to {
-        width: 200px;
-        height: 200px;
-        opacity: 0;
-    }
-}
-
-.cancel-btn::after,
-.submit-btn::after {
-    content: '';
-    position: absolute;
-    top: var(--ripple-y, 50%);
-    left: var(--ripple-x, 50%);
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-}
-
-.cancel-btn:active::after,
-.submit-btn:active::after {
-    animation: rippleEffect 0.6s ease-out;
 }

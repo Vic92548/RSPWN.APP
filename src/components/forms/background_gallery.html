@@ -1,8 +1,6 @@
-<!-- Modern Background Gallery Card -->
-<article class="backgrounds-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="backgrounds-card" style="display:none;">
+<article class="backgrounds-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="backgrounds-card" style="display:none;">
   <div id="backgroundsContent">
-    <!-- Card Header -->
-    <div class="backgrounds-header vapr-padding-header glass-section-bg">
+    <div class="vapr-card-header glass-section-bg">
       <div class="header-content">
         <h2><i class="fa-solid fa-image"></i> Background Gallery</h2>
         <p class="glass-text-muted">Unlock and collect exclusive backgrounds as you level up</p>
@@ -12,20 +10,15 @@
       </button>
     </div>
 
-    <!-- Gallery Body -->
-    <div class="backgrounds-body vapr-padding-body vapr-scrollbar">
-      <!-- Background Grid -->
-      <div class="backgrounds-grid" id="backgrounds-grid">
-        <!-- Background cards will be dynamically inserted here -->
-      </div>
+    <div class="vapr-card-body vapr-scrollbar">
+      <div class="vapr-grid vapr-grid-auto" id="backgrounds-grid"></div>
     </div>
 
-    <!-- Loading State -->
-    <div class="backgrounds-loading" id="backgrounds-loading" style="display:none;">
-      <div class="loading-spinner">
+    <div class="vapr-loading" id="backgrounds-loading" style="display:none;">
+      <div class="vapr-loading-spinner">
         <i class="fa-solid fa-spinner fa-spin"></i>
       </div>
-      <p class="loading-text glass-text-muted">Loading your backgrounds...</p>
+      <p class="vapr-loading-text glass-text-muted">Loading your backgrounds...</p>
     </div>
   </div>
 </article>

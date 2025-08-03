@@ -1,39 +1,27 @@
-<!-- Modern Add Post Card -->
-<article class="add-post-card" id="add-post-card" style="display:none;">
+<article class="add-post-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="add-post-card" style="display:none;">
     <div id="postForm">
-        <!-- Card Header -->
-        <div class="add-post-header">
+        <div class="vapr-card-header glass-section-bg">
             <div class="header-content">
                 <h2><i class="fa-solid fa-plus-circle"></i> Create New Post</h2>
                 <p>Share your content with the VAPR community</p>
             </div>
-            <button type="button" class="close-card-btn" onclick="closeAddPostCard()">
+            <button type="button" class="glass-close-btn" onclick="closeAddPostCard()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
-        <!-- Card Body -->
-        <div class="add-post-body">
-            <!-- Title Input -->
+        <div class="vapr-card-body">
             <div class="input-group">
                 <label for="title">
                     <i class="fa-solid fa-heading"></i> Title
                     <span class="required">*</span>
                 </label>
-                <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="Give your post an eye-catching title..."
-                        required
-                        maxlength="100"
-                >
+                <input type="text" id="title" name="title" placeholder="Give your post an eye-catching title..." required maxlength="100">
                 <div class="character-count">
                     <span id="title-count">0</span>/100
                 </div>
             </div>
 
-            <!-- Media Upload -->
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-photo-film"></i> Media
@@ -58,34 +46,26 @@
                 </div>
             </div>
 
-            <!-- Link Input -->
             <div class="input-group">
                 <label for="link">
                     <i class="fa-solid fa-link"></i> Promotional Link
                     <span class="optional">(Optional)</span>
                 </label>
-                <input
-                        type="url"
-                        id="link"
-                        name="link"
-                        placeholder="https://your-awesome-project.com"
-                >
+                <input type="url" id="link" name="link" placeholder="https://your-awesome-project.com">
                 <p class="input-hint">Add a link to your game, community, or project</p>
             </div>
 
-            <!-- Submit Actions -->
             <div class="submit-actions">
-                <button type="button" class="cancel-btn" onclick="closeAddPostCard()">
+                <button type="button" class="cancel-btn vapr-action-button" onclick="closeAddPostCard()">
                     <i class="fa-solid fa-xmark"></i> Cancel
                 </button>
-                <button type="submit" class="submit-btn" id="submit-post-btn" onclick="submitPost(event)">
+                <button type="submit" class="submit-btn vapr-action-button primary" id="submit-post-btn" onclick="submitPost(event)">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Publish Post</span>
                 </button>
             </div>
         </div>
 
-        <!-- Progress Bar -->
         <div class="upload-progress" id="upload-progress" style="display:none;">
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>

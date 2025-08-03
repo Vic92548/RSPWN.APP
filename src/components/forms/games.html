@@ -1,6 +1,6 @@
-<article class="games-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="games-card" style="display:none;">
+<article class="games-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="games-card" style="display:none;">
     <div id="gamesContent">
-        <div class="games-header vapr-padding-header glass-section-bg">
+        <div class="vapr-card-header glass-section-bg">
             <div class="header-content">
                 <h2><i class="fa-solid fa-gamepad"></i> Games</h2>
                 <p class="glass-text-muted">Browse available games</p>
@@ -10,23 +10,22 @@
             </button>
         </div>
 
-        <div class="games-body vapr-padding-body vapr-scrollbar">
-            <div class="games-grid" id="games-grid">
-            </div>
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="games-grid vapr-grid" id="games-grid"></div>
         </div>
 
-        <div class="games-loading" id="games-loading" style="display:none;">
-            <div class="loading-spinner">
+        <div class="vapr-loading" id="games-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
                 <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
-            <p class="loading-text glass-text-muted">Loading games...</p>
+            <p class="vapr-loading-text glass-text-muted">Loading games...</p>
         </div>
     </div>
 </article>
 
-<article class="library-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="library-card" style="display:none;">
+<article class="library-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="library-card" style="display:none;">
     <div id="libraryContent">
-        <div class="library-header vapr-padding-header glass-section-bg">
+        <div class="vapr-card-header glass-section-bg">
             <div class="header-content">
                 <h2><i class="fa-solid fa-bookmark"></i> My Library</h2>
                 <p class="glass-text-muted">Your owned games</p>
@@ -42,16 +41,15 @@
             </button>
         </div>
 
-        <div class="library-body vapr-padding-body vapr-scrollbar">
-            <div class="library-grid" id="library-grid">
-            </div>
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="library-grid vapr-grid" id="library-grid"></div>
         </div>
 
-        <div class="library-loading" id="library-loading" style="display:none;">
-            <div class="loading-spinner">
+        <div class="vapr-loading" id="library-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
                 <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
-            <p class="loading-text glass-text-muted">Loading your library...</p>
+            <p class="vapr-loading-text glass-text-muted">Loading your library...</p>
         </div>
     </div>
 </article>
@@ -67,9 +65,9 @@
     </form>
 </section>
 
-<article class="game-management-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="game-management-card" style="display:none;">
+<article class="game-management-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="game-management-card" style="display:none;">
     <div id="gameManagementContent">
-        <div class="management-header vapr-padding-header glass-section-bg">
+        <div class="vapr-card-header glass-section-bg">
             <div class="header-content">
                 <h2><i class="fa-solid fa-key"></i> Manage Keys</h2>
                 <p class="glass-text-muted" id="management-game-name">Game Name</p>
@@ -101,16 +99,16 @@
                 </div>
             </div>
 
-            <div class="key-stats">
-                <div class="stat-card">
+            <div class="key-stats vapr-grid vapr-grid-3">
+                <div class="stat-card glass-secondary">
                     <span class="stat-value" id="total-keys">0</span>
                     <span class="stat-label">Total Keys</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card glass-secondary">
                     <span class="stat-value" id="available-keys">0</span>
                     <span class="stat-label">Available</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card glass-secondary">
                     <span class="stat-value" id="used-keys">0</span>
                     <span class="stat-label">Used</span>
                 </div>
@@ -127,9 +125,8 @@
             </div>
         </div>
 
-        <div class="management-body vapr-padding-body vapr-scrollbar">
-            <div class="keys-list" id="keys-list">
-            </div>
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="keys-list" id="keys-list"></div>
         </div>
     </div>
 </article>
