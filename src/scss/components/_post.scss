@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .create-post-btn {
   @include icon-button(38px);
   position: fixed;

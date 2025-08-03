@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .vapr-card {
   transform: translateY(100vh);
   position: relative;
@@ -35,6 +38,7 @@
   p {
     margin: 0;
     font-size: 14px;
+    color: $text-secondary;
   }
 }
 
@@ -60,6 +64,7 @@
 
 .vapr-loading-text {
   font-size: 16px;
+  color: $text-muted;
 }
 
 .vapr-action-button {

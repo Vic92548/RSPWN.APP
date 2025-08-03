@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 @mixin glass-effect($bg: $glass-bg-primary, $blur: $blur-md, $border: $glass-border) {
   background: $bg;
   backdrop-filter: $blur;

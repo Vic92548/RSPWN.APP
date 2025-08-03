@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 #desktop-download-item {
   background: rgba(78, 205, 196, 0.1) !important;
   border: 1px solid rgba(78, 205, 196, 0.2) !important;

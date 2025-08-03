@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .error-container {
   min-height: 100vh;
   @include flex-center;

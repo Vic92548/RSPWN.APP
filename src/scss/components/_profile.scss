@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .profile-body {
   background-attachment: fixed;
   background-size: cover;

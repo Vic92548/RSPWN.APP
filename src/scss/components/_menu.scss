@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .menu-container {
   width: 100%;
   max-width: 480px;

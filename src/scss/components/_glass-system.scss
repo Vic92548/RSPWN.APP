@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 :root {
   --glass-bg-primary: #{$glass-bg-primary};
   --glass-bg-secondary: #{$glass-bg-secondary};

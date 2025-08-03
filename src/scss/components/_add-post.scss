@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .add-post-card {
   @include glass-effect();
   border-radius: 20px;

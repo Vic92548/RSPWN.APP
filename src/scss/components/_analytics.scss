@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .metric-card {
   padding: 16px;
   border-radius: $radius-md;

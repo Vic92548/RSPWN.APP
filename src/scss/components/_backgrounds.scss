@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .background-item {
   position: relative;
   border-radius: $radius-md;

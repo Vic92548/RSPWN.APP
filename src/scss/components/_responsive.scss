@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 @include responsive(desktop) {
   main {
     margin: 0 auto;

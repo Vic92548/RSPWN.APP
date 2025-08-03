@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .xp-container {
   position: relative;
   left: 0;

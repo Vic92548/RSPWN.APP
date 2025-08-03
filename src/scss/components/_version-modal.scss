@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
 .version-modal-overlay {
   position: fixed;
   @include absolute-fill;

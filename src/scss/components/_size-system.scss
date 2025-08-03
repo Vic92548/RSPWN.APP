@@ -1,3 +1,8 @@
+@use 'sass:meta';
+@use 'sass:string';
+@use '../variables' as *;
+@use '../mixins' as *;
+
 @mixin container($width: 90%, $max-width: 480px) {
   width: $width;
   max-width: $max-width;
@@ -49,8 +54,8 @@
         'margin-bottom': 0 0 $spacing-md 0
 ) {
   .vapr-#{$name} {
-    @if type-of($value) == 'list' {
-      #{str-slice($name, 1, str-index($name, '-') - 1)}: $value;
+    @if meta.type-of($value) == 'list' {
+      #{string.slice($name, 1, string.index($name, '-') - 1)}: $value;
     } @else {
       #{$name}: $value;
     }
