@@ -282,6 +282,10 @@ function hideWebOnly(){
     }
 }
 
+function navigateToMyProfile() {
+    window.location.href = `/@${window.user.username}`;
+}
+
 if(MainPage){
     showInitialPost();
 
