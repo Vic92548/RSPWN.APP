@@ -31,9 +31,6 @@ function resetAnalyticsUI() {
         analyticsCard.querySelector('#total_followers').textContent = "0";
         analyticsCard.querySelector('#total_clicks').textContent = "0";
     }
-    document.getElementById("engagement_rate").textContent = "0%";
-    document.getElementById("ctr_rate").textContent = "0%";
-    document.getElementById("posts_list").innerHTML = '<div style="text-align: center; padding: 20px;">Loading posts...</div>';
 }
 
 async function loadAnalyticsData() {
@@ -95,22 +92,6 @@ function calculateOverviewMetrics() {
     if (elements.likes) animateCounter(elements.likes, 0, totalLikes, 1000);
     if (elements.followers) animateCounter(elements.followers, 0, totalFollows, 1000);
     if (elements.clicks) animateCounter(elements.clicks, 0, totalClicks, 1000);
-
-    const totalEngagements = totalLikes + totalDislikes + totalFollows;
-    const engagementRate = totalViews > 0 ? ((totalEngagements / totalViews) * 100).toFixed(2) : 0;
-
-    setTimeout(() => {
-        document.getElementById("engagement_rate").textContent = engagementRate + "%";
-        document.getElementById("engagement_bar").style.width = Math.min(engagementRate, 100) + "%";
-    }, 500);
-
-    const ctr = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(2) : 0;
-
-    setTimeout(() => {
-        document.getElementById("ctr_rate").textContent = ctr + "%";
-    }, 700);
-
-    document.getElementById("reaction_pills").innerHTML = '<span style="font-size: 12px; color: rgba(255, 255, 255, 0.5);">No reactions data available</span>';
 }
 
 function populatePostsList(sortBy = 'views') {

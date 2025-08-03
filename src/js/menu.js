@@ -4,7 +4,6 @@ function initMenu() {
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
         showMenuUserElements();
-        updateQuickStats();
     }
 
     updateOnlineUsers();
@@ -122,47 +121,10 @@ function updateMenuXPBar() {
 
 function showMenuUserElements() {
     const userCard = document.getElementById('menu_user_info');
-    const quickStats = document.getElementById('quick_stats');
     const logoutBtn = document.getElementById('logout_btn');
 
     if (userCard) userCard.style.display = 'flex';
-    if (quickStats) quickStats.style.display = 'grid';
     if (logoutBtn) logoutBtn.style.display = 'flex';
-}
-
-async function updateQuickStats() {
-    try {
-        const xpResponse = await api.getDailyXP();
-        if (xpResponse && xpResponse.xp !== undefined) {
-            const dailyXPEl = document.getElementById('daily_xp');
-            if (dailyXPEl) {
-                animateCounter(dailyXPEl, 0, xpResponse.xp, 1000);
-            }
-        }
-
-        const postsResponse = await api.getMyPosts();
-        if (postsResponse && Array.isArray(postsResponse)) {
-            let totalFollowers = 0;
-            let totalViews = 0;
-
-            postsResponse.forEach(post => {
-                totalFollowers += post.followersCount || 0;
-                totalViews += post.viewsCount || 0;
-            });
-
-            const followerEl = document.getElementById('follower_count');
-            const viewsEl = document.getElementById('total_views');
-
-            if (followerEl) {
-                animateCounter(followerEl, 0, totalFollowers, 1000);
-            }
-            if (viewsEl) {
-                animateCounter(viewsEl, 0, totalViews, 1000);
-            }
-        }
-    } catch (error) {
-        console.error('Error updating quick stats:', error);
-    }
 }
 
 async function updateOnlineUsers() {
@@ -238,7 +200,6 @@ function openMenu() {
 
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
-        updateQuickStats();
     }
 
     const menuContainer = menu.querySelector('.menu-container');
@@ -353,7 +314,6 @@ if (typeof document !== 'undefined') {
 
         if (window.user && window.VAPR) {
             insertVAPRUserInfo();
-            insertVAPRQuickStats();
         }
     });
 
@@ -364,7 +324,6 @@ if (typeof document !== 'undefined') {
             initMenu();
             if (window.user && window.VAPR) {
                 insertVAPRUserInfo();
-                insertVAPRQuickStats();
             }
         }, 500);
     };
@@ -396,33 +355,6 @@ function insertVAPRUserInfo() {
     userInfo.setAttribute('xp-percent', xpPercent.toFixed(1));
 
     container.insertBefore(userInfo, menuNav);
-}
-
-function insertVAPRQuickStats() {
-    const menuHeader = document.querySelector('.menu-header');
-    if (!menuHeader) return;
-
-    const container = menuHeader.parentElement;
-    const menuNav = container.querySelector('.menu-nav');
-
-    const existingStats = document.getElementById('quick_stats');
-    if (existingStats) existingStats.remove();
-
-    const quickStats = document.createElement('quick-stats');
-    quickStats.setAttribute('id', 'quick_stats');
-    quickStats.innerHTML = `
-        <stat-card icon="fa-solid fa-fire" color="#f39c12" value="0" value-id="daily_xp">
-            Today's XP
-        </stat-card>
-        <stat-card icon="fa-solid fa-users" color="#e74c3c" value="0" value-id="follower_count">
-            Followers
-        </stat-card>
-        <stat-card icon="fa-solid fa-eye" color="#3498db" value="0" value-id="total_views">
-            Total Views
-        </stat-card>
-    `;
-
-    container.insertBefore(quickStats, menuNav);
 }
 
 window.toggleMenuCollapse = toggleMenuCollapse;
