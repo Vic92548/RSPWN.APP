@@ -31,16 +31,6 @@
 .post {
   transform: translateY(100vh);
   position: relative;
-  width: 90% !important;
-  max-width: 480px !important;
-  margin: 20px auto !important;
-
-  @include responsive(desktop) {
-    width: 400px;
-    margin: auto;
-    margin-top: 20px;
-    max-width: 500px;
-  }
 }
 
 @keyframes swipeRight {

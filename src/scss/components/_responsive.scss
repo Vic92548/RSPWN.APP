@@ -23,23 +23,12 @@
     margin-top: 0px;
   }
 
-  .post {
-    width: 400px;
-    margin: auto;
-    margin-top: 20px;
-  }
-
-  #postForm,
-  .add-post-card {
-    width: 480px;
-  }
-
   .discord_login {
     width: 440px;
   }
 
   #xp_bar {
-    width: 440px;
+    width: calc(100% - 40px);
   }
 
   #menu {

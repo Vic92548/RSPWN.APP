@@ -4,11 +4,8 @@
 .add-post-card {
   @include glass-effect();
   border-radius: 20px;
-  margin: 20px auto;
   color: #fff;
   overflow: hidden;
-  position: relative;
-  max-width: 480px;
 
   * {
     color: $text-primary;

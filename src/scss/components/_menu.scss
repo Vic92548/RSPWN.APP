@@ -647,8 +647,13 @@
 
   main {
     width: calc(100% - 400px);
-    padding-left: 200px;
+    padding-left: 400px;
     transition: all 0.3s ease;
+  }
+
+  main.menu-collapsed{
+    padding-left: 120px;
+    width: calc(100% - 120px);
   }
 
   #menu.glass_modal {
@@ -683,13 +688,8 @@
   }
 
   #feed {
-    max-width: 600px;
+    max-width: calc(100% - 160px);
     margin: 80px auto 0;
-  }
-
-  .post {
-    max-width: 500px;
-    margin: 20px auto;
   }
 
   .glass_modal:not(#menu) form {

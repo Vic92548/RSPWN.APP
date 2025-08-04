@@ -3,27 +3,26 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-@mixin container($width: 90%, $max-width: 480px) {
+@mixin container($width: 90%) {
   width: $width;
-  max-width: $max-width;
   margin-left: auto;
   margin-right: auto;
 }
 
 .vapr-container {
-  @include container(90%, 440px);
+  @include container(90%);
 }
 
 .vapr-container-full {
-  @include container(90%, 480px);
+  @include container(100%);
 }
 
 .vapr-container-wide {
-  @include container(90%, 600px);
+  @include container(90%);
 }
 
 .vapr-container-xl {
-  @include container(90%, 1200px);
+  @include container(90%);
 }
 
 .vapr-height-card {
@@ -62,20 +61,6 @@
   }
 }
 
-.post,
-.menu-container,
-.add-post-card,
-.discord_login {
-  width: 90%;
-  max-width: 480px;
-  margin: 20px auto !important;
-
-  @include responsive(tablet) {
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
-  }
-}
-
 .glass_modal form {
   width: 90% !important;
   max-width: 480px !important;
@@ -95,12 +80,6 @@
 
   .vapr-height-modal {
     max-height: 95vh;
-  }
-}
-
-@include responsive(desktop) {
-  .post {
-    margin: 20px auto !important;
   }
 }
 
@@ -125,10 +104,7 @@
 .vapr-transition-slow { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
 
 article {
-  width: 90%;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 
   &.vapr-article-fixed {
     height: 600px;
