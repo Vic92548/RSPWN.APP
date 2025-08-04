@@ -1,0 +1,219 @@
+async function downloadGame(event, gameId, gameTitle, downloadUrl) {
+    event.stopPropagation();
+
+    if (!isRunningInTauri()) {
+        notify.desktopAppPrompt(() => downloadDesktopApp());
+        return;
+    }
+
+    gamesData.downloadingGames.set(gameId, 0);
+    displayLibrary();
+
+    try {
+        const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
+            const progress = event.payload;
+            if (progress.game_id === gameId) {
+                gamesData.downloadingGames.set(gameId, progress.percentage);
+                updateGameDownloadProgress(gameId, progress);
+            }
+        });
+
+        const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
+            const data = event.payload;
+            if (data.game_id === gameId) {
+                updateGameDownloadStatus(gameId, data.status);
+            }
+        });
+
+        const result = await window.__TAURI__.core.invoke('download_and_install_game', {
+            gameId: gameId,
+            gameName: gameTitle,
+            downloadUrl: downloadUrl
+        });
+
+        unlisten();
+        statusUnlisten();
+
+        if (result.success) {
+            gamesData.downloadingGames.delete(gameId);
+            notify.success(`${gameTitle} installed successfully!`);
+            await loadLibraryData();
+        } else {
+            throw new Error(result.error || 'Installation failed');
+        }
+    } catch (error) {
+        console.error('Error downloading game:', error);
+        gamesData.downloadingGames.delete(gameId);
+        displayLibrary();
+        notify.error('Download Failed', error.message || 'Failed to download the game. Please try again.');
+    }
+}
+
+function updateGameDownloadProgress(gameId, progress) {
+    const gameEl = document.getElementById(`game-item-${gameId}`);
+    if (!gameEl) return;
+
+    const progressFill = gameEl.querySelector('.download-progress-fill');
+    const progressValue = gameEl.querySelector('.download-stat-value');
+    const speedEl = document.getElementById(`download-speed-${gameId}`);
+    const sizeEl = document.getElementById(`download-size-${gameId}`);
+    const etaEl = document.getElementById(`download-eta-${gameId}`);
+
+    if (progressFill) progressFill.style.width = `${progress.percentage}%`;
+    if (progressValue) progressValue.textContent = `${Math.round(progress.percentage)}%`;
+    if (speedEl) speedEl.textContent = `${progress.speed.toFixed(2)} MB/s`;
+
+    if (sizeEl) {
+        const downloaded = (progress.downloaded / 1024 / 1024).toFixed(2);
+        const total = (progress.total / 1024 / 1024).toFixed(2);
+        sizeEl.textContent = `${downloaded} MB / ${total} MB`;
+    }
+
+    if (etaEl) {
+        etaEl.textContent = formatTime(progress.eta);
+    }
+}
+
+function updateGameDownloadStatus(gameId, statusText) {
+    const gameEl = document.getElementById(`game-item-${gameId}`);
+    if (!gameEl) return;
+
+    const subtitleEl = gameEl.querySelector('.download-progress-subtitle');
+    if (subtitleEl) subtitleEl.textContent = statusText;
+}
+
+function cancelDownload(gameId) {
+    gamesData.downloadingGames.delete(gameId);
+    gamesData.updatingGames.delete(gameId);
+    displayLibrary();
+}
+
+async function uninstallGame(event, gameId, gameTitle) {
+    event.stopPropagation();
+
+    const confirmed = await notify.confirmDanger(
+        'Uninstall Game?',
+        `Are you sure you want to uninstall ${gameTitle}? This will remove all game files from your computer.`,
+        'Yes, uninstall'
+    );
+
+    if (confirmed) {
+        try {
+            await window.__TAURI__.core.invoke('uninstall_game', { gameId });
+            notify.success(`${gameTitle} uninstalled successfully`);
+            await loadLibraryData();
+        } catch (error) {
+            console.error('Error uninstalling game:', error);
+            notify.error('Uninstall Failed', error.message || 'Failed to uninstall the game. Please try again.');
+        }
+    }
+}
+
+async function launchGame(event, executablePath) {
+    event.stopPropagation();
+
+    if (!isRunningInTauri()) return;
+
+    const button = event.target.closest('button');
+    const originalContent = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Launching...';
+
+    try {
+        console.log({executablePath});
+        await window.__TAURI__.core.invoke('launch_game', {
+            executablePath: executablePath
+        });
+        notify.success("Game launched!");
+    } catch (error) {
+        console.error('Error launching game:', error);
+        notify.error('Launch Failed', error.message || 'Failed to launch the game. Please try again.');
+    } finally {
+        button.disabled = false;
+        button.innerHTML = originalContent;
+    }
+}
+
+async function downloadUpdate(gameId, version, downloadUrl) {
+    if (!isRunningInTauri()) {
+        notify.desktopAppPrompt(() => downloadDesktopApp());
+        return;
+    }
+
+    const game = gamesData.userGames.find(g => g.id === gameId);
+    if (!game) return;
+
+    gamesData.updatingGames.set(gameId, true);
+    gamesData.downloadingGames.set(gameId, 0);
+
+    await markUpdateSeen(gameId);
+
+    displayLibrary();
+
+    try {
+        const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
+            const progress = event.payload;
+            if (progress.game_id === gameId) {
+                gamesData.downloadingGames.set(gameId, progress.percentage);
+                updateGameDownloadProgress(gameId, progress);
+            }
+        });
+
+        const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
+            const data = event.payload;
+            if (data.game_id === gameId) {
+                updateGameDownloadStatus(gameId, data.status);
+            }
+        });
+
+        const result = await window.__TAURI__.core.invoke('download_and_install_game', {
+            gameId: gameId,
+            gameName: game.title,
+            downloadUrl: downloadUrl
+        });
+
+        unlisten();
+        statusUnlisten();
+
+        if (result.success) {
+            await markUpdateDownloaded(gameId, version);
+
+            gamesData.updates = gamesData.updates.filter(u => u.gameId !== gameId);
+
+            if (gamesData.updates.length === 0) {
+                const updateBadge = document.querySelector('.update-badge');
+                if (updateBadge) updateBadge.remove();
+            }
+
+            gamesData.downloadingGames.delete(gameId);
+            gamesData.updatingGames.delete(gameId);
+
+            notify.success(`${game.title} updated to v${version}!`);
+            await loadLibraryData();
+        } else {
+            throw new Error(result.error || 'Update failed');
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+        gamesData.downloadingGames.delete(gameId);
+        gamesData.updatingGames.delete(gameId);
+        displayLibrary();
+        notify.error('Update Failed', error.message || 'Failed to update the game. Please try again.');
+    }
+}
+
+function formatTime(seconds) {
+    if (seconds === 0) return 'Calculating...';
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+        return `${hours}h ${minutes}m remaining`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${secs}s remaining`;
+    } else {
+        return `${secs}s remaining`;
+    }
+}
