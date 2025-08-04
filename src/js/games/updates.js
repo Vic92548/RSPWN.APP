@@ -40,7 +40,4 @@ function showUpdateNotification(count) {
             icon.appendChild(badge);
         }
     });
-
-    notify.info(`${count} game update${count > 1 ? 's' : ''} available!`,
-        'Check your library to download the latest versions.');
 }

@@ -57,6 +57,8 @@ function loadUserData(){
                 loadGamesData().then(() => {
                     updateDeveloperSection();
                 });
+
+                checkAndShowUpdates();
             }
 
         }).catch( error => {

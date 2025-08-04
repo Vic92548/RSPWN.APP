@@ -23,28 +23,6 @@ function displayLibrary() {
     const container = document.getElementById('library-grid');
     container.innerHTML = '';
 
-    if (gamesData.updates.length > 0) {
-        const updatesSection = VAPR.createElement('updates-section');
-        container.appendChild(updatesSection);
-        VAPR.refresh();
-
-        const updatesGrid = document.getElementById('updates-grid');
-        if (updatesGrid) {
-            VAPR.appendElements(updatesGrid, 'update-card',
-                gamesData.updates.map(update => ({
-                    gameId: update.gameId,
-                    gameTitle: update.gameTitle,
-                    gameCover: update.gameCover,
-                    fromVersion: update.fromVersion,
-                    toVersion: update.toVersion,
-                    changelog: update.changelog || '',
-                    isRequired: update.isRequired ? 'true' : '',
-                    downloadUrl: update.downloadUrl
-                }))
-            );
-        }
-    }
-
     if (gamesData.userGames.length === 0) {
         container.innerHTML += '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6);">No games in your library yet. Redeem a key to get started!</div>';
         return;

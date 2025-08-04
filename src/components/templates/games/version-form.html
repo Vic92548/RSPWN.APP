@@ -6,14 +6,49 @@
                 <label for="version-number">Version Number</label>
                 <input type="text" id="version-number" placeholder="1.0.0" class="glass-input" pattern="\d+\.\d+\.\d+">
             </div>
-            <div class="input-group">
+
+            <div class="input-group full-width">
+                <label>Upload Method</label>
+                <div class="upload-method-toggle">
+                    <button type="button" class="method-btn active" onclick="toggleUploadMethod('url')">
+                        <i class="fa-solid fa-link"></i> URL
+                    </button>
+                    <button type="button" class="method-btn" onclick="toggleUploadMethod('file')">
+                        <i class="fa-solid fa-upload"></i> Upload File
+                    </button>
+                </div>
+            </div>
+
+            <div id="url-input-group" class="input-group">
                 <label for="version-url">Download URL</label>
                 <input type="url" id="version-url" placeholder="https://..." class="glass-input">
             </div>
-            <div class="input-group">
+
+            <div id="file-input-group" class="input-group" style="display: none;">
+                <label for="version-file">Game Update File (ZIP)</label>
+                <div class="file-upload-area" onclick="document.getElementById('version-file').click()">
+                    <input type="file" id="version-file" accept=".zip" hidden>
+                    <div class="upload-placeholder" id="file-upload-placeholder">
+                        <i class="fa-solid fa-file-zipper"></i>
+                        <p>Click to browse or drag ZIP file here</p>
+                        <small>Max size: 500MB</small>
+                    </div>
+                    <div class="upload-preview" id="file-upload-preview" style="display: none;">
+                        <i class="fa-solid fa-file-zipper"></i>
+                        <span id="file-name"></span>
+                        <span id="file-size"></span>
+                        <button type="button" onclick="clearFileUpload(event)" class="clear-file-btn">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group" id="size-input-group">
                 <label for="version-size">File Size (MB)</label>
                 <input type="number" id="version-size" placeholder="500" class="glass-input">
             </div>
+
             <div class="input-group full-width">
                 <label for="version-changelog">Changelog</label>
                 <textarea id="version-changelog" placeholder="What's new in this version..." class="glass-input" rows="4"></textarea>
@@ -25,7 +60,7 @@
                 </label>
             </div>
             <button class="glass-button primary" onclick="publishVersion()">
-                <i class="fa-solid fa-upload"></i> Publish Version
+                <i class="fa-solid fa-upload"></i> <span id="publish-btn-text">Publish Version</span>
             </button>
         </div>
     </div>

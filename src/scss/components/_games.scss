@@ -991,3 +991,132 @@
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+.upload-method-toggle {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.method-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: 8px;
+  color: $text-muted;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background: $glass-bg-tertiary;
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    background: rgba(78, 205, 196, 0.2);
+    border-color: rgba(78, 205, 196, 0.3);
+    color: $primary-color;
+  }
+}
+
+.file-upload-area {
+  position: relative;
+  min-height: 120px;
+  background: $glass-bg-secondary;
+  border: 2px dashed $glass-border-lighter;
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $glass-bg-primary;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  &.dragging {
+    background: rgba(78, 205, 196, 0.1);
+    border-color: rgba(78, 205, 196, 0.3);
+  }
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  text-align: center;
+  padding: 20px;
+
+  i {
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: $text-muted;
+  }
+
+  small {
+    font-size: 12px;
+    color: $text-weak;
+  }
+}
+
+.upload-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 120px;
+  padding: 20px;
+
+  i {
+    font-size: 36px;
+    color: $primary-color;
+  }
+
+  #file-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  #file-size {
+    font-size: 12px;
+    color: $text-secondary;
+  }
+}
+
+.clear-file-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 8px;
+  color: #e74c3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(231, 76, 60, 0.3);
+    transform: scale(1.1);
+  }
+}
