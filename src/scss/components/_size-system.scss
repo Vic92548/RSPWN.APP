@@ -66,8 +66,8 @@
 .menu-container,
 .add-post-card,
 .discord_login {
-  width: 90% !important;
-  max-width: 480px !important;
+  width: 90%;
+  max-width: 480px;
   margin: 20px auto !important;
 
   @include responsive(tablet) {

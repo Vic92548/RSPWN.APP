@@ -123,7 +123,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Updated rate limiters with proper configuration for trusted proxies
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 250,
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -147,7 +147,6 @@ const createPostLimiter = rateLimit({
 
 app.use('/api/', generalLimiter);
 app.use('/auth/', authLimiter);
-app.use('/posts', createPostLimiter);
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -292,7 +291,7 @@ app.post('/posts', authMiddleware, upload.single('file'), createPostLimiter, asy
     res.status(response.status).json(data);
 });
 
-app.get('/posts/:id', async (req, res) => {
+app.get('/posts/:id', generalLimiter, async (req, res) => {
     if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
         return res.status(400).json({ error: 'Invalid post ID format' });
     }

@@ -24,19 +24,3 @@ main {
 .hidden {
   display: none;
 }
-
-.discord_login {
-  position: fixed;
-  display: block;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-align: center;
-  width: 90%;
-
-  &:hover {
-    background-color: #5865f294;
-    box-shadow: 0 0 10px #5865f294;
-  }
-}

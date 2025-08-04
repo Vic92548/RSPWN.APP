@@ -50,10 +50,6 @@
     -webkit-backdrop-filter: none;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    &:has(.menu-container:not(.collapsed)) {
-      width: 480px;
-    }
-
     &:has(.menu-container.collapsed) {
       width: 120px;
     }
