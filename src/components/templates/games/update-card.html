@@ -1,0 +1,14 @@
+<template data-vapr="update-card">
+    <div class="update-card glass-secondary">
+        <img src="{{game-cover}}" alt="{{game-title}}" class="update-game-cover">
+        <div class="update-info">
+            <h4>{{game-title}}</h4>
+            <p class="version-info">v{{from-version}} → v{{to-version}}</p>
+            {{#changelog}}<p class="update-changelog">{{changelog}}</p>{{/changelog}}
+            {{#is-required}}<span class="required-badge">Required Update</span>{{/is-required}}
+        </div>
+        <button class="update-button glass-button primary" onclick="downloadUpdate('{{game-id}}', '{{to-version}}', '{{download-url}}')">
+            <i class="fa-solid fa-download"></i> Update
+        </button>
+    </div>
+</template>

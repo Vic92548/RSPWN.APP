@@ -1,7 +1,12 @@
 <template data-vapr="library-game-item">
     <div class="game-item" id="game-item-{{game-id}}">
-        {{#is-installed}}<div class="game-status-badge installed"><i class="fa-solid fa-check-circle"></i> Installed</div>{{/is-installed}}
+        {{#is-installed}}
+        <div class="game-status-badge installed">
+            <i class="fa-solid fa-check-circle"></i> Installed{{#installed-version}} (v{{installed-version}}){{/installed-version}}
+        </div>
+        {{/is-installed}}
         {{#is-downloading}}<div class="game-status-badge downloading"><i class="fa-solid fa-download"></i> Downloading</div>{{/is-downloading}}
+        {{#has-update}}<div class="game-status-badge update-available"><i class="fa-solid fa-arrow-up"></i> Update Available</div>{{/has-update}}
         <div class="game-cover-wrapper">
             <img src="{{cover-image}}" class="game-cover" alt="{{title}}">
         </div>
@@ -13,10 +18,24 @@
                     <i class="fa-solid fa-calendar"></i>
                     <span>Owned <span class="owned-date"></span></span>
                 </div>
+                {{#installed-version}}
+                <div class="game-meta-item">
+                    <i class="fa-solid fa-code-branch"></i>
+                    <span>v{{installed-version}}</span>
+                </div>
+                {{/installed-version}}
             </div>
             {{#download-url}}
             {{^is-downloading}}
             {{#is-installed}}
+            {{#has-update}}
+            <div class="game-actions">
+                <button class="game-action-button primary" onclick="window.downloadUpdate('{{game-id}}', '{{latest-version}}', '{{download-url}}')">
+                    <i class="fa-solid fa-arrow-up"></i> Update to v{{latest-version}}
+                </button>
+            </div>
+            {{/has-update}}
+            {{^has-update}}
             {{#executable}}
             <div class="game-actions">
                 <button class="game-action-button play" onclick="window.launchGame(event, '{{executable}}')">
@@ -27,6 +46,7 @@
                 </button>
             </div>
             {{/executable}}
+            {{/has-update}}
             {{/is-installed}}
             {{^is-installed}}
             <div class="game-actions">
@@ -45,7 +65,7 @@
                     <div class="download-progress-icon">
                         <i class="fa-solid fa-download"></i>
                     </div>
-                    <div class="download-progress-title">Downloading Game</div>
+                    <div class="download-progress-title">{{#is-updating}}Updating{{/is-updating}}{{^is-updating}}Downloading{{/is-updating}} Game</div>
                     <div class="download-progress-subtitle">{{title}}</div>
                 </div>
                 <div class="download-progress-stats">
@@ -68,7 +88,7 @@
                     </div>
                 </div>
                 <button class="cancel-download-btn" onclick="window.cancelDownload('{{game-id}}')">
-                    <i class="fa-solid fa-xmark"></i> Cancel Download
+                    <i class="fa-solid fa-xmark"></i> Cancel {{#is-updating}}Update{{/is-updating}}{{^is-updating}}Download{{/is-updating}}
                 </button>
             </div>
         </div>

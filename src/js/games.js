@@ -5,7 +5,10 @@ let gamesData = {
     installedGames: [],
     downloadingGames: new Map(),
     currentKeyFilter: 'all',
-    allKeys: []
+    allKeys: [],
+    updates: [],
+    versions: [],
+    updatingGames: new Map()
 };
 
 cardManager.register('games-card', {
@@ -23,7 +26,9 @@ cardManager.register('library-card', {
 cardManager.register('game-management-card', {
     onLoad: async () => {
         if (gamesData.currentManagingGame) {
+            await addVersionManagementUI();
             await loadGameKeys(gamesData.currentManagingGame.id);
+            await loadGameVersions(gamesData.currentManagingGame.id);
         }
     }
 });
@@ -132,8 +137,30 @@ function displayLibrary() {
     const container = document.getElementById('library-grid');
     container.innerHTML = '';
 
+    if (gamesData.updates.length > 0) {
+        const updatesSection = VAPR.createElement('updates-section');
+        container.appendChild(updatesSection);
+        VAPR.refresh();
+
+        const updatesGrid = document.getElementById('updates-grid');
+        if (updatesGrid) {
+            VAPR.appendElements(updatesGrid, 'update-card',
+                gamesData.updates.map(update => ({
+                    gameId: update.gameId,
+                    gameTitle: update.gameTitle,
+                    gameCover: update.gameCover,
+                    fromVersion: update.fromVersion,
+                    toVersion: update.toVersion,
+                    changelog: update.changelog || '',
+                    isRequired: update.isRequired ? 'true' : '',
+                    downloadUrl: update.downloadUrl
+                }))
+            );
+        }
+    }
+
     if (gamesData.userGames.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6);">No games in your library yet. Redeem a key to get started!</div>';
+        container.innerHTML += '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6);">No games in your library yet. Redeem a key to get started!</div>';
         return;
     }
 
@@ -141,7 +168,12 @@ function displayLibrary() {
         gamesData.userGames.map(game => {
             const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
             const isDownloading = gamesData.downloadingGames.has(game.id);
+            const isUpdating = gamesData.updatingGames.has(game.id);
             const installedGame = isInstalled ? gamesData.installedGames.find(g => g.id === game.id) : null;
+            const hasUpdate = gamesData.updates.some(u => u.gameId === game.id);
+            const updateInfo = hasUpdate ? gamesData.updates.find(u => u.gameId === game.id) : null;
+
+            console.log({executable: installedGame.executable});
 
             return {
                 gameId: game.id,
@@ -150,9 +182,13 @@ function displayLibrary() {
                 coverImage: game.coverImage,
                 downloadUrl: game.downloadUrl || '',
                 ownedAt: game.ownedAt,
-                isInstalled: isInstalled,
-                isDownloading: isDownloading,
-                ...(installedGame?.executable && { executable: installedGame.executable }),
+                isInstalled: isInstalled ? 'true' : '',
+                isDownloading: isDownloading ? 'true' : '',
+                isUpdating: isUpdating ? 'true' : '',
+                hasUpdate: hasUpdate ? 'true' : '',
+                installedVersion: installedGame?.version || game.installedVersion || '',
+                latestVersion: updateInfo?.toVersion || game.currentVersion || '',
+                ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\','/') }),
                 ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 })
             };
         })
@@ -350,9 +386,6 @@ async function downloadFilteredKeys() {
     }
 }
 
-window.downloadFilteredKeys = downloadFilteredKeys;
-window.filterKeys = filterKeys;
-
 window.downloadGame = async function(event, gameId, gameTitle, downloadUrl) {
     event.stopPropagation();
 
@@ -439,6 +472,7 @@ function updateGameDownloadStatus(gameId, statusText) {
 
 window.cancelDownload = function(gameId) {
     gamesData.downloadingGames.delete(gameId);
+    gamesData.updatingGames.delete(gameId);
     displayLibrary();
 }
 
@@ -474,6 +508,7 @@ window.launchGame = async function(event, executablePath) {
     button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Launching...';
 
     try {
+        console.log({executablePath});
         await window.__TAURI__.core.invoke('launch_game', {
             executablePath: executablePath
         });
@@ -507,6 +542,224 @@ function isRunningInTauri() {
     return typeof window.__TAURI__ !== 'undefined';
 }
 
+async function createVersion(gameId, versionData) {
+    return api.request(`/api/games/${gameId}/versions`, {
+        method: 'POST',
+        body: versionData
+    });
+}
+
+async function getVersions(gameId) {
+    return api.request(`/api/games/${gameId}/versions`);
+}
+
+async function checkForGameUpdates() {
+    return api.request('/api/updates/check');
+}
+
+async function markUpdateSeen(gameId) {
+    return api.request(`/api/updates/${gameId}/seen`, {
+        method: 'POST'
+    });
+}
+
+async function markUpdateDownloaded(gameId, version) {
+    return api.request(`/api/updates/${gameId}/downloaded`, {
+        method: 'POST',
+        body: { version }
+    });
+}
+
+async function addVersionManagementUI() {
+    const managementCard = document.getElementById('game-management-card');
+    const actionsSection = managementCard.querySelector('.vapr-card-body');
+
+    if (!actionsSection.querySelector('.version-form')) {
+        const versionForm = VAPR.createElement('version-form');
+        actionsSection.appendChild(versionForm);
+    }
+
+    if (!actionsSection.querySelector('#versions-list')) {
+        const versionsList = document.createElement('div');
+        versionsList.className = 'versions-list';
+        versionsList.id = 'versions-list';
+        actionsSection.appendChild(versionsList);
+    }
+}
+
+async function publishVersion() {
+    if (!gamesData.currentManagingGame) return;
+
+    const versionNumber = document.getElementById('version-number').value;
+    const downloadUrl = document.getElementById('version-url').value;
+    const size = document.getElementById('version-size').value;
+    const changelog = document.getElementById('version-changelog').value;
+    const isRequired = document.getElementById('version-required').checked;
+
+    if (!versionNumber || !downloadUrl) {
+        notify.warning('Missing Information', 'Please fill in version number and download URL');
+        return;
+    }
+
+    try {
+        const response = await createVersion(gamesData.currentManagingGame.id, {
+            version: versionNumber,
+            downloadUrl,
+            size: size ? parseInt(size) : null,
+            changelog,
+            isRequired
+        });
+
+        if (response.success) {
+            notify.success('Version published successfully!');
+
+            document.getElementById('version-number').value = '';
+            document.getElementById('version-url').value = '';
+            document.getElementById('version-size').value = '';
+            document.getElementById('version-changelog').value = '';
+            document.getElementById('version-required').checked = false;
+
+            await loadGameVersions(gamesData.currentManagingGame.id);
+        }
+    } catch (error) {
+        console.error('Error publishing version:', error);
+        notify.error('Failed to publish version', error.message);
+    }
+}
+
+async function loadGameVersions(gameId) {
+    try {
+        const response = await getVersions(gameId);
+        if (response.success) {
+            displayVersions(response.versions);
+        }
+    } catch (error) {
+        console.error('Error loading versions:', error);
+    }
+}
+
+function displayVersions(versions) {
+    const container = document.getElementById('versions-list');
+    if (!container) return;
+
+    container.innerHTML = '<h4>Version History</h4>';
+
+    if (versions.length === 0) {
+        container.innerHTML += '<p class="no-versions">No versions published yet</p>';
+        return;
+    }
+
+    VAPR.appendElements(container, 'version-item',
+        versions.map(version => ({
+            version: version.version,
+            changelog: version.changelog || '',
+            downloads: version.downloads || 0,
+            isRequired: version.isRequired ? 'true' : '',
+            createdAt: version.createdAt
+        }))
+    );
+
+    VAPR.refresh();
+}
+
+async function checkAndShowUpdates() {
+    if (!isUserLoggedIn()) return;
+
+    try {
+        const response = await checkForGameUpdates();
+        if (response.success && response.updates.length > 0) {
+            gamesData.updates = response.updates;
+            showUpdateNotification(response.updates.length);
+        }
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+    }
+}
+
+function showUpdateNotification(count) {
+    const libraryMenuItems = document.querySelectorAll('.menu-item');
+    libraryMenuItems.forEach(item => {
+        const icon = item.querySelector('.menu-item-icon.library');
+        if (icon && !icon.querySelector('.update-badge')) {
+            const badge = document.createElement('span');
+            badge.className = 'update-badge';
+            badge.textContent = count;
+            icon.appendChild(badge);
+        }
+    });
+
+    notify.info(`${count} game update${count > 1 ? 's' : ''} available!`,
+        'Check your library to download the latest versions.');
+}
+
+window.downloadUpdate = async function(gameId, version, downloadUrl) {
+    if (!isRunningInTauri()) {
+        notify.desktopAppPrompt(() => downloadDesktopApp());
+        return;
+    }
+
+    const game = gamesData.userGames.find(g => g.id === gameId);
+    if (!game) return;
+
+    gamesData.updatingGames.set(gameId, true);
+    gamesData.downloadingGames.set(gameId, 0);
+
+    await markUpdateSeen(gameId);
+
+    displayLibrary();
+
+    try {
+        const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
+            const progress = event.payload;
+            if (progress.game_id === gameId) {
+                gamesData.downloadingGames.set(gameId, progress.percentage);
+                updateGameDownloadProgress(gameId, progress);
+            }
+        });
+
+        const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
+            const data = event.payload;
+            if (data.game_id === gameId) {
+                updateGameDownloadStatus(gameId, data.status);
+            }
+        });
+
+        const result = await window.__TAURI__.core.invoke('download_and_install_game', {
+            gameId: gameId,
+            gameName: game.title,
+            downloadUrl: downloadUrl
+        });
+
+        unlisten();
+        statusUnlisten();
+
+        if (result.success) {
+            await markUpdateDownloaded(gameId, version);
+
+            gamesData.updates = gamesData.updates.filter(u => u.gameId !== gameId);
+
+            if (gamesData.updates.length === 0) {
+                const updateBadge = document.querySelector('.update-badge');
+                if (updateBadge) updateBadge.remove();
+            }
+
+            gamesData.downloadingGames.delete(gameId);
+            gamesData.updatingGames.delete(gameId);
+
+            notify.success(`${game.title} updated to v${version}!`);
+            await loadLibraryData();
+        } else {
+            throw new Error(result.error || 'Update failed');
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+        gamesData.downloadingGames.delete(gameId);
+        gamesData.updatingGames.delete(gameId);
+        displayLibrary();
+        notify.error('Update Failed', error.message || 'Failed to update the game. Please try again.');
+    }
+}
+
 VAPR.on('library-game-item', 'mounted', (element) => {
     const ownedAt = element.getAttribute('owned-at');
     if (ownedAt) {
@@ -532,6 +785,30 @@ VAPR.on('game-key-item', 'mounted', (element) => {
     }
 });
 
+VAPR.on('version-item', 'mounted', (element) => {
+    const createdAt = element.getAttribute('created-at');
+    if (createdAt) {
+        const dateEl = element.querySelector('.version-date');
+        if (dateEl) {
+            dateEl.textContent = new Date(createdAt).toLocaleDateString();
+        }
+    }
+});
+
+setInterval(() => {
+    if (isUserLoggedIn()) {
+        checkAndShowUpdates();
+    }
+}, 5 * 60 * 1000);
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (isUserLoggedIn()) {
+        setTimeout(checkAndShowUpdates, 3000);
+    }
+});
+
+window.downloadFilteredKeys = downloadFilteredKeys;
+window.filterKeys = filterKeys;
 window.openGamesShowcase = openGamesShowcase;
 window.openMyLibrary = openMyLibrary;
 window.closeGamesCard = closeGamesCard;
@@ -542,3 +819,4 @@ window.closeRedeemModal = closeRedeemModal;
 window.redeemKey = redeemKey;
 window.generateKeys = generateKeys;
 window.copyKey = copyKey;
+window.publishVersion = publishVersion;

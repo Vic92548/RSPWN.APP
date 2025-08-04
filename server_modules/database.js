@@ -25,6 +25,8 @@ const secretKeysCollection = db.collection("secretKeys");
 const gamesCollection = db.collection("games");
 const gameKeysCollection = db.collection("gameKeys");
 const userGamesCollection = db.collection("userGames");
+const gameVersionsCollection = db.collection("gameVersions");
+const gameUpdatesCollection = db.collection("gameUpdates");
 
 export {
     postsCollection,
@@ -42,5 +44,7 @@ export {
     secretKeysCollection,
     gamesCollection,
     gameKeysCollection,
-    userGamesCollection
+    userGamesCollection,
+    gameVersionsCollection,
+    gameUpdatesCollection
 };

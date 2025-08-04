@@ -35,6 +35,13 @@ import { xpTodayHandler } from './server_modules/routes/xp_today.js';
 import { usersCollection } from './server_modules/database.js';
 import { handleProfilePage } from './server_modules/user_profile.js';
 import { createRenderer } from './server_modules/template_engine.js';
+import {
+    createGameVersion,
+    getGameVersions,
+    checkForUpdates,
+    markUpdateAsSeen,
+    markUpdateAsDownloaded
+} from './server_modules/game_updates.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -615,6 +622,46 @@ app.get('/api/games/:id/keys', authMiddleware, async (req, res) => {
 app.get('/api/games/:id/download', authMiddleware, async (req, res) => {
     const gameId = req.params.id;
     const response = await getGameDownloadUrl(gameId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Create a new version for a game
+app.post('/api/games/:id/versions', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const versionData = req.body;
+
+    const response = await createGameVersion(gameId, req.userData.id, versionData);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Get all versions for a game
+app.get('/api/games/:id/versions', async (req, res) => {
+    const gameId = req.params.id;
+    const response = await getGameVersions(gameId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Check for updates for the current user
+app.get('/api/updates/check', authMiddleware, async (req, res) => {
+    const response = await checkForUpdates(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Mark an update as seen
+app.post('/api/updates/:gameId/seen', authMiddleware, async (req, res) => {
+    const response = await markUpdateAsSeen(req.userData.id, req.params.gameId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Mark an update as downloaded
+app.post('/api/updates/:gameId/downloaded', authMiddleware, async (req, res) => {
+    const { version } = req.body;
+    const response = await markUpdateAsDownloaded(req.userData.id, req.params.gameId, version);
     const data = await response.json();
     res.status(response.status).json(data);
 });
