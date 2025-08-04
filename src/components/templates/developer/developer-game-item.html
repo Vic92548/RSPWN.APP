@@ -1,0 +1,32 @@
+<template data-vapr="developer-game-item">
+    <div class="dev-game-item glass-secondary">
+        <div class="dev-game-header">
+            <img src="{{cover-image}}" alt="{{title}}" class="dev-game-cover">
+            <div class="dev-game-info">
+                <h4>{{title}}</h4>
+                <span class="version-badge">v{{current-version}}</span>
+                {{#has-update}}<span class="update-indicator">Update Available</span>{{/has-update}}
+            </div>
+        </div>
+
+        <div class="dev-game-stats">
+            <div class="dev-stat">
+                <i class="fa-solid fa-key"></i>
+                <span>{{available-keys}} / {{total-keys}} keys</span>
+            </div>
+            <div class="dev-stat">
+                <i class="fa-solid fa-users"></i>
+                <span>{{players}} players</span>
+            </div>
+        </div>
+
+        <div class="dev-game-actions">
+            <button class="glass-button small" onclick="event.stopPropagation(); openKeyManagement('{{game-id}}')">
+                <i class="fa-solid fa-key"></i> Manage Keys
+            </button>
+            <button class="glass-button small" onclick="event.stopPropagation(); openVersionManagement('{{game-id}}')">
+                <i class="fa-solid fa-code-branch"></i> Versions
+            </button>
+        </div>
+    </div>
+</template>

@@ -9,23 +9,6 @@ async function getVersions(gameId) {
     return api.request(`/api/games/${gameId}/versions`);
 }
 
-async function addVersionManagementUI() {
-    const managementCard = document.getElementById('game-management-card');
-    const actionsSection = managementCard.querySelector('.vapr-card-body');
-
-    if (!actionsSection.querySelector('.version-form')) {
-        const versionForm = VAPR.createElement('version-form');
-        actionsSection.appendChild(versionForm);
-    }
-
-    if (!actionsSection.querySelector('#versions-list')) {
-        const versionsList = document.createElement('div');
-        versionsList.className = 'versions-list';
-        versionsList.id = 'versions-list';
-        actionsSection.appendChild(versionsList);
-    }
-}
-
 async function publishVersion() {
     if (!gamesData.currentManagingGame) return;
 

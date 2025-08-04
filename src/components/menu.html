@@ -18,6 +18,24 @@
         </button>
 
         <nav class="menu-nav glass-scrollbar">
+            <menu-section title="Create & Share">
+                <menu-item
+                        icon="fa-solid fa-plus"
+                        description="Share your content"
+                        arrow="true"
+                        onclick="opeNewPostModel()">
+                    Create Post
+                </menu-item>
+                <menu-item
+                        icon="fa-solid fa-chart-line"
+                        icon-class="analytics"
+                        description="Track performance"
+                        arrow="true"
+                        onclick="openAnalytics()">
+                    Analytics
+                </menu-item>
+            </menu-section>
+
             <menu-section title="Games">
                 <menu-item
                         icon="fa-solid fa-gamepad"
@@ -37,21 +55,16 @@
                 </menu-item>
             </menu-section>
 
-            <menu-section title="Create & Share">
+
+
+            <menu-section title="Developer" class="developer-section" style="display: none;">
                 <menu-item
-                        icon="fa-solid fa-plus"
-                        description="Share your content"
+                        icon="fa-solid fa-code"
+                        icon-class="developer"
+                        description="Manage your games"
                         arrow="true"
-                        onclick="opeNewPostModel()">
-                    Create Post
-                </menu-item>
-                <menu-item
-                        icon="fa-solid fa-chart-line"
-                        icon-class="analytics"
-                        description="Track performance"
-                        arrow="true"
-                        onclick="openAnalytics()">
-                    Analytics
+                        onclick="openDeveloperDashboard()">
+                    My Games
                 </menu-item>
             </menu-section>
 

@@ -53,6 +53,12 @@ function loadUserData(){
                 migrateLocalBackgroundToBackend();
             }, 1000);
 
+            if (MainPage) {
+                loadGamesData().then(() => {
+                    updateDeveloperSection();
+                });
+            }
+
         }).catch( error => {
         document.getElementById("sign_in").style.display = "block";
         if(window.innerWidth <= 768){

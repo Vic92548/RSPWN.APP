@@ -15,6 +15,13 @@ function initMenu() {
     }
 }
 
+function updateDeveloperSection() {
+    const devSection = document.querySelector('.menu-section[title="Developer"]');
+    if (devSection) {
+        devSection.style.display = isGameDeveloper() ? 'block' : 'none';
+    }
+}
+
 function toggleMenuCollapse() {
     const menuContainer = document.querySelector('.menu-container');
     const mainElement = document.querySelector('main');
