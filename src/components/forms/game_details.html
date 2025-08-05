@@ -12,7 +12,9 @@
 
         <div class="vapr-card-body vapr-scrollbar">
             <div class="game-details-hero">
-                <img id="game-details-cover" src="" alt="Game cover">
+                <div class="hero-image-container">
+                    <img id="game-details-cover" src="" alt="Game cover">
+                </div>
                 <div class="game-details-overlay"></div>
             </div>
 
@@ -31,6 +33,9 @@
                         <div class="owned-badge-large">
                             <i class="fa-solid fa-check-circle"></i> You own this game
                         </div>
+                        <button class="glass-button secondary" id="game-details-gift-button" onclick="" style="display:none;">
+                            <i class="fa-solid fa-gift"></i> Purchase as Gift
+                        </button>
                     </div>
                 </div>
 
@@ -51,7 +56,7 @@
                         <i class="fa-solid fa-user"></i>
                         <div>
                             <span class="meta-label">Developer</span>
-                            <span class="meta-value" id="game-details-developer">Unknown</span>
+                            <a class="meta-value developer-link" id="game-details-developer" href="#">Unknown</a>
                         </div>
                     </div>
                     <div class="meta-item">
