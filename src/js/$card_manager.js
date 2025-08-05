@@ -104,6 +104,12 @@ const cardManager = {
             if (loading) loading.style.display = 'block';
             if (content) content.style.opacity = '0.3';
         }
+        else if (cardId === 'games-card') {
+            const loading = document.getElementById('games-loading');
+            const content = document.getElementById('gamesContent');
+            if (loading) loading.style.display = 'block';
+            if (content) content.style.opacity = '0.3';
+        }
     },
 
     hideLoading(cardId) {
@@ -118,6 +124,12 @@ const cardManager = {
         else if (cardId === 'backgrounds-card') {
             const loading = document.getElementById('backgrounds-loading');
             const content = document.getElementById('backgroundsContent');
+            if (loading) loading.style.display = 'none';
+            if (content) content.style.opacity = '1';
+        }
+        else if (cardId === 'games-card') {
+            const loading = document.getElementById('games-loading');
+            const content = document.getElementById('gamesContent');
             if (loading) loading.style.display = 'none';
             if (content) content.style.opacity = '1';
         }

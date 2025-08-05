@@ -28,6 +28,7 @@ class TebexCart {
         if (this.isProcessing) return;
 
         this.isProcessing = true;
+        cardManager.showLoading('games-card');
 
         try {
             await tebexAPI.addToBasket(this.basketIdent, packageId, quantity);
@@ -35,11 +36,18 @@ class TebexCart {
 
             notify.success('Item added to cart!');
             this.showCartPreview();
+
+            // Ensure cart button is visible after adding item
+            const cartButton = document.getElementById('cart-button');
+            if (cartButton) {
+                cartButton.style.display = 'flex';
+            }
         } catch (error) {
             console.error('Failed to add item:', error);
             notify.error('Failed to add item to cart');
         } finally {
             this.isProcessing = false;
+            cardManager.hideLoading('games-card');
         }
     }
 
@@ -76,11 +84,19 @@ class TebexCart {
     updateCartUI() {
         const cartCount = document.getElementById('cart-count');
         const cartTotal = document.getElementById('cart-total');
+        const cartButton = document.getElementById('cart-button');
 
-        if (cartCount && this.basketData) {
+        if (this.basketData) {
             const totalItems = this.basketData.packages?.reduce((sum, item) => sum + item.qty, 0) || 0;
-            cartCount.textContent = totalItems;
-            cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+
+            if (cartCount) {
+                cartCount.textContent = totalItems;
+                cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+            }
+
+            if (cartButton && isUserLoggedIn()) {
+                cartButton.style.display = totalItems > 0 ? 'flex' : 'none';
+            }
         }
 
         if (cartTotal && this.basketData) {

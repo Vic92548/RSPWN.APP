@@ -58,7 +58,7 @@ function loadUserData(){
                     updateDeveloperSection();
                     if (window.user) {
                         initializeTebexIntegration();
-                        document.getElementById('cart-button').style.display = 'flex';
+                        document.getElementById('cart-button').style.display = 'none';
                     }
                 });
 

@@ -6,7 +6,6 @@ async function loadTebexGames() {
         const transformedGames = transformTebexGames(tebexGames);
 
         gamesData.tebexGames = transformedGames;
-        gamesData.allGames = [...gamesData.allGames.filter(g => !g.isTebexProduct), ...transformedGames];
 
         displayGames();
     } catch (error) {

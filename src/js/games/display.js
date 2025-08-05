@@ -3,8 +3,23 @@ function displayGames() {
     container.innerHTML = '';
 
     const userGameIds = gamesData.userGames.map(g => g.id);
+    const tebexGames = gamesData.tebexGames || [];
+    const regularGames = gamesData.allGames.filter(g => !g.isTebexProduct);
 
-    gamesData.allGames.forEach(game => {
+    const tebexGameTitles = tebexGames.map(g => g.title.toLowerCase());
+    const gamesToDisplay = regularGames.filter(game =>
+        !tebexGameTitles.includes(game.title.toLowerCase())
+    );
+
+    const allGamesToShow = [...gamesToDisplay, ...tebexGames];
+
+    allGamesToShow.forEach(game => {
+        const isOwned = userGameIds.includes(game.id) ||
+            userGameIds.some(id => {
+                const ownedGame = gamesData.userGames.find(g => g.id === id);
+                return ownedGame && ownedGame.title.toLowerCase() === game.title.toLowerCase();
+            });
+
         if (game.isTebexProduct) {
             VAPR.appendElement(container, 'tebex-game-item', {
                 gameId: game.id,
@@ -17,7 +32,8 @@ function displayGames() {
                 originalPrice: game.originalPrice?.toFixed(2),
                 discount: game.discount || 0,
                 tebexId: game.tebexId,
-                externalLink: game.externalLink || ''
+                externalLink: game.externalLink || '',
+                isOwned: isOwned ? 'true' : ''
             });
         } else {
             VAPR.appendElement(container, 'game-item', {
@@ -25,7 +41,7 @@ function displayGames() {
                 title: game.title,
                 description: game.description,
                 coverImage: game.coverImage,
-                isOwned: userGameIds.includes(game.id) ? 'true' : '',
+                isOwned: isOwned ? 'true' : '',
                 isOwner: isUserLoggedIn() && game.ownerId === window.user.id ? 'true' : '',
                 externalLink: game.externalLink || ''
             });

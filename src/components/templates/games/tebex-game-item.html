@@ -1,5 +1,6 @@
 <template data-vapr="tebex-game-item">
     <div class="game-item tebex-item" id="game-item-{{game-id}}">
+        {{#is-owned}}<div class="owned-badge">OWNED</div>{{/is-owned}}
         {{#on-sale}}<div class="sale-badge">SALE {{discount}}% OFF</div>{{/on-sale}}
         <div class="game-cover-wrapper">
             <img src="{{cover-image}}" class="game-cover" alt="{{title}}">
@@ -16,9 +17,16 @@
             </div>
 
             <div class="game-actions">
+                {{^is-owned}}
                 <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}')">
                     <i class="fa-solid fa-shopping-cart"></i> Add to Cart
                 </button>
+                {{/is-owned}}
+                {{#is-owned}}
+                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}')">
+                    <i class="fa-solid fa-gift"></i> Purchase for a Friend
+                </button>
+                {{/is-owned}}
                 {{#external-link}}
                 <button class="game-action-button secondary" onclick="window.open('{{external-link}}', '_blank')">
                     <i class="fa-solid fa-info-circle"></i> More Info

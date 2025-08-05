@@ -1,7 +1,9 @@
 cardManager.register('games-card', {
     onLoad: async () => {
-        await loadGamesData();
-        await loadTebexGames();
+        await Promise.all([
+            loadGamesData(),
+            loadTebexGames()
+        ]);
     }
 });
 
