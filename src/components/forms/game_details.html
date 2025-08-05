@@ -1,44 +1,61 @@
 <article class="game-details-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="game-details-card" style="display:none;">
     <div id="gameDetailsContent">
-        <div class="vapr-card-header glass-section-bg">
-            <div class="header-content">
-                <h2 id="game-details-title">Game Title</h2>
-                <p class="glass-text-muted" id="game-details-tagline"></p>
-            </div>
-            <button type="button" class="glass-close-btn" onclick="closeGameDetails()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
         <div class="vapr-card-body vapr-scrollbar">
             <div class="game-details-hero">
-                <div class="hero-image-container">
-                    <img id="game-details-cover" src="" alt="Game cover">
+                <div class="hero-backdrop">
+                    <img id="game-details-backdrop" src="" alt="Game backdrop">
                 </div>
-                <div class="game-details-overlay"></div>
+                <div class="hero-content">
+                    <div class="hero-cover">
+                        <img id="game-details-cover" src="" alt="Game cover">
+                    </div>
+                    <div class="hero-info">
+                        <div class="hero-info-top">
+                            <h1 class="game-title-hero" id="game-hero-title">Game Title</h1>
+                            <div class="hero-meta">
+                                <div class="hero-meta-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    <a class="developer-link" id="game-hero-developer" href="#">Developer</a>
+                                </div>
+                                <div class="hero-meta-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span id="game-hero-release-date">TBA</span>
+                                </div>
+                                <div class="hero-meta-item">
+                                    <i class="fa-solid fa-code-branch"></i>
+                                    <span id="game-details-version">1.0.0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <div class="price-box">
+                                <span class="original-price" id="game-details-original-price"></span>
+                                <span class="current-price" id="game-details-price"></span>
+                            </div>
+                            <div id="game-details-price-section" style="display:none;">
+                                <button class="action-button primary" id="game-details-add-to-cart" onclick="">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                            <div id="game-details-owned-section" style="display:none;">
+                                <div class="owned-badge-hero">
+                                    <i class="fa-solid fa-check-circle"></i> You own this game
+                                </div>
+                                <button class="action-button secondary" id="game-details-gift-button" onclick="" style="display:none;">
+                                    <i class="fa-solid fa-gift"></i>
+                                    <span>Purchase as Gift</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="glass-close-btn" onclick="closeGameDetails()" style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <div class="game-details-content">
-                <div class="game-details-actions">
-                    <div id="game-details-price-section" class="price-section">
-                        <div class="price-display">
-                            <span class="original-price" id="game-details-original-price"></span>
-                            <span class="current-price" id="game-details-price"></span>
-                        </div>
-                        <button class="glass-button primary" id="game-details-add-to-cart" onclick="">
-                            <i class="fa-solid fa-shopping-cart"></i> Add to Cart
-                        </button>
-                    </div>
-                    <div id="game-details-owned-section" class="owned-section" style="display:none;">
-                        <div class="owned-badge-large">
-                            <i class="fa-solid fa-check-circle"></i> You own this game
-                        </div>
-                        <button class="glass-button secondary" id="game-details-gift-button" onclick="" style="display:none;">
-                            <i class="fa-solid fa-gift"></i> Purchase as Gift
-                        </button>
-                    </div>
-                </div>
-
                 <div class="game-details-section">
                     <h3>About this game</h3>
                     <p id="game-details-description"></p>
@@ -64,13 +81,6 @@
                         <div>
                             <span class="meta-label">Release Date</span>
                             <span class="meta-value" id="game-details-release-date">TBA</span>
-                        </div>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fa-solid fa-tags"></i>
-                        <div>
-                            <span class="meta-label">Category</span>
-                            <span class="meta-value" id="game-details-category">Game</span>
                         </div>
                     </div>
                 </div>
