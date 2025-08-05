@@ -243,5 +243,19 @@ async function displayGameDetails(game) {
     }
 }
 
+function toggleDisclaimer() {
+    const disclaimerContent = document.getElementById('disclaimer-content');
+    const disclaimerToggle = document.getElementById('disclaimer-toggle');
+
+    if (disclaimerContent.classList.contains('collapsed')) {
+        disclaimerContent.classList.remove('collapsed');
+        disclaimerToggle.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+    } else {
+        disclaimerContent.classList.add('collapsed');
+        disclaimerToggle.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+    }
+}
+
 window.showGameDetails = showGameDetails;
 window.closeGameDetails = closeGameDetails;
+window.toggleDisclaimer = toggleDisclaimer;

@@ -4,13 +4,15 @@
             <div class="game-details-hero">
                 <div class="hero-backdrop">
                     <img id="game-details-backdrop" src="" alt="Game backdrop">
+                    <div class="hero-gradient"></div>
                 </div>
                 <div class="hero-content">
-                    <div class="hero-cover">
-                        <img id="game-details-cover" src="" alt="Game cover">
-                    </div>
-                    <div class="hero-info">
-                        <div class="hero-info-top">
+                    <div class="hero-main">
+                        <div class="hero-cover">
+                            <img id="game-details-cover" src="" alt="Game cover">
+                            <div class="cover-reflection"></div>
+                        </div>
+                        <div class="hero-info">
                             <h1 class="game-title-hero" id="game-hero-title">Game Title</h1>
                             <div class="hero-meta">
                                 <div class="hero-meta-item">
@@ -26,97 +28,112 @@
                                     <span id="game-details-version">1.0.0</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="hero-actions">
-                            <div class="price-box">
-                                <span class="original-price" id="game-details-original-price"></span>
-                                <span class="current-price" id="game-details-price"></span>
-                            </div>
-                            <div id="game-details-price-section" style="display:none;">
-                                <button class="action-button primary" id="game-details-add-to-cart" onclick="">
-                                    <i class="fa-solid fa-shopping-cart"></i>
-                                    <span>Add to Cart</span>
-                                </button>
-                            </div>
-                            <div id="game-details-owned-section" style="display:none;">
-                                <div class="owned-badge-hero">
-                                    <i class="fa-solid fa-check-circle"></i> You own this game
+                            <div class="game-details-actions">
+                                <div class="price-section" id="game-details-price-section" style="display:none;">
+                                    <div class="price-box">
+                                        <span class="price-label">Price</span>
+                                        <div class="price-display">
+                                            <span class="original-price" id="game-details-original-price"></span>
+                                            <span class="current-price" id="game-details-price"></span>
+                                        </div>
+                                    </div>
+                                    <button class="action-button primary large" id="game-details-add-to-cart" onclick="">
+                                        <i class="fa-solid fa-shopping-cart"></i>
+                                        <span>Add to Cart</span>
+                                    </button>
                                 </div>
-                                <button class="action-button secondary" id="game-details-gift-button" onclick="" style="display:none;">
-                                    <i class="fa-solid fa-gift"></i>
-                                    <span>Purchase as Gift</span>
-                                </button>
+                                <div class="owned-section" id="game-details-owned-section" style="display:none;">
+                                    <div class="owned-badge-large">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <div class="owned-text">
+                                            <span class="owned-label">Owned</span>
+                                            <span class="owned-sublabel">In your library</span>
+                                        </div>
+                                    </div>
+                                    <button class="action-button secondary" id="game-details-gift-button" onclick="" style="display:none;">
+                                        <i class="fa-solid fa-gift"></i>
+                                        <span>Purchase as Gift</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="button" class="glass-close-btn" onclick="closeGameDetails()" style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+                <button type="button" class="glass-close-btn hero-close" onclick="closeGameDetails()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <div class="game-details-content">
                 <div class="game-details-disclaimer-section" id="game-details-disclaimer-section" style="display:none;">
-                    <div class="disclaimer-box">
-                        <div class="disclaimer-icon">
+                    <div class="disclaimer-header" onclick="toggleDisclaimer()">
+                        <div class="disclaimer-title">
                             <i class="fa-solid fa-info-circle"></i>
+                            <span>How to activate your game</span>
                         </div>
-                        <div class="disclaimer-content">
-                            <h4>How to activate your game</h4>
-                            <ol>
-                                <li>After purchase, you'll receive a VAPR.CLUB key by email</li>
-                                <li>Go to <strong>My Library</strong> in the VAPR menu</li>
-                                <li>Click <strong>Redeem Key</strong> button</li>
-                                <li>Enter your key in the format: <code>XXXX-XXXX-XXXX-XXXX</code></li>
-                                <li>Your game will be added to your library instantly!</li>
-                            </ol>
-                            <p class="disclaimer-note">
-                                <i class="fa-solid fa-envelope"></i> Check your email inbox (including spam folder) for your activation key
-                            </p>
-                        </div>
+                        <button class="disclaimer-toggle" id="disclaimer-toggle">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="disclaimer-content collapsed" id="disclaimer-content">
+                        <ol>
+                            <li>After purchase, you'll receive a VAPR.CLUB key by email</li>
+                            <li>Go to <strong>My Library</strong> in the VAPR menu</li>
+                            <li>Click <strong>Redeem Key</strong> button</li>
+                            <li>Enter your key in the format: <code>XXXX-XXXX-XXXX-XXXX</code></li>
+                            <li>Your game will be added to your library instantly!</li>
+                        </ol>
+                        <p class="disclaimer-note">
+                            <i class="fa-solid fa-envelope"></i> Check your email inbox (including spam folder) for your activation key
+                        </p>
                     </div>
                 </div>
 
-                <div class="game-details-section">
-                    <h3>About this game</h3>
-                    <p id="game-details-description"></p>
-                </div>
+                <div class="content-grid">
+                    <div class="main-content">
+                        <div class="game-details-section">
+                            <h3>About this game</h3>
+                            <p id="game-details-description"></p>
+                        </div>
 
-                <div class="game-details-meta">
-                    <div class="meta-item">
-                        <i class="fa-solid fa-code-branch"></i>
-                        <div>
-                            <span class="meta-label">Version</span>
-                            <span class="meta-value" id="game-details-version">1.0.0</span>
+                        <div class="game-details-section" id="game-details-changelog-section" style="display:none;">
+                            <h3>Latest Updates</h3>
+                            <div id="game-details-changelog"></div>
                         </div>
                     </div>
-                    <div class="meta-item">
-                        <i class="fa-solid fa-user"></i>
-                        <div>
-                            <span class="meta-label">Developer</span>
-                            <a class="meta-value developer-link" id="game-details-developer" href="#">Unknown</a>
-                        </div>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fa-solid fa-calendar"></i>
-                        <div>
-                            <span class="meta-label">Release Date</span>
-                            <span class="meta-value" id="game-details-release-date">TBA</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="game-details-section" id="game-details-changelog-section" style="display:none;">
-                    <h3>Latest Updates</h3>
-                    <div id="game-details-changelog"></div>
-                </div>
+                    <div class="sidebar-content">
+                        <div class="game-details-meta-card">
+                            <h4>Game Information</h4>
+                            <div class="meta-item">
+                                <span class="meta-icon"><i class="fa-solid fa-code-branch"></i></span>
+                                <div class="meta-content">
+                                    <span class="meta-label">Version</span>
+                                    <span class="meta-value" id="game-details-version">1.0.0</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon"><i class="fa-solid fa-user"></i></span>
+                                <div class="meta-content">
+                                    <span class="meta-label">Developer</span>
+                                    <a class="meta-value developer-link" id="game-details-developer" href="#">Unknown</a>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon"><i class="fa-solid fa-calendar"></i></span>
+                                <div class="meta-content">
+                                    <span class="meta-label">Release Date</span>
+                                    <span class="meta-value" id="game-details-release-date">TBA</span>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="game-details-section" id="game-details-external-section" style="display:none;">
-                    <h3>External Links</h3>
-                    <div class="external-links">
-                        <a id="game-details-external-link" href="#" target="_blank" class="glass-button">
-                            <i class="fa-solid fa-external-link-alt"></i> Visit Website
-                        </a>
+                        <div class="game-details-section" id="game-details-external-section" style="display:none;">
+                            <a id="game-details-external-link" href="#" target="_blank" class="external-link-button">
+                                <i class="fa-solid fa-external-link-alt"></i>
+                                <span>Visit Official Website</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

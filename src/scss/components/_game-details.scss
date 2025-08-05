@@ -7,20 +7,7 @@
   width: calc(100% + 50px);
   margin: -25px -25px 0;
   overflow: hidden;
-  background: linear-gradient(to bottom, rgba(23, 33, 43, 0.3) 0%, rgba(23, 33, 43, 0.95) 100%);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: inherit;
-    filter: blur(50px);
-    opacity: 0.6;
-    z-index: 0;
-  }
+  min-height: 320px;
 
   .hero-backdrop {
     position: absolute;
@@ -28,103 +15,132 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 0;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.3;
-      filter: blur(8px) brightness(0.7);
+      opacity: 0.2;
+      filter: blur(20px) brightness(0.4);
     }
+  }
+
+  .hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+                    135deg,
+                    rgba(23, 33, 43, 0.9) 0%,
+                    rgba(23, 33, 43, 0.7) 50%,
+                    rgba(23, 33, 43, 0.95) 100%
+    );
+    z-index: 1;
   }
 
   .hero-content {
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 30px;
-    padding: 40px 25px 30px;
+    padding: 60px 40px 40px;
 
     @include responsive(tablet) {
-      grid-template-columns: 1fr;
-      gap: 20px;
-      padding: 30px 20px 20px;
+      padding: 40px 20px 30px;
+    }
+  }
+
+  .hero-main {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+
+    @include responsive(tablet) {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
     }
   }
 
   .hero-cover {
-    width: 260px;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    width: 280px;
+    flex-shrink: 0;
 
     img {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .cover-reflection {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+                      135deg,
+                      rgba(255, 255, 255, 0.1) 0%,
+                      transparent 50%
+      );
+      border-radius: 16px;
+      pointer-events: none;
     }
 
     @include responsive(tablet) {
       width: 100%;
-      max-width: 300px;
-      margin: 0 auto;
+      max-width: 320px;
     }
   }
 
   .hero-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 146px;
+    flex: 1;
+    min-width: 0;
 
     @include responsive(tablet) {
-      min-height: auto;
       text-align: center;
+      width: 100%;
     }
   }
 
-  .hero-info-top {
-    flex: 1;
-  }
-
   .game-title-hero {
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 42px;
+    font-weight: 900;
     color: $text-strong;
-    margin: 0 0 15px 0;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    margin: 0 0 20px 0;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
 
     @include responsive(tablet) {
-      font-size: 28px;
+      font-size: 32px;
+    }
+
+    @include responsive(mobile) {
+      font-size: 26px;
     }
   }
 
   .hero-meta {
     display: flex;
-    gap: 20px;
+    gap: 25px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 
     @include responsive(tablet) {
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
     }
   }
 
   .hero-meta-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 10px;
+    font-size: 15px;
     color: $text-secondary;
 
     i {
@@ -135,184 +151,284 @@
     a {
       color: $primary-color;
       text-decoration: none;
-      transition: color 0.2s ease;
+      font-weight: 600;
+      transition: all 0.3s ease;
 
       &:hover {
         color: color.adjust($primary-color, $lightness: 10%);
+        transform: translateY(-1px);
       }
     }
   }
 
-  .hero-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-
-    @include responsive(tablet) {
-      justify-content: center;
-    }
-  }
-
-  .price-box {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .hero-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-
-    .original-price {
-      text-decoration: line-through;
-      color: $text-weak;
-      font-size: 16px;
-      opacity: 0.7;
-    }
-
-    .current-price {
-      font-size: 24px;
-      font-weight: 700;
-      color: $primary-color;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  .action-button {
-    @include glass-effect($glass-bg-tertiary, $blur-md, $glass-border-heavy);
-    color: $text-primary;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    z-index: 10;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
-    }
-
-    &.primary {
-      background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-      border: none;
-      box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-
-      &:hover {
-        background: linear-gradient(135deg, #5eded6 0%, #52b5bc 100%);
-        box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
-      }
-    }
-
-    &.secondary {
-      background: rgba(155, 89, 182, 0.2);
-      border: 1px solid rgba(155, 89, 182, 0.3);
-
-      &:hover {
-        background: rgba(155, 89, 182, 0.3);
-        box-shadow: 0 5px 20px rgba(155, 89, 182, 0.3);
-      }
-    }
-
-    i {
-      font-size: 18px;
-    }
-  }
-
-  .owned-badge-hero {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(78, 205, 196, 0.2);
-    border: 1px solid rgba(78, 205, 196, 0.3);
-    color: $primary-color;
-    padding: 14px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    i {
-      font-size: 20px;
+      background: rgba(0, 0, 0, 0.7) !important;
     }
   }
 }
 
+.game-details-actions {
+  margin-top: 30px;
+
+  @include responsive(tablet) {
+    width: 100%;
+  }
+}
+
+.price-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  @include responsive(tablet) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.price-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px 30px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  .price-label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $text-weak;
+    margin-bottom: 8px;
+  }
+
+  .price-display {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .original-price {
+    text-decoration: line-through;
+    color: $text-weak;
+    font-size: 18px;
+    opacity: 0.7;
+  }
+
+  .current-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: $primary-color;
+    text-shadow: 0 2px 10px rgba(78, 205, 196, 0.3);
+  }
+
+  @include responsive(tablet) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.action-button {
+  @include glass-effect($glass-bg-tertiary, $blur-md, $glass-border-heavy);
+  color: $text-primary;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+    border: none;
+    box-shadow: 0 6px 25px rgba(78, 205, 196, 0.4);
+
+    &:hover {
+      background: linear-gradient(135deg, #5eded6 0%, #52b5bc 100%);
+      box-shadow: 0 10px 35px rgba(78, 205, 196, 0.5);
+    }
+  }
+
+  &.secondary {
+    background: rgba(155, 89, 182, 0.2);
+    border: 1px solid rgba(155, 89, 182, 0.3);
+
+    &:hover {
+      background: rgba(155, 89, 182, 0.3);
+      box-shadow: 0 8px 30px rgba(155, 89, 182, 0.3);
+    }
+  }
+
+  &.large {
+    padding: 18px 40px;
+    font-size: 18px;
+  }
+
+  i {
+    font-size: 20px;
+  }
+
+  @include responsive(tablet) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.owned-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  @include responsive(tablet) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.owned-badge-large {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(78, 205, 196, 0.05) 100%);
+  border: 2px solid rgba(78, 205, 196, 0.3);
+  color: $primary-color;
+  padding: 20px 30px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  i {
+    font-size: 32px;
+  }
+
+  .owned-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .owned-label {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .owned-sublabel {
+    font-size: 14px;
+    color: $text-secondary;
+  }
+
+  @include responsive(tablet) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .game-details-content {
-  padding: 30px 25px 25px;
+  padding: 40px 40px 30px;
+
+  @include responsive(tablet) {
+    padding: 30px 20px;
+  }
 }
 
 .game-details-disclaimer-section {
   margin-bottom: 30px;
 }
 
-.disclaimer-box {
+.disclaimer-header {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
   background: rgba(78, 205, 196, 0.05);
   border: 1px solid rgba(78, 205, 196, 0.2);
-  border-radius: 16px;
-  padding: 25px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(78, 205, 196, 0.1) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  @include responsive(tablet) {
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
+  &:hover {
+    background: rgba(78, 205, 196, 0.08);
+    border-color: rgba(78, 205, 196, 0.3);
   }
 }
 
-.disclaimer-icon {
-  font-size: 32px;
-  color: $primary-color;
-  min-width: 40px;
-  padding-top: 5px;
+.disclaimer-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-primary;
 
-  @include responsive(tablet) {
-    font-size: 28px;
-    text-align: center;
+  i {
+    color: $primary-color;
+    font-size: 20px;
+  }
+}
+
+.disclaimer-toggle {
+  @include icon-button(32px);
+  background: transparent;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $text-primary;
+    transform: translateY(-2px);
   }
 }
 
 .disclaimer-content {
-  flex: 1;
+  max-height: 500px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 25px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(78, 205, 196, 0.1);
+  border-radius: 0 0 12px 12px;
+  margin-top: -1px;
 
-  h4 {
-    margin: 0 0 15px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: $text-primary;
+  &.collapsed {
+    max-height: 0;
+    padding: 0 25px;
   }
 
   ol {
-    margin: 0 0 15px 0;
-    padding-left: 20px;
+    margin: 0 0 20px 0;
+    padding-left: 25px;
     color: $text-muted;
 
     li {
-      margin-bottom: 8px;
-      font-size: 14px;
-      line-height: 1.5;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.6;
 
       strong {
         color: $text-primary;
@@ -321,10 +437,10 @@
 
       code {
         background: $glass-bg-tertiary;
-        padding: 2px 6px;
-        border-radius: 4px;
+        padding: 3px 8px;
+        border-radius: 6px;
         font-family: monospace;
-        font-size: 13px;
+        font-size: 14px;
         color: $primary-color;
       }
     }
@@ -333,135 +449,181 @@
 
 .disclaimer-note {
   margin: 0;
-  padding: 12px 16px;
+  padding: 14px 18px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 10px;
+  font-size: 14px;
   color: $text-secondary;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
   i {
     color: $text-faint;
+    font-size: 18px;
+  }
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+
+  @include responsive(tablet) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.main-content {
+  min-width: 0;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-details-section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  p {
+    line-height: 1.8;
+    color: $text-muted;
     font-size: 16px;
   }
 }
 
-.game-details-section {
-  margin-bottom: 30px;
+.game-details-meta-card {
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: 16px;
+  padding: 25px;
 
-  h3 {
-    margin: 0 0 15px 0;
-    font-size: 20px;
+  h4 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
     font-weight: 600;
     color: $text-primary;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    &::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: $glass-border-light;
-    }
-  }
-
-  p {
-    line-height: 1.6;
-    color: $text-muted;
-    font-size: 15px;
-  }
-}
-
-.game-details-meta {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  background: $glass-bg-secondary;
-  border-radius: $radius-md;
-  border: 1px solid $glass-border-light;
-  margin-bottom: 30px;
-
-  @include responsive(tablet) {
-    grid-template-columns: 1fr;
-    gap: 15px;
   }
 }
 
 .meta-item {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.meta-icon {
+  width: 40px;
+  height: 40px;
+  background: $glass-bg-tertiary;
+  border-radius: 10px;
+  @include flex-center;
+  flex-shrink: 0;
 
   i {
-    font-size: 24px;
+    font-size: 18px;
     color: $text-secondary;
-    width: 30px;
-    text-align: center;
+  }
+}
+
+.meta-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-label {
+  display: block;
+  font-size: 12px;
+  color: $text-weak;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.meta-value {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.developer-link {
+  color: $primary-color;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: color.adjust($primary-color, $lightness: 10%);
+    transform: translateX(3px);
   }
 
-  div {
-    flex: 1;
-  }
-
-  .meta-label {
-    display: block;
-    font-size: 12px;
-    color: $text-weak;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .meta-value {
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
+  &[href="#"] {
     color: $text-primary;
-  }
-
-  .developer-link {
-    color: $primary-color;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    cursor: default;
 
     &:hover {
-      color: color.adjust($primary-color, $lightness: 10%);
-      transform: translateX(3px);
-    }
-
-    &[href="#"] {
+      transform: none;
       color: $text-primary;
-      cursor: default;
-
-      &:hover {
-        transform: none;
-        color: $text-primary;
-      }
     }
   }
 }
 
-.external-links {
+.external-link-button {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 24px;
+  background: $glass-bg-tertiary;
+  border: 1px solid $glass-border-heavy;
+  border-radius: 12px;
+  color: $text-primary;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 
-  a {
-    text-decoration: none;
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    color: $text-primary;
+  }
+
+  i {
+    font-size: 18px;
   }
 }
 
 #game-details-changelog {
   background: $glass-bg-secondary;
   border: 1px solid $glass-border-light;
-  border-radius: $radius-sm;
-  padding: 20px;
-  font-size: 14px;
-  line-height: 1.6;
+  border-radius: 12px;
+  padding: 25px;
+  font-size: 15px;
+  line-height: 1.8;
   color: $text-muted;
   white-space: pre-wrap;
 }
