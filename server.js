@@ -92,7 +92,8 @@ app.use(helmet({
                 "https://cloud.umami.is",
                 "https://eu.i.posthog.com",
                 "https://api-gateway.umami.dev",
-                "https://discord.com"
+                "https://discord.com",
+                "https://headless.tebex.io"
             ],
             scriptSrcAttr: ["'unsafe-inline'"],
             fontSrc: [

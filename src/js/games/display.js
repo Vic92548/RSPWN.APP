@@ -4,17 +4,33 @@ function displayGames() {
 
     const userGameIds = gamesData.userGames.map(g => g.id);
 
-    VAPR.appendElements(container, 'game-item',
-        gamesData.allGames.map(game => ({
-            gameId: game.id,
-            title: game.title,
-            description: game.description,
-            coverImage: game.coverImage,
-            isOwned: userGameIds.includes(game.id),
-            isOwner: isUserLoggedIn() && game.ownerId === window.user.id,
-            externalLink: game.externalLink || ''
-        }))
-    );
+    gamesData.allGames.forEach(game => {
+        if (game.isTebexProduct) {
+            VAPR.appendElement(container, 'tebex-game-item', {
+                gameId: game.id,
+                title: game.title,
+                description: game.description,
+                coverImage: game.coverImage,
+                price: game.price.toFixed(2),
+                currency: game.currency,
+                onSale: game.onSale ? 'true' : '',
+                originalPrice: game.originalPrice?.toFixed(2),
+                discount: game.discount || 0,
+                tebexId: game.tebexId,
+                externalLink: game.externalLink || ''
+            });
+        } else {
+            VAPR.appendElement(container, 'game-item', {
+                gameId: game.id,
+                title: game.title,
+                description: game.description,
+                coverImage: game.coverImage,
+                isOwned: userGameIds.includes(game.id) ? 'true' : '',
+                isOwner: isUserLoggedIn() && game.ownerId === window.user.id ? 'true' : '',
+                externalLink: game.externalLink || ''
+            });
+        }
+    });
 
     VAPR.refresh();
 }

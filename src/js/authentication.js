@@ -56,6 +56,10 @@ function loadUserData(){
             if (MainPage) {
                 loadGamesData().then(() => {
                     updateDeveloperSection();
+                    if (window.user) {
+                        initializeTebexIntegration();
+                        document.getElementById('cart-button').style.display = 'flex';
+                    }
                 });
 
                 checkAndShowUpdates();
