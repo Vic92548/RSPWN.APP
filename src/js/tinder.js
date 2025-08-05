@@ -177,9 +177,10 @@ function dislikePost() {
     }
 }
 
-if (!document.getElementById('action-feedback-styles')) {
-    const style = document.createElement('style');
-    style.id = 'action-feedback-styles';
+if (!DOM.get('action-feedback-styles')) {
+    const style = DOM.create('style', {
+        id: 'action-feedback-styles'
+    });
     style.textContent = `
         .action-feedback {
             position: fixed;

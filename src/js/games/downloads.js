@@ -50,36 +50,36 @@ async function downloadGame(event, gameId, gameTitle, downloadUrl) {
 }
 
 function updateGameDownloadProgress(gameId, progress) {
-    const gameEl = document.getElementById(`game-item-${gameId}`);
+    const gameEl = DOM.get(`game-item-${gameId}`);
     if (!gameEl) return;
 
     const progressFill = gameEl.querySelector('.download-progress-fill');
     const progressValue = gameEl.querySelector('.download-stat-value');
-    const speedEl = document.getElementById(`download-speed-${gameId}`);
-    const sizeEl = document.getElementById(`download-size-${gameId}`);
-    const etaEl = document.getElementById(`download-eta-${gameId}`);
+    const speedEl = DOM.get(`download-speed-${gameId}`);
+    const sizeEl = DOM.get(`download-size-${gameId}`);
+    const etaEl = DOM.get(`download-eta-${gameId}`);
 
     if (progressFill) progressFill.style.width = `${progress.percentage}%`;
     if (progressValue) progressValue.textContent = `${Math.round(progress.percentage)}%`;
-    if (speedEl) speedEl.textContent = `${progress.speed.toFixed(2)} MB/s`;
+    if (speedEl) DOM.setText(speedEl, `${progress.speed.toFixed(2)} MB/s`);
 
     if (sizeEl) {
         const downloaded = (progress.downloaded / 1024 / 1024).toFixed(2);
         const total = (progress.total / 1024 / 1024).toFixed(2);
-        sizeEl.textContent = `${downloaded} MB / ${total} MB`;
+        DOM.setText(sizeEl, `${downloaded} MB / ${total} MB`);
     }
 
     if (etaEl) {
-        etaEl.textContent = formatTime(progress.eta);
+        DOM.setText(etaEl, formatTime(progress.eta));
     }
 }
 
 function updateGameDownloadStatus(gameId, statusText) {
-    const gameEl = document.getElementById(`game-item-${gameId}`);
+    const gameEl = DOM.get(`game-item-${gameId}`);
     if (!gameEl) return;
 
     const subtitleEl = gameEl.querySelector('.download-progress-subtitle');
-    if (subtitleEl) subtitleEl.textContent = statusText;
+    if (subtitleEl) DOM.setText(subtitleEl, statusText);
 }
 
 function cancelDownload(gameId) {
@@ -181,7 +181,7 @@ async function downloadUpdate(gameId, version, downloadUrl) {
             gamesData.updates = gamesData.updates.filter(u => u.gameId !== gameId);
 
             if (gamesData.updates.length === 0) {
-                const updateBadge = document.querySelector('.update-badge');
+                const updateBadge = DOM.query('.update-badge');
                 if (updateBadge) updateBadge.remove();
             }
 

@@ -24,12 +24,12 @@ function closeAnalyticsCard() {
 }
 
 function resetAnalyticsUI() {
-    const analyticsCard = document.getElementById('analytics-card');
+    const analyticsCard = DOM.get('analytics-card');
     if (analyticsCard) {
-        analyticsCard.querySelector('#total_views').textContent = "0";
-        analyticsCard.querySelector('#total_likes').textContent = "0";
-        analyticsCard.querySelector('#total_followers').textContent = "0";
-        analyticsCard.querySelector('#total_clicks').textContent = "0";
+        DOM.setText(analyticsCard.querySelector('#total_views'), "0");
+        DOM.setText(analyticsCard.querySelector('#total_likes'), "0");
+        DOM.setText(analyticsCard.querySelector('#total_followers'), "0");
+        DOM.setText(analyticsCard.querySelector('#total_clicks'), "0");
     }
 }
 
@@ -39,7 +39,7 @@ async function loadAnalyticsData() {
         console.log('Loaded posts data:', fallbackData);
 
         if (!fallbackData || fallbackData.length === 0) {
-            document.getElementById("posts_list").innerHTML = '<div style="text-align: center; padding: 20px;">No posts found</div>';
+            DOM.setHTML("posts_list", '<div style="text-align: center; padding: 20px;">No posts found</div>');
             return;
         }
 
@@ -52,7 +52,7 @@ async function loadAnalyticsData() {
         }, 100);
     } catch (error) {
         console.error("Error loading analytics data:", error);
-        document.getElementById("posts_list").innerHTML = '<div style="text-align: center; padding: 20px; color: #e74c3c;">Failed to load analytics data</div>';
+        DOM.setHTML("posts_list", '<div style="text-align: center; padding: 20px; color: #e74c3c;">Failed to load analytics data</div>');
     }
 }
 
@@ -75,7 +75,7 @@ function calculateOverviewMetrics() {
 
     console.log('Total views calculated:', totalViews);
 
-    const analyticsCard = document.getElementById('analytics-card');
+    const analyticsCard = DOM.get('analytics-card');
     if (!analyticsCard) {
         console.error('Analytics card not found!');
         return;
@@ -95,7 +95,7 @@ function calculateOverviewMetrics() {
 }
 
 function populatePostsList(sortBy = 'views') {
-    const container = document.getElementById("posts_list");
+    const container = DOM.get("posts_list");
     container.innerHTML = '';
 
     const posts = analyticsData.posts;
@@ -125,10 +125,13 @@ function populatePostsList(sortBy = 'views') {
     }
 
     sortedPosts.forEach((post, index) => {
-        const postItem = document.createElement('div');
-        postItem.className = 'post-item';
-        postItem.style.opacity = '0';
-        postItem.style.transform = 'translateY(10px)';
+        const postItem = DOM.create('div', {
+            class: 'post-item',
+            style: {
+                opacity: '0',
+                transform: 'translateY(10px)'
+            }
+        });
 
         const engagement = calculatePostEngagement(post);
 
@@ -192,7 +195,7 @@ function calculatePostEngagement(post) {
 }
 
 function setupEventListeners() {
-    const sortDropdown = document.getElementById('sort_posts');
+    const sortDropdown = DOM.get('sort_posts');
 
     if (sortDropdown) {
         const newDropdown = sortDropdown.cloneNode(true);

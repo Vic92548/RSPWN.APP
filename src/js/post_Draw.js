@@ -18,8 +18,8 @@ function drawPost(data){
 
     updateFollowButton();
 
-    const titleEl = document.getElementById("post_title");
-    const showMoreButtonEl = document.getElementById("post_title_show_more");
+    const titleEl = DOM.get("post_title");
+    const showMoreButtonEl = DOM.get("post_title_show_more");
     titleEl.textContent = data.title;
 
     requestAnimationFrame(() => {
@@ -44,15 +44,15 @@ function drawPost(data){
     });
 
     const username = data.username;
-    document.getElementById("post_username").textContent = "@" + username;
+    DOM.setText("post_username", "@" + username);
 
-    const avatarImg = document.getElementById("user_avatar_img");
-    const avatarLetter = document.getElementById("avatar_letter");
-    const avatarEl = document.getElementById("user_avatar");
+    const avatarImg = DOM.get("user_avatar_img");
+    const avatarLetter = DOM.get("avatar_letter");
+    const avatarEl = DOM.get("user_avatar");
 
     function showLetterAvatar() {
-        avatarImg.style.display = "none";
-        avatarLetter.style.display = "flex";
+        DOM.hide(avatarImg);
+        DOM.show(avatarLetter, "flex");
         avatarLetter.textContent = username.charAt(0).toUpperCase();
 
         const hue = username.charCodeAt(0) * 3 % 360;
@@ -62,8 +62,8 @@ function drawPost(data){
     function showDiscordAvatar(avatarHash) {
         if (avatarHash) {
             avatarImg.src = `https://cdn.discordapp.com/avatars/${data.userId}/${avatarHash}.png?size=128`;
-            avatarImg.style.display = "block";
-            avatarLetter.style.display = "none";
+            DOM.show(avatarImg);
+            DOM.hide(avatarLetter);
             avatarEl.style.background = "none";
 
             avatarImg.onerror = () => {
@@ -125,7 +125,7 @@ function drawPost(data){
         );
     }
 
-    document.getElementById("post_time").textContent = timeAgo(data.timestamp);
+    DOM.setText("post_time", timeAgo(data.timestamp));
 
     animateViewCount(data.views);
 
@@ -134,38 +134,38 @@ function drawPost(data){
     }
 
     if(data.content.split("/posts/")[0] === "https://vapr-club.b-cdn.net"){
-        document.getElementById("post_image").src = data.content;
-        document.getElementById("post_image").style.display = "block";
-        document.getElementById("post_content").style.display = "none";
-        document.getElementById("post_video").style.display = "none";
+        DOM.get("post_image").src = data.content;
+        DOM.show("post_image");
+        DOM.hide("post_content");
+        DOM.hide("post_video");
 
-        const imageEl = document.getElementById("post_image");
+        const imageEl = DOM.get("post_image");
         imageEl.style.filter = "blur(10px)";
         imageEl.onload = () => {
             imageEl.style.filter = "none";
             imageEl.style.transition = "filter 0.3s ease";
         };
     }else if(data.content.includes("iframe.mediadelivery.net")){
-        document.getElementById("post_video").style.display = "block";
+        DOM.show("post_video");
         setTimeout(() => {
-            document.getElementById("post_video").children[0].src = data.content;
+            DOM.get("post_video").children[0].src = data.content;
         }, 100);
-        document.getElementById("post_content").style.display = "none";
-        document.getElementById("post_image").style.display = "none";
+        DOM.hide("post_content");
+        DOM.hide("post_image");
     }
 
-    document.getElementById("post_image").onclick = function () {
-        toggleImageZoom(document.getElementById("post_image"));
+    DOM.get("post_image").onclick = function () {
+        toggleImageZoom(DOM.get("post_image"));
     }
 
-    const headerLinkButton = document.getElementById("header_link_button");
-    const links = document.getElementById("post_link").children;
+    const headerLinkButton = DOM.get("header_link_button");
+    const links = DOM.get("post_link").children;
 
     for(let i = 0; i < links.length; i++){
         links[i].style.display = "none";
     }
 
-    headerLinkButton.style.display = "none";
+    DOM.hide(headerLinkButton);
 
     if(data.link){
         handlePostLinks(data.link);
@@ -179,7 +179,7 @@ function navigateToProfile() {
 }
 
 function animateViewCount(targetViews) {
-    const viewsEl = document.getElementById("post_views");
+    const viewsEl = DOM.get("post_views");
     const startViews = parseInt(viewsEl.textContent) || 0;
     const duration = 1000;
     const startTime = performance.now();
@@ -204,11 +204,12 @@ function animateViewCount(targetViews) {
 function toggleImageZoom(img) {
     if (img.classList.contains('zoomed')) {
         img.classList.remove('zoomed');
-        document.querySelector('.image-overlay')?.remove();
+        DOM.query('.image-overlay')?.remove();
     } else {
-        const overlay = document.createElement('div');
-        overlay.className = 'image-overlay';
-        overlay.onclick = () => toggleImageZoom(img);
+        const overlay = DOM.create('div', {
+            class: 'image-overlay',
+            onclick: () => toggleImageZoom(img)
+        });
 
         const zoomedImg = img.cloneNode();
         zoomedImg.className = 'zoomed-image';
@@ -267,7 +268,7 @@ function handlePostLinks(link) {
         }
 
         if (matchedLink) {
-            const headerLinkButton = document.getElementById("header_link_button");
+            const headerLinkButton = DOM.get("header_link_button");
             headerLinkButton.style.display = "inline-flex";
             headerLinkButton.href = link;
             headerLinkButton.innerHTML = `<i class="${matchedLink.icon}"></i><span>${matchedLink.label}</span>`;

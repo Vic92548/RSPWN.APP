@@ -39,7 +39,7 @@ function showLoading(){
 }
 
 function setupSocialLink(id, link){
-    const link_bt = document.getElementById(id);
+    const link_bt = DOM.get(id);
     link_bt.style.display = "inline-block";
     link_bt.href = link;
 }
@@ -49,14 +49,14 @@ let current_post = undefined;
 
 function hidePost() {
     showLoading();
-    document.getElementById("post_video").children[0].src = "";
+    DOM.get("post_video").children[0].src = "";
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
 cardManager.register('add-post-card', {
     onShow: () => {
         setTimeout(() => {
-            const titleInput = document.getElementById('title');
+            const titleInput = DOM.get('title');
             if (titleInput) titleInput.focus();
         }, 500);
     }
@@ -79,11 +79,11 @@ function closeNewPostModel() {
 }
 
 function openRegisterModal() {
-    document.getElementById("register").style.display = "flex";
+    DOM.show("register", "flex");
 }
 
 async function updateFollowButton() {
-    const follow_bt = document.getElementById("follow");
+    const follow_bt = DOM.get("follow");
 
     if(isUserLoggedIn()){
         let following;
@@ -169,18 +169,18 @@ async function checkUserFollowsCreator(creatorId) {
 }
 
 function openMenu() {
-    document.getElementById("menu").style.display = 'flex';
+    DOM.show("menu", 'flex');
 }
 
 function hideMenu() {
     if(window.innerWidth <= 768){
-        document.getElementById("menu").style.display = 'none';
+        DOM.hide("menu");
     }
 }
 
 if(MainPage){
     if(window.innerWidth >= 768){
-        document.getElementById("menu").style.display = 'flex';
+        DOM.show("menu", 'flex');
     }
 }
 
@@ -221,12 +221,12 @@ function handleReferral() {
 }
 
 function openTextModal(text) {
-    document.getElementById("text_modal_text").textContent = text;
-    document.getElementById("text_modal").style.display = 'block';
+    DOM.setText("text_modal_text", text);
+    DOM.show("text_modal");
 }
 
 function closeTextModal() {
-    document.getElementById("text_modal").style.display = 'none';
+    DOM.hide("text_modal");
 }
 
 function copyReferrerId() {

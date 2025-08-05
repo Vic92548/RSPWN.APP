@@ -2,7 +2,7 @@ let user_previous_reaction = null;
 let isProcessingReaction = false;
 
 function initEnhancedReactions() {
-    const reactionButtons = document.querySelectorAll('.reactions button');
+    const reactionButtons = DOM.queryAll('.reactions button');
 
     reactionButtons.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -12,29 +12,30 @@ function initEnhancedReactions() {
 }
 
 function createRipple(event, button) {
-    const ripple = document.createElement('span');
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     const x = event.clientX - rect.left - size / 2;
     const y = event.clientY - rect.top - size / 2;
 
-    ripple.style.cssText = `
-        position: absolute;
-        width: ${size}px;
-        height: ${size}px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        pointer-events: none;
-        transform: translate(${x}px, ${y}px) scale(0);
-        animation: rippleEffect 0.6s ease-out;
-    `;
+    const ripple = DOM.create('span', {
+        style: {
+            position: 'absolute',
+            width: `${size}px`,
+            height: `${size}px`,
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.5)',
+            pointerEvents: 'none',
+            transform: `translate(${x}px, ${y}px) scale(0)`,
+            animation: 'rippleEffect 0.6s ease-out'
+        }
+    });
 
     button.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
 }
 
 function incrementEmoji(emoji) {
-    const emoji_count = document.getElementById(emoji);
+    const emoji_count = DOM.get(emoji);
     const currentCount = parseInt(emoji_count.textContent);
     const newCount = currentCount + 1;
 
@@ -49,7 +50,7 @@ function incrementEmoji(emoji) {
 }
 
 function decrementEmoji(emoji) {
-    const emoji_count = document.getElementById(emoji);
+    const emoji_count = DOM.get(emoji);
     const currentCount = parseInt(emoji_count.textContent);
     const newCount = Math.max(0, currentCount - 1);
 
@@ -64,13 +65,13 @@ function decrementEmoji(emoji) {
 }
 
 function resetEmoji(emoji) {
-    const emoji_count = document.getElementById(emoji);
+    const emoji_count = DOM.get(emoji);
     emoji_count.textContent = "0";
 }
 
 function addReaction(emoji) {
     if (!isUserLoggedIn()) {
-        const reactionsContainer = document.querySelector('.reactions');
+        const reactionsContainer = DOM.query('.reactions');
         reactionsContainer.style.animation = 'shake 0.5s ease';
         setTimeout(() => {
             reactionsContainer.style.animation = '';
@@ -83,11 +84,11 @@ function addReaction(emoji) {
 
     isProcessingReaction = true;
 
-    const currentBtn = document.querySelector(`[data-reaction="${emoji}"]`);
+    const currentBtn = DOM.query(`[data-reaction="${emoji}"]`);
     const wasActive = currentBtn.classList.contains('active');
 
     if (user_previous_reaction && user_previous_reaction !== emoji) {
-        const prevBtn = document.querySelector(`[data-reaction="${user_previous_reaction}"]`);
+        const prevBtn = DOM.query(`[data-reaction="${user_previous_reaction}"]`);
         prevBtn.classList.remove('active');
         decrementEmoji(user_previous_reaction);
     }
@@ -132,27 +133,27 @@ function animateReactionIcon(icon) {
 }
 
 function createFloatingReaction(emoji, button) {
-    const floater = document.createElement('div');
-    floater.className = 'floating-reaction';
-    floater.textContent = emoji;
-
     const rect = button.getBoundingClientRect();
-    floater.style.cssText = `
-        position: fixed;
-        left: ${rect.left + rect.width / 2}px;
-        top: ${rect.top}px;
-        font-size: 30px;
-        pointer-events: none;
-        z-index: 1000;
-        animation: floatUp 1s ease-out forwards;
-    `;
+
+    const floater = DOM.create('div', {
+        class: 'floating-reaction',
+        style: {
+            position: 'fixed',
+            left: `${rect.left + rect.width / 2}px`,
+            top: `${rect.top}px`,
+            fontSize: '30px',
+            pointerEvents: 'none',
+            zIndex: '1000',
+            animation: 'floatUp 1s ease-out forwards'
+        }
+    }, emoji);
 
     document.body.appendChild(floater);
     setTimeout(() => floater.remove(), 1000);
 }
 
 function displayReactions() {
-    document.querySelectorAll('.reactions button').forEach(btn => {
+    DOM.queryAll('.reactions button').forEach(btn => {
         btn.classList.remove('active');
     });
 
@@ -176,7 +177,7 @@ function displayReactions() {
 
                         if (reaction.userId === window.user?.id) {
                             user_previous_reaction = reaction.emoji;
-                            const btn = document.querySelector(`[data-reaction="${reaction.emoji}"]`);
+                            const btn = DOM.query(`[data-reaction="${reaction.emoji}"]`);
                             btn.classList.add('active');
                         }
                     }, index * 50);

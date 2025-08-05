@@ -1,9 +1,8 @@
 let versionCheckInterval = null;
 let isVersionCheckModalOpen = false;
-let hasSkippedVersion = null;
 
 function getWebVersion() {
-    const versionElement = document.querySelector('.menu-version span');
+    const versionElement = DOM.query('.menu-version span');
     if (versionElement) {
         const versionText = versionElement.textContent;
         const versionMatch = versionText.match(/v(\d+\.\d+\.\d+)/);
@@ -58,9 +57,11 @@ function showVersionUpdateModal(versionInfo) {
 
     const downloadUrl = `https://github.com/Vic92548/VAPR/releases/download/v${versionInfo.required_version}/VAPR_${versionInfo.required_version}_x64_en-US.msi`;
 
-    const modal = document.createElement('div');
-    modal.id = 'version-update-modal';
-    modal.className = 'version-modal-overlay';
+    const modal = DOM.create('div', {
+        id: 'version-update-modal',
+        class: 'version-modal-overlay'
+    });
+
     modal.innerHTML = `
         <div class="version-modal-content">
             <div class="version-modal-header">
@@ -99,7 +100,7 @@ function showVersionUpdateModal(versionInfo) {
 }
 
 function skipVersionUpdate(skippedVersion) {
-    const modal = document.getElementById('version-update-modal');
+    const modal = DOM.get('version-update-modal');
     if (modal) {
         modal.remove();
         document.body.style.overflow = '';
@@ -141,7 +142,7 @@ if (typeof document !== 'undefined') {
 
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-            if (mutation.type === 'childList' && document.querySelector('.menu-version span')) {
+            if (mutation.type === 'childList' && DOM.query('.menu-version span')) {
                 observer.disconnect();
                 checkDesktopVersion();
             }

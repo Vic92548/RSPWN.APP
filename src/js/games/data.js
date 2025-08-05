@@ -1,6 +1,6 @@
 async function loadGamesData() {
     try {
-        document.getElementById('games-loading').style.display = 'block';
+        DOM.show('games-loading');
 
         const [gamesResponse, userGamesResponse] = await Promise.all([
             api.request('/api/games'),
@@ -24,13 +24,13 @@ async function loadGamesData() {
     } catch (error) {
         console.error('Error loading games:', error);
     } finally {
-        document.getElementById('games-loading').style.display = 'none';
+        DOM.hide('games-loading');
     }
 }
 
 async function loadLibraryData() {
     try {
-        document.getElementById('library-loading').style.display = 'block';
+        DOM.show('library-loading');
 
         const response = await api.request('/api/my-games');
         gamesData.userGames = response.games || [];
@@ -49,6 +49,6 @@ async function loadLibraryData() {
     } catch (error) {
         console.error('Error loading library:', error);
     } finally {
-        document.getElementById('library-loading').style.display = 'none';
+        DOM.hide('library-loading');
     }
 }

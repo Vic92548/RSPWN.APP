@@ -125,7 +125,7 @@ const NotificationUtils = {
     },
 
     showXP(amount) {
-        const notification = document.getElementById('xp-notification');
+        const notification = DOM.get('xp-notification');
         if (!notification) return;
 
         notification.style.animation = 'xpNotificationAnimation 1.5s';
@@ -137,8 +137,9 @@ const NotificationUtils = {
     },
 
     showActionFeedback(action) {
-        const feedback = document.createElement('div');
-        feedback.className = 'action-feedback ' + action;
+        const feedback = DOM.create('div', {
+            class: 'action-feedback ' + action
+        });
         feedback.innerHTML = `<i class="fa-solid fa-${action === 'liked' ? 'heart' : action === 'passed' ? 'heart-crack' : 'forward'}"></i> ${action.charAt(0).toUpperCase() + action.slice(1)}!`;
 
         document.body.appendChild(feedback);
@@ -184,10 +185,13 @@ const NotificationUtils = {
         navigator.clipboard.writeText(text).then(() => {
             this.success(successMessage);
         }).catch(() => {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'absolute';
-            textArea.style.left = '-9999px';
+            const textArea = DOM.create('textarea', {
+                value: text,
+                style: {
+                    position: 'absolute',
+                    left: '-9999px'
+                }
+            });
             document.body.appendChild(textArea);
             textArea.select();
             textArea.setSelectionRange(0, 99999);

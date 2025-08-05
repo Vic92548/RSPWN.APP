@@ -1,7 +1,7 @@
 window.analytics = {};
 
 function isOnMainePage(){
-    if(document.getElementById("sign_in")){
+    if(DOM.get("sign_in")){
         return true;
     }
 

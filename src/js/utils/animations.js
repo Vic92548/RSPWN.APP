@@ -57,38 +57,12 @@ const AnimationUtils = {
         }
     },
 
-    createRipple(event, button) {
-        const ripple = document.createElement('span');
-        const rect = button.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = event.clientX - rect.left - size / 2;
-        const y = event.clientY - rect.top - size / 2;
-
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            pointer-events: none;
-            transform: translate(${x}px, ${y}px) scale(0);
-            animation: rippleEffect 0.6s ease-out;
-        `;
-
-        button.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-    },
-
-    addShimmerEffect(element) {
-        element.classList.add('glass-shimmer');
-    },
-
     formatViews(viewCount) {
         return this.formatNumber(viewCount);
     },
 
     escapeHtml(text) {
-        const div = document.createElement('div');
+        const div = DOM.create('div');
         div.textContent = text;
         return div.innerHTML;
     }

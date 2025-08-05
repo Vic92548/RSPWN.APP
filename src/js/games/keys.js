@@ -17,15 +17,15 @@ function updateKeyStats() {
     const usedKeys = gamesData.allKeys.filter(k => k.usedBy).length;
     const availableKeys = totalKeys - usedKeys;
 
-    document.getElementById('total-keys').textContent = totalKeys;
-    document.getElementById('used-keys').textContent = usedKeys;
-    document.getElementById('available-keys').textContent = availableKeys;
+    DOM.setText('total-keys', totalKeys);
+    DOM.setText('used-keys', usedKeys);
+    DOM.setText('available-keys', availableKeys);
 }
 
 function filterKeys(tag) {
     gamesData.currentKeyFilter = tag;
 
-    document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+    DOM.queryAll('.tag-filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     event.target.classList.add('active');
@@ -43,7 +43,7 @@ function filterKeys(tag) {
 }
 
 function displayKeys(keys) {
-    const container = document.getElementById('keys-list');
+    const container = DOM.get('keys-list');
     container.innerHTML = '';
 
     if (keys.length === 0) {
@@ -71,8 +71,8 @@ function displayKeys(keys) {
 async function generateKeys() {
     if (!gamesData.currentManagingGame) return;
 
-    const count = parseInt(document.getElementById('key-count').value) || 5;
-    const tag = document.getElementById('key-tag').value || null;
+    const count = parseInt(DOM.get('key-count').value) || 5;
+    const tag = DOM.get('key-tag').value || null;
 
     try {
         const response = await api.request(`/api/games/${gamesData.currentManagingGame.id}/generate-keys`, {
@@ -112,12 +112,11 @@ async function downloadFilteredKeys() {
 
         const blob = await response.blob();
         const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = downloadUrl;
-
-        const filename = `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys${tag ? `_${tag}` : ''}.csv`;
-        a.download = filename;
+        const a = DOM.create('a', {
+            style: { display: 'none' },
+            href: downloadUrl,
+            download: `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys${tag ? `_${tag}` : ''}.csv`
+        });
 
         document.body.appendChild(a);
         a.click();

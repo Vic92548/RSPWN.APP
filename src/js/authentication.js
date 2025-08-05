@@ -1,79 +1,67 @@
 function loadUserData(){
     if(MainPage){
-        document.getElementById("sign_in").style.display = "none";
-        document.getElementById("add_post").style.display = "none";
+        DOM.hide("sign_in");
+        DOM.hide("add_post");
     }
 
-    fetch('/me', {
-        credentials: 'include'
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Not authenticated');
-            }
-            return response.json();
-        })
-        .then(data => {
-            window.user = data;
+    api.getMe().then(function(data){window.user = data;
 
-            if (window.updateSDKUserInfo) {
-                window.updateSDKUserInfo();
-            }
-
-            if(!MainPage){
-                return;
-            }
-
-            updateUsername();
-            updateLevel();
-
-            const oldUser = {
-                xp: 0,
-                level: window.user.level,
-                xp_required: window.user.xp_required
-            };
-
-            setXPProgress(oldUser, true);
-
-            syncBackgroundFromBackend();
-
-            document.getElementById("sign_in").style.display = "none";
-            if(window.innerWidth <= 768){
-                document.getElementById("add_post").style.display = "block";
-            }
-
-            document.getElementById("xp_bar").style.display = "block";
-
-            loading_steps--;
-            hideLoading();
-
-            handleReferral();
-
-            setTimeout(() => {
-                migrateLocalBackgroundToBackend();
-            }, 1000);
-
-            if (MainPage) {
-                loadGamesData().then(() => {
-                    updateDeveloperSection();
-                    if (window.user) {
-                        initializeTebexIntegration();
-                        document.getElementById('cart-button').style.display = 'none';
-                    }
-                });
-
-                checkAndShowUpdates();
-            }
-
-        }).catch( error => {
-        document.getElementById("sign_in").style.display = "block";
-        if(window.innerWidth <= 768){
-            document.getElementById("add_post").style.display = "block";
+        if (window.updateSDKUserInfo) {
+            window.updateSDKUserInfo();
         }
-        document.getElementById("add_post").onclick = openRegisterModal;
+
+        if(!MainPage){
+            return;
+        }
+
+        updateUsername();
+        updateLevel();
+
+        const oldUser = {
+            xp: 0,
+            level: window.user.level,
+            xp_required: window.user.xp_required
+        };
+
+        setXPProgress(oldUser, true);
+
+        syncBackgroundFromBackend();
+
+        DOM.hide("sign_in");
+        if(window.innerWidth <= 768){
+            DOM.show("add_post");
+        }
+
+        DOM.show("xp_bar");
+
         loading_steps--;
         hideLoading();
-    });
+
+        handleReferral();
+
+        setTimeout(() => {
+            migrateLocalBackgroundToBackend();
+        }, 1000);
+
+        if (MainPage) {
+            loadGamesData().then(() => {
+                updateDeveloperSection();
+                if (window.user) {
+                    initializeTebexIntegration();
+                    DOM.hide('cart-button');
+                }
+            });
+
+            checkAndShowUpdates();
+        }}).catch(error => {
+        DOM.show("sign_in");
+        if(window.innerWidth <= 768){
+            DOM.show("add_post");
+        }
+        DOM.get("add_post").onclick = openRegisterModal;
+        loading_steps--;
+        hideLoading();
+    })
 }
 
 function syncBackgroundFromBackend() {

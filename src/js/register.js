@@ -1,10 +1,10 @@
 function closeRegisterModal() {
-    document.getElementById("register").style.display = "none";
+    DOM.hide("register");
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const userCountEl = document.getElementById('user_count');
-    const userCountCtaEl = document.getElementById('user_count_cta');
+    const userCountEl = DOM.get('user_count');
+    const userCountCtaEl = DOM.get('user_count_cta');
 
     if (userCountEl && userCountCtaEl) {
         const observer = new MutationObserver(function(mutations) {

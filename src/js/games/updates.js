@@ -30,13 +30,13 @@ async function checkAndShowUpdates() {
 }
 
 function showUpdateNotification(count) {
-    const libraryMenuItems = document.querySelectorAll('.menu-item');
+    const libraryMenuItems = DOM.queryAll('.menu-item');
     libraryMenuItems.forEach(item => {
         const icon = item.querySelector('.menu-item-icon.library');
         if (icon && !icon.querySelector('.update-badge')) {
-            const badge = document.createElement('span');
-            badge.className = 'update-badge';
-            badge.textContent = count;
+            const badge = DOM.create('span', {
+                class: 'update-badge'
+            }, count);
             icon.appendChild(badge);
         }
     });

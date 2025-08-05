@@ -36,9 +36,9 @@ class TebexCart {
 
             notify.success('Item added to cart!');
 
-            const cartButton = document.getElementById('cart-button');
+            const cartButton = DOM.get('cart-button');
             if (cartButton) {
-                cartButton.style.display = 'flex';
+                DOM.show(cartButton, 'flex');
             }
 
             setTimeout(() => {
@@ -85,7 +85,7 @@ class TebexCart {
     }
 
     renderCartItems() {
-        const container = document.getElementById('cart-items');
+        const container = DOM.get('cart-items');
         if (!container) return;
 
         if (!this.basketData?.packages || this.basketData.packages.length === 0) {
@@ -113,25 +113,25 @@ class TebexCart {
     }
 
     updateCartUI() {
-        const cartCount = document.getElementById('cart-count');
-        const cartTotal = document.getElementById('cart-total');
-        const cartButton = document.getElementById('cart-button');
+        const cartCount = DOM.get('cart-count');
+        const cartTotal = DOM.get('cart-total');
+        const cartButton = DOM.get('cart-button');
 
         if (this.basketData) {
             const totalItems = this.basketData.packages?.reduce((sum, item) => sum + (item.in_basket?.quantity || 1), 0) || 0;
 
             if (cartCount) {
-                cartCount.textContent = totalItems;
-                cartCount.style.display = totalItems > 0 ? 'block' : 'none';
+                DOM.setText(cartCount, totalItems);
+                DOM.show(cartCount, totalItems > 0 ? 'block' : 'none');
             }
 
             if (cartButton && isUserLoggedIn()) {
-                cartButton.style.display = totalItems > 0 ? 'flex' : 'none';
+                DOM.show(cartButton, totalItems > 0 ? 'flex' : 'none');
             }
         }
 
         if (cartTotal && this.basketData) {
-            cartTotal.textContent = `${this.basketData.currency || 'EUR'} ${(this.basketData.total_price || 0).toFixed(2)}`;
+            DOM.setText(cartTotal, `${this.basketData.currency || 'EUR'} ${(this.basketData.total_price || 0).toFixed(2)}`);
         }
     }
 
@@ -167,7 +167,7 @@ class TebexCart {
     }
 
     showCartPreview() {
-        const cartPreview = document.getElementById('cart-preview');
+        const cartPreview = DOM.get('cart-preview');
         if (cartPreview) {
             cartPreview.classList.add('show');
             setTimeout(() => {

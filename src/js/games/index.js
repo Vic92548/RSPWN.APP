@@ -14,7 +14,7 @@ cardManager.register('library-card', {
 });
 
 function initGameEventListeners() {
-    const gamesGrid = document.getElementById('games-grid');
+    const gamesGrid = DOM.get('games-grid');
     if (gamesGrid) {
         gamesGrid.addEventListener('click', (e) => {
             const gameItem = e.target.closest('.game-item');
@@ -50,19 +50,19 @@ function closeLibraryCard() {
 }
 
 function openRedeemModal() {
-    document.getElementById('redeem-modal').style.display = 'flex';
-    document.getElementById('game-key-input').value = '';
-    document.getElementById('game-key-input').focus();
+    DOM.show('redeem-modal', 'flex');
+    DOM.get('game-key-input').value = '';
+    DOM.get('game-key-input').focus();
 }
 
 function closeRedeemModal() {
-    document.getElementById('redeem-modal').style.display = 'none';
+    DOM.hide('redeem-modal');
 }
 
 async function redeemKey(event) {
     event.preventDefault();
 
-    const keyInput = document.getElementById('game-key-input');
+    const keyInput = DOM.get('game-key-input');
     const key = keyInput.value.trim();
 
     try {
@@ -101,12 +101,12 @@ async function openKeyManagement(gameId) {
 
     gamesData.currentManagingGame = game;
 
-    let existingCard = document.getElementById('key-management-card');
+    let existingCard = DOM.get('key-management-card');
     if (!existingCard) {
         const keyCard = VAPR.createElement('key-management-card', {
             gameTitle: game.title
         });
-        document.querySelector('#feed').appendChild(keyCard);
+        DOM.query('#feed').appendChild(keyCard);
 
         VAPR.refresh();
 
@@ -130,14 +130,14 @@ async function openVersionManagement(gameId) {
 
     gamesData.currentManagingGame = game;
 
-    let existingCard = document.getElementById('version-management-card');
+    let existingCard = DOM.get('version-management-card');
     if (!existingCard) {
         const versionCard = VAPR.createElementWithContent('version-management-card',
             { gameTitle: game.title },
             `<version-form></version-form>
              <div class="versions-list" id="versions-list"></div>`
         );
-        document.querySelector('#feed').appendChild(versionCard);
+        DOM.query('#feed').appendChild(versionCard);
 
         VAPR.refresh();
 

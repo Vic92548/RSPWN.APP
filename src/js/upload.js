@@ -1,6 +1,6 @@
 if(MainPage){
-    const uploadArea = document.querySelector('.upload-area');
-    const fileInput = document.getElementById('file');
+    const uploadArea = DOM.query('.upload-area');
+    const fileInput = DOM.get('file');
 
     if (uploadArea) {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -47,10 +47,10 @@ if(MainPage){
 
     function handleFileSelect(file) {
         const fileType = file.type;
-        const placeholder = document.getElementById('upload-placeholder');
-        const preview = document.getElementById('upload-preview');
-        const previewImage = document.getElementById('preview_img');
-        const previewVideo = document.getElementById('preview_video');
+        const placeholder = DOM.get('upload-placeholder');
+        const preview = DOM.get('upload-preview');
+        const previewImage = DOM.get('preview_img');
+        const previewVideo = DOM.get('preview_video');
 
         if (file.size > 50 * 1024 * 1024) {
             notify.error('File too large', 'Please select a file under 50MB');
@@ -59,29 +59,29 @@ if(MainPage){
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            placeholder.style.display = 'none';
-            preview.style.display = 'block';
+            DOM.hide(placeholder);
+            DOM.show(preview);
 
             if (fileType.startsWith('video/')) {
                 previewVideo.src = e.target.result;
-                previewVideo.style.display = 'block';
-                previewImage.style.display = 'none';
+                DOM.show(previewVideo);
+                DOM.hide(previewImage);
             } else if (fileType.startsWith('image/')) {
                 previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
-                previewVideo.style.display = 'none';
+                DOM.show(previewImage);
+                DOM.hide(previewVideo);
             } else {
                 notify.error('Invalid file type', 'Please upload an image or video file');
-                placeholder.style.display = 'flex';
-                preview.style.display = 'none';
+                DOM.show(placeholder, 'flex');
+                DOM.hide(preview);
                 return;
             }
         };
         reader.readAsDataURL(file);
     }
 
-    const titleInput = document.getElementById('title');
-    const titleCount = document.getElementById('title-count');
+    const titleInput = DOM.get('title');
+    const titleCount = DOM.get('title-count');
 
     if (titleInput && titleCount) {
         titleInput.addEventListener('input', function() {
@@ -93,13 +93,13 @@ if(MainPage){
 window.submitPost = async function(event) {
     event.preventDefault();
 
-    const submitBtn = document.getElementById('submit-post-btn');
-    const uploadProgress = document.getElementById('upload-progress');
-    const progressFill = document.getElementById('progress-fill');
+    const submitBtn = DOM.get('submit-post-btn');
+    const uploadProgress = DOM.get('upload-progress');
+    const progressFill = DOM.get('progress-fill');
 
-    const title = document.getElementById('title').value;
-    const link = document.getElementById('link').value;
-    const file = document.getElementById('file').files[0];
+    const title = DOM.get('title').value;
+    const link = DOM.get('link').value;
+    const file = DOM.get('file').files[0];
 
     if (!file) {
         notify.warning('No media selected', 'Please select an image or video to upload');
@@ -122,7 +122,7 @@ window.submitPost = async function(event) {
     }
 
     try {
-        uploadProgress.style.display = 'block';
+        DOM.show(uploadProgress);
 
         let progress = 0;
         const progressInterval = setInterval(() => {
@@ -145,12 +145,12 @@ window.submitPost = async function(event) {
 
             closeAddPostCard();
 
-            document.getElementById('title').value = '';
-            document.getElementById('link').value = '';
-            document.getElementById('file').value = '';
-            document.getElementById('upload-placeholder').style.display = 'flex';
-            document.getElementById('upload-preview').style.display = 'none';
-            const titleCount = document.getElementById('title-count');
+            DOM.get('title').value = '';
+            DOM.get('link').value = '';
+            DOM.get('file').value = '';
+            DOM.show('upload-placeholder', 'flex');
+            DOM.hide('upload-preview');
+            const titleCount = DOM.get('title-count');
             if (titleCount) {
                 titleCount.textContent = '0';
             }
@@ -184,7 +184,7 @@ window.submitPost = async function(event) {
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Publish Post</span>';
-        uploadProgress.style.display = 'none';
+        DOM.hide(uploadProgress);
         progressFill.style.width = '0%';
     }
 }

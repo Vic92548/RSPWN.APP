@@ -1,5 +1,5 @@
 function displayGames() {
-    const container = document.getElementById('games-grid');
+    const container = DOM.get('games-grid');
     container.innerHTML = '';
 
     const userGameIds = gamesData.userGames.map(g => g.id);
@@ -51,7 +51,7 @@ function displayGames() {
 }
 
 function displayLibrary() {
-    const container = document.getElementById('library-grid');
+    const container = DOM.get('library-grid');
     container.innerHTML = '';
 
     if (gamesData.userGames.length === 0) {

@@ -26,22 +26,18 @@ function closeDeveloperDashboard() {
 
 async function loadDeveloperData() {
     try {
-        document.getElementById('developer-loading').style.display = 'block';
+        DOM.show('developer-loading');
 
-        // Get all games first
         const allGamesResponse = await api.request('/api/games');
 
         if (allGamesResponse.success) {
-            // Filter games owned by the current user
             developerData.myGames = allGamesResponse.games.filter(game =>
                 game.ownerId === window.user.id
             );
 
-            // Calculate statistics from available data
             let totalKeys = 0;
             let totalUsedKeys = 0;
 
-            // For each game, get the keys to calculate statistics
             for (const game of developerData.myGames) {
                 try {
                     const keysResponse = await api.request(`/api/games/${game.id}/keys`);
@@ -50,10 +46,9 @@ async function loadDeveloperData() {
                         totalKeys += keys.length;
                         totalUsedKeys += keys.filter(k => k.usedBy).length;
 
-                        // Add key stats to the game object for display
                         game.totalKeys = keys.length;
                         game.usedKeys = keys.filter(k => k.usedBy).length;
-                        game.players = keys.filter(k => k.usedBy).length; // Players = used keys
+                        game.players = keys.filter(k => k.usedBy).length;
                     }
                 } catch (error) {
                     console.error(`Error loading keys for game ${game.id}:`, error);
@@ -64,8 +59,8 @@ async function loadDeveloperData() {
             }
 
             developerData.totalKeys = totalKeys;
-            developerData.totalPlayers = totalUsedKeys; // Players = total used keys
-            developerData.totalDownloads = totalUsedKeys; // Assuming 1 download per used key
+            developerData.totalPlayers = totalUsedKeys;
+            developerData.totalDownloads = totalUsedKeys;
 
             displayDeveloperStats();
             displayDeveloperGames();
@@ -74,19 +69,19 @@ async function loadDeveloperData() {
         console.error('Error loading developer data:', error);
         notify.error('Failed to load developer data');
     } finally {
-        document.getElementById('developer-loading').style.display = 'none';
+        DOM.hide('developer-loading');
     }
 }
 
 function displayDeveloperStats() {
-    document.getElementById('dev-total-games').textContent = developerData.myGames.length;
-    document.getElementById('dev-total-keys').textContent = formatNumber(developerData.totalKeys);
-    document.getElementById('dev-total-players').textContent = formatNumber(developerData.totalPlayers);
-    document.getElementById('dev-total-downloads').textContent = formatNumber(developerData.totalDownloads);
+    DOM.setText('dev-total-games', developerData.myGames.length);
+    DOM.setText('dev-total-keys', formatNumber(developerData.totalKeys));
+    DOM.setText('dev-total-players', formatNumber(developerData.totalPlayers));
+    DOM.setText('dev-total-downloads', formatNumber(developerData.totalDownloads));
 }
 
 function displayDeveloperGames() {
-    const container = document.getElementById('dev-games-grid');
+    const container = DOM.get('dev-games-grid');
     container.innerHTML = '';
 
     if (developerData.myGames.length === 0) {
@@ -110,7 +105,7 @@ function displayDeveloperGames() {
             availableKeys: (game.totalKeys || 0) - (game.usedKeys || 0),
             players: game.players || 0,
             currentVersion: game.currentVersion || '1.0.0',
-            hasUpdate: false // You could check versions here if needed
+            hasUpdate: false
         }))
     );
 

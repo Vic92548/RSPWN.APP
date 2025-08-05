@@ -17,17 +17,13 @@ function closeBackgroundsCard() {
     cardManager.hide('backgrounds-card');
 }
 
-function closeCustomizationMenu() {
-    closeBackgroundsCard();
-}
-
 function displayBackgroundImages() {
     if (!isUserLoggedIn() && MainPage) {
         openRegisterModal();
         return;
     }
 
-    const container = document.getElementById("backgrounds-grid");
+    const container = DOM.get("backgrounds-grid");
     container.innerHTML = '';
 
     const currentBackground = localStorage.getItem('background_url');
@@ -37,8 +33,9 @@ function displayBackgroundImages() {
         const isEquipped = currentBackground === bg.image_url;
         const progress = Math.min((user.level / bg.unlock) * 100, 100);
 
-        const card = document.createElement('div');
-        card.className = `background-item ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`;
+        const card = DOM.create('div', {
+            class: `background-item ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`
+        });
 
         card.innerHTML = `
             ${bg.new && isUnlocked ? '<div class="new-badge">NEW</div>' : ''}

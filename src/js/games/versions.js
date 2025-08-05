@@ -10,41 +10,41 @@ async function getVersions(gameId) {
 }
 
 function toggleUploadMethod(method) {
-    const urlGroup = document.getElementById('url-input-group');
-    const fileGroup = document.getElementById('file-input-group');
-    const sizeGroup = document.getElementById('size-input-group');
-    const methodBtns = document.querySelectorAll('.method-btn');
+    const urlGroup = DOM.get('url-input-group');
+    const fileGroup = DOM.get('file-input-group');
+    const sizeGroup = DOM.get('size-input-group');
+    const methodBtns = DOM.queryAll('.method-btn');
 
     methodBtns.forEach(btn => btn.classList.remove('active'));
     event.target.closest('.method-btn').classList.add('active');
 
     if (method === 'url') {
-        urlGroup.style.display = 'block';
-        fileGroup.style.display = 'none';
-        sizeGroup.style.display = 'block';
+        DOM.show(urlGroup);
+        DOM.hide(fileGroup);
+        DOM.show(sizeGroup);
     } else {
-        urlGroup.style.display = 'none';
-        fileGroup.style.display = 'block';
-        sizeGroup.style.display = 'none';
+        DOM.hide(urlGroup);
+        DOM.show(fileGroup);
+        DOM.hide(sizeGroup);
     }
 }
 
 function clearFileUpload(event) {
     event.stopPropagation();
-    const fileInput = document.getElementById('version-file');
+    const fileInput = DOM.get('version-file');
     fileInput.value = '';
-    document.getElementById('file-upload-placeholder').style.display = 'flex';
-    document.getElementById('file-upload-preview').style.display = 'none';
+    DOM.show('file-upload-placeholder', 'flex');
+    DOM.hide('file-upload-preview');
 }
 
 async function publishVersion() {
     if (!gamesData.currentManagingGame) return;
 
-    const versionNumber = document.getElementById('version-number').value;
-    const changelog = document.getElementById('version-changelog').value;
-    const isRequired = document.getElementById('version-required').checked;
+    const versionNumber = DOM.get('version-number').value;
+    const changelog = DOM.get('version-changelog').value;
+    const isRequired = DOM.get('version-required').checked;
 
-    const isFileUpload = document.getElementById('file-input-group').style.display !== 'none';
+    const isFileUpload = DOM.get('file-input-group').style.display !== 'none';
 
     if (!versionNumber) {
         notify.warning('Missing Information', 'Please fill in version number');
@@ -60,7 +60,7 @@ async function publishVersion() {
         let downloadUrl, size;
 
         if (isFileUpload) {
-            const fileInput = document.getElementById('version-file');
+            const fileInput = DOM.get('version-file');
             const file = fileInput.files[0];
 
             if (!file) {
@@ -92,8 +92,8 @@ async function publishVersion() {
 
             publishBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating version...';
         } else {
-            downloadUrl = document.getElementById('version-url').value;
-            size = document.getElementById('version-size').value;
+            downloadUrl = DOM.get('version-url').value;
+            size = DOM.get('version-size').value;
 
             if (!downloadUrl) {
                 notify.warning('Missing Information', 'Please fill in download URL');
@@ -114,11 +114,11 @@ async function publishVersion() {
         if (response.success) {
             notify.success('Version published successfully!');
 
-            document.getElementById('version-number').value = '';
-            document.getElementById('version-url').value = '';
-            document.getElementById('version-size').value = '';
-            document.getElementById('version-changelog').value = '';
-            document.getElementById('version-required').checked = false;
+            DOM.get('version-number').value = '';
+            DOM.get('version-url').value = '';
+            DOM.get('version-size').value = '';
+            DOM.get('version-changelog').value = '';
+            DOM.get('version-required').checked = false;
 
             if (isFileUpload) {
                 clearFileUpload({ stopPropagation: () => {} });
@@ -147,7 +147,7 @@ async function loadGameVersions(gameId) {
 }
 
 function displayVersions(versions) {
-    const container = document.getElementById('versions-list');
+    const container = DOM.get('versions-list');
     if (!container) return;
 
     container.innerHTML = '<h4>Version History</h4>';
@@ -187,14 +187,14 @@ function handleVersionFileSelect(event) {
         return;
     }
 
-    document.getElementById('file-upload-placeholder').style.display = 'none';
-    document.getElementById('file-upload-preview').style.display = 'flex';
-    document.getElementById('file-name').textContent = file.name;
-    document.getElementById('file-size').textContent = `(${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+    DOM.hide('file-upload-placeholder');
+    DOM.show('file-upload-preview', 'flex');
+    DOM.setText('file-name', file.name);
+    DOM.setText('file-size', `(${(file.size / 1024 / 1024).toFixed(2)} MB)`);
 }
 
 function initVersionFileUpload() {
-    const uploadArea = document.querySelector('.file-upload-area');
+    const uploadArea = DOM.query('.file-upload-area');
     if (!uploadArea) return;
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -225,7 +225,7 @@ function initVersionFileUpload() {
         const files = dt.files;
 
         if (files.length > 0) {
-            const fileInput = document.getElementById('version-file');
+            const fileInput = DOM.get('version-file');
             fileInput.files = files;
             handleVersionFileSelect({ target: fileInput });
         }
@@ -233,7 +233,7 @@ function initVersionFileUpload() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('version-file');
+    const fileInput = DOM.get('version-file');
     if (fileInput) {
         fileInput.addEventListener('change', handleVersionFileSelect);
     }

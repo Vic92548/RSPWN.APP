@@ -20,7 +20,7 @@ function closeGameDetails() {
 
 async function loadGameDetails(gameId) {
     try {
-        document.getElementById('game-details-loading').style.display = 'block';
+        DOM.show('game-details-loading');
 
         let game = null;
         let vaprGame = null;
@@ -91,31 +91,31 @@ async function loadGameDetails(gameId) {
         console.error('Error loading game details:', error);
         notify.error('Failed to load game details');
     } finally {
-        document.getElementById('game-details-loading').style.display = 'none';
+        DOM.hide('game-details-loading');
     }
 }
 
 async function displayGameDetails(game) {
     console.log({ game });
 
-    document.getElementById('game-details-cover').src = game.coverImage;
-    document.getElementById('game-details-backdrop').src = game.coverImage;
-    document.getElementById('game-hero-title').textContent = game.title;
-    document.getElementById('game-details-description').innerHTML = game.description;
+    DOM.get('game-details-cover').src = game.coverImage;
+    DOM.get('game-details-backdrop').src = game.coverImage;
+    DOM.setText('game-hero-title', game.title);
+    DOM.setHTML('game-details-description', game.description);
 
-    const versionEl = document.getElementById('game-details-version');
-    const metaVersionEl = document.getElementById('game-details-meta-version');
+    const versionEl = DOM.get('game-details-version');
+    const metaVersionEl = DOM.get('game-details-meta-version');
     const version = game.currentVersion || game.version || '1.0.0';
-    versionEl.textContent = version;
-    if (metaVersionEl) metaVersionEl.textContent = version;
+    DOM.setText(versionEl, version);
+    if (metaVersionEl) DOM.setText(metaVersionEl, version);
 
-    const playerCountEl = document.getElementById('game-details-players');
+    const playerCountEl = DOM.get('game-details-players');
     if (playerCountEl) {
-        playerCountEl.textContent = game.playerCount || 0;
+        DOM.setText(playerCountEl, game.playerCount || 0);
     }
 
-    const developerEl = document.getElementById('game-details-developer');
-    const heroDeveloperEl = document.getElementById('game-hero-developer');
+    const developerEl = DOM.get('game-details-developer');
+    const heroDeveloperEl = DOM.get('game-hero-developer');
 
     const updateDeveloperElements = (text, href = '#', clickable = false) => {
         [developerEl, heroDeveloperEl].forEach(el => {
@@ -187,12 +187,12 @@ async function displayGameDetails(game) {
         updateDeveloperElements('Unknown Developer', '#', false);
     }
 
-    const releaseDateEl = document.getElementById('game-details-release-date');
-    const heroReleaseDateEl = document.getElementById('game-hero-release-date');
+    const releaseDateEl = DOM.get('game-details-release-date');
+    const heroReleaseDateEl = DOM.get('game-hero-release-date');
     const releaseDate = game.createdAt ? new Date(game.createdAt).toLocaleDateString() : 'TBA';
 
-    if (releaseDateEl) releaseDateEl.textContent = releaseDate;
-    if (heroReleaseDateEl) heroReleaseDateEl.textContent = releaseDate;
+    if (releaseDateEl) DOM.setText(releaseDateEl, releaseDate);
+    if (heroReleaseDateEl) DOM.setText(heroReleaseDateEl, releaseDate);
 
     const userGameIds = gamesData.userGames.map(g => g.id);
     const isOwned = userGameIds.includes(game.id) ||
@@ -201,89 +201,89 @@ async function displayGameDetails(game) {
             return ownedGame && ownedGame.title.toLowerCase() === game.title.toLowerCase();
         }));
 
-    const priceSection = document.getElementById('game-details-price-section');
-    const ownedSection = document.getElementById('game-details-owned-section');
-    const giftButton = document.getElementById('game-details-gift-button');
-    const priceBox = document.querySelector('.price-box');
-    const originalPriceEl = document.getElementById('game-details-original-price');
-    const currentPriceEl = document.getElementById('game-details-price');
-    const disclaimerSection = document.getElementById('game-details-disclaimer-section');
+    const priceSection = DOM.get('game-details-price-section');
+    const ownedSection = DOM.get('game-details-owned-section');
+    const giftButton = DOM.get('game-details-gift-button');
+    const priceBox = DOM.query('.price-box');
+    const originalPriceEl = DOM.get('game-details-original-price');
+    const currentPriceEl = DOM.get('game-details-price');
+    const disclaimerSection = DOM.get('game-details-disclaimer-section');
 
     if (game.isTebexProduct) {
-        priceBox.style.display = 'flex';
-        disclaimerSection.style.display = 'block';
+        DOM.show(priceBox, 'flex');
+        DOM.show(disclaimerSection);
 
         if (game.onSale) {
-            originalPriceEl.style.display = 'inline';
-            originalPriceEl.textContent = `${game.currency} ${game.originalPrice.toFixed(2)}`;
+            DOM.show(originalPriceEl, 'inline');
+            DOM.setText(originalPriceEl, `${game.currency} ${game.originalPrice.toFixed(2)}`);
         } else {
-            originalPriceEl.style.display = 'none';
+            DOM.hide(originalPriceEl);
         }
 
-        currentPriceEl.textContent = `${game.currency} ${game.price.toFixed(2)}`;
+        DOM.setText(currentPriceEl, `${game.currency} ${game.price.toFixed(2)}`);
 
         if (isOwned) {
-            priceSection.style.display = 'none';
-            ownedSection.style.display = 'flex';
-            giftButton.style.display = 'inline-flex';
+            DOM.hide(priceSection);
+            DOM.show(ownedSection, 'flex');
+            DOM.show(giftButton, 'inline-flex');
             giftButton.onclick = () => {
                 addToCart(game.tebexId);
                 closeGameDetails();
             };
         } else {
-            priceSection.style.display = 'flex';
-            ownedSection.style.display = 'none';
+            DOM.show(priceSection, 'flex');
+            DOM.hide(ownedSection);
 
-            const addToCartBtn = document.getElementById('game-details-add-to-cart');
+            const addToCartBtn = DOM.get('game-details-add-to-cart');
             addToCartBtn.onclick = () => {
                 addToCart(game.tebexId);
                 closeGameDetails();
             };
         }
     } else {
-        priceBox.style.display = 'none';
-        priceSection.style.display = 'none';
-        disclaimerSection.style.display = 'none';
+        DOM.hide(priceBox);
+        DOM.hide(priceSection);
+        DOM.hide(disclaimerSection);
 
         if (isOwned) {
-            ownedSection.style.display = 'flex';
-            giftButton.style.display = 'none';
+            DOM.show(ownedSection, 'flex');
+            DOM.hide(giftButton);
         } else {
-            ownedSection.style.display = 'none';
+            DOM.hide(ownedSection);
         }
     }
 
-    const changelogSection = document.getElementById('game-details-changelog-section');
-    const changelogContainer = document.getElementById('game-details-changelog');
+    const changelogSection = DOM.get('game-details-changelog-section');
+    const changelogContainer = DOM.get('game-details-changelog');
 
     if (game.changelog || game.updates) {
-        changelogSection.style.display = 'block';
-        changelogContainer.innerHTML = game.changelog || game.updates || 'No recent updates';
+        DOM.show(changelogSection);
+        DOM.setHTML(changelogContainer, game.changelog || game.updates || 'No recent updates');
     } else {
-        changelogSection.style.display = 'none';
+        DOM.hide(changelogSection);
     }
 
-    const externalSection = document.getElementById('game-details-external-section');
-    const externalLink = document.getElementById('game-details-external-link');
+    const externalSection = DOM.get('game-details-external-section');
+    const externalLink = DOM.get('game-details-external-link');
 
     if (game.externalLink) {
-        externalSection.style.display = 'block';
+        DOM.show(externalSection);
         externalLink.href = game.externalLink;
     } else {
-        externalSection.style.display = 'none';
+        DOM.hide(externalSection);
     }
 }
 
 function toggleDisclaimer() {
-    const disclaimerContent = document.getElementById('disclaimer-content');
-    const disclaimerToggle = document.getElementById('disclaimer-toggle');
+    const disclaimerContent = DOM.get('disclaimer-content');
+    const disclaimerToggle = DOM.get('disclaimer-toggle');
 
     if (disclaimerContent.classList.contains('collapsed')) {
         disclaimerContent.classList.remove('collapsed');
-        disclaimerToggle.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+        DOM.setHTML(disclaimerToggle, '<i class="fa-solid fa-chevron-up"></i>');
     } else {
         disclaimerContent.classList.add('collapsed');
-        disclaimerToggle.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+        DOM.setHTML(disclaimerToggle, '<i class="fa-solid fa-chevron-down"></i>');
     }
 }
 

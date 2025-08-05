@@ -12,8 +12,8 @@ function setXPProgress(old_user, disable_xp_notif = false, force_update = false)
         const diff = (xp / old_user.xp_required) * 100;
         const new_value = (total_xp / old_user.xp_required) * 100;
 
-        const xp_bar_progress_visual = document.getElementById("xp_bar_progress_visual");
-        const xp_bar_progress = document.getElementById("xp_bar_progress");
+        const xp_bar_progress_visual = DOM.get("xp_bar_progress_visual");
+        const xp_bar_progress = DOM.get("xp_bar_progress");
 
         xp_bar_progress_visual.style.width = diff + "%";
         xp_bar_progress_visual.style.left = (new_value - diff) + "%";
@@ -50,10 +50,10 @@ function updateLevel() {
 }
 
 function updateXPDisplay() {
-    const username = document.querySelector('.xp-username');
+    const username = DOM.query('.xp-username');
 
     if (username) username.textContent = user.username || 'username';
 
-    const oldUsername = document.querySelector('.username');
+    const oldUsername = DOM.query('.username');
     if (oldUsername) oldUsername.textContent = user.username || 'username';
 }

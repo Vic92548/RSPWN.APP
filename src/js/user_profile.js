@@ -13,20 +13,21 @@ function initProfilePage() {
     if (window.profileData && window.profileData.backgroundId) {
         const background = background_images.find(bg => bg.id === window.profileData.backgroundId);
         if (background) {
-            document.getElementById('profile-body').style.backgroundImage = 'url(' + background.image_url + ')';
+            DOM.get('profile-body').style.backgroundImage = 'url(' + background.image_url + ')';
         }
     }
 }
 
 function addFollowButton() {
-    const profileHeader = document.querySelector('.profile-info');
+    const profileHeader = DOM.query('.profile-info');
     if (!profileHeader || !window.user || window.user.id === window.profileData.id) {
         return;
     }
 
-    const followBtn = document.createElement('button');
-    followBtn.className = 'glass_bt follow-profile-btn';
-    followBtn.id = 'profile_follow_btn';
+    const followBtn = DOM.create('button', {
+        class: 'glass_bt follow-profile-btn',
+        id: 'profile_follow_btn'
+    });
 
     checkProfileFollowStatus(window.profileData.id).then(isFollowing => {
         if (isFollowing) {
@@ -58,7 +59,7 @@ async function toggleProfileFollow() {
         return;
     }
 
-    const followBtn = document.getElementById('profile_follow_btn');
+    const followBtn = DOM.get('profile_follow_btn');
     if (!followBtn) return;
 
     const isFollowing = followBtn.classList.contains('following');
@@ -72,21 +73,21 @@ async function toggleProfileFollow() {
             : await api.unfollowPost(tempPost.id);
 
         if (response) {
-            const followerCountEl = document.querySelector('.stat-value[data-stat="followers"]');
+            const followerCountEl = DOM.query('.stat-value[data-stat="followers"]');
 
             if (isFollowing) {
                 followBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Follow';
                 followBtn.classList.remove('following');
                 if (followerCountEl) {
                     const currentCount = parseInt(followerCountEl.textContent.replace(/[^0-9]/g, ''));
-                    followerCountEl.textContent = formatNumber(Math.max(0, currentCount - 1));
+                    DOM.setText(followerCountEl, formatNumber(Math.max(0, currentCount - 1)));
                 }
             } else {
                 followBtn.innerHTML = '<i class="fa-solid fa-user-minus"></i> Following';
                 followBtn.classList.add('following');
                 if (followerCountEl) {
                     const currentCount = parseInt(followerCountEl.textContent.replace(/[^0-9]/g, ''));
-                    followerCountEl.textContent = formatNumber(currentCount + 1);
+                    DOM.setText(followerCountEl, formatNumber(currentCount + 1));
                 }
             }
         }
@@ -96,7 +97,7 @@ async function toggleProfileFollow() {
 }
 
 function makeProfilePostsInteractive() {
-    const postCards = document.querySelectorAll('.profile-post-card');
+    const postCards = DOM.queryAll('.profile-post-card');
 
     postCards.forEach(card => {
         card.addEventListener('click', (e) => {
@@ -111,7 +112,7 @@ function makeProfilePostsInteractive() {
 }
 
 function addProfileInteractions() {
-    const style = document.createElement('style');
+    const style = DOM.create('style');
     style.textContent = `
         .follow-profile-btn {
             background-color: rgb(95, 148, 243);
@@ -149,7 +150,7 @@ if (typeof drawPost !== 'undefined') {
     drawPost = function(data) {
         originalDrawPost(data);
 
-        const usernameElement = document.getElementById("post_username");
+        const usernameElement = DOM.get("post_username");
         if (usernameElement && data.username) {
             usernameElement.style.cursor = "pointer";
             usernameElement.onclick = (e) => {

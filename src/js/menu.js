@@ -16,16 +16,16 @@ function initMenu() {
 }
 
 function updateDeveloperSection() {
-    const devSection = document.querySelector('.menu-section[title="Developer"]');
+    const devSection = DOM.query('.menu-section[title="Developer"]');
     if (devSection) {
         devSection.style.display = isGameDeveloper() ? 'block' : 'none';
     }
 }
 
 function toggleMenuCollapse() {
-    const menuContainer = document.querySelector('.menu-container');
-    const mainElement = document.querySelector('main');
-    const toggleButton = document.querySelector('.menu-toggle i');
+    const menuContainer = DOM.query('.menu-container');
+    const mainElement = DOM.query('main');
+    const toggleButton = DOM.query('.menu-toggle i');
 
     if (!menuContainer) return;
 
@@ -46,7 +46,7 @@ function toggleMenuCollapse() {
 }
 
 function updateMenuTooltips(isCollapsed) {
-    const menuItems = document.querySelectorAll('.menu-item');
+    const menuItems = DOM.queryAll('.menu-item');
 
     menuItems.forEach(item => {
         if (isCollapsed) {
@@ -62,8 +62,8 @@ function updateMenuTooltips(isCollapsed) {
 
 function initMenuCollapseState() {
     const savedState = localStorage.getItem('menuCollapsed');
-    const menuContainer = document.querySelector('.menu-container');
-    const mainElement = document.querySelector('main');
+    const menuContainer = DOM.query('.menu-container');
+    const mainElement = DOM.query('main');
 
     if (savedState === 'true' && menuContainer) {
         menuContainer.classList.add('collapsed');
@@ -72,7 +72,7 @@ function initMenuCollapseState() {
         }
         updateMenuTooltips(true);
 
-        const toggleButton = document.querySelector('.menu-toggle i');
+        const toggleButton = DOM.query('.menu-toggle i');
         if (toggleButton) {
             toggleButton.style.transform = 'rotate(180deg)';
         }
@@ -80,26 +80,26 @@ function initMenuCollapseState() {
 }
 
 function addCollapsedMenuInteractions() {
-    const menuContainer = document.querySelector('.menu-container');
+    const menuContainer = DOM.query('.menu-container');
     if (!menuContainer) return;
 }
 
 function updateMenuUserInfo() {
     if (!window.user) return;
 
-    const menuAvatar = document.getElementById('menu_user_avatar');
+    const menuAvatar = DOM.get('menu_user_avatar');
     if (menuAvatar && window.user.avatar) {
         menuAvatar.src = `https://cdn.discordapp.com/avatars/${window.user.id}/${window.user.avatar}.png?size=128`;
     } else if (menuAvatar) {
         menuAvatar.src = 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
     }
 
-    const menuUsername = document.getElementById('menu_username');
+    const menuUsername = DOM.get('menu_username');
     if (menuUsername) {
         menuUsername.textContent = '@' + window.user.username;
     }
 
-    const menuLevel = document.getElementById('menu_user_level');
+    const menuLevel = DOM.get('menu_user_level');
     if (menuLevel) {
         menuLevel.textContent = window.user.level || 0;
     }
@@ -114,8 +114,8 @@ function updateMenuXPBar() {
     const xpRequired = window.user.xp_required || 700;
     const xpPercentage = (xp / xpRequired) * 100;
 
-    const xpBar = document.getElementById('menu_xp_bar');
-    const xpText = document.getElementById('menu_xp_text');
+    const xpBar = DOM.get('menu_xp_bar');
+    const xpText = DOM.get('menu_xp_text');
 
     if (xpBar) {
         xpBar.style.width = xpPercentage + '%';
@@ -127,18 +127,18 @@ function updateMenuXPBar() {
 }
 
 function showMenuUserElements() {
-    const userCard = document.getElementById('menu_user_info');
-    const logoutBtn = document.getElementById('logout_btn');
+    const userCard = DOM.get('menu_user_info');
+    const logoutBtn = DOM.get('logout_btn');
 
-    if (userCard) userCard.style.display = 'flex';
-    if (logoutBtn) logoutBtn.style.display = 'flex';
+    if (userCard) DOM.show(userCard, 'flex');
+    if (logoutBtn) DOM.show(logoutBtn, 'flex');
 }
 
 async function updateOnlineUsers() {
     try {
         const data = await api.getUserCount();
 
-        const onlineEl = document.getElementById('online_users');
+        const onlineEl = DOM.get('online_users');
         if (onlineEl && data.count) {
             onlineEl.textContent = data.count.toLocaleString() + ' users';
         }
@@ -148,7 +148,7 @@ async function updateOnlineUsers() {
 }
 
 function addMenuAnimations() {
-    const menuItems = document.querySelectorAll('.menu-item');
+    const menuItems = DOM.queryAll('.menu-item');
 
     menuItems.forEach((item, index) => {
         item.style.opacity = '0';
@@ -170,7 +170,7 @@ function isRunningInTauri() {
 }
 
 function getLatestVersion() {
-    const versionElement = document.querySelector('.menu-version span');
+    const versionElement = DOM.query('.menu-version span');
     if (versionElement) {
         const versionText = versionElement.textContent;
         const versionMatch = versionText.match(/v(\d+\.\d+\.\d+)/);
@@ -200,10 +200,10 @@ function downloadDesktopApp() {
 }
 
 function openMenu() {
-    const menu = document.getElementById('menu');
+    const menu = DOM.get('menu');
     if (!menu) return;
 
-    menu.style.display = 'flex';
+    DOM.show(menu, 'flex');
 
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
@@ -225,7 +225,7 @@ function openMenu() {
 }
 
 function hideMenu() {
-    const menu = document.getElementById('menu');
+    const menu = DOM.get('menu');
     if (!menu) return;
 
     const menuContainer = menu.querySelector('.menu-container');
@@ -235,10 +235,10 @@ function hideMenu() {
         menuContainer.style.opacity = '0';
 
         setTimeout(() => {
-            menu.style.display = 'none';
+            DOM.hide(menu);
         }, 300);
     } else {
-        menu.style.display = 'none';
+        DOM.hide(menu);
     }
 }
 
@@ -272,8 +272,8 @@ window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
         if (window.innerWidth < 769) {
-            const menuContainer = document.querySelector('.menu-container');
-            const mainElement = document.querySelector('main');
+            const menuContainer = DOM.query('.menu-container');
+            const mainElement = DOM.query('main');
 
             if (menuContainer) {
                 menuContainer.classList.remove('collapsed');
@@ -337,13 +337,13 @@ if (typeof document !== 'undefined') {
 }
 
 function insertVAPRUserInfo() {
-    const menuHeader = document.querySelector('.menu-header');
+    const menuHeader = DOM.query('.menu-header');
     if (!menuHeader) return;
 
     const container = menuHeader.parentElement;
     const menuNav = container.querySelector('.menu-nav');
 
-    const existingUserInfo = document.getElementById('menu_user_info');
+    const existingUserInfo = DOM.get('menu_user_info');
     if (existingUserInfo) existingUserInfo.remove();
 
     const avatarUrl = window.user.avatar
@@ -352,14 +352,15 @@ function insertVAPRUserInfo() {
 
     const xpPercent = ((window.user.xp || 0) / (window.user.xp_required || 700)) * 100;
 
-    const userInfo = document.createElement('user-info-card');
-    userInfo.setAttribute('id', 'menu_user_info');
-    userInfo.setAttribute('avatar', avatarUrl);
-    userInfo.setAttribute('username', '@' + window.user.username);
-    userInfo.setAttribute('level', window.user.level || 0);
-    userInfo.setAttribute('xp', window.user.xp || 0);
-    userInfo.setAttribute('xp-required', window.user.xp_required || 700);
-    userInfo.setAttribute('xp-percent', xpPercent.toFixed(1));
+    const userInfo = DOM.create('user-info-card', {
+        id: 'menu_user_info',
+        avatar: avatarUrl,
+        username: '@' + window.user.username,
+        level: window.user.level || 0,
+        xp: window.user.xp || 0,
+        'xp-required': window.user.xp_required || 700,
+        'xp-percent': xpPercent.toFixed(1)
+    });
 
     container.insertBefore(userInfo, menuNav);
 }
