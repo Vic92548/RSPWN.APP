@@ -286,7 +286,3 @@ function toggleDisclaimer() {
         DOM.setHTML(disclaimerToggle, '<i class="fa-solid fa-chevron-down"></i>');
     }
 }
-
-window.showGameDetails = showGameDetails;
-window.closeGameDetails = closeGameDetails;
-window.toggleDisclaimer = toggleDisclaimer;

@@ -206,5 +206,3 @@ function setupEventListeners() {
         });
     }
 }
-
-window.closeAnalytics = closeAnalyticsCard;

@@ -66,7 +66,3 @@ if (typeof document !== 'undefined') {
         monitorSDKConnections();
     });
 }
-
-window.updateSDKUserInfo = updateSDKUserInfo;
-window.clearSDKUserInfo = clearSDKUserInfo;
-window.getSDKConnectedSessions = getSDKConnectedSessions;

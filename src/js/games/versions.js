@@ -242,7 +242,3 @@ document.addEventListener('DOMContentLoaded', () => {
 VAPR.on('.version-form', 'mounted', () => {
     initVersionFileUpload();
 });
-
-window.toggleUploadMethod = toggleUploadMethod;
-window.clearFileUpload = clearFileUpload;
-window.handleVersionFileSelect = handleVersionFileSelect;

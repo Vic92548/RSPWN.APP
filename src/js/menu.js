@@ -364,9 +364,3 @@ function insertVAPRUserInfo() {
 
     container.insertBefore(userInfo, menuNav);
 }
-
-window.toggleMenuCollapse = toggleMenuCollapse;
-window.openMenu = openMenu;
-window.hideMenu = hideMenu;
-window.logout = logout;
-window.downloadDesktopApp = downloadDesktopApp;

@@ -153,8 +153,3 @@ async function quickGenerateKeys(gameId) {
         }
     }
 }
-
-window.quickGenerateKeys = quickGenerateKeys;
-window.openDeveloperDashboard = openDeveloperDashboard;
-window.closeDeveloperDashboard = closeDeveloperDashboard;
-window.openGameDashboard = openGameDashboard;

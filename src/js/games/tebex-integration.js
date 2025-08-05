@@ -74,7 +74,3 @@ window.loadUserData = function() {
         initializeTebexIntegration();
     }, 500);
 };
-
-window.addToCart = addToCart;
-window.openCart = openCart;
-window.closeCart = closeCart;

@@ -133,14 +133,6 @@ const cardManager = {
             if (loading) loading.style.display = 'none';
             if (content) content.style.opacity = '1';
         }
-    },
-
-    isShown(cardId) {
-        return this.currentCard === cardId;
-    },
-
-    getCurrentCard() {
-        return this.currentCard;
     }
 };
 

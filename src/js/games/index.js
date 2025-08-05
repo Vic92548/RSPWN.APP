@@ -173,27 +173,3 @@ setInterval(() => {
         checkAndShowUpdates();
     }
 }, 5 * 60 * 1000);
-
-window.openGamesShowcase = openGamesShowcase;
-window.openMyLibrary = openMyLibrary;
-window.closeGamesCard = closeGamesCard;
-window.closeLibraryCard = closeLibraryCard;
-window.openRedeemModal = openRedeemModal;
-window.closeRedeemModal = closeRedeemModal;
-window.redeemKey = redeemKey;
-window.openGameManagement = openGameManagement;
-window.openKeyManagement = openKeyManagement;
-window.openVersionManagement = openVersionManagement;
-window.closeKeyManagementCard = closeKeyManagementCard;
-window.closeVersionManagementCard = closeVersionManagementCard;
-window.downloadGame = downloadGame;
-window.cancelDownload = cancelDownload;
-window.uninstallGame = uninstallGame;
-window.launchGame = launchGame;
-window.downloadUpdate = downloadUpdate;
-window.downloadFilteredKeys = downloadFilteredKeys;
-window.filterKeys = filterKeys;
-window.generateKeys = generateKeys;
-window.copyKey = copyKey;
-window.publishVersion = publishVersion;
-window.initGameEventListeners = initGameEventListeners;

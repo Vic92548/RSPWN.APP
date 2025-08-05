@@ -151,7 +151,3 @@ if (typeof document !== 'undefined') {
 
     observer.observe(document.body, { childList: true, subtree: true });
 }
-
-window.checkDesktopVersion = checkDesktopVersion;
-window.downloadLatestDesktopVersion = downloadLatestDesktopVersion;
-window.skipVersionUpdate = skipVersionUpdate;
