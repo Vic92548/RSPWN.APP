@@ -187,11 +187,6 @@
   box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
 }
 
-@keyframes legendary-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.4); }
-  50% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.6); }
-}
-
 .new-badge {
   position: absolute;
   top: 8px;

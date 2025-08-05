@@ -40,11 +40,7 @@ function displayBackgroundImages() {
         const card = document.createElement('div');
         card.className = `background-item ${!isUnlocked ? 'locked' : ''} ${isEquipped ? 'equipped' : ''}`;
 
-        let rarityClass = `rarity-${bg.rarity}`;
-        let rarityText = bg.rarity.charAt(0).toUpperCase() + bg.rarity.slice(1);
-
         card.innerHTML = `
-            <div class="rarity-badge ${rarityClass}">${rarityText}</div>
             ${bg.new && isUnlocked ? '<div class="new-badge">NEW</div>' : ''}
             
             <img src="${bg.image_url}" class="background-preview" alt="${bg.title}" loading="lazy">

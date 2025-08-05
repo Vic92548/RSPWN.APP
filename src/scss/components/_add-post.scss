@@ -1,31 +1,6 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-.add-post-card {
-  @include glass-effect();
-  border-radius: 20px;
-  color: #fff;
-  overflow: hidden;
-
-  * {
-    color: $text-primary;
-  }
-
-  #postForm {
-    background: transparent;
-    box-shadow: none;
-    animation: none;
-    width: 100%;
-    padding: 0;
-    border-radius: 0;
-  }
-
-  @include responsive(tablet) {
-    margin: 10px;
-    border-radius: 16px;
-  }
-}
-
 .input-group {
   margin-bottom: 20px;
   position: relative;

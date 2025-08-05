@@ -2,16 +2,7 @@
 @use '../mixins' as *;
 
 .xp-container {
-  position: relative;
-  left: 0;
-  right: 0;
   margin: 20px auto;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  width: 90%;
-  padding: 12px 20px;
-  @include glass-effect();
   border-radius: $radius-sm;
 
   &:hover {

@@ -169,51 +169,6 @@
   box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
 }
 
-.rarity-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 4px 10px;
-  border-radius: 7px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  z-index: 4;
-  backdrop-filter: $blur-sm;
-  -webkit-backdrop-filter: $blur-sm;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.rarity-common {
-  background: rgba(150, 150, 150, 0.4);
-  color: #fff;
-}
-
-.rarity-rare {
-  background: rgba(41, 128, 185, 0.4);
-  color: #fff;
-  box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
-}
-
-.rarity-epic {
-  background: rgba(142, 68, 173, 0.4);
-  color: #fff;
-  box-shadow: 0 0 10px rgba(142, 68, 173, 0.3);
-}
-
-.rarity-legendary {
-  background: rgba(241, 196, 15, 0.4);
-  color: #fff;
-  box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
-  animation: legendary-glow 2s ease-in-out infinite;
-}
-
-@keyframes legendary-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(241, 196, 15, 0.4); }
-  50% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.6); }
-}
-
 .new-badge {
   position: absolute;
   top: 10px;
