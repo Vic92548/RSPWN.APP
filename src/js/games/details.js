@@ -176,9 +176,11 @@ async function displayGameDetails(game) {
     const priceBox = document.querySelector('.price-box');
     const originalPriceEl = document.getElementById('game-details-original-price');
     const currentPriceEl = document.getElementById('game-details-price');
+    const disclaimerSection = document.getElementById('game-details-disclaimer-section');
 
     if (game.isTebexProduct) {
         priceBox.style.display = 'flex';
+        disclaimerSection.style.display = 'block';
 
         if (game.onSale) {
             originalPriceEl.style.display = 'inline';
@@ -210,6 +212,7 @@ async function displayGameDetails(game) {
     } else {
         priceBox.style.display = 'none';
         priceSection.style.display = 'none';
+        disclaimerSection.style.display = 'none';
 
         if (isOwned) {
             ownedSection.style.display = 'flex';
