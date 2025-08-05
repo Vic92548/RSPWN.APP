@@ -7,7 +7,6 @@ background_images = [
         "link": "https://www.youtube.com/watch?v=OU55Q9k7538&list=OLAK5uy_lSbP59KQr3hAI9h3DDdFI32BXO8AnpAJA",
         "link_text": "Listen on YouTube",
         "unlock": 0,
-        "rarity": "common",
         "new": false
     },
     {
@@ -18,7 +17,6 @@ background_images = [
         "link": "https://music.youtube.com/playlist?list=OLAK5uy_lD663FKcik2jpJwnZzkPLeQbaOgPqN75Y",
         "link_text": "Listen on YouTube Music",
         "unlock": 0,
-        "rarity": "common",
         "new": false
     },
     {
@@ -29,7 +27,6 @@ background_images = [
         "link": "https://www.youtube.com/@BipBopMusic",
         "link_text": "Subscribe on YouTube",
         "unlock": 2,
-        "rarity": "rare",
         "new": false
     },
     {
@@ -40,7 +37,16 @@ background_images = [
         "link": "https://www.youtube.com/@StarkiteGames",
         "link_text": "Subscribe on YouTube",
         "unlock": 5,
-        "rarity": "common",
+        "new": true
+    },
+    {
+        "id": "valorant_bg",
+        "title": "Valorant Inspired Art",
+        "description": "Illustration inspired from Valorant made by Ashley",
+        "image_url": "https://vapr-club.b-cdn.net/backgrounds/valorant_bg.png",
+        "link": "https://vapr.club/@ashleyvlt",
+        "link_text": "Follow on VAPR",
+        "unlock": 10,
         "new": true
     },
 ]
