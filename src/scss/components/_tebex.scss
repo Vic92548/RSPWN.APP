@@ -95,12 +95,24 @@
   background: $glass-bg-secondary;
   border-radius: 12px;
   position: relative;
+  align-items: center;
+
+  .item-image-container {
+    height: 80px;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
 
   .item-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
+    height: 100%;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
   }
 
   .item-details {
@@ -115,6 +127,7 @@
     .item-price {
       color: $text-secondary;
       font-size: 14px;
+      font-weight: 600;
     }
   }
 
