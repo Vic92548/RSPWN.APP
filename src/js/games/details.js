@@ -24,6 +24,7 @@ async function loadGameDetails(gameId) {
 
         let game = null;
         let vaprGame = null;
+        let playerCount = 0;
 
         if (gameId.startsWith('tebex-')) {
             game = gamesData.tebexGames.find(g => g.id === gameId);
@@ -42,6 +43,15 @@ async function loadGameDetails(gameId) {
                             currentVersion: vaprGame.currentVersion || game.currentVersion,
                             createdAt: vaprGame.createdAt || game.createdAt
                         };
+
+                        try {
+                            const keysResponse = await api.request(`/api/games/${vaprGame.id}/keys`);
+                            if (keysResponse.success) {
+                                playerCount = keysResponse.keys.filter(k => k.usedBy).length;
+                            }
+                        } catch (error) {
+                            console.error('Error loading player count:', error);
+                        }
                     }
                 }
             }
@@ -54,11 +64,24 @@ async function loadGameDetails(gameId) {
                     game = response.games.find(g => g.id === gameId);
                 }
             }
+
+            if (game) {
+                try {
+                    const keysResponse = await api.request(`/api/games/${game.id}/keys`);
+                    if (keysResponse.success) {
+                        playerCount = keysResponse.keys.filter(k => k.usedBy).length;
+                    }
+                } catch (error) {
+                    console.error('Error loading player count:', error);
+                }
+            }
         }
 
         if (!game) {
             throw new Error('Game not found');
         }
+
+        game.playerCount = playerCount;
 
         console.log('Final game data with ownerId:', game);
 
@@ -81,7 +104,15 @@ async function displayGameDetails(game) {
     document.getElementById('game-details-description').innerHTML = game.description;
 
     const versionEl = document.getElementById('game-details-version');
-    versionEl.textContent = game.currentVersion || game.version || '1.0.0';
+    const metaVersionEl = document.getElementById('game-details-meta-version');
+    const version = game.currentVersion || game.version || '1.0.0';
+    versionEl.textContent = version;
+    if (metaVersionEl) metaVersionEl.textContent = version;
+
+    const playerCountEl = document.getElementById('game-details-players');
+    if (playerCountEl) {
+        playerCountEl.textContent = game.playerCount || 0;
+    }
 
     const developerEl = document.getElementById('game-details-developer');
     const heroDeveloperEl = document.getElementById('game-hero-developer');
