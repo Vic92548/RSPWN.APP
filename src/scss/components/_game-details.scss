@@ -1,0 +1,203 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.game-details-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  margin: -25px -25px 30px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .game-details-overlay {
+    @include absolute-fill;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+  }
+
+  @include responsive(tablet) {
+    height: 200px;
+  }
+}
+
+.game-details-content {
+  padding: 0 25px 25px;
+  margin-top: -50px;
+  position: relative;
+  z-index: 2;
+}
+
+.game-details-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: $glass-bg-secondary;
+  border-radius: $radius-md;
+  border: 1px solid $glass-border-light;
+
+  @include responsive(tablet) {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+
+  @include responsive(tablet) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.price-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .original-price {
+    text-decoration: line-through;
+    color: $text-weak;
+    font-size: 18px;
+  }
+
+  .current-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: $primary-color;
+  }
+}
+
+.owned-section {
+  width: 100%;
+  text-align: center;
+}
+
+.owned-badge-large {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(78, 205, 196, 0.2);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  color: $primary-color;
+  padding: 12px 24px;
+  border-radius: $radius-xl;
+  font-size: 16px;
+  font-weight: 600;
+
+  i {
+    font-size: 20px;
+  }
+}
+
+.game-details-section {
+  margin-bottom: 30px;
+
+  h3 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: $text-primary;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: $glass-border-light;
+    }
+  }
+
+  p {
+    line-height: 1.6;
+    color: $text-muted;
+    font-size: 15px;
+  }
+}
+
+.game-details-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background: $glass-bg-secondary;
+  border-radius: $radius-md;
+  border: 1px solid $glass-border-light;
+  margin-bottom: 30px;
+
+  @include responsive(tablet) {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  i {
+    font-size: 24px;
+    color: $text-secondary;
+    width: 30px;
+    text-align: center;
+  }
+
+  div {
+    flex: 1;
+  }
+
+  .meta-label {
+    display: block;
+    font-size: 12px;
+    color: $text-weak;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .meta-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.external-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+#game-details-changelog {
+  background: $glass-bg-secondary;
+  border: 1px solid $glass-border-light;
+  border-radius: $radius-sm;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: $text-muted;
+  white-space: pre-wrap;
+}
+
+.game-details-card {
+  #game-details-add-to-cart {
+    min-width: 160px;
+    justify-content: center;
+  }
+}

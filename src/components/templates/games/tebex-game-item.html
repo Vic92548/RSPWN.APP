@@ -18,20 +18,18 @@
 
             <div class="game-actions">
                 {{^is-owned}}
-                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}')">
+                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}'); event.stopPropagation();">
                     <i class="fa-solid fa-shopping-cart"></i> Add to Cart
                 </button>
                 {{/is-owned}}
                 {{#is-owned}}
-                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}')">
-                    <i class="fa-solid fa-gift"></i> Purchase for a Friend
+                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}'); event.stopPropagation();">
+                    <i class="fa-solid fa-gift"></i> Gift
                 </button>
                 {{/is-owned}}
-                {{#external-link}}
-                <button class="game-action-button secondary" onclick="window.open('{{external-link}}', '_blank')">
-                    <i class="fa-solid fa-info-circle"></i> More Info
+                <button class="game-action-button secondary" onclick="showGameDetails('{{game-id}}'); event.stopPropagation();">
+                    <i class="fa-solid fa-info-circle"></i> More
                 </button>
-                {{/external-link}}
             </div>
         </div>
     </div>

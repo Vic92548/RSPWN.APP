@@ -8,7 +8,9 @@
             <h4 class="game-title">{{title}}</h4>
             <p class="game-description">{{description}}</p>
             <div class="game-actions">
-                {{#external-link}}<button class="game-action-button" onclick="window.open('{{external-link}}', '_blank'); event.stopPropagation();"><i class="fa-solid fa-external-link"></i> Learn More</button>{{/external-link}}
+                <button class="game-action-button secondary" onclick="showGameDetails('{{game-id}}'); event.stopPropagation();">
+                    <i class="fa-solid fa-info-circle"></i> Learn More
+                </button>
             </div>
         </div>
     </div>

@@ -1,0 +1,96 @@
+<article class="game-details-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="game-details-card" style="display:none;">
+    <div id="gameDetailsContent">
+        <div class="vapr-card-header glass-section-bg">
+            <div class="header-content">
+                <h2 id="game-details-title">Game Title</h2>
+                <p class="glass-text-muted" id="game-details-tagline"></p>
+            </div>
+            <button type="button" class="glass-close-btn" onclick="closeGameDetails()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="game-details-hero">
+                <img id="game-details-cover" src="" alt="Game cover">
+                <div class="game-details-overlay"></div>
+            </div>
+
+            <div class="game-details-content">
+                <div class="game-details-actions">
+                    <div id="game-details-price-section" class="price-section">
+                        <div class="price-display">
+                            <span class="original-price" id="game-details-original-price"></span>
+                            <span class="current-price" id="game-details-price"></span>
+                        </div>
+                        <button class="glass-button primary" id="game-details-add-to-cart" onclick="">
+                            <i class="fa-solid fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                    <div id="game-details-owned-section" class="owned-section" style="display:none;">
+                        <div class="owned-badge-large">
+                            <i class="fa-solid fa-check-circle"></i> You own this game
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-details-section">
+                    <h3>About this game</h3>
+                    <p id="game-details-description"></p>
+                </div>
+
+                <div class="game-details-meta">
+                    <div class="meta-item">
+                        <i class="fa-solid fa-code-branch"></i>
+                        <div>
+                            <span class="meta-label">Version</span>
+                            <span class="meta-value" id="game-details-version">1.0.0</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-user"></i>
+                        <div>
+                            <span class="meta-label">Developer</span>
+                            <span class="meta-value" id="game-details-developer">Unknown</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div>
+                            <span class="meta-label">Release Date</span>
+                            <span class="meta-value" id="game-details-release-date">TBA</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-tags"></i>
+                        <div>
+                            <span class="meta-label">Category</span>
+                            <span class="meta-value" id="game-details-category">Game</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-details-section" id="game-details-changelog-section" style="display:none;">
+                    <h3>Latest Updates</h3>
+                    <div id="game-details-changelog"></div>
+                </div>
+
+                <div class="game-details-section" id="game-details-external-section" style="display:none;">
+                    <h3>External Links</h3>
+                    <div class="external-links">
+                        <a id="game-details-external-link" href="#" target="_blank" class="glass-button">
+                            <i class="fa-solid fa-external-link-alt"></i> Visit Website
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vapr-loading" id="game-details-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+            <p class="vapr-loading-text glass-text-muted">Loading game details...</p>
+        </div>
+    </div>
+</article>
