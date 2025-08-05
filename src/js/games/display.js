@@ -24,7 +24,6 @@ function displayGames() {
             VAPR.appendElement(container, 'tebex-game-item', {
                 gameId: game.id,
                 title: game.title,
-                description: game.description,
                 coverImage: game.coverImage,
                 price: game.price.toFixed(2),
                 currency: game.currency,

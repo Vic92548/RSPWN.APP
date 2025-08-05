@@ -3,6 +3,8 @@ async function loadTebexGames() {
         const tebexResponse = await tebexAPI.getPackages();
         const tebexGames = tebexResponse.data || [];
 
+        console.log({tebexGames});
+
         const transformedGames = transformTebexGames(tebexGames);
 
         gamesData.tebexGames = transformedGames;
@@ -17,7 +19,7 @@ function transformTebexGames(tebexPackages) {
     return tebexPackages.map(pkg => ({
         id: `tebex-${pkg.id}`,
         title: pkg.name,
-        description: stripHtml(pkg.description),
+        description: pkg.description,
         coverImage: pkg.image || 'https://via.placeholder.com/300x169',
         price: pkg.total_price,
         currency: pkg.currency,
@@ -29,10 +31,4 @@ function transformTebexGames(tebexPackages) {
         salePrice: pkg.total_price,
         discount: pkg.discount
     }));
-}
-
-function stripHtml(html) {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
 }

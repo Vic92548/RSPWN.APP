@@ -6,15 +6,18 @@
             <img src="{{cover-image}}" class="game-cover" alt="{{title}}">
         </div>
         <div class="game-content">
-            <h4 class="game-title">{{title}}</h4>
-            <p class="game-description">{{description}}</p>
+            <h4 class="game-title">{{title}}
 
-            <div class="game-price">
-                {{#on-sale}}
-                <span class="original-price">{{currency}} {{original-price}}</span>
-                {{/on-sale}}
-                <span class="current-price">{{currency}} {{price}}</span>
-            </div>
+                <div class="game-price">
+                    {{#on-sale}}
+                    <span class="original-price">{{currency}} {{original-price}}</span>
+                    {{/on-sale}}
+                    <span class="current-price">{{currency}} {{price}}</span>
+                </div>
+
+            </h4>
+
+
 
             <div class="game-actions">
                 {{^is-owned}}

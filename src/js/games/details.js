@@ -73,10 +73,13 @@ async function loadGameDetails(gameId) {
 }
 
 async function displayGameDetails(game) {
+
+    console.log({ game });
+
     document.getElementById('game-details-title').textContent = game.title;
     document.getElementById('game-details-tagline').textContent = game.category || 'Game';
     document.getElementById('game-details-cover').src = game.coverImage;
-    document.getElementById('game-details-description').textContent = game.description;
+    document.getElementById('game-details-description').innerHTML = game.description;
 
     const versionEl = document.getElementById('game-details-version');
     versionEl.textContent = game.currentVersion || game.version || '1.0.0';
