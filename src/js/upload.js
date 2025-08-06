@@ -172,7 +172,6 @@ window.submitPost = async function(event) {
     const progressFill = DOM.get('progress-fill');
 
     const title = DOM.get('title').value;
-    const link = DOM.get('link').value;
     const file = DOM.get('file').files[0];
 
     if (!file) {
@@ -185,7 +184,6 @@ window.submitPost = async function(event) {
 
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('link', link);
 
     if (selectedGameForTag) {
         formData.append('taggedGameId', selectedGameForTag.id);
@@ -224,7 +222,6 @@ window.submitPost = async function(event) {
             closeAddPostCard();
 
             DOM.get('title').value = '';
-            DOM.get('link').value = '';
             DOM.get('file').value = '';
             DOM.show('upload-placeholder', 'flex');
             DOM.hide('upload-preview');

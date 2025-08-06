@@ -158,15 +158,8 @@ function drawPost(data){
         toggleImageZoom(DOM.get("post_image"));
     }
 
-    const headerLinkButton = DOM.get("header_link_button");
     const headerGameButton = DOM.get("header_game_button");
-    const links = DOM.get("post_link").children;
 
-    for(let i = 0; i < links.length; i++){
-        links[i].style.display = "none";
-    }
-
-    DOM.hide(headerLinkButton);
     DOM.hide(headerGameButton);
 
     if(data.taggedGame && data.taggedGame.id) {
@@ -184,10 +177,6 @@ function drawPost(data){
         }, 100);
     } else {
         window.currentPostTaggedGame = null;
-    }
-
-    if(data.link && !data.taggedGame){
-        handlePostLinks(data.link);
     }
 }
 
@@ -247,68 +236,5 @@ function toggleImageZoom(img) {
         requestAnimationFrame(() => {
             overlay.classList.add('active');
         });
-    }
-}
-
-function handlePostLinks(link) {
-    try {
-        const url = new URL(link);
-        const hostname = url.hostname.toLowerCase();
-
-        const linkMappings = {
-            'discord.gg': { id: 'post_discord', icon: 'fa-brands fa-discord', label: 'Discord' },
-            'reddit.com': { id: 'post_reddit', icon: 'fa-brands fa-reddit', label: 'Reddit' },
-            'store.steampowered.com': { id: 'post_steam', icon: 'fa-brands fa-steam', label: 'Steam' },
-            'x.com': { id: 'post_x', icon: 'fa-brands fa-x-twitter', label: 'X' },
-            'twitter.com': { id: 'post_x', icon: 'fa-brands fa-x-twitter', label: 'X' },
-            'threads.net': { id: 'post_threads', icon: 'fa-brands fa-threads', label: 'Threads' },
-            'pinterest': { id: 'post_pinterest', icon: 'fa-brands fa-pinterest', label: 'Pinterest' },
-            'twitch.tv': { id: 'post_twitch', icon: 'fa-brands fa-twitch', label: 'Twitch' },
-            'youtube.com': { id: 'post_youtube', icon: 'fa-brands fa-youtube', label: 'YouTube' },
-            'instagram.com': { id: 'post_instagram', icon: 'fa-brands fa-instagram', label: 'Instagram' },
-            'store.epicgames.com': { id: 'post_epic', icon: 'fa-solid fa-gamepad', label: 'Epic Games' },
-            'kickstarter.com': { id: 'post_kickstarter', icon: 'fa-brands fa-kickstarter', label: 'Kickstarter' },
-            'kick.com': { id: 'post_kick', icon: 'fa-brands fa-kickstarter-k', label: 'Kick' },
-            'patreon.com': { id: 'post_patreon', icon: 'fa-brands fa-patreon', label: 'Patreon' },
-            'fortnite.com': { id: 'post_fortnite', icon: 'fa-solid fa-gamepad', label: 'Fortnite' },
-            'nintendo.com': { id: 'post_nintendo', icon: 'fa-solid fa-gamepad', label: 'Nintendo' },
-            'ubisoft.com': { id: 'post_ubisoft', icon: 'fa-solid fa-gamepad', label: 'Ubisoft' },
-            'gumroad.com': { id: 'post_gumroad', icon: 'fa-solid fa-shopping-cart', label: 'Gumroad' },
-            'garryhost.com': { id: 'post_garryhost', icon: 'fa-solid fa-server', label: "Garry's Host" },
-            'itch.io': { id: 'post_itch', icon: 'fa-brands fa-itch-io', label: 'itch.io' }
-        };
-
-        let matchedLink = null;
-        for (const [domain, linkInfo] of Object.entries(linkMappings)) {
-            if (hostname.includes(domain)) {
-                matchedLink = linkInfo;
-                setupSocialLink(linkInfo.id, link);
-                break;
-            }
-        }
-
-        if (hostname === 'hayarobi-portfolio.carrd.co') {
-            matchedLink = { id: 'post_hayarobi', icon: 'fa-solid fa-palette', label: 'Hayarobi' };
-            setupSocialLink('post_hayarobi', link);
-        }
-
-        if (matchedLink) {
-            const headerLinkButton = DOM.get("header_link_button");
-            headerLinkButton.style.display = "inline-flex";
-            headerLinkButton.href = link;
-            headerLinkButton.innerHTML = `<i class="${matchedLink.icon}"></i><span>${matchedLink.label}</span>`;
-
-            headerLinkButton.style.opacity = '0';
-            headerLinkButton.style.transform = 'translateY(10px)';
-
-            setTimeout(() => {
-                headerLinkButton.style.transition = 'all 0.3s ease';
-                headerLinkButton.style.opacity = '1';
-                headerLinkButton.style.transform = 'translateY(0)';
-            }, 100);
-        }
-
-    } catch (error) {
-        console.error('Invalid URL:', link);
     }
 }

@@ -75,7 +75,6 @@ function validateFile(file) {
 export async function createPost(request, userData) {
     try {
         const title = request.body.title;
-        const link = request.body.link;
         const taggedGameId = request.body.taggedGameId;
         const file = request.file;
         const community = request.body.community;
@@ -165,7 +164,6 @@ export async function createPost(request, userData) {
                 content,
                 userId: userData.id,
                 timestamp: new Date(),
-                link: link || null,
                 taggedGameId: taggedGameId || null,
                 community: community || null,
                 mediaType: validation.isVideo ? 'video' : 'image',
@@ -205,7 +203,6 @@ export async function createPost(request, userData) {
                 content,
                 userId: userData.id,
                 timestamp: new Date(),
-                link: link || null,
                 taggedGameId: taggedGameId || null,
                 user: userData,
                 success: true
