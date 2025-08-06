@@ -159,6 +159,7 @@ function drawPost(data){
     }
 
     const headerLinkButton = DOM.get("header_link_button");
+    const headerGameButton = DOM.get("header_game_button");
     const links = DOM.get("post_link").children;
 
     for(let i = 0; i < links.length; i++){
@@ -166,9 +167,33 @@ function drawPost(data){
     }
 
     DOM.hide(headerLinkButton);
+    DOM.hide(headerGameButton);
 
-    if(data.link){
+    if(data.taggedGame && data.taggedGame.id) {
+        window.currentPostTaggedGame = data.taggedGame;
+        DOM.show(headerGameButton, 'inline-flex');
+        headerGameButton.innerHTML = `<i class="fa-solid fa-gamepad"></i><span>${data.taggedGame.title}</span>`;
+
+        headerGameButton.style.opacity = '0';
+        headerGameButton.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            headerGameButton.style.transition = 'all 0.3s ease';
+            headerGameButton.style.opacity = '1';
+            headerGameButton.style.transform = 'translateY(0)';
+        }, 100);
+    } else {
+        window.currentPostTaggedGame = null;
+    }
+
+    if(data.link && !data.taggedGame){
         handlePostLinks(data.link);
+    }
+}
+
+window.openTaggedGame = function() {
+    if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
+        showGameDetails(window.currentPostTaggedGame.id);
     }
 }
 

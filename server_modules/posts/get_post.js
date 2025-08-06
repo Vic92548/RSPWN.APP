@@ -1,4 +1,4 @@
-import { postsCollection, viewsCollection, usersCollection, likesCollection, dislikesCollection, followsCollection, linkClicksCollection } from "../database.js";
+import { postsCollection, viewsCollection, usersCollection, likesCollection, dislikesCollection, followsCollection, linkClicksCollection, gamesCollection } from "../database.js";
 
 export async function getPostData(id) {
     const post = await postsCollection.findOne({ id });
@@ -22,6 +22,17 @@ export async function getPostData(id) {
     post.username = postOwner?.username || 'Unknown';
     post.userAvatar = postOwner?.avatar || null;
     post.userLevel = postOwner?.level || 0;
+
+    if (post.taggedGameId) {
+        const taggedGame = await gamesCollection.findOne({ id: post.taggedGameId });
+        if (taggedGame) {
+            post.taggedGame = {
+                id: taggedGame.id,
+                title: taggedGame.title,
+                coverImage: taggedGame.coverImage
+            };
+        }
+    }
 
     return post;
 }
@@ -60,6 +71,17 @@ export async function getPost(id, userId = "anonymous") {
     post.userAvatar = postOwner?.avatar || null;
     post.userLevel = postOwner?.level || 0;
 
+    if (post.taggedGameId) {
+        const taggedGame = await gamesCollection.findOne({ id: post.taggedGameId });
+        if (taggedGame) {
+            post.taggedGame = {
+                id: taggedGame.id,
+                title: taggedGame.title,
+                coverImage: taggedGame.coverImage
+            };
+        }
+    }
+
     return new Response(JSON.stringify(post), {
         status: 200,
         headers: { "Content-Type": "application/json" }
@@ -80,13 +102,26 @@ export async function getPostList(userId) {
         const followersCount = await followsCollection.countDocuments({ postId: post.id });
         const linkClicksCount = await linkClicksCollection.countDocuments({ postId: post.id });
 
+        let taggedGame = null;
+        if (post.taggedGameId) {
+            const game = await gamesCollection.findOne({ id: post.taggedGameId });
+            if (game) {
+                taggedGame = {
+                    id: game.id,
+                    title: game.title,
+                    coverImage: game.coverImage
+                };
+            }
+        }
+
         return {
             ...post,
             viewsCount,
             likesCount,
             dislikesCount,
             followersCount,
-            linkClicksCount
+            linkClicksCount,
+            taggedGame
         };
     }));
 

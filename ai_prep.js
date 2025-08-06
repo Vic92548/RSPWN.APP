@@ -10,6 +10,10 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+// Parse command line arguments
+const args = process.argv.slice(2);
+const NO_CSS = args.includes('--no-css');
+
 // Configuration
 const BACKEND_DIR = 'server_modules';
 const FRONTEND_DIR = 'src';
@@ -33,6 +37,14 @@ let fileCount = 0;
 // Utility function to ask questions
 function question(query) {
     return new Promise(resolve => rl.question(query, resolve));
+}
+
+// Filter out CSS extensions if --no-css flag is set
+function filterExtensions(extensions) {
+    if (NO_CSS) {
+        return extensions.filter(ext => !EXTENSIONS.css.includes(ext));
+    }
+    return extensions;
 }
 
 // Walk directory and collect files
@@ -109,6 +121,10 @@ async function main() {
     console.log('🚀 VAPR Project File Merger\n');
     console.log('This tool will help you combine project files for AI analysis.\n');
 
+    if (NO_CSS) {
+        console.log('🎨 --no-css flag detected: CSS/SCSS files will be skipped\n');
+    }
+
     try {
         // Main menu
         const mainChoice = await question(
@@ -154,12 +170,12 @@ async function main() {
                     '\nWhich frontend files to include?\n' +
                     '  1) All (HTML + CSS + JS)\n' +
                     '  2) HTML only\n' +
-                    '  3) CSS only\n' +
+                    (NO_CSS ? '' : '  3) CSS only\n') +
                     '  4) JS only\n' +
-                    '  5) HTML + CSS\n' +
+                    (NO_CSS ? '' : '  5) HTML + CSS\n') +
                     '  6) HTML + JS\n' +
-                    '  7) CSS + JS\n' +
-                    '\nEnter your choice (1-7): '
+                    (NO_CSS ? '' : '  7) CSS + JS\n') +
+                    '\nEnter your choice: '
                 );
 
                 switch (frontendChoice) {
@@ -170,19 +186,34 @@ async function main() {
                         extensions = [...EXTENSIONS.html];
                         break;
                     case '3':
-                        extensions = [...EXTENSIONS.css];
+                        if (!NO_CSS) {
+                            extensions = [...EXTENSIONS.css];
+                        } else {
+                            console.log('Invalid choice with --no-css flag.');
+                            extensions = [...EXTENSIONS.html, ...EXTENSIONS.js];
+                        }
                         break;
                     case '4':
                         extensions = [...EXTENSIONS.js];
                         break;
                     case '5':
-                        extensions = [...EXTENSIONS.html, ...EXTENSIONS.css];
+                        if (!NO_CSS) {
+                            extensions = [...EXTENSIONS.html, ...EXTENSIONS.css];
+                        } else {
+                            console.log('Invalid choice with --no-css flag.');
+                            extensions = [...EXTENSIONS.html, ...EXTENSIONS.js];
+                        }
                         break;
                     case '6':
                         extensions = [...EXTENSIONS.html, ...EXTENSIONS.js];
                         break;
                     case '7':
-                        extensions = [...EXTENSIONS.css, ...EXTENSIONS.js];
+                        if (!NO_CSS) {
+                            extensions = [...EXTENSIONS.css, ...EXTENSIONS.js];
+                        } else {
+                            console.log('Invalid choice with --no-css flag.');
+                            extensions = [...EXTENSIONS.html, ...EXTENSIONS.js];
+                        }
                         break;
                     default:
                         console.log('Invalid choice. Including all frontend files.');
@@ -267,8 +298,10 @@ async function main() {
                     const htmlChoice = await question('  Include HTML files? (y/n): ');
                     if (htmlChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.html);
 
-                    const cssChoice = await question('  Include CSS files? (y/n): ');
-                    if (cssChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.css);
+                    if (!NO_CSS) {
+                        const cssChoice = await question('  Include CSS files? (y/n): ');
+                        if (cssChoice.toLowerCase() === 'y') extensions.push(...EXTENSIONS.css);
+                    }
                 }
 
                 if (includeFrontend || includeBackend || includeDesktop) {
@@ -302,12 +335,18 @@ async function main() {
                 ])];
         }
 
+        // Apply --no-css filter
+        extensions = filterExtensions(extensions);
+
         // Show summary
         console.log('\n📋 Summary:');
         console.log(`  Backend: ${includeBackend ? '✅' : '❌'}`);
         console.log(`  Frontend: ${includeFrontend ? '✅' : '❌'}`);
         console.log(`  Desktop: ${includeDesktop ? '✅' : '❌'}`);
         console.log(`  File types: ${extensions.join(', ')}`);
+        if (NO_CSS) {
+            console.log(`  CSS/SCSS: ❌ (excluded by --no-css flag)`);
+        }
 
         const confirm = await question('\nProceed with merge? (y/n): ');
 

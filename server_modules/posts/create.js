@@ -1,4 +1,4 @@
-import { postsCollection, usersCollection, videosCollection } from "../database.js";
+import { postsCollection, usersCollection, videosCollection, gamesCollection } from "../database.js";
 import { addXP, EXPERIENCE_TABLE } from "../rpg.js";
 import { sendMessageToDiscordWebhook } from "../discord.js";
 import { notifyFollowersByEmail } from "./notify_by_email.js";
@@ -41,7 +41,6 @@ function validateFile(file) {
         return { valid: false, error: "File size exceeds the 50MB limit" };
     }
 
-    // Handle both multer's originalname and regular name property
     const fileName = file.originalname || file.name || '';
 
     if (!fileName) {
@@ -77,6 +76,7 @@ export async function createPost(request, userData) {
     try {
         const title = request.body.title;
         const link = request.body.link;
+        const taggedGameId = request.body.taggedGameId;
         const file = request.file;
         const community = request.body.community;
 
@@ -98,6 +98,19 @@ export async function createPost(request, userData) {
                 status: 400,
                 headers: { "Content-Type": "application/json" }
             });
+        }
+
+        if (taggedGameId) {
+            const game = await gamesCollection.findOne({ id: taggedGameId });
+            if (!game) {
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: "Tagged game not found"
+                }), {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
         }
 
         const validation = validateFile(file);
@@ -153,6 +166,7 @@ export async function createPost(request, userData) {
                 userId: userData.id,
                 timestamp: new Date(),
                 link: link || null,
+                taggedGameId: taggedGameId || null,
                 community: community || null,
                 mediaType: validation.isVideo ? 'video' : 'image',
                 fileExtension: validation.extension
@@ -192,6 +206,7 @@ export async function createPost(request, userData) {
                 userId: userData.id,
                 timestamp: new Date(),
                 link: link || null,
+                taggedGameId: taggedGameId || null,
                 user: userData,
                 success: true
             };
@@ -234,7 +249,6 @@ export async function createPost(request, userData) {
 
 async function uploadImageToBunnyCDN(file, postId) {
     try {
-        // Get the file extension from originalname or name
         const fileName = file.originalname || file.name || '';
         const fileExtension = fileName.split('.').pop();
         const uploadFileName = `${postId}.${fileExtension}`;

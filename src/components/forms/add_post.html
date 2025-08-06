@@ -55,6 +55,26 @@
                 <p class="input-hint">Add a link to your game, community, or project</p>
             </div>
 
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-gamepad"></i> Tag a Game
+                    <span class="optional">(Optional)</span>
+                </label>
+                <div class="game-tag-selector">
+                    <button type="button" class="game-tag-button" id="game-tag-button" onclick="openGameTagModal()">
+                        <i class="fa-solid fa-plus"></i> Select a game
+                    </button>
+                    <div class="selected-game" id="selected-game" style="display:none;">
+                        <img class="selected-game-cover" id="selected-game-cover" src="" alt="">
+                        <span class="selected-game-title" id="selected-game-title"></span>
+                        <button type="button" class="remove-game-tag" onclick="removeGameTag()">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="input-hint">Tag a game from VAPR to let users discover it</p>
+            </div>
+
             <div class="submit-actions">
                 <button type="button" class="cancel-btn vapr-action-button" onclick="closeAddPostCard()">
                     <i class="fa-solid fa-xmark"></i> Cancel
@@ -74,3 +94,18 @@
         </div>
     </div>
 </article>
+
+<div id="game-tag-modal" class="glass_modal" style="display:none;">
+    <div class="game-tag-modal-content glass-primary vapr-rounded">
+        <div class="game-tag-modal-header">
+            <h3>Select a Game</h3>
+            <button type="button" class="glass-close-btn" onclick="closeGameTagModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="game-tag-search">
+            <input type="text" id="game-tag-search" placeholder="Search games..." class="glass-input" oninput="searchGamesForTag()">
+        </div>
+        <div class="game-tag-list vapr-scrollbar" id="game-tag-list"></div>
+    </div>
+</div>

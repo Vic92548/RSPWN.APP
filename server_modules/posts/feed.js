@@ -1,4 +1,4 @@
-import { postsCollection, likesCollection, dislikesCollection, viewsCollection, usersCollection } from "../database.js";
+import { postsCollection, likesCollection, dislikesCollection, viewsCollection, usersCollection, gamesCollection } from "../database.js";
 
 export async function getNextFeedPosts(userid) {
     let posts = [];
@@ -34,12 +34,25 @@ export async function getNextFeedPosts(userid) {
             }
         );
 
+        let taggedGame = null;
+        if (post.taggedGameId) {
+            const game = await gamesCollection.findOne({ id: post.taggedGameId });
+            if (game) {
+                taggedGame = {
+                    id: game.id,
+                    title: game.title,
+                    coverImage: game.coverImage
+                };
+            }
+        }
+
         return {
             ...post,
             views: views,
             username: postOwner?.username || 'Unknown',
             userAvatar: postOwner?.avatar || null,
-            userLevel: postOwner?.level || 0
+            userLevel: postOwner?.level || 0,
+            taggedGame
         };
     }));
 

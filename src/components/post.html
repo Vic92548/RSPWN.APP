@@ -1,5 +1,4 @@
 <article class="post vapr-container-full vapr-height-card vapr-rounded glass-primary">
-    <!-- Post Header -->
     <div class="post-header vapr-padding-header glass-section-bg">
         <div class="post-info">
             <h2 id="post_title">Article title</h2>
@@ -45,10 +44,13 @@
                 <i class="fa-solid fa-link"></i>
                 <span>Link</span>
             </a>
+            <button id="header_game_button" class="header-link-button glass-button" style="display:none;" onclick="openTaggedGame()">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Game</span>
+            </button>
         </div>
     </div>
 
-    <!-- Post Content -->
     <div class="post-content vapr-scrollbar">
         <div class="media-container">
             <div class="view-count-overlay glass-badge">
@@ -63,7 +65,6 @@
         </div>
     </div>
 
-    <!-- Hidden Post Footer (for link storage) -->
     <div class="post-footer" style="display:none;">
         <div class="post_stat">
             <div class="post-links" id="post_link">
@@ -91,7 +92,6 @@
         </div>
     </div>
 
-    <!-- Enhanced Reactions -->
     <div class="reactions-wrapper">
         <div class="reactions">
             <button onclick="addReaction('💩')" data-reaction="💩">

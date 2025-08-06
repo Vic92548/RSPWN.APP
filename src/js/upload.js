@@ -88,6 +88,82 @@ if (titleInput && titleCount) {
     });
 }
 
+let selectedGameForTag = null;
+
+window.openGameTagModal = async function() {
+    DOM.show('game-tag-modal', 'flex');
+    await loadGamesForTagging();
+}
+
+window.closeGameTagModal = function() {
+    DOM.hide('game-tag-modal');
+}
+
+window.selectGameForTag = function(gameId, gameTitle, gameCover) {
+    selectedGameForTag = {
+        id: gameId,
+        title: gameTitle,
+        coverImage: gameCover
+    };
+
+    DOM.hide('game-tag-button');
+    DOM.show('selected-game', 'flex');
+    DOM.get('selected-game-title').textContent = gameTitle;
+    DOM.get('selected-game-cover').src = gameCover;
+
+    closeGameTagModal();
+}
+
+window.removeGameTag = function() {
+    selectedGameForTag = null;
+    DOM.show('game-tag-button', 'inline-flex');
+    DOM.hide('selected-game');
+}
+
+async function loadGamesForTagging() {
+    try {
+        const response = await api.request('/api/games');
+        if (response.success) {
+            displayGamesForTagging(response.games);
+        }
+    } catch (error) {
+        console.error('Error loading games:', error);
+    }
+}
+
+function displayGamesForTagging(games) {
+    const container = DOM.get('game-tag-list');
+    container.innerHTML = '';
+
+    games.forEach(game => {
+        const gameItem = DOM.create('div', {
+            class: 'game-tag-item',
+            onclick: () => selectGameForTag(game.id, game.title, game.coverImage)
+        });
+
+        gameItem.innerHTML = `
+            <img src="${game.coverImage}" alt="${game.title}" class="game-tag-item-cover">
+            <span class="game-tag-item-title">${game.title}</span>
+        `;
+
+        container.appendChild(gameItem);
+    });
+}
+
+window.searchGamesForTag = function() {
+    const searchTerm = DOM.get('game-tag-search').value.toLowerCase();
+    const items = DOM.queryAll('.game-tag-item');
+
+    items.forEach(item => {
+        const title = item.querySelector('.game-tag-item-title').textContent.toLowerCase();
+        if (title.includes(searchTerm)) {
+            DOM.show(item, 'flex');
+        } else {
+            DOM.hide(item);
+        }
+    });
+}
+
 window.submitPost = async function(event) {
     event.preventDefault();
 
@@ -110,6 +186,10 @@ window.submitPost = async function(event) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('link', link);
+
+    if (selectedGameForTag) {
+        formData.append('taggedGameId', selectedGameForTag.id);
+    }
 
     if (file) {
         const fileExtension = file.name.split('.').pop();
@@ -152,6 +232,8 @@ window.submitPost = async function(event) {
             if (titleCount) {
                 titleCount.textContent = '0';
             }
+
+            removeGameTag();
 
             notify.success("Post published successfully!");
 
