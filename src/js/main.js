@@ -178,10 +178,8 @@ function hideMenu() {
     }
 }
 
-if(MainPage){
-    if(window.innerWidth >= 768){
-        DOM.show("menu", 'flex');
-    }
+if(window.innerWidth >= 768){
+    DOM.show("menu", 'flex');
 }
 
 function processJoinQueryParam() {

@@ -68,10 +68,8 @@ class VAPRRouter {
 
     handle404() {
         this.currentRoute = '404';
-        if (window.MainPage) {
-            console.log('No route found for:', window.location.pathname);
-            displayPost();
-        }
+        console.log('No route found for:', window.location.pathname);
+        displayPost();
     }
 }
 

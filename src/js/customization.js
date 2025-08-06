@@ -5,7 +5,7 @@ cardManager.register('backgrounds-card', {
 });
 
 function openCustomizationMenu() {
-    if (!isUserLoggedIn() && MainPage) {
+    if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
@@ -18,7 +18,7 @@ function closeBackgroundsCard() {
 }
 
 function displayBackgroundImages() {
-    if (!isUserLoggedIn() && MainPage) {
+    if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
@@ -92,10 +92,6 @@ function displayBackgroundImages() {
 }
 
 function equipBackground(url, save = true) {
-    if(!MainPage){
-        return;
-    }
-
     document.body.style.backgroundImage = 'url(' + url + ')';
 
     if (save) {

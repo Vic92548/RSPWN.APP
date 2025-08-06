@@ -1,6 +1,4 @@
 function initMenu() {
-    if (!MainPage) return;
-
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
         showMenuUserElements();

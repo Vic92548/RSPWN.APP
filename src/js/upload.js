@@ -1,93 +1,91 @@
-if(MainPage){
-    const uploadArea = DOM.query('.upload-area');
-    const fileInput = DOM.get('file');
+const uploadArea = DOM.query('.upload-area');
+const fileInput = DOM.get('file');
 
-    if (uploadArea) {
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-        });
+if (uploadArea) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.add('dragging');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.remove('dragging');
-            }, false);
-        });
-
-        uploadArea.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-
-            if (files.length > 0) {
-                fileInput.files = files;
-                handleFileSelect(files[0]);
-            }
-        }
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
 
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                handleFileSelect(this.files[0]);
-            }
-        });
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragging');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragging');
+        }, false);
+    });
+
+    uploadArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(files[0]);
+        }
+    }
+}
+
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            handleFileSelect(this.files[0]);
+        }
+    });
+}
+
+function handleFileSelect(file) {
+    const fileType = file.type;
+    const placeholder = DOM.get('upload-placeholder');
+    const preview = DOM.get('upload-preview');
+    const previewImage = DOM.get('preview_img');
+    const previewVideo = DOM.get('preview_video');
+
+    if (file.size > 50 * 1024 * 1024) {
+        notify.error('File too large', 'Please select a file under 50MB');
+        return;
     }
 
-    function handleFileSelect(file) {
-        const fileType = file.type;
-        const placeholder = DOM.get('upload-placeholder');
-        const preview = DOM.get('upload-preview');
-        const previewImage = DOM.get('preview_img');
-        const previewVideo = DOM.get('preview_video');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        DOM.hide(placeholder);
+        DOM.show(preview);
 
-        if (file.size > 50 * 1024 * 1024) {
-            notify.error('File too large', 'Please select a file under 50MB');
+        if (fileType.startsWith('video/')) {
+            previewVideo.src = e.target.result;
+            DOM.show(previewVideo);
+            DOM.hide(previewImage);
+        } else if (fileType.startsWith('image/')) {
+            previewImage.src = e.target.result;
+            DOM.show(previewImage);
+            DOM.hide(previewVideo);
+        } else {
+            notify.error('Invalid file type', 'Please upload an image or video file');
+            DOM.show(placeholder, 'flex');
+            DOM.hide(preview);
             return;
         }
+    };
+    reader.readAsDataURL(file);
+}
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            DOM.hide(placeholder);
-            DOM.show(preview);
+const titleInput = DOM.get('title');
+const titleCount = DOM.get('title-count');
 
-            if (fileType.startsWith('video/')) {
-                previewVideo.src = e.target.result;
-                DOM.show(previewVideo);
-                DOM.hide(previewImage);
-            } else if (fileType.startsWith('image/')) {
-                previewImage.src = e.target.result;
-                DOM.show(previewImage);
-                DOM.hide(previewVideo);
-            } else {
-                notify.error('Invalid file type', 'Please upload an image or video file');
-                DOM.show(placeholder, 'flex');
-                DOM.hide(preview);
-                return;
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-
-    const titleInput = DOM.get('title');
-    const titleCount = DOM.get('title-count');
-
-    if (titleInput && titleCount) {
-        titleInput.addEventListener('input', function() {
-            titleCount.textContent = this.value.length;
-        });
-    }
+if (titleInput && titleCount) {
+    titleInput.addEventListener('input', function() {
+        titleCount.textContent = this.value.length;
+    });
 }
 
 window.submitPost = async function(event) {
