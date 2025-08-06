@@ -180,8 +180,11 @@ function drawPost(data){
     }
 }
 
-window.openTaggedGame = function() {
+window.openTaggedGame = async function() {
     if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
+        if (!gamesData.tebexGames || gamesData.tebexGames.length === 0) {
+            await loadTebexGames();
+        }
         showGameDetails(window.currentPostTaggedGame.id);
     }
 }

@@ -75,6 +75,23 @@ async function loadGameDetails(gameId) {
                     console.error('Error loading player count:', error);
                 }
             }
+
+            if (game && gamesData.tebexGames) {
+                const tebexVersion = gamesData.tebexGames.find(tg =>
+                    tg.title.toLowerCase() === game.title.toLowerCase()
+                );
+
+                if (tebexVersion) {
+                    const originalGameId = game.id;
+                    game = {
+                        ...tebexVersion,
+                        ownerId: game.ownerId,
+                        currentVersion: game.currentVersion || tebexVersion.currentVersion,
+                        createdAt: game.createdAt || tebexVersion.createdAt,
+                        playerCount: playerCount
+                    };
+                }
+            }
         }
 
         if (!game) {
