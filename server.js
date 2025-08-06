@@ -2,8 +2,6 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 dotenv.config();
 
@@ -11,6 +9,9 @@ import cors from 'cors';
 import serveStatic from 'serve-static';
 import multer from 'multer';
 
+import { config } from './server_modules/config.js';
+import { setupSecurityMiddleware, rateLimiters, corsOptions } from './server_modules/security.js';
+import { createRenderMiddleware } from './server_modules/middleware/render.js';
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
 import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
@@ -48,146 +49,44 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = config.server.port;
 
-// IMPORTANT: Enable trust proxy before any middleware
-// This tells Express to trust the X-Forwarded-* headers from reverse proxies
-app.set('trust proxy', true);
+const templates = createRenderer(config.templates);
 
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: [
-                "'self'",
-                "'unsafe-inline'",
-                "https://fonts.googleapis.com",
-                "https://ka-f.fontawesome.com",
-                "https://kit.fontawesome.com"
-            ],
-            scriptSrc: [
-                "'self'",
-                "'unsafe-inline'",
-                "https://kit.fontawesome.com",
-                "https://ka-f.fontawesome.com",
-                "https://cdn.jsdelivr.net",
-                "https://cloud.umami.is",
-                "https://eu-assets.i.posthog.com",
-                "https://eu.i.posthog.com"
-            ],
-            imgSrc: [
-                "'self'",
-                "data:",
-                "https:",
-                "blob:",
-                "https://cdn.discordapp.com",
-                "https://vapr-club.b-cdn.net",
-                "https://vz-3641e40e-815.b-cdn.net"
-            ],
-            connectSrc: [
-                "'self'",
-                "https://api.github.com",
-                "https://ka-f.fontawesome.com",
-                "https://kit.fontawesome.com",
-                "https://cloud.umami.is",
-                "https://eu.i.posthog.com",
-                "https://api-gateway.umami.dev",
-                "https://discord.com",
-                "https://headless.tebex.io"
-            ],
-            scriptSrcAttr: ["'unsafe-inline'"],
-            fontSrc: [
-                "'self'",
-                "https://fonts.gstatic.com",
-                "https://kit.fontawesome.com",
-                "https://ka-f.fontawesome.com"
-            ],
-            frameSrc: [
-                "'self'",
-                "https://iframe.mediadelivery.net"
-            ],
-            mediaSrc: [
-                "'self'",
-                "https://iframe.mediadelivery.net",
-                "https://vz-3641e40e-815.b-cdn.net"
-            ],
-            objectSrc: ["'none'"],
-            upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
-        }
-    },
-    crossOriginEmbedderPolicy: false
-}));
+app.set('trust proxy', config.server.trustProxy);
 
-const corsOptions = {
-    origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:8080'],
-    credentials: true,
-    optionsSuccessStatus: 200
-};
+setupSecurityMiddleware(app);
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: config.limits.json }));
+app.use(express.urlencoded({ extended: true, limit: config.limits.urlencoded }));
+app.use(createRenderMiddleware(templates));
 
-// Updated rate limiters with proper configuration for trusted proxies
-const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 250,
-    message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-});
-
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: 'Too many authentication attempts, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-
-const createPostLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 10,
-    message: 'Post creation limit reached. Please wait before creating more posts.',
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-
-app.use('/api/', generalLimiter);
-app.use('/auth/', authLimiter);
+app.use('/api/', rateLimiters.general);
+app.use('/auth/', rateLimiters.auth);
 
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 50 * 1024 * 1024,
-        files: 1
+        fileSize: config.limits.fileSize,
+        files: config.limits.maxFiles
     },
     fileFilter: (req, file, cb) => {
-        const allowedMimes = [
-            'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
-            'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'
-        ];
+        const allowedMimes = [...config.media.allowedImageTypes, ...config.media.allowedVideoTypes];
 
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Invalid file type'), false);
+            cb(new Error(config.messages.errors.invalidFileType), false);
         }
     }
-});
-
-const templates = createRenderer({
-    baseDir: './src/components/',
-    enableCache: true,
-    includePattern: /\[\[(.+?)\]\]/g,
-    variablePattern: /\{\{(.+?)\}\}/g,
 });
 
 async function authMiddleware(req, res, next) {
     const authResult = await authenticateRequest(req);
     if (!authResult.isValid) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: config.messages.errors.unauthorized });
     }
     req.userData = authResult.userData;
     next();
@@ -205,21 +104,15 @@ function createExpressRequest(req) {
 }
 
 app.get('/', async (req, res) => {
-    try {
-        const htmlContent = await templates.render('index.html', {
-            meta_description: "Self promote your awesomeness",
-            meta_author: "VAPR",
-            meta_image: "https://vapr-club.b-cdn.net/posts/3bad19ce-9f1b-4abd-a718-3d701c3ca09a.png",
-            meta_url: "https://vapr.club/"
-        });
-        res.status(200).type('html').send(htmlContent);
-    } catch (error) {
-        console.error('Template rendering error:', error);
-        res.status(500).send("Internal Server Error");
-    }
-})
+    await res.render('index.html', {
+        meta_description: config.meta.default.description,
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url
+    });
+});
 
-app.get('/login', authLimiter, async (req, res) => {
+app.get('/login', rateLimiters.auth, async (req, res) => {
     const response = await redirectToDiscordLogin();
     const setCookieHeader = response.headers.get('set-cookie');
 
@@ -230,7 +123,7 @@ app.get('/login', authLimiter, async (req, res) => {
     res.redirect(response.headers.get('location'));
 });
 
-app.get('/auth/discord/callback', authLimiter, async (req, res) => {
+app.get('/auth/discord/callback', rateLimiters.auth, async (req, res) => {
     const response = await handleOAuthCallback(createExpressRequest(req));
     const html = await response.text();
     const setCookieHeader = response.headers.get('set-cookie');
@@ -244,7 +137,7 @@ app.get('/auth/discord/callback', authLimiter, async (req, res) => {
 
 app.post('/logout', (req, res) => {
     res.setHeader('Set-Cookie', 'jwt=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/');
-    res.json({ success: true });
+    res.json(config.messages.success.logoutSuccess);
 });
 
 app.get('/me', authMiddleware, async (req, res) => {
@@ -263,10 +156,10 @@ app.get('/me/posts', authMiddleware, async (req, res) => {
 
 app.get('/me/update-background', authMiddleware, async (req, res) => {
     const backgroundId = req.query.backgroundId;
-    if (!backgroundId || !/^[a-zA-Z0-9_-]+$/.test(backgroundId)) {
+    if (!backgroundId || !config.validation.backgroundId.test(backgroundId)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid backgroundId parameter"
+            message: config.messages.errors.invalidBackgroundId
         });
     }
 
@@ -274,7 +167,7 @@ app.get('/me/update-background', authMiddleware, async (req, res) => {
         await updateBackgroundId(req.userData.id, backgroundId);
         res.json({
             success: true,
-            message: "Background updated successfully"
+            message: config.messages.success.backgroundUpdated
         });
     } catch (error) {
         console.error('Error updating background:', error);
@@ -293,16 +186,16 @@ app.get('/feed', async (req, res) => {
     res.status(response.status).json(data);
 });
 
-app.post('/posts', authMiddleware, upload.single('file'), createPostLimiter, async (req, res) => {
+app.post('/posts', authMiddleware, upload.single('file'), rateLimiters.createPost, async (req, res) => {
     const expressReq = createExpressRequest(req);
     const response = await createPost(expressReq, req.userData);
     const data = await response.json();
     res.status(response.status).json(data);
 });
 
-app.get('/posts/:id', generalLimiter, async (req, res) => {
-    if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
-        return res.status(400).json({ error: 'Invalid post ID format' });
+app.get('/posts/:id', rateLimiters.general, async (req, res) => {
+    if (!config.validation.postId.test(req.params.id)) {
+        return res.status(400).json({ error: config.messages.errors.invalidPostId });
     }
 
     const authResult = await authenticateRequest(req);
@@ -319,8 +212,8 @@ app.get('/posts/:id', generalLimiter, async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-    if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
-        return res.status(400).send("Invalid post ID");
+    if (!config.validation.postId.test(req.params.id)) {
+        return res.status(400).send(config.messages.errors.invalidPostId);
     }
 
     const id = req.params.id;
@@ -335,23 +228,17 @@ app.get('/post/:id', async (req, res) => {
         }
     }
 
-    try {
-        const htmlContent = await templates.render('index.html', {
-            meta_description: post.title || "VAPR Post",
-            meta_author: post.username || "VAPR User",
-            meta_image: post.content || "https://vapr-club.b-cdn.net/default_vapr_avatar.png",
-            meta_url: "https://vapr.club" + req.path
-        });
-        res.status(200).type('html').send(htmlContent);
-    } catch (error) {
-        console.error('Template rendering error:', error);
-        res.status(500).send("Internal Server Error");
-    }
+    await res.render('index.html', {
+        meta_description: post.title || "VAPR Post",
+        meta_author: post.username || "VAPR User",
+        meta_image: post.content || config.meta.default.defaultAvatar,
+        meta_url: "https://vapr.club" + req.path
+    });
 });
 
 app.get('/like/:id', authMiddleware, async (req, res) => {
-    if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
-        return res.status(400).json({ error: 'Invalid post ID format' });
+    if (!config.validation.postId.test(req.params.id)) {
+        return res.status(400).json({ error: config.messages.errors.invalidPostId });
     }
 
     const response = await likePost(req.params.id, req.userData);
@@ -360,8 +247,8 @@ app.get('/like/:id', authMiddleware, async (req, res) => {
 });
 
 app.get('/dislike/:id', authMiddleware, async (req, res) => {
-    if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
-        return res.status(400).json({ error: 'Invalid post ID format' });
+    if (!config.validation.postId.test(req.params.id)) {
+        return res.status(400).json({ error: config.messages.errors.invalidPostId });
     }
 
     const response = await dislikePost(req.params.id, req.userData);
@@ -370,8 +257,8 @@ app.get('/dislike/:id', authMiddleware, async (req, res) => {
 });
 
 app.get('/skip/:id', authMiddleware, async (req, res) => {
-    if (!/^[a-f0-9-]{36}$/.test(req.params.id)) {
-        return res.status(400).json({ error: 'Invalid post ID format' });
+    if (!config.validation.postId.test(req.params.id)) {
+        return res.status(400).json({ error: config.messages.errors.invalidPostId });
     }
 
     const response = await skipPost(req.params.id, req.userData);
@@ -383,10 +270,10 @@ app.get('/manage-follow', authMiddleware, async (req, res) => {
     const postId = req.query.postId;
     const action = req.query.action;
 
-    if (!postId || (postId !== 'profile_follow' && !/^[a-f0-9-]{36}$/.test(postId))) {
+    if (!postId || (postId !== 'profile_follow' && !config.validation.postId.test(postId))) {
         return res.status(400).json({
             success: false,
-            message: "Invalid postId parameter"
+            message: config.messages.errors.invalidPostIdParam
         });
     }
 
@@ -398,7 +285,7 @@ app.get('/manage-follow', authMiddleware, async (req, res) => {
     } else {
         return res.status(400).json({
             success: false,
-            message: "Invalid action specified"
+            message: config.messages.errors.invalidAction
         });
     }
 
@@ -416,18 +303,17 @@ app.get('/add-reaction', authMiddleware, async (req, res) => {
     const postId = req.query.postId;
     const emoji = req.query.emoji;
 
-    if (!postId || !/^[a-f0-9-]{36}$/.test(postId)) {
+    if (!postId || !config.validation.postId.test(postId)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid postId parameter"
+            message: config.messages.errors.invalidPostIdParam
         });
     }
 
-    const allowedEmojis = ['💩', '👀', '😂', '❤️', '💯', 'null'];
-    if (!allowedEmojis.includes(emoji)) {
+    if (!config.reactions.allowedEmojis.includes(emoji)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid emoji parameter"
+            message: config.messages.errors.invalidEmoji
         });
     }
 
@@ -439,10 +325,10 @@ app.get('/add-reaction', authMiddleware, async (req, res) => {
 app.get('/get-reactions', async (req, res) => {
     const postId = req.query.postId;
 
-    if (!postId || !/^[a-f0-9-]{36}$/.test(postId)) {
+    if (!postId || !config.validation.postId.test(postId)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid postId parameter"
+            message: config.messages.errors.invalidPostIdParam
         });
     }
 
@@ -461,23 +347,23 @@ app.get('/api/user/:userId', async (req, res) => {
         );
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: config.messages.errors.userNotFound });
         }
 
         res.json(user);
     } catch (error) {
         console.error('Error fetching user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: config.messages.errors.internalError });
     }
 });
 
 app.get('/register-view', async (req, res) => {
     const postId = req.query.postId;
 
-    if (!postId || !/^[a-f0-9-]{36}$/.test(postId)) {
+    if (!postId || !config.validation.postId.test(postId)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid postId parameter"
+            message: config.messages.errors.invalidPostIdParam
         });
     }
 
@@ -491,10 +377,10 @@ app.get('/register-view', async (req, res) => {
 app.get('/click-link', async (req, res) => {
     const postId = req.query.postId;
 
-    if (!postId || !/^[a-f0-9-]{36}$/.test(postId)) {
+    if (!postId || !config.validation.postId.test(postId)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid postId parameter"
+            message: config.messages.errors.invalidPostIdParam
         });
     }
 
@@ -511,7 +397,7 @@ app.get('/accept-invitation', authMiddleware, async (req, res) => {
     if (!ambassadorUserId) {
         return res.status(400).json({
             success: false,
-            message: "Ambassador user ID is required"
+            message: config.messages.errors.ambassadorRequired
         });
     }
 
@@ -521,7 +407,7 @@ app.get('/accept-invitation', authMiddleware, async (req, res) => {
         if (acceptanceResult.success) {
             res.json({
                 success: true,
-                message: "Invitation accepted successfully"
+                message: config.messages.success.invitationAccepted
             });
         } else {
             res.status(400).json({
@@ -580,7 +466,7 @@ app.get('/api/my-games', authMiddleware, async (req, res) => {
 app.post('/api/games/redeem-key', authMiddleware, async (req, res) => {
     const { key } = req.body;
     if (!key) {
-        return res.status(400).json({ success: false, error: 'Key is required' });
+        return res.status(400).json({ success: false, error: config.messages.errors.keyRequired });
     }
     const response = await redeemGameKey(req.userData.id, key);
     const data = await response.json();
@@ -628,7 +514,6 @@ app.get('/api/games/:id/download', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
-// Create a new version for a game
 app.post('/api/games/:id/versions', authMiddleware, async (req, res) => {
     const gameId = req.params.id;
     const versionData = req.body;
@@ -638,7 +523,6 @@ app.post('/api/games/:id/versions', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
-// Get all versions for a game
 app.get('/api/games/:id/versions', async (req, res) => {
     const gameId = req.params.id;
     const response = await getGameVersions(gameId);
@@ -646,21 +530,18 @@ app.get('/api/games/:id/versions', async (req, res) => {
     res.status(response.status).json(data);
 });
 
-// Check for updates for the current user
 app.get('/api/updates/check', authMiddleware, async (req, res) => {
     const response = await checkForUpdates(req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
 });
 
-// Mark an update as seen
 app.post('/api/updates/:gameId/seen', authMiddleware, async (req, res) => {
     const response = await markUpdateAsSeen(req.userData.id, req.params.gameId);
     const data = await response.json();
     res.status(response.status).json(data);
 });
 
-// Mark an update as downloaded
 app.post('/api/updates/:gameId/downloaded', authMiddleware, async (req, res) => {
     const { version } = req.body;
     const response = await markUpdateAsDownloaded(req.userData.id, req.params.gameId, version);
@@ -668,20 +549,18 @@ app.post('/api/updates/:gameId/downloaded', authMiddleware, async (req, res) => 
     res.status(response.status).json(data);
 });
 
-// Upload game update file
 app.post('/api/games/:id/upload-update', authMiddleware, upload.single('file'), async (req, res) => {
     const gameId = req.params.id;
 
     if (!req.file) {
-        return res.status(400).json({ success: false, error: 'No file uploaded' });
+        return res.status(400).json({ success: false, error: config.messages.errors.noFileUploaded });
     }
 
-    // Validate file type (accept only zip files)
     if (req.file.mimetype !== 'application/zip' &&
         !req.file.originalname.toLowerCase().endsWith('.zip')) {
         return res.status(400).json({
             success: false,
-            error: 'Only ZIP files are allowed for game updates'
+            error: config.messages.errors.onlyZipAllowed
         });
     }
 
@@ -693,8 +572,8 @@ app.post('/api/games/:id/upload-update', authMiddleware, upload.single('file'), 
 app.get('/@:username', async (req, res) => {
     const username = req.params.username;
 
-    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
-        return res.status(400).send("Invalid username format");
+    if (!config.validation.username.test(username)) {
+        return res.status(400).send(config.messages.errors.invalidUsername);
     }
 
     const expressReq = createExpressRequest(req);
@@ -708,12 +587,12 @@ app.get('/@:username', async (req, res) => {
 });
 
 app.use(serveStatic(join(__dirname, 'public'), {
-    maxAge: 0,
+    maxAge: config.static.maxAge,
     setHeaders: (res, path) => {
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-        res.setHeader('Surrogate-Control', 'no-store');
+        res.setHeader('Cache-Control', config.static.cacheControl);
+        res.setHeader('Pragma', config.static.pragma);
+        res.setHeader('Expires', config.static.expires);
+        res.setHeader('Surrogate-Control', config.static.surrogateControl);
 
         if (path.endsWith('.js')) {
             res.setHeader('Content-Type', 'application/javascript');
@@ -723,7 +602,7 @@ app.use(serveStatic(join(__dirname, 'public'), {
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+    res.status(500).json({ error: config.messages.errors.somethingWrong });
 });
 
 try {
