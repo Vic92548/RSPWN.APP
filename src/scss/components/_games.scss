@@ -27,6 +27,8 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  min-height: 250px;
+  isolation: isolate;
 
   &:hover {
     background: $glass-bg-primary;
@@ -42,19 +44,23 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #000;
+  z-index: 1;
 }
 
 .game-cover {
   width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
 .game-content {
-  padding: 0 20px 20px 20px;
+  padding: 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 .game-title {
@@ -269,55 +275,66 @@
 }
 
 .download-progress-overlay {
-  @include absolute-fill;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   @include flex-center;
   flex-direction: column;
-  z-index: 15;
-  padding: 30px;
+  z-index: 20;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .download-progress-container {
-  width: 100%;
-  max-width: 320px;
-  @include glass-effect();
+  width: calc(100% - 40px);
+  max-width: 260px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
 
   @include responsive(tablet) {
-    padding: 20px;
+    padding: 15px;
+    width: calc(100% - 30px);
+    max-width: 100%;
   }
 }
 
 .download-progress-header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .download-progress-icon {
-  width: 60px;
-  height: 60px;
-  background: rgba(78, 205, 196, 0.1);
+  width: 50px;
+  height: 50px;
+  background: rgba(78, 205, 196, 0.15);
   border: 2px solid rgba(78, 205, 196, 0.3);
   border-radius: 50%;
   @include flex-center;
-  margin: 0 auto 15px;
+  margin: 0 auto 12px;
   position: relative;
 
   &::before {
     content: '';
     position: absolute;
-    inset: -8px;
-    background: radial-gradient(circle, rgba(78, 205, 196, 0.3), transparent);
+    inset: -6px;
+    background: radial-gradient(circle, rgba(78, 205, 196, 0.2), transparent);
     border-radius: 50%;
     animation: pulseGlow 2s ease-in-out infinite;
   }
 
   i {
-    font-size: 24px;
+    font-size: 20px;
     color: $primary-color;
     animation: downloadBounce 1.5s ease-in-out infinite;
   }
@@ -330,73 +347,75 @@
 
 @keyframes downloadBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-3px); }
 }
 
 .download-progress-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: $text-strong;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .download-progress-subtitle {
-  font-size: 13px;
+  font-size: 12px;
   color: $text-secondary;
+  @include text-truncate;
+  max-width: 200px;
+  margin: 0 auto;
 }
 
 .download-progress-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 25px;
+  gap: 15px;
+  margin-bottom: 20px;
 
   @include responsive(tablet) {
-    gap: 15px;
+    gap: 12px;
   }
 }
 
 .download-stat {
-  background: $glass-bg-secondary;
-  border: 1px solid $glass-border-light;
-  border-radius: 12px;
-  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
   text-align: center;
   transition: all 0.3s ease;
-
-  &:hover {
-    background: $glass-bg-primary;
-    transform: translateY(-2px);
-  }
 }
 
 .download-stat-value {
   display: block;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: $text-primary;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+
+  @include responsive(tablet) {
+    font-size: 18px;
+  }
 }
 
 .download-stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: $text-weak;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .download-progress-bar-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .download-progress-bar {
   width: 100%;
-  height: 10px;
-  background: $glass-bg-tertiary;
-  border-radius: 5px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .download-progress-fill {
@@ -405,12 +424,12 @@
   transition: width 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+  box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
 
   &::after {
     content: '';
     @include absolute-fill;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     animation: shimmer 2s infinite;
   }
 }
@@ -418,43 +437,43 @@
 .download-info {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11px;
   color: $text-secondary;
-  margin-top: 10px;
+  margin-top: 8px;
 
   span {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
   }
 
   i {
-    font-size: 10px;
+    font-size: 9px;
     color: rgba(255, 255, 255, 0.4);
   }
 }
 
 .cancel-download-btn {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
-  background: $glass-bg-secondary;
-  border: 1px solid $glass-border-light;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: $text-faint;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   @include flex-center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.3s ease;
 
   &:hover {
     background: rgba(231, 76, 60, 0.2);
     border-color: rgba(231, 76, 60, 0.3);
     color: $text-primary;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(231, 76, 60, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
   }
 }
 
@@ -755,10 +774,7 @@
 
 .library-grid .game-item {
   min-height: auto;
-
-  .game-content {
-    padding: 20px;
-  }
+  position: relative;
 }
 
 @keyframes fadeIn {

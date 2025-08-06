@@ -70,7 +70,7 @@
                 </div>
                 <div class="download-progress-stats">
                     <div class="download-stat">
-                        <span class="download-stat-value">{{download-progress}}%</span>
+                        <span class="download-stat-value" id="download-progress-{{game-id}}">{{download-progress}}%</span>
                         <span class="download-stat-label">Progress</span>
                     </div>
                     <div class="download-stat">
@@ -80,7 +80,7 @@
                 </div>
                 <div class="download-progress-bar-wrapper">
                     <div class="download-progress-bar">
-                        <div class="download-progress-fill" style="width: {{download-progress}}%"></div>
+                        <div class="download-progress-fill" id="download-fill-{{game-id}}" style="width: {{download-progress}}%"></div>
                     </div>
                     <div class="download-info">
                         <span><i class="fa-solid fa-database"></i> <span id="download-size-{{game-id}}">0 MB / 0 MB</span></span>
