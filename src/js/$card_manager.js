@@ -49,7 +49,7 @@ const cardManager = {
             }
         }
 
-        config.onShow();
+        if(config.onShow) config.onShow();
     },
 
     hide(cardId) {
@@ -78,7 +78,7 @@ const cardManager = {
                     }
                 }
 
-                config.onHide();
+                if(config.onHide) config.onHide();
 
                 if (this.currentCard === cardId) {
                     this.currentCard = null;

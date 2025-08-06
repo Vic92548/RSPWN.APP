@@ -1,17 +1,12 @@
 function loadUserData(){
-    if(MainPage){
-        DOM.hide("sign_in");
-        DOM.hide("add_post");
-    }
+    DOM.hide("sign_in");
+    DOM.hide("add_post");
 
-    api.getMe().then(function(data){window.user = data;
+    api.getMe().then(function(data){
+        window.user = data;
 
         if (window.updateSDKUserInfo) {
             window.updateSDKUserInfo();
-        }
-
-        if(!MainPage){
-            return;
         }
 
         updateUsername();
@@ -43,17 +38,17 @@ function loadUserData(){
             migrateLocalBackgroundToBackend();
         }, 1000);
 
-        if (MainPage) {
-            loadGamesData().then(() => {
-                updateDeveloperSection();
-                if (window.user) {
-                    initializeTebexIntegration();
-                    DOM.hide('cart-button');
-                }
-            });
+        loadGamesData().then(() => {
+            updateDeveloperSection();
+            if (window.user) {
+                initializeTebexIntegration();
+                DOM.hide('cart-button');
+            }
+        });
 
-            checkAndShowUpdates();
-        }}).catch(error => {
+        checkAndShowUpdates();
+    }).catch(error => {
+
         DOM.show("sign_in");
         if(window.innerWidth <= 768){
             DOM.show("add_post");

@@ -36,7 +36,7 @@ class API {
             if (!response.ok) {
                 if (response.status === 401 && requireAuth) {
                     this.clearAuth();
-                    window.location.href = '/login';
+                    //window.location.href = '/login';
                     throw new Error('Unauthorized');
                 }
                 throw new Error(`Network response was not ok: ${response.statusText}`);

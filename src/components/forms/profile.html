@@ -1,0 +1,89 @@
+<article class="profile-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="profile-card" style="display:none;">
+    <div id="profileContent">
+        <div class="vapr-card-header glass-section-bg">
+            <div class="header-content">
+                <h2><i class="fa-solid fa-user"></i>@{{username}}</h2>
+            </div>
+            <button type="button" class="glass-close-btn" onclick="closeProfileCard()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="vapr-card-body vapr-scrollbar" id="profile-body">
+            <div class="profile-header-wrapper">
+                <div class="profile-header-content">
+                    <div class="user-avatar profile-avatar-large">
+                        <img id="profile-avatar-img" src="{{avatar_url}}" alt="{{username}}'s avatar" onerror="this.src='https://vapr-club.b-cdn.net/default_vapr_avatar.png'">
+                    </div>
+                    <div class="profile-info-main">
+                        <h1 id="profile-username">@{{username}}</h1>
+                        <div class="profile-badges">
+                            <span class="glass-badge level-badge">
+                                <i class="fa-solid fa-star"></i>
+                                Level <span id="profile-level">{{level}}</span>
+                            </span>
+                        </div>
+                        <p class="profile-meta">
+                            <i class="fa-solid fa-calendar"></i>
+                            Member since <span id="profile-join-date">{{join_date}}</span>
+                        </p>
+                    </div>
+                    <button id="profile-follow-btn" class="glass-button follow-profile-btn" onclick="toggleProfileFollow()" style="display:none;">
+                        <i class="fa-solid fa-user-plus"></i> Follow
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-stats-grid vapr-grid vapr-grid-3">
+                <div class="stat-card glass-secondary glass-hover-scale">
+                    <i class="fa-solid fa-layer-group stat-icon"></i>
+                    <div>
+                        <span class="stat-value" id="profile-posts-count" data-stat="posts">{{posts_count}}</span>
+                        <span class="stat-label">Posts</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-secondary glass-hover-scale">
+                    <i class="fa-solid fa-users stat-icon"></i>
+                    <div>
+                        <span class="stat-value" id="profile-followers-count" data-stat="followers">{{followers_count}}</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-secondary glass-hover-scale">
+                    <i class="fa-solid fa-eye stat-icon"></i>
+                    <div>
+                        <span class="stat-value" id="profile-total-views">{{total_views}}</span>
+                        <span class="stat-label">Total Views</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-posts-section">
+                <h3 class="section-header"><i class="fa-solid fa-grid"></i> Recent Posts</h3>
+                <div class="posts-grid" id="profile-posts-grid">
+                    {{posts_html}}
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-error" id="profile-error" style="display:none;">
+            <div class="error-icon">
+                <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <h2>User Not Found</h2>
+            <p>Sorry, the user <strong id="profile-error-username">@{{username}}</strong> doesn't exist on VAPR.</p>
+            <div class="error-actions">
+                <button class="glass-button" onclick="closeProfileCard()">
+                    <i class="fa-solid fa-home"></i> Go Home
+                </button>
+            </div>
+        </div>
+
+        <div class="vapr-loading" id="profile-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+            <p class="vapr-loading-text glass-text-muted">Loading profile...</p>
+        </div>
+    </div>
+</article>

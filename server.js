@@ -578,6 +578,7 @@ app.get('/@:username', async (req, res) => {
 
     const expressReq = createExpressRequest(req);
     const profileResponse = await handleProfilePage(expressReq, templates);
+
     if (profileResponse) {
         const html = await profileResponse.text();
         res.status(profileResponse.status).type('html').send(html);

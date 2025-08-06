@@ -1,7 +1,6 @@
-import {usersCollection, postsCollection, followsCollection, viewsCollection} from "./database.js";
-import { promises as fs } from 'fs';
+import { usersCollection, postsCollection, followsCollection, viewsCollection } from "./database.js";
 
-async function handleProfilePage(request) {
+async function handleProfilePage(request, templates) {
     const url = new URL(request.url);
     const path = url.pathname;
 
@@ -21,7 +20,12 @@ async function handleProfilePage(request) {
         });
 
         if (!user) {
-            const notFoundHtml = await generateProfileNotFound(username);
+            const notFoundHtml = await templates.render('index.html', {
+                username: escapeHtml(username),
+                meta_title: `User not found - VAPR`,
+                meta_description: `The user @${username} was not found on VAPR.`
+            });
+
             return new Response(notFoundHtml, {
                 status: 404,
                 headers: { "Content-Type": "text/html" }
@@ -30,7 +34,51 @@ async function handleProfilePage(request) {
 
         const profileData = await gatherProfileData(user);
 
-        const profileHtml = await generateProfileHtml(profileData);
+        const avatarUrl = profileData.avatar
+            ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png?size=256`
+            : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
+
+        const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
+
+        let postsHtml = '';
+        if (profileData.recentPosts.length === 0) {
+            postsHtml = '<p class="no-posts"><i class="fa-solid fa-inbox"></i> No posts yet</p>';
+        } else {
+            postsHtml = profileData.recentPosts.map(post => {
+                const timeAgoText = getTimeAgo(post.timestamp);
+                return `
+                   <a href="/post/${post.id}" class="profile-post-card">
+                       <h4>${escapeHtml(post.title)}</h4>
+                       <div class="post-meta">
+                           <span><i class="fa-solid fa-eye"></i> ${formatNumber(post.views)}</span>
+                           <span><i class="fa-solid fa-clock"></i> ${timeAgoText}</span>
+                       </div>
+                   </a>
+               `;
+            }).join('');
+        }
+
+        const templateData = {
+            username: escapeHtml(profileData.username),
+            user_id: profileData.id,
+            avatar_url: avatarUrl,
+            level: profileData.level,
+            join_date: profileData.joinDateFormatted,
+            posts_count: formatNumber(profileData.stats.posts),
+            followers_count: formatNumber(profileData.stats.followers),
+            total_views: formatNumber(profileData.stats.totalViews),
+            xp_current: profileData.xp,
+            xp_required: profileData.xp_required,
+            xp_percentage: xpPercentage.toFixed(1),
+            posts_html: postsHtml,
+
+            meta_title: `@${profileData.username} - VAPR Profile`,
+            meta_description: `Check out @${profileData.username}'s profile on VAPR - Level ${profileData.level} creator with ${profileData.stats.posts} posts and ${profileData.stats.followers} followers.`,
+            meta_url: `https://vapr.club/@${profileData.username}`,
+            meta_image: avatarUrl
+        };
+
+        const profileHtml = await templates.render('index.html', templateData);
 
         return new Response(profileHtml, {
             status: 200,
@@ -106,69 +154,6 @@ async function gatherProfileData(user) {
     };
 }
 
-async function generateProfileHtml(profileData) {
-    const template = await fs.readFile("src/components/profile_page.html", 'utf8');
-
-    const avatarUrl = profileData.avatar
-        ? `https://cdn.discordapp.com/avatars/${profileData.id}/${profileData.avatar}.png?size=256`
-        : 'https://vapr-club.b-cdn.net/default_vapr_avatar.png';
-
-    const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
-
-    let postsHtml = '';
-    if (profileData.recentPosts.length === 0) {
-        postsHtml = '<p class="no-posts"><i class="fa-solid fa-inbox"></i> No posts yet</p>';
-    } else {
-        postsHtml = profileData.recentPosts.map(post => {
-            const timeAgoText = getTimeAgo(post.timestamp);
-            return `
-               <a href="/post/${post.id}" class="profile-post-card">
-                   <h4>${escapeHtml(post.title)}</h4>
-                   <div class="post-meta">
-                       <span><i class="fa-solid fa-eye"></i> ${formatNumber(post.views)}</span>
-                       <span><i class="fa-solid fa-clock"></i> ${timeAgoText}</span>
-                   </div>
-               </a>
-           `;
-        }).join('');
-    }
-
-    let html = template
-        .replace(/{{username}}/g, escapeHtml(profileData.username))
-        .replace(/{{user_id}}/g, profileData.id)
-        .replace(/{{avatar_url}}/g, avatarUrl)
-        .replace(/{{level}}/g, profileData.level)
-        .replace(/{{join_date}}/g, profileData.joinDateFormatted)
-        .replace(/{{posts_count}}/g, formatNumber(profileData.stats.posts))
-        .replace(/{{followers_count}}/g, formatNumber(profileData.stats.followers))
-        .replace(/{{total_views}}/g, formatNumber(profileData.stats.totalViews))
-        .replace(/{{xp_current}}/g, profileData.xp)
-        .replace(/{{xp_required}}/g, profileData.xp_required)
-        .replace(/{{xp_percentage}}/g, xpPercentage.toFixed(1))
-        .replace(/{{posts_html}}/g, postsHtml)
-        .replace(/{{profile_data_json}}/g, JSON.stringify(profileData));
-
-    const metaDescription = `Check out @${profileData.username}'s profile on VAPR - Level ${profileData.level} creator with ${profileData.stats.posts} posts and ${profileData.stats.followers} followers.`;
-    const metaTitle = `@${profileData.username} - VAPR Profile`;
-
-    html = html
-        .replace(/{{meta_title}}/g, escapeHtml(metaTitle))
-        .replace(/{{meta_description}}/g, escapeHtml(metaDescription))
-        .replace(/{{meta_url}}/g, `https://vapr.club/@${profileData.username}`)
-        .replace(/{{meta_image}}/g, avatarUrl);
-
-    return html;
-}
-
-async function generateProfileNotFound(username) {
-    const template = await fs.readFile("src/components/profile_404.html", 'utf8');
-
-    return template
-        .replace(/{{username}}/g, escapeHtml(username))
-        .replace(/{{meta_title}}/g, `User not found - VAPR`)
-        .replace(/{{meta_description}}/g, `The user @${username} was not found on VAPR.`);
-}
-
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',
@@ -208,4 +193,4 @@ function getTimeAgo(date) {
     return Math.floor(seconds) + " seconds ago";
 }
 
-export {handleProfilePage};
+export { handleProfilePage };

@@ -253,8 +253,9 @@ function navigateToMyProfile() {
     window.location.href = `/@${window.user.username}`;
 }
 
-if(MainPage){
-    showInitialPost();
+window.closeProfileCard = function() {
+    cardManager.hide('profile-card');
+    router.navigate('/',true);
+};
 
-    hideWebOnly();
-}
+router.handleRoute();
