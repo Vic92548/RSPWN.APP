@@ -245,7 +245,6 @@ async function displayGameDetails(game) {
             DOM.show(giftButton, 'inline-flex');
             giftButton.onclick = () => {
                 addToCart(game.tebexId);
-                closeGameDetails();
             };
         } else {
             DOM.show(priceSection, 'flex');
@@ -254,7 +253,6 @@ async function displayGameDetails(game) {
             const addToCartBtn = DOM.get('game-details-add-to-cart');
             addToCartBtn.onclick = () => {
                 addToCart(game.tebexId);
-                closeGameDetails();
             };
         }
     } else {
