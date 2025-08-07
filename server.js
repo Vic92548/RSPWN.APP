@@ -44,6 +44,16 @@ import {
     markUpdateAsDownloaded
 } from './server_modules/game_updates.js';
 import { uploadGameUpdate } from './server_modules/game_update_upload.js';
+import {
+    applyForCreatorProgram,
+    getCreatorApplicationStatus,
+    getPendingApplications,
+    approveCreatorApplication,
+    rejectCreatorApplication,
+    trackGameCreatorClick,
+    getCreatorCodeForPurchase,
+    getCreatorStats
+} from './server_modules/creators.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -565,6 +575,64 @@ app.post('/api/games/:id/upload-update', authMiddleware, upload.single('file'), 
     }
 
     const response = await uploadGameUpdate(gameId, req.userData.id, req.file);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/creators/apply', authMiddleware, async (req, res) => {
+    const { tebexWalletId } = req.body;
+    const response = await applyForCreatorProgram(req.userData.id, tebexWalletId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/status', authMiddleware, async (req, res) => {
+    const response = await getCreatorApplicationStatus(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/stats', authMiddleware, async (req, res) => {
+    const response = await getCreatorStats(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/admin/creator-applications', authMiddleware, async (req, res) => {
+    const response = await getPendingApplications(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/admin/creator-applications/:id/approve', authMiddleware, async (req, res) => {
+    const response = await approveCreatorApplication(req.userData.id, req.params.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/admin/creator-applications/:id/reject', authMiddleware, async (req, res) => {
+    const { reason } = req.body;
+    const response = await rejectCreatorApplication(req.userData.id, req.params.id, reason);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/creators/track-game-click', async (req, res) => {
+    const { gameId, postId } = req.body;
+
+    const authResult = await authenticateRequest(req);
+    const userId = authResult.isValid ? authResult.userData.id : 'anonymous_' + crypto.randomUUID();
+
+    const response = await trackGameCreatorClick(userId, gameId, postId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/code-for-purchase/:gameId', async (req, res) => {
+    const authResult = await authenticateRequest(req);
+    const userId = authResult.isValid ? authResult.userData.id : 'anonymous';
+
+    const response = await getCreatorCodeForPurchase(userId, req.params.gameId);
     const data = await response.json();
     res.status(response.status).json(data);
 });

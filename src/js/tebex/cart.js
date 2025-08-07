@@ -32,8 +32,17 @@ class TebexCart {
 
         try {
             await tebexAPI.addToBasket(this.basketIdent, packageId, quantity);
-            await this.refreshCart();
 
+            const gameId = await this.getGameIdFromPackageId(packageId);
+            if (gameId) {
+                const creatorResponse = await api.request(`/api/creators/code-for-purchase/${gameId}`);
+                if (creatorResponse.success && creatorResponse.hasCreatorCode) {
+                    await this.applyCreatorCode(creatorResponse.creatorCode);
+                    notify.info(`Creator code "${creatorResponse.creatorCode}" applied!`);
+                }
+            }
+
+            await this.refreshCart();
             notify.success('Item added to cart!');
 
             const cartButton = DOM.get('cart-button');
@@ -181,6 +190,42 @@ class TebexCart {
         this.basketData = null;
         this.updateCartUI();
         this.renderCartItems();
+    }
+
+    async applyCreatorCode(creatorCode) {
+        if (!this.basketIdent || !creatorCode) return;
+
+        try {
+            await tebexAPI.applyCreatorCode(this.basketIdent, creatorCode);
+            await this.refreshCart();
+            console.log(`Creator code ${creatorCode} applied to basket`);
+            return true;
+        } catch (error) {
+            console.error('Failed to apply creator code:', error);
+            return false;
+        }
+    }
+
+    async removeCreatorCode() {
+        if (!this.basketIdent) return;
+
+        try {
+            await tebexAPI.removeCreatorCode(this.basketIdent);
+            await this.refreshCart();
+            console.log('Creator code removed from basket');
+            return true;
+        } catch (error) {
+            console.error('Failed to remove creator code:', error);
+            return false;
+        }
+    }
+
+    async getGameIdFromPackageId(packageId) {
+        const tebexGame = gamesData.tebexGames?.find(g => g.tebexId === packageId);
+        if (tebexGame) {
+            return tebexGame.id.replace('tebex-', '');
+        }
+        return null;
     }
 }
 

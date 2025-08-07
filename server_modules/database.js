@@ -27,6 +27,9 @@ const gameKeysCollection = db.collection("gameKeys");
 const userGamesCollection = db.collection("userGames");
 const gameVersionsCollection = db.collection("gameVersions");
 const gameUpdatesCollection = db.collection("gameUpdates");
+const creatorApplicationsCollection = db.collection("creatorApplications");
+const creatorsCollection = db.collection("creators");
+const gameCreatorClicksCollection = db.collection("gameCreatorClicks");
 
 export {
     postsCollection,
@@ -46,5 +49,8 @@ export {
     gameKeysCollection,
     userGamesCollection,
     gameVersionsCollection,
-    gameUpdatesCollection
+    gameUpdatesCollection,
+    creatorApplicationsCollection,
+    creatorsCollection,
+    gameCreatorClicksCollection
 };

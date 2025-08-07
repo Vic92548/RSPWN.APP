@@ -182,6 +182,21 @@ function drawPost(data){
 
 window.openTaggedGame = async function() {
     if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
+        if (current_post && current_post.id) {
+            try {
+                await api.request('/api/creators/track-game-click', {
+                    method: 'POST',
+                    body: {
+                        gameId: window.currentPostTaggedGame.id,
+                        postId: current_post.id
+                    }
+                });
+                console.log('Tracked game click for creator attribution');
+            } catch (error) {
+                console.error('Failed to track game click:', error);
+            }
+        }
+
         if (!gamesData.tebexGames || gamesData.tebexGames.length === 0) {
             await loadTebexGames();
         }

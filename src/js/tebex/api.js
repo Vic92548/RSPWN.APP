@@ -87,6 +87,21 @@ class TebexAPI {
             })
         });
     }
+
+    async applyCreatorCode(basketIdent, creatorCode) {
+        return this.request(`/accounts/${this.webstoreToken}/baskets/${basketIdent}/creator-codes`, {
+            method: 'POST',
+            body: JSON.stringify({
+                creator_code: creatorCode
+            })
+        });
+    }
+
+    async removeCreatorCode(basketIdent) {
+        return this.request(`/accounts/${this.webstoreToken}/baskets/${basketIdent}/creator-codes/remove`, {
+            method: 'POST'
+        });
+    }
 }
 
 window.tebexAPI = new TebexAPI('vrvh-cc39f45169dbd59b22582030e84f4e13d69d29a3');
