@@ -671,3 +671,58 @@ $platform-colors: (
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
+
+.discord_login {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  z-index: 90;
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #5865F2, #7289DA);
+  border: none;
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+  transition: all 0.3s ease;
+  animation: discordPulse 2s ease-in-out infinite;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 30px rgba(88, 101, 242, 0.5);
+    background: linear-gradient(135deg, #6875F5, #818CF8);
+  }
+
+  i {
+    font-size: 24px;
+  }
+
+  @include responsive(tablet) {
+    top: 10px;
+    padding: 12px 24px;
+    font-size: 16px;
+
+    i {
+      font-size: 20px;
+    }
+  }
+
+  @include responsive(mobile) {
+    width: calc(100% - 40px);
+    max-width: 300px;
+    justify-content: center;
+  }
+
+  @keyframes discordPulse {
+    0%, 100% {
+      box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+    }
+    50% {
+      box-shadow: 0 6px 30px rgba(88, 101, 242, 0.6);
+    }
+  }
+}
