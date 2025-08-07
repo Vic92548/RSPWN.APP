@@ -7,7 +7,8 @@
     "dev": "nodemon server.js",
     "build": "node build.js",
     "add-game": "node scripts/add-game.js",
-    "manage-games": "node scripts/manage-games.js"
+    "manage-games": "node scripts/manage-games.js",
+    "creator-admin": "node creator-admin.js"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",
