@@ -33,7 +33,7 @@ import {
     clickLink
 } from './server_modules/post.js';
 import { xpTodayHandler } from './server_modules/routes/xp_today.js';
-import { usersCollection } from './server_modules/database.js';
+import { usersCollection, postsCollection } from './server_modules/database.js';
 import { handleProfilePage } from './server_modules/user_profile.js';
 import { createRenderer } from './server_modules/template_engine.js';
 import {
@@ -672,6 +672,81 @@ app.get('/@:username', async (req, res) => {
         res.status(404).send("Profile not found");
     }
 });
+
+const normalizeBaseUrl = (url) => url.replace(/\/+$/, '');
+const escapeXml = (str) => String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
+app.get('/sitemap.xml', async (req, res) => {
+    try {
+        const baseUrl = normalizeBaseUrl(config.server.baseUrl);
+        const now = new Date().toISOString();
+
+        const staticUrls = [
+            { loc: `${baseUrl}/`, changefreq: 'daily', priority: '1.0', lastmod: now },
+            { loc: `${baseUrl}/checkout/success`, changefreq: 'monthly', priority: '0.4', lastmod: now },
+            { loc: `${baseUrl}/checkout/cancel`, changefreq: 'monthly', priority: '0.4', lastmod: now },
+            { loc: `${baseUrl}/login`, changefreq: 'monthly', priority: '0.3', lastmod: now },
+        ];
+
+        const [posts, users] = await Promise.all([
+            postsCollection
+                .find({}, { projection: { id: 1, timestamp: 1 } })
+                .sort({ timestamp: -1 })
+                .toArray(),
+            usersCollection
+                .find({ username: { $exists: true, $ne: null } }, { projection: { username: 1, updatedAt: 1, lastActiveAt: 1 } })
+                .sort({ username: 1 })
+                .toArray(),
+        ]);
+
+        const parts = [];
+        parts.push('<?xml version="1.0" encoding="UTF-8"?>');
+        parts.push('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+
+        for (const u of staticUrls) {
+            parts.push('  <url>');
+            parts.push(`    <loc>${escapeXml(u.loc)}</loc>`);
+            if (u.lastmod) parts.push(`    <lastmod>${u.lastmod}</lastmod>`);
+            if (u.changefreq) parts.push(`    <changefreq>${u.changefreq}</changefreq>`);
+            if (u.priority) parts.push(`    <priority>${u.priority}</priority>`);
+            parts.push('  </url>');
+        }
+
+        for (const p of posts) {
+            const lastmod = p.timestamp ? new Date(p.timestamp).toISOString() : now;
+            parts.push('  <url>');
+            parts.push(`    <loc>${baseUrl}/post/${escapeXml(p.id)}</loc>`);
+            parts.push(`    <lastmod>${lastmod}</lastmod>`);
+            parts.push('    <changefreq>weekly</changefreq>');
+            parts.push('    <priority>0.8</priority>');
+            parts.push('  </url>');
+        }
+
+        for (const u of users) {
+            const lastmodDate = u.updatedAt || u.lastActiveAt || null;
+            const lastmod = lastmodDate ? new Date(lastmodDate).toISOString() : now;
+            parts.push('  <url>');
+            parts.push(`    <loc>${baseUrl}/@${escapeXml(u.username)}</loc>`);
+            parts.push(`    <lastmod>${lastmod}</lastmod>`);
+            parts.push('    <changefreq>weekly</changefreq>');
+            parts.push('    <priority>0.6</priority>');
+            parts.push('  </url>');
+        }
+
+        parts.push('</urlset>');
+        res.type('application/xml').send(parts.join('\n'));
+    } catch (err) {
+        console.error('Error generating sitemap:', err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 
 app.use(serveStatic(join(__dirname, 'public'), {
     maxAge: config.static.maxAge,
