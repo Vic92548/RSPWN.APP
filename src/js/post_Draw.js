@@ -184,14 +184,17 @@ window.openTaggedGame = async function() {
     if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
         if (current_post && current_post.id) {
             try {
+                const gameId = window.currentPostTaggedGame.id;
+                console.log('Tracking game click for game:', gameId, 'post:', current_post.id);
+
                 await api.request('/api/creators/track-game-click', {
                     method: 'POST',
                     body: {
-                        gameId: window.currentPostTaggedGame.id,
+                        gameId: gameId,
                         postId: current_post.id
                     }
                 });
-                console.log('Tracked game click for creator attribution');
+                console.log('Successfully tracked game click for creator attribution');
             } catch (error) {
                 console.error('Failed to track game click:', error);
             }
@@ -200,6 +203,7 @@ window.openTaggedGame = async function() {
         if (!gamesData.tebexGames || gamesData.tebexGames.length === 0) {
             await loadTebexGames();
         }
+
         showGameDetails(window.currentPostTaggedGame.id);
     }
 }

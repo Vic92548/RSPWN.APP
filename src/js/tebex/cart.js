@@ -34,12 +34,20 @@ class TebexCart {
             await tebexAPI.addToBasket(this.basketIdent, packageId, quantity);
 
             const gameId = await this.getGameIdFromPackageId(packageId);
+            console.log('Resolved VAPR game ID:', gameId, 'from package ID:', packageId);
+
             if (gameId) {
                 const creatorResponse = await api.request(`/api/creators/code-for-purchase/${gameId}`);
+                console.log('Creator code check response:', creatorResponse);
+
                 if (creatorResponse.success && creatorResponse.hasCreatorCode) {
-                    await this.applyCreatorCode(creatorResponse.creatorCode);
-                    notify.info(`Creator code "${creatorResponse.creatorCode}" applied!`);
+                    const applyResult = await this.applyCreatorCode(creatorResponse.creatorCode);
+                    if (applyResult) {
+                        notify.info(`Creator code "${creatorResponse.creatorCode}" applied!`);
+                    }
                 }
+            } else {
+                console.log('No VAPR game ID found for this Tebex product');
             }
 
             await this.refreshCart();
@@ -223,7 +231,9 @@ class TebexCart {
     async getGameIdFromPackageId(packageId) {
         const tebexGame = gamesData.tebexGames?.find(g => g.tebexId === packageId);
         if (tebexGame) {
-            return tebexGame.id.replace('tebex-', '');
+            const vaprGameId = await findVAPRGameIdByTitle(tebexGame.title);
+            console.log(`Found VAPR game ID: ${vaprGameId} for Tebex game: ${tebexGame.title}`);
+            return vaprGameId;
         }
         return null;
     }

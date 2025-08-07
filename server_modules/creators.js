@@ -382,9 +382,6 @@ export async function trackGameCreatorClick(userId, gameId, postId) {
             });
         }
 
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 30);
-
         await gameCreatorClicksCollection.updateOne(
             { userId, gameId },
             {
@@ -392,8 +389,7 @@ export async function trackGameCreatorClick(userId, gameId, postId) {
                     creatorId: post.userId,
                     creatorUsername: creator.username,
                     postId,
-                    lastClickedAt: new Date(),
-                    expiresAt
+                    lastClickedAt: new Date()
                 }
             },
             { upsert: true }
@@ -429,8 +425,7 @@ export async function getCreatorCodeForPurchase(userId, gameId) {
     try {
         const click = await gameCreatorClicksCollection.findOne({
             userId,
-            gameId,
-            expiresAt: { $gt: new Date() }
+            gameId
         });
 
         if (click) {
