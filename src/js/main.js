@@ -31,13 +31,6 @@ function updateUsername() {
 
 loadUserData();
 
-function hideLoading(){
-    console.log("steps:"+loading_steps);
-}
-
-function showLoading(){
-}
-
 function setupSocialLink(id, link){
     const link_bt = DOM.get(id);
     link_bt.style.display = "inline-block";
@@ -48,7 +41,6 @@ let current_post_id = undefined;
 let current_post = undefined;
 
 function hidePost() {
-    showLoading();
     DOM.get("post_video").children[0].src = "";
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
@@ -248,7 +240,7 @@ function hideWebOnly(){
 }
 
 function navigateToMyProfile() {
-    window.location.href = `/@${window.user.username}`;
+    router.navigate(`/@${window.user.username}`);
 }
 
 window.closeProfileCard = function() {

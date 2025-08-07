@@ -181,6 +181,7 @@ function drawPost(data){
 }
 
 window.openTaggedGame = async function() {
+    loading.show();
     if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
         if (current_post && current_post.id) {
             try {
@@ -205,12 +206,13 @@ window.openTaggedGame = async function() {
         }
 
         showGameDetails(window.currentPostTaggedGame.id);
+        loading.hide();
     }
 }
 
 function navigateToProfile() {
     if (current_post && current_post.username) {
-        window.location.href = `/@${current_post.username}`;
+        router.navigate(`/@${current_post.username}`);
     }
 }
 

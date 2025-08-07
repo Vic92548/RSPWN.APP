@@ -30,7 +30,6 @@ function loadUserData(){
         DOM.show("xp_bar");
 
         loading_steps--;
-        hideLoading();
 
         handleReferral();
 
@@ -55,7 +54,6 @@ function loadUserData(){
         }
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
-        hideLoading();
     })
 }
 

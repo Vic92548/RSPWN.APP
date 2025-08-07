@@ -46,14 +46,6 @@ async function findGameIdFromPackageId(packageId) {
     return null;
 }
 
-function openCart() {
-    return;
-}
-
-function closeCart() {
-    return;
-}
-
 function handleCheckoutSuccess() {
     notify.success('Purchase completed successfully!');
 

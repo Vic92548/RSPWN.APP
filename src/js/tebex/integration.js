@@ -11,6 +11,7 @@ async function addToCart(tebexPackageId) {
     }
 
     try {
+        loading.show();
         const basketResponse = await tebexAPI.createBasket(
             `${window.location.origin}/checkout/success`,
             `${window.location.origin}/checkout/cancel`
@@ -20,7 +21,7 @@ async function addToCart(tebexPackageId) {
 
         await tebexAPI.addToBasket(basketIdent, tebexPackageId, 1);
 
-        const gameId = await tebexCart.getGameIdFromPackageId(tebexPackageId);
+        const gameId = await findGameIdFromPackageId(tebexPackageId);
         if (gameId) {
             const creatorResponse = await api.request(`/api/creators/code-for-purchase/${gameId}`);
             if (creatorResponse.success && creatorResponse.hasCreatorCode) {
@@ -29,20 +30,12 @@ async function addToCart(tebexPackageId) {
         }
 
         const basketData = await tebexAPI.getBasket(basketIdent);
-        window.location.href = basketData.data.links.checkout;
+        router.navigate(basketData.data.links.checkout);
 
     } catch (error) {
         console.error('Failed to redirect to checkout:', error);
         notify.error('Failed to process checkout');
     }
-}
-
-function openCart() {
-    return;
-}
-
-function closeCart() {
-    return;
 }
 
 function handleCheckoutSuccess() {
@@ -74,5 +67,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addToCart = addToCart;
-window.openCart = openCart;
-window.closeCart = closeCart;

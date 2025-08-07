@@ -16,7 +16,10 @@ class VAPRRouter {
             history.pushState(null, null, path);
             this.handleRoute();
         }
-        else window.location.href = path;
+        else{
+            loading.show();
+            window.location.href = path;
+        }
     }
 
     handleRoute() {

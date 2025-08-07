@@ -12,7 +12,6 @@ function displayPost(postId = undefined){
         if(feed_posts.length > 0){
             const data = feed_posts.shift();
             loading_steps--;
-            hideLoading();
             current_post_id = data.id;
             current_post = data;
             drawPost(data);
@@ -36,7 +35,6 @@ function displayPost(postId = undefined){
             {
                 onSuccess: (data) => {
                     loading_steps--;
-                    hideLoading();
                     current_post_id = data.id;
                     current_post = data;
                     drawPost(data);
