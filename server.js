@@ -131,7 +131,7 @@ app.get('/checkout/success', async (req, res) => {
     });
 });
 
-app.get('/checkout/error', async (req, res) => {
+app.get('/checkout/cancel', async (req, res) => {
     await res.render('index.html', {
         meta_description: config.meta.default.description,
         meta_author: config.meta.default.author,
