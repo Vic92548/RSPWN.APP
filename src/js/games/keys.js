@@ -107,6 +107,15 @@ function createTagFilters() {
 
                 downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i>`;
                 filterGroup.appendChild(downloadBtn);
+
+                const copyBtn = DOM.create('button', {
+                    class: 'tag-copy-btn',
+                    onclick: () => copyKeysByTag(tag.value),
+                    title: `Copy ${availableCount} available ${tag.label} keys`
+                });
+
+                copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i>`;
+                filterGroup.appendChild(copyBtn);
             }
 
             container.appendChild(filterGroup);
@@ -189,6 +198,27 @@ function copyKey(key) {
     notify.copyToClipboard(key, "Key copied to clipboard!");
 }
 
+function copyKeysByTag(tag) {
+    // Determine filter for tag; when tag === 'all' include all tags, '' means untagged
+    const tagParam = tag === 'all' ? null : tag;
+
+    const keysToCopy = gamesData.allKeys
+        .filter(key => {
+            const matchesTag = tagParam === null
+                ? true
+                : (tagParam === '' ? (!key.tag || key.tag === null) : key.tag === tagParam);
+            return matchesTag && !key.usedBy; // only copy available (unused) keys
+        })
+        .map(k => k.key);
+
+    if (keysToCopy.length === 0) {
+        notify.error('No available keys to copy');
+        return;
+    }
+
+    notify.copyToClipboard(keysToCopy.join('\n'), `${keysToCopy.length} keys copied to clipboard!`);
+}
+
 async function downloadKeysByTag(tag) {
     if (!gamesData.currentManagingGame) return;
 
@@ -230,4 +260,9 @@ async function downloadKeysByTag(tag) {
 async function downloadFilteredKeys() {
     const tag = gamesData.currentKeyFilter === 'all' ? 'all' : gamesData.currentKeyFilter;
     await downloadKeysByTag(tag);
+}
+
+function copyFilteredKeys() {
+    const tag = gamesData.currentKeyFilter === 'all' ? 'all' : gamesData.currentKeyFilter;
+    copyKeysByTag(tag);
 }
