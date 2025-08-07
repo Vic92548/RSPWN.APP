@@ -5,6 +5,7 @@ async function loadGameKeys(gameId) {
         if (response.success) {
             gamesData.allKeys = response.keys;
             updateKeyStats();
+            createTagFilters();
             displayKeys(response.keys);
         }
     } catch (error) {
@@ -22,13 +23,108 @@ function updateKeyStats() {
     DOM.setText('available-keys', availableKeys);
 }
 
+function createTagFilters() {
+    const container = DOM.get('tag-filters');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const tagCounts = {
+        all: gamesData.allKeys.length,
+        '': 0,
+        tebex: 0,
+        keymailer: 0,
+        review: 0,
+        giveaway: 0,
+        partner: 0
+    };
+
+    const availableTagCounts = {
+        all: 0,
+        '': 0,
+        tebex: 0,
+        keymailer: 0,
+        review: 0,
+        giveaway: 0,
+        partner: 0
+    };
+
+    gamesData.allKeys.forEach(key => {
+        const tag = key.tag || '';
+        if (tagCounts.hasOwnProperty(tag)) {
+            tagCounts[tag]++;
+        }
+
+        if (!key.usedBy) {
+            availableTagCounts.all++;
+            if (availableTagCounts.hasOwnProperty(tag)) {
+                availableTagCounts[tag]++;
+            }
+        }
+    });
+
+    tagCounts[''] = gamesData.allKeys.filter(k => !k.tag || k.tag === null).length;
+    availableTagCounts[''] = gamesData.allKeys.filter(k => (!k.tag || k.tag === null) && !k.usedBy).length;
+
+    const tags = [
+        { value: 'all', label: 'All', icon: 'fa-list' },
+        { value: '', label: 'No Tag', icon: 'fa-tag-slash' },
+        { value: 'tebex', label: 'Tebex', icon: 'fa-shopping-cart' },
+        { value: 'keymailer', label: 'Keymailer', icon: 'fa-envelope' },
+        { value: 'review', label: 'Review', icon: 'fa-star' },
+        { value: 'giveaway', label: 'Giveaway', icon: 'fa-gift' },
+        { value: 'partner', label: 'Partner', icon: 'fa-handshake' }
+    ];
+
+    tags.forEach(tag => {
+        const count = tagCounts[tag.value] || 0;
+        const availableCount = availableTagCounts[tag.value] || 0;
+
+        if (count > 0) {
+            const filterGroup = DOM.create('div', {
+                class: 'tag-filter-group'
+            });
+
+            const filterBtn = DOM.create('button', {
+                class: `tag-filter-btn ${tag.value === 'all' ? 'active' : ''}`,
+                onclick: () => filterKeys(tag.value)
+            });
+
+            filterBtn.innerHTML = `
+                <i class="fa-solid ${tag.icon}"></i>
+                <span>${tag.label}</span>
+                <span class="tag-count">${availableCount}/${count}</span>
+            `;
+
+            filterGroup.appendChild(filterBtn);
+
+            if (availableCount > 0) {
+                const downloadBtn = DOM.create('button', {
+                    class: 'tag-download-btn',
+                    onclick: () => downloadKeysByTag(tag.value),
+                    title: `Download ${availableCount} available ${tag.label} keys`
+                });
+
+                downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i>`;
+                filterGroup.appendChild(downloadBtn);
+            }
+
+            container.appendChild(filterGroup);
+        }
+    });
+}
+
 function filterKeys(tag) {
     gamesData.currentKeyFilter = tag;
 
     DOM.queryAll('.tag-filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+
+    const activeBtn = DOM.query(`.tag-filter-btn[onclick*="'${tag}'"]`);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+    }
 
     let filteredKeys = gamesData.allKeys;
 
@@ -93,13 +189,14 @@ function copyKey(key) {
     notify.copyToClipboard(key, "Key copied to clipboard!");
 }
 
-async function downloadFilteredKeys() {
+async function downloadKeysByTag(tag) {
     if (!gamesData.currentManagingGame) return;
 
-    const tag = gamesData.currentKeyFilter === 'all' ? null : gamesData.currentKeyFilter;
+    const tagParam = tag === 'all' ? null : tag;
+    const tagLabel = tag === '' ? 'untagged' : (tag === 'all' ? 'all' : tag);
 
     try {
-        const url = `/api/games/${gamesData.currentManagingGame.id}/keys/download${tag !== null ? `?tag=${encodeURIComponent(tag)}` : ''}`;
+        const url = `/api/games/${gamesData.currentManagingGame.id}/keys/download${tagParam !== null ? `?tag=${encodeURIComponent(tagParam)}` : ''}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -115,7 +212,7 @@ async function downloadFilteredKeys() {
         const a = DOM.create('a', {
             style: { display: 'none' },
             href: downloadUrl,
-            download: `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys${tag ? `_${tag}` : ''}.csv`
+            download: `${gamesData.currentManagingGame.title.replace(/[^a-z0-9]/gi, '_')}_keys_${tagLabel}.csv`
         });
 
         document.body.appendChild(a);
@@ -123,9 +220,14 @@ async function downloadFilteredKeys() {
         window.URL.revokeObjectURL(downloadUrl);
         document.body.removeChild(a);
 
-        notify.success("Keys downloaded successfully!");
+        notify.success(`${tagLabel} keys downloaded successfully!`);
     } catch (error) {
         console.error('Error downloading keys:', error);
         notify.error('Download Failed', 'Failed to download keys. Please try again.');
     }
+}
+
+async function downloadFilteredKeys() {
+    const tag = gamesData.currentKeyFilter === 'all' ? 'all' : gamesData.currentKeyFilter;
+    await downloadKeysByTag(tag);
 }

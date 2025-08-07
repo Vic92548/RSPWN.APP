@@ -25,6 +25,9 @@
                                 <option value="">No Tag</option>
                                 <option value="tebex">Tebex</option>
                                 <option value="keymailer">Keymailer</option>
+                                <option value="review">Review</option>
+                                <option value="giveaway">Giveaway</option>
+                                <option value="partner">Partner</option>
                             </select>
                         </div>
                         <button class="glass-button" onclick="generateKeys()">
@@ -48,15 +51,10 @@
                     </div>
                 </div>
 
-                <div class="tag-filter">
-                    <button class="tag-filter-btn active" onclick="filterKeys('all')">All</button>
-                    <button class="tag-filter-btn" onclick="filterKeys('')">No Tag</button>
-                    <button class="tag-filter-btn" onclick="filterKeys('tebex')">Tebex</button>
-                    <button class="tag-filter-btn" onclick="filterKeys('keymailer')">Keymailer</button>
-                    <button class="download-keys-btn" onclick="downloadFilteredKeys()">
-                        <i class="fa-solid fa-download"></i> Download Available Keys
-                    </button>
+                <div class="tag-filter-section">
+                    <div class="tag-filters" id="tag-filters"></div>
                 </div>
+
                 <div class="keys-list" id="keys-list"></div>
             </div>
         </div>
