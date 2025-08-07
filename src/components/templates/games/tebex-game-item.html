@@ -21,12 +21,12 @@
 
             <div class="game-actions">
                 {{^is-owned}}
-                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}'); event.stopPropagation();">
+                <button class="game-action-button primary" onclick="addToCart({{tebex-id}}); event.stopPropagation();">
                     <i class="fa-solid fa-shopping-cart"></i> Buy Now
                 </button>
                 {{/is-owned}}
                 {{#is-owned}}
-                <button class="game-action-button primary" onclick="addToCart('{{tebex-id}}'); event.stopPropagation();">
+                <button class="game-action-button primary" onclick="addToCart({{tebex-id}}); event.stopPropagation();">
                     <i class="fa-solid fa-gift"></i> Gift
                 </button>
                 {{/is-owned}}

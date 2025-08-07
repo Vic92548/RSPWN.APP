@@ -1,9 +1,3 @@
-async function initializeTebexIntegration() {
-    if (!window.tebexCart) {
-        window.tebexCart = new TebexCart();
-    }
-}
-
 async function addToCart(tebexPackageId) {
     if (!isUserLoggedIn()) {
         openRegisterModal();
@@ -59,10 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (window.location.pathname === '/checkout/cancel') {
         handleCheckoutCancel();
         window.history.replaceState({}, '', '/');
-    }
-
-    if (isUserLoggedIn()) {
-        initializeTebexIntegration();
     }
 });
 

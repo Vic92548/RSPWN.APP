@@ -39,10 +39,6 @@ function loadUserData(){
 
         loadGamesData().then(() => {
             updateDeveloperSection();
-            if (window.user) {
-                initializeTebexIntegration();
-                DOM.hide('cart-button');
-            }
         });
 
         checkAndShowUpdates();

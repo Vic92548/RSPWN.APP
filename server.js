@@ -122,6 +122,24 @@ app.get('/', async (req, res) => {
     });
 });
 
+app.get('/checkout/success', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: config.meta.default.description,
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url
+    });
+});
+
+app.get('/checkout/error', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: config.meta.default.description,
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url
+    });
+});
+
 app.get('/login', rateLimiters.auth, async (req, res) => {
     const response = await redirectToDiscordLogin();
     const setCookieHeader = response.headers.get('set-cookie');
