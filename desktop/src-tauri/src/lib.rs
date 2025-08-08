@@ -269,12 +269,34 @@ fn find_exe_recursive(dir: &Path, current_depth: u32, max_depth: u32) -> Option<
             }
         }
     }
+    None
+}
 
+fn resolve_game_id_from_exe_dir(exe_dir: &Path) -> Option<String> {
+    // Search up to 3 parent levels for vapr_game_info.json and read the game id
+    let mut current: Option<&Path> = Some(exe_dir);
+    for _ in 0..4 {
+        if let Some(dir) = current {
+            let info_path = dir.join("vapr_game_info.json");
+            if info_path.exists() {
+                if let Ok(content) = fs::read_to_string(&info_path) {
+                    if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
+                        if let Some(id) = json.get("id").and_then(|v| v.as_str()) {
+                            return Some(id.to_string());
+                        }
+                    }
+                }
+            }
+            current = dir.parent();
+        } else {
+            break;
+        }
+    }
     None
 }
 
 #[tauri::command]
-async fn launch_game(executable_path: String) -> Result<bool, String> {
+async fn launch_game(window: tauri::Window, executable_path: String) -> Result<bool, String> {
     use std::process::Command;
 
     let path = PathBuf::from(&executable_path);
@@ -283,24 +305,39 @@ async fn launch_game(executable_path: String) -> Result<bool, String> {
         return Err("Executable not found".to_string());
     }
 
-    let exe_dir = path.parent()
+    let exe_dir = path
+        .parent()
         .ok_or_else(|| "Failed to get executable directory".to_string())?;
 
-    #[cfg(target_os = "windows")]
-    {
-        Command::new(&executable_path)
-            .current_dir(exe_dir)
-            .spawn()
-            .map_err(|e| format!("Failed to launch game: {}", e))?;
-    }
+    // Try to resolve game_id from nearby vapr_game_info.json
+    let game_id_opt = resolve_game_id_from_exe_dir(exe_dir);
 
-    #[cfg(not(target_os = "windows"))]
-    {
-        Command::new(&executable_path)
-            .current_dir(exe_dir)
-            .spawn()
-            .map_err(|e| format!("Failed to launch game: {}", e))?;
-    }
+    // Start process and monitor duration
+    let started_at = chrono::Utc::now();
+    let start_instant = std::time::Instant::now();
+
+    let mut child = Command::new(&executable_path)
+        .current_dir(exe_dir)
+        .spawn()
+        .map_err(|e| format!("Failed to launch game: {}", e))?;
+
+    let window_clone = window.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        // Wait for the game process to exit
+        let _ = child.wait();
+        let ended_at = chrono::Utc::now();
+        let duration_secs = start_instant.elapsed().as_secs();
+
+        // Emit event to frontend so it can record the session
+        let payload = serde_json::json!({
+            "game_id": game_id_opt,
+            "started_at": started_at.to_rfc3339(),
+            "ended_at": ended_at.to_rfc3339(),
+            "duration_seconds": duration_secs,
+            "executable_path": executable_path
+        });
+        let _ = window_clone.emit("playtime-session", payload);
+    });
 
     Ok(true)
 }

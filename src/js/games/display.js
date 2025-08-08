@@ -1,3 +1,13 @@
+function formatDurationShort(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(Number(totalSeconds || 0)));
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}m`;
+    return `${secs}s`;
+}
+
 function displayGames() {
     const container = DOM.get('games-grid');
     container.innerHTML = '';
@@ -67,6 +77,8 @@ function displayLibrary() {
             const installedGame = isInstalled ? gamesData.installedGames.find(g => g.id === game.id) : null;
             const hasUpdate = gamesData.updates.some(u => u.gameId === game.id);
             const updateInfo = hasUpdate ? gamesData.updates.find(u => u.gameId === game.id) : null;
+            const totalSeconds = Number(gamesData.playtimeTotals?.[game.id] || 0);
+            const totalPlaytime = formatDurationShort(totalSeconds);
 
             return {
                 gameId: game.id,
@@ -82,7 +94,9 @@ function displayLibrary() {
                 installedVersion: installedGame?.version || game.installedVersion || '',
                 latestVersion: updateInfo?.toVersion || game.currentVersion || '',
                 ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\','/') }),
-                ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 })
+                ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 }),
+                totalPlaytime,
+                totalPlaytimeSeconds: totalSeconds
             };
         })
     );

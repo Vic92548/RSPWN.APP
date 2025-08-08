@@ -30,6 +30,7 @@ const gameUpdatesCollection = db.collection("gameUpdates");
 const creatorApplicationsCollection = db.collection("creatorApplications");
 const creatorsCollection = db.collection("creators");
 const gameCreatorClicksCollection = db.collection("gameCreatorClicks");
+const playtimeSessionsCollection = db.collection("playtimeSessions");
 
 export {
     postsCollection,
@@ -52,5 +53,6 @@ export {
     gameUpdatesCollection,
     creatorApplicationsCollection,
     creatorsCollection,
-    gameCreatorClicksCollection
+    gameCreatorClicksCollection,
+    playtimeSessionsCollection
 };

@@ -2,13 +2,22 @@ async function loadGamesData() {
     try {
         DOM.show('games-loading');
 
-        const [gamesResponse, userGamesResponse] = await Promise.all([
+        const [gamesResponse, userGamesResponse, totalsResponse] = await Promise.all([
             api.request('/api/games'),
-            isUserLoggedIn() ? api.request('/api/my-games') : Promise.resolve({ games: [] })
+            isUserLoggedIn() ? api.request('/api/my-games') : Promise.resolve({ games: [] }),
+            isUserLoggedIn() ? api.getPlaytimeTotals().catch(() => ({ success: false, totals: [] })) : Promise.resolve({ success: true, totals: [] })
         ]);
 
         gamesData.allGames = gamesResponse.games || [];
         gamesData.userGames = userGamesResponse.games || [];
+
+        // map totals to object for quick lookup
+        gamesData.playtimeTotals = {};
+        if (totalsResponse && totalsResponse.totals) {
+            for (const t of totalsResponse.totals) {
+                gamesData.playtimeTotals[t.gameId] = t.totalSeconds || 0;
+            }
+        }
 
         if (isRunningInTauri()) {
             try {
@@ -32,8 +41,19 @@ async function loadLibraryData() {
     try {
         DOM.show('library-loading');
 
-        const response = await api.request('/api/my-games');
+        const [response, totalsResponse] = await Promise.all([
+            api.request('/api/my-games'),
+            isUserLoggedIn() ? api.getPlaytimeTotals().catch(() => ({ success: false, totals: [] })) : Promise.resolve({ success: true, totals: [] })
+        ]);
         gamesData.userGames = response.games || [];
+
+        // map totals
+        gamesData.playtimeTotals = {};
+        if (totalsResponse && totalsResponse.totals) {
+            for (const t of totalsResponse.totals) {
+                gamesData.playtimeTotals[t.gameId] = t.totalSeconds || 0;
+            }
+        }
 
         if (isRunningInTauri()) {
             try {

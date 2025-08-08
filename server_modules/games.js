@@ -1,4 +1,4 @@
-import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollection } from './database.js';
+import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollection, playtimeSessionsCollection } from './database.js';
 
 export async function getAllGames() {
     try {
@@ -22,12 +22,20 @@ export async function getUserGames(userId) {
         const gameIds = userGames.map(ug => ug.gameId);
         const games = await gamesCollection.find({ id: { $in: gameIds } }).toArray();
 
+        // Aggregate total playtime per game for this user
+        const playtimeAgg = await playtimeSessionsCollection.aggregate([
+            { $match: { userId, gameId: { $in: gameIds } } },
+            { $group: { _id: '$gameId', totalSeconds: { $sum: '$durationSeconds' } } }
+        ]).toArray();
+        const totalsMap = new Map(playtimeAgg.map(row => [row._id, row.totalSeconds || 0]));
+
         const gamesWithOwnership = games.map(game => {
             const userGame = userGames.find(ug => ug.gameId === game.id);
             return {
                 ...game,
                 ownedAt: userGame.ownedAt,
-                acquiredBy: userGame.acquiredBy
+                acquiredBy: userGame.acquiredBy,
+                totalPlaytimeSeconds: totalsMap.get(game.id) || 0
             };
         });
 

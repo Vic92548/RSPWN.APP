@@ -8,5 +8,7 @@ window.gamesData = {
     allKeys: [],
     updates: [],
     versions: [],
-    updatingGames: new Map()
+    updatingGames: new Map(),
+    // gameId -> totalSeconds
+    playtimeTotals: {}
 };

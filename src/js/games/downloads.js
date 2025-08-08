@@ -224,3 +224,70 @@ function formatTime(seconds) {
         return `${secs}s remaining`;
     }
 }
+
+// Initialize a single playtime-session listener (Tauri)
+let __vaprPlaytimeUnlisten = null;
+async function initPlaytimeListener() {
+    if (!isRunningInTauri() || __vaprPlaytimeUnlisten) return;
+    __vaprPlaytimeUnlisten = await window.__TAURI__.event.listen('playtime-session', async (event) => {
+        try {
+            const p = event.payload || {};
+            // Normalize keys from Rust payload
+            const startedAt = p.started_at || p.startedAt;
+            const endedAt = p.ended_at || p.endedAt;
+            const durationSeconds = Number(p.duration_seconds ?? p.durationSeconds ?? 0);
+            const executablePath = p.executable_path || p.executablePath || '';
+
+            let gameId = p.game_id || p.gameId || null;
+            if (!gameId && Array.isArray(gamesData.installedGames)) {
+                const norm = (s) => String(s || '').replaceAll('\\','/').toLowerCase();
+                const match = gamesData.installedGames.find(g => norm(g.executable) === norm(executablePath));
+                if (match && match.id) gameId = match.id;
+            }
+
+            if (!gameId || !durationSeconds || durationSeconds <= 0) {
+                console.warn('Skipping playtime session post due to missing data', p);
+                return;
+            }
+
+            await APIHandler.handle(
+                () => api.recordPlaytimeSession({ gameId, startedAt, endedAt, durationSeconds, executablePath }),
+                {
+                    onSuccess: async () => {
+                        try {
+                            const res = await api.getPlaytimeTotals();
+                            if (res && res.totals) {
+                                gamesData.playtimeTotals = {};
+                                for (const t of res.totals) {
+                                    gamesData.playtimeTotals[t.gameId] = t.totalSeconds || 0;
+                                }
+                                // Refresh library to reflect new totals
+                                if (typeof displayLibrary === 'function') displayLibrary();
+                            }
+                        } catch (e) {
+                            console.error('Failed to refresh playtime totals:', e);
+                        }
+                    },
+                    onError: (e) => console.error('Failed to record playtime session:', e),
+                    showLoading: false,
+                }
+            );
+        } catch (err) {
+            console.error('Error handling playtime-session event:', err);
+        }
+    });
+}
+
+// Set up listener on load if running in Tauri
+if (isRunningInTauri()) {
+    initPlaytimeListener();
+}
+
+// Expose functions to window for template onclick handlers
+window.downloadGame = downloadGame;
+window.updateGameDownloadProgress = updateGameDownloadProgress;
+window.updateGameDownloadStatus = updateGameDownloadStatus;
+window.cancelDownload = cancelDownload;
+window.uninstallGame = uninstallGame;
+window.launchGame = launchGame;
+window.downloadUpdate = downloadUpdate;

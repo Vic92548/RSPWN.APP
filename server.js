@@ -540,6 +540,7 @@ import {
     getGameKeys,
     getGameDownloadUrl, downloadKeysAsCSV
 } from './server_modules/games.js';
+import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
 
 app.get('/api/games', async (req, res) => {
     const response = await getAllGames();
@@ -549,6 +550,19 @@ app.get('/api/games', async (req, res) => {
 
 app.get('/api/my-games', authMiddleware, async (req, res) => {
     const response = await getUserGames(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Playtime APIs
+app.post('/api/playtime/session', authMiddleware, async (req, res) => {
+    const response = await recordPlaytimeSession(req.userData.id, req.body || {});
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/playtime/totals', authMiddleware, async (req, res) => {
+    const response = await getUserPlaytimeTotals(req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
 });

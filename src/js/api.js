@@ -192,6 +192,15 @@ class API {
     async getUser(userId) {
         return this.get(`/api/user/${userId}`, false);
     }
+
+    // Playtime APIs
+    async recordPlaytimeSession({ gameId, startedAt, endedAt, durationSeconds, executablePath }) {
+        return this.post('/api/playtime/session', { gameId, startedAt, endedAt, durationSeconds, executablePath });
+    }
+
+    async getPlaytimeTotals() {
+        return this.get('/api/playtime/totals');
+    }
 }
 
 class APIHandler {
