@@ -136,15 +136,20 @@
                     Creator Program
                 </menu-item>
             </menu-section>
+            
+            <menu-section title="Account" id="account_section" style="display: none;">
+                <menu-item
+                        icon="fa-solid fa-right-from-bracket"
+                        description="Sign out of VAPR"
+                        onclick="logout()">
+                    Logout
+                </menu-item>
+            </menu-section>
         </nav>
 
         <div class="menu-footer glass-section-bg">
-            <button class="menu-logout-btn glass-button" onclick="logout()" id="logout_btn" style="display: none;">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </button>
             <div class="menu-version">
-                <span>VAPR v1.6.5</span>
+                <span>VAPR v1.6.6</span>
                 <span class="dot">•</span>
                 <span id="online_users">0 users</span>
             </div>

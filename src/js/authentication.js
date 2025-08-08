@@ -44,6 +44,9 @@ function loadUserData(){
 
         loadGamesData().then(() => {
             updateDeveloperSection();
+            // Ensure Account section (with Logout) is visible when authenticated
+            const accountSection = DOM.get('account_section');
+            if (accountSection) DOM.show(accountSection);
         });
 
         checkAndShowUpdates();
@@ -60,6 +63,10 @@ function loadUserData(){
         try {
             if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();
         } catch (e) { /* no-op */ }
+
+        // Hide Account section when unauthenticated
+        const accountSection = DOM.get('account_section');
+        if (accountSection) DOM.hide(accountSection);
     })
 }
 

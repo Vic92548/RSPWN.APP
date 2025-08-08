@@ -126,10 +126,10 @@ function updateMenuXPBar() {
 
 function showMenuUserElements() {
     const userCard = DOM.get('menu_user_info');
-    const logoutBtn = DOM.get('logout_btn');
+    const accountSection = DOM.get('account_section');
 
     if (userCard) DOM.show(userCard, 'flex');
-    if (logoutBtn) DOM.show(logoutBtn, 'flex');
+    if (accountSection) DOM.show(accountSection);
 }
 
 async function updateOnlineUsers() {
@@ -205,6 +205,10 @@ function openMenu() {
 
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
+        showMenuUserElements();
+    } else {
+        const accountSection = DOM.get('account_section');
+        if (accountSection) DOM.hide(accountSection);
     }
 
     const menuContainer = menu.querySelector('.menu-container');
@@ -332,6 +336,20 @@ if (typeof document !== 'undefined') {
             }
         }, 500);
     };
+}
+
+// Ensure Account section visibility after template rendering
+if (window.VAPR && typeof window.VAPR.on === 'function') {
+    const toggleAccountSection = (el) => {
+        if (isUserLoggedIn()) {
+            DOM.show(el);
+        } else {
+            DOM.hide(el);
+        }
+    };
+
+    window.VAPR.on('#account_section', 'created', toggleAccountSection);
+    window.VAPR.on('#account_section', 'mounted', toggleAccountSection);
 }
 
 function insertVAPRUserInfo() {
