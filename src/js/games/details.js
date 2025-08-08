@@ -15,6 +15,10 @@ async function showGameDetails(gameId) {
 
 function closeGameDetails() {
     cardManager.hide('game-details-card');
+    // After closing, navigate back to home (client-side) so the feed shows again
+    if (window.router) {
+        window.router.navigate('/', true);
+    }
     currentGameDetails = null;
 }
 

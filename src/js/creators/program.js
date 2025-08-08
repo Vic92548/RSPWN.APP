@@ -139,6 +139,10 @@ function openCreatorProgram() {
 
 function closeCreatorProgramCard() {
     cardManager.hide('creator-program-card');
+    // After closing, navigate back home (client-side) so the feed shows again
+    if (window.router) {
+        window.router.navigate('/', true);
+    }
 }
 
 function openCreatorDashboard() {

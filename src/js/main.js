@@ -5,7 +5,8 @@ let creators = {};
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
-
+    // Always reset the post view so it is visible on home
+    showPost();
     if(path.length < 3){
         displayPost();
     }else if(path[1] === "post"){
