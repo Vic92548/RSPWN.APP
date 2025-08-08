@@ -13,6 +13,7 @@
       font-size: 36px;
       margin-bottom: $spacing-sm;
       background: linear-gradient(135deg, $primary-color, $secondary-color);
+      background-clip: text; // standard property for compatibility
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
 
@@ -177,6 +178,69 @@
       margin-top: $spacing-sm;
       padding-top: $spacing-sm;
       border-top: 1px solid $glass-border-light;
+    }
+
+    #creator-login-prompt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: $spacing-sm;
+      text-align: center;
+
+      padding: $spacing-xl;
+      border-radius: $radius-sm;
+      max-width: 640px;
+      margin: $spacing-md auto $spacing-xl;
+
+      p {
+        margin: 0 0 $spacing-sm 0;
+        font-size: 16px;
+      }
+
+      .glass-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 220px;
+
+        @include responsive(mobile) {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  // Sibling login prompt block styling (top-level inside creator-program-card)
+  #creator-login-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+    text-align: center;
+
+    padding: $spacing-xl;
+    border-radius: $radius-sm;
+    max-width: 640px;
+    margin: $spacing-md auto $spacing-xl;
+
+    p {
+      margin: 0 0 $spacing-sm 0;
+      font-size: 16px;
+    }
+
+    .glass-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 220px;
+
+      @include responsive(mobile) {
+        width: 100%;
+      }
     }
   }
 
