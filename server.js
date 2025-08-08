@@ -33,7 +33,7 @@ import {
     clickLink
 } from './server_modules/post.js';
 import { xpTodayHandler } from './server_modules/routes/xp_today.js';
-import { usersCollection, postsCollection } from './server_modules/database.js';
+import { usersCollection, postsCollection, gamesCollection } from './server_modules/database.js';
 import { handleProfilePage } from './server_modules/user_profile.js';
 import { createRenderer } from './server_modules/template_engine.js';
 import {
@@ -261,6 +261,68 @@ app.get('/post/:id', async (req, res) => {
         meta_author: post.username || "VAPR User",
         meta_image: post.content || config.meta.default.defaultAvatar,
         meta_url: "https://vapr.club" + req.path
+    });
+});
+
+// Server-side route for game details pages: /games/:gameName
+app.get('/games/:gameName', async (req, res) => {
+    try {
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        const slug = (req.params.gameName || '').toLowerCase();
+
+        // Attempt to find by explicit slug field first if present
+        let game = await gamesCollection.findOne({ slug });
+
+        if (!game) {
+            // Fallback: fetch minimal fields and match by slugified title
+            const games = await gamesCollection
+                .find({}, { projection: { id: 1, title: 1, description: 1, coverImage: 1 } })
+                .toArray();
+            game = games.find(g => toSlug(g.title) === slug) || null;
+        }
+
+        const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
+
+        if (game) {
+            const cleanDesc = (game.description || '').replace(/<[^>]*>/g, '').trim();
+            await res.render('index.html', {
+                meta_description: cleanDesc || config.meta.default.description,
+                meta_author: 'VAPR',
+                meta_image: game.coverImage || config.meta.default.image,
+                meta_url: baseUrl + req.path
+            });
+        } else {
+            // If no match, render with defaults to allow client-side 404/handling
+            await res.render('index.html', {
+                meta_description: config.meta.default.description,
+                meta_author: config.meta.default.author,
+                meta_image: config.meta.default.image,
+                meta_url: baseUrl + req.path
+            });
+        }
+    } catch (err) {
+        console.error('Error handling /games/:gameName:', err);
+        await res.render('index.html', {
+            meta_description: config.meta.default.description,
+            meta_author: config.meta.default.author,
+            meta_image: config.meta.default.image,
+            meta_url: (config.server?.baseUrl || config.meta.default.url) + req.path
+        });
+    }
+});
+
+// Server-side route for creator program page: /creator-program
+app.get('/creator-program', async (req, res) => {
+    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
+    await res.render('index.html', {
+        meta_description: 'Join the VAPR Creator Program to earn rewards and grow your audience with game content.',
+        meta_author: 'VAPR',
+        meta_image: config.meta.default.image,
+        meta_url: baseUrl + req.path
     });
 });
 

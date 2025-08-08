@@ -132,11 +132,8 @@ function showCreatorApproved() {
 }
 
 function openCreatorProgram() {
-    if (!isUserLoggedIn()) {
-        openRegisterModal();
-        return;
-    }
-
+    // Publicly visible: always show the program card.
+    // Actions like applying will prompt login as needed.
     cardManager.show('creator-program-card');
 }
 
