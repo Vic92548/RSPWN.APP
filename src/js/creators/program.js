@@ -8,6 +8,8 @@ window.creatorData = {
 cardManager.register('creator-program-card', {
     onLoad: async () => {
         await loadCreatorStatus();
+        // Ensure the apply section reflects auth state each time the card opens
+        updateApplyUIForAuth();
     }
 });
 
@@ -43,11 +45,19 @@ async function loadCreatorStatus() {
         showCreatorInfo();
     } finally {
         DOM.hide('creator-loading');
+        // After content settles, ensure auth-based UI is correct
+        updateApplyUIForAuth();
     }
 }
 
 async function submitCreatorApplication(event) {
     event.preventDefault();
+
+    // Require login before submitting creator application
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
 
     const applyButton = DOM.get('apply-button');
     const tebexWalletId = DOM.get('tebex-wallet-id').value.trim();
@@ -131,10 +141,46 @@ function showCreatorApproved() {
     DOM.setText('creator-code', creatorData.creatorCode);
 }
 
+// Update the creator apply section UI based on authentication state
+function updateApplyUIForAuth() {
+    const applyButton = DOM.get('apply-button');
+    const applyForm = DOM.get('creator-apply-form');
+    const tebexInput = DOM.get('tebex-wallet-id');
+    const loginPrompt = DOM.get('creator-login-prompt');
+    const applySection = DOM.query('.creator-apply-section');
+
+    // If the apply section isn't present, nothing to do
+    if (!applySection) return;
+
+    if (!isUserLoggedIn()) {
+        // Show login prompt and convert button to sign-in trigger
+        if (loginPrompt) DOM.show('creator-login-prompt');
+        if (applySection) DOM.hide(applySection);
+        if (tebexInput) tebexInput.disabled = true;
+        if (applyButton) {
+            applyButton.type = 'button';
+            applyButton.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign in to apply';
+            applyButton.onclick = () => openRegisterModal();
+        }
+    } else {
+        // Hide prompt and enable normal submission behavior
+        if (loginPrompt) DOM.hide('creator-login-prompt');
+        if (applySection) DOM.show(applySection);
+        if (tebexInput) tebexInput.disabled = false;
+        if (applyButton) {
+            applyButton.type = 'submit';
+            applyButton.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Application';
+            applyButton.onclick = null; // form onsubmit will handle
+        }
+    }
+}
+
 function openCreatorProgram() {
     // Publicly visible: always show the program card.
     // Actions like applying will prompt login as needed.
     cardManager.show('creator-program-card');
+    // Re-evaluate auth-dependent UI on open
+    updateApplyUIForAuth();
 }
 
 function closeCreatorProgramCard() {
@@ -186,5 +232,7 @@ if (typeof document !== 'undefined') {
         if (isUserLoggedIn()) {
             updateCreatorMenuItem();
         }
+        // Initialize the apply UI state on initial load
+        updateApplyUIForAuth();
     });
 }

@@ -114,7 +114,16 @@
                         <p>To join the creator program, you just need to have an active VAPR account and a Tebex account. Fill out the form below and we'll review your application. It shouldn't take more than 24 hours in most cases but can take up to a week.</p>
                     </div>
 
-                    <div class="creator-apply-section">
+                    <div id="creator-login-prompt" class="glass-secondary" style="display:none;">
+                        <p class="glass-text-muted">
+                            Please sign in to apply to the creator program.
+                        </p>
+                        <button type="button" class="glass-button primary" onclick="openRegisterModal()">
+                            <i class="fa-solid fa-right-to-bracket"></i> Sign in or Register
+                        </button>
+                    </div>
+
+                    <div class="creator-apply-section" style="display:none;">
                         <form id="creator-apply-form" onsubmit="submitCreatorApplication(event)">
                             <div class="input-group">
                                 <label for="tebex-wallet-id">

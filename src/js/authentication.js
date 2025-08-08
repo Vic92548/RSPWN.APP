@@ -12,6 +12,11 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
+        // Notify creator program (and any other listeners) that auth is available
+        try {
+            if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();
+        } catch (e) { /* no-op */ }
+
         const oldUser = {
             xp: 0,
             level: window.user.level,
@@ -50,6 +55,11 @@ function loadUserData(){
         }
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
+
+        // Ensure guest-facing UI (like creator program apply section) is gated
+        try {
+            if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();
+        } catch (e) { /* no-op */ }
     })
 }
 
