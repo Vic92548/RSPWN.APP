@@ -1,4 +1,4 @@
-import { usersCollection, postsCollection, followsCollection, viewsCollection } from "./database.js";
+import { usersCollection, postsCollection, followsCollection, viewsCollection, gamesCollection } from "./database.js";
 
 async function handleProfilePage(request, templates) {
     const url = new URL(request.url);
@@ -40,6 +40,45 @@ async function handleProfilePage(request, templates) {
 
         const xpPercentage = (profileData.xp / profileData.xp_required) * 100;
 
+        // Detect if user is a game dev and build games section HTML
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        const stripHtml = (html) => String(html || '').replace(/<[^>]*>/g, '');
+
+        const games = await gamesCollection.find({ ownerId: profileData.id }).toArray();
+
+        let gamesSectionHtml = '';
+        if (games.length > 0) {
+            const gamesHtml = games.map(g => {
+                const href = `/games/${g.slug || toSlug(g.title || g.id || '')}`;
+                const title = escapeHtml(g.title || 'Untitled');
+                const desc = escapeHtml(stripHtml(g.description || '').slice(0, 160));
+                const cover = g.coverImage || 'https://vapr-club.b-cdn.net/default_game_cover.png';
+                return `
+            <a href="${href}" class="game-item game-link">
+                <div class="game-cover-wrapper">
+                    <img src="${cover}" class="game-cover" alt="${title}">
+                </div>
+                <div class="game-content">
+                    <h4 class="game-title">${title}</h4>
+                    <p class="game-description">${desc}</p>
+                </div>
+            </a>
+        `;
+            }).join('');
+
+            gamesSectionHtml = `
+        <div class="profile-games-section">
+            <h3 class="section-header"><i class="fa-solid fa-gamepad"></i> Games</h3>
+            <div class="games-grid" id="profile-games-grid">
+                ${gamesHtml}
+            </div>
+        </div>
+    `;
+        }
+
         let postsHtml = '';
         if (profileData.recentPosts.length === 0) {
             postsHtml = '<p class="no-posts"><i class="fa-solid fa-inbox"></i> No posts yet</p>';
@@ -70,6 +109,7 @@ async function handleProfilePage(request, templates) {
             xp_current: profileData.xp,
             xp_required: profileData.xp_required,
             xp_percentage: xpPercentage.toFixed(1),
+            games_section_html: gamesSectionHtml,
             posts_html: postsHtml,
 
             meta_title: `@${profileData.username} - VAPR Profile`,
