@@ -4989,7 +4989,7 @@ dependencies = [
 
 [[package]]
 name = "vapr-desktop"
-version = "1.6.9"
+version = "1.6.10"
 dependencies = [
  "chrono",
  "dirs 5.0.1",
