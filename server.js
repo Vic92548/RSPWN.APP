@@ -326,6 +326,28 @@ app.get('/creator-program', async (req, res) => {
     });
 });
 
+// Server-side route for Terms of Service page: /terms
+app.get('/terms', async (req, res) => {
+    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
+    await res.render('index.html', {
+        meta_description: 'Read the VAPR Terms of Service to understand the rules and conditions for using our platform.',
+        meta_author: 'VAPR',
+        meta_image: config.meta.default.image,
+        meta_url: baseUrl + req.path
+    });
+});
+
+// Server-side route for Privacy Policy page: /privacy
+app.get('/privacy', async (req, res) => {
+    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
+    await res.render('index.html', {
+        meta_description: 'Learn how VAPR collects, uses, and protects your data in our Privacy Policy.',
+        meta_author: 'VAPR',
+        meta_image: config.meta.default.image,
+        meta_url: baseUrl + req.path
+    });
+});
+
 app.get('/like/:id', authMiddleware, async (req, res) => {
     if (!config.validation.postId.test(req.params.id)) {
         return res.status(400).json({ error: config.messages.errors.invalidPostId });
@@ -767,6 +789,8 @@ app.get('/sitemap.xml', async (req, res) => {
             { loc: `${baseUrl}/checkout/success`, changefreq: 'monthly', priority: '0.4', lastmod: now },
             { loc: `${baseUrl}/checkout/cancel`, changefreq: 'monthly', priority: '0.4', lastmod: now },
             { loc: `${baseUrl}/login`, changefreq: 'monthly', priority: '0.3', lastmod: now },
+            { loc: `${baseUrl}/terms`, changefreq: 'yearly', priority: '0.2', lastmod: now },
+            { loc: `${baseUrl}/privacy`, changefreq: 'yearly', priority: '0.2', lastmod: now },
         ];
 
         const [posts, users] = await Promise.all([

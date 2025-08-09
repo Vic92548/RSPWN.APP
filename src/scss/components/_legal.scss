@@ -1,0 +1,96 @@
+/* Legal pages styles: Terms of Service and Privacy Policy */
+@use 'sass:color';
+@use '../variables' as *;
+@use '../mixins' as *;
+
+#terms-card,
+#privacy-card {
+  .vapr-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: $spacing-sm;
+
+    .header-content {
+      h2 {
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        font-size: 22px;
+        color: $text-primary;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        i { color: $text-secondary; }
+      }
+      .glass-text-muted {
+        color: $text-secondary;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .vapr-card-body {
+    padding: $spacing-lg;
+    font-size: 16px;
+    line-height: 1.7;
+    color: $text-primary;
+
+    // Constrain content width for better readability on large screens
+    > .glass-secondary,
+    > section {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    > .glass-secondary.legal-meta {
+      @include glass-effect($glass-bg-light, $blur-sm, $glass-border-light);
+      padding: $spacing-sm $spacing-md;
+      border-radius: $radius-sm;
+      margin-bottom: $spacing-md;
+
+      p { margin: 0; color: $text-secondary; }
+      strong { color: $text-strong; }
+    }
+
+    section {
+      @include glass-effect($glass-bg-secondary, $blur-sm, $glass-border-light);
+      padding: $spacing-lg;
+      border-radius: $radius-sm;
+      margin-bottom: $spacing-lg;
+
+      h3 {
+        margin: 0 0 $spacing-xs 0;
+        font-size: 18px;
+        color: $text-strong;
+      }
+
+      p { margin: 0; color: $text-secondary; }
+
+      ul {
+        padding-left: 1.25rem;
+        margin: $spacing-xs 0 0 0;
+        list-style: disc;
+        li { margin: 6px 0; color: $text-secondary; }
+      }
+    }
+
+    // Remove extra space after the last section
+    section:last-child { margin-bottom: 0; }
+
+    a {
+      color: $primary-color;
+      text-decoration: underline;
+      &:hover { color: color.adjust($primary-color, $lightness: 8%); }
+    }
+  }
+
+  @include responsive(tablet) {
+    .vapr-card-body {
+      padding: $spacing-md;
+
+      section { padding: $spacing-md; }
+    }
+  }
+}

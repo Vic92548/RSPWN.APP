@@ -69,3 +69,23 @@ router.register('/creator-program', async () => {
         console.error('Error opening creator program:', err);
     }
 });
+
+// Terms of Service page: /terms
+router.register('/terms', () => {
+    try {
+        hidePost();
+        cardManager.show('terms-card');
+    } catch (err) {
+        console.error('Error opening Terms of Service:', err);
+    }
+});
+
+// Privacy Policy page: /privacy
+router.register('/privacy', () => {
+    try {
+        hidePost();
+        cardManager.show('privacy-card');
+    } catch (err) {
+        console.error('Error opening Privacy Policy:', err);
+    }
+});
