@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a9fdf49d-a7bd-46f9-abcd-01932399e592" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/script.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/script.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/style.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/style.min.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/developer/dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/developer/dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_post.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/scss/components/_post.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

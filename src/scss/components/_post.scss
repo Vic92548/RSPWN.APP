@@ -394,6 +394,8 @@
   max-height: calc(85vh - 320px);
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 
   .desc {
     margin-bottom: 15px;
@@ -405,6 +407,11 @@
   position: relative;
   background: rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
 }
 
 .view-count-overlay {
@@ -448,8 +455,7 @@
 }
 
 #post_image {
-  width: 100%;
-  max-height: 400px;
+  height: 40vh;
   object-fit: contain;
   display: block;
   cursor: zoom-in;
@@ -462,11 +468,19 @@
 
 #post_video {
   position: relative;
-  padding-top: 56.25%;
-  background: #000;
+  height: 40vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: contain;
 
   iframe {
-    @include absolute-fill;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40vh;
     border: 0;
   }
 }
