@@ -43,7 +43,6 @@ import {
     markUpdateAsSeen,
     markUpdateAsDownloaded
 } from './server_modules/game_updates.js';
-import { uploadGameUpdate } from './server_modules/game_update_upload.js';
 import {
     applyForCreatorProgram,
     getCreatorApplicationStatus,
@@ -758,26 +757,6 @@ app.post('/api/updates/:gameId/seen', authMiddleware, async (req, res) => {
 app.post('/api/updates/:gameId/downloaded', authMiddleware, async (req, res) => {
     const { version } = req.body;
     const response = await markUpdateAsDownloaded(req.userData.id, req.params.gameId, version);
-    const data = await response.json();
-    res.status(response.status).json(data);
-});
-
-app.post('/api/games/:id/upload-update', authMiddleware, upload.single('file'), async (req, res) => {
-    const gameId = req.params.id;
-
-    if (!req.file) {
-        return res.status(400).json({ success: false, error: config.messages.errors.noFileUploaded });
-    }
-
-    if (req.file.mimetype !== 'application/zip' &&
-        !req.file.originalname.toLowerCase().endsWith('.zip')) {
-        return res.status(400).json({
-            success: false,
-            error: config.messages.errors.onlyZipAllowed
-        });
-    }
-
-    const response = await uploadGameUpdate(gameId, req.userData.id, req.file);
     const data = await response.json();
     res.status(response.status).json(data);
 });

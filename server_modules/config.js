@@ -68,7 +68,7 @@ export const config = {
 
     meta: {
         default: {
-            description: "Self promote your awesomeness",
+            description: "Discover and play incredible games on VAPR! Share your epic gaming content, connect with fellow gamers, and grow your audience in our thriving community.",
             author: "VAPR",
             image: "https://vapr-club.b-cdn.net/posts/3bad19ce-9f1b-4abd-a718-3d701c3ca09a.png",
             url: "https://vapr.club/",
