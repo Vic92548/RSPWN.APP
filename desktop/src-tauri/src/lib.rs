@@ -1,13 +1,78 @@
 mod websocket;
 
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
+use std::collections::HashMap;
+
 use std::fs;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use tauri::{Emitter, State};
+use tauri::AppHandle;
+use tauri::{Emitter, Manager, State};
 use semver::Version;
 use websocket::{UserInfo, WebSocketServer};
+use tokio::sync::{oneshot, Mutex};
+use uuid::Uuid;
+use tokio::time::{timeout, Duration};
+
+// Bridge that lets Rust request data via the JS client and await the response
+pub struct SdkBridge {
+    app: AppHandle,
+    pending: Arc<Mutex<HashMap<String, oneshot::Sender<Result<JsonValue, String>>>>>,
+}
+
+impl SdkBridge {
+    pub fn new(app: AppHandle) -> Self {
+        Self {
+            app,
+            pending: Arc::new(Mutex::new(HashMap::new())),
+        }
+    }
+
+    pub async fn request(&self, name: &str, payload: JsonValue) -> Result<JsonValue, String> {
+        let id = Uuid::new_v4().to_string();
+        let (tx, rx) = oneshot::channel();
+        {
+            let mut pending = self.pending.lock().await;
+            pending.insert(id.clone(), tx);
+        }
+
+        // Emit to all windows; frontend JS should handle 'sdk-request' and call sdk_response
+        self.app
+            .emit(
+                "sdk-request",
+                serde_json::json!({
+                    "id": id,
+                    "name": name,
+                    "payload": payload
+                }),
+            )
+            .map_err(|e| format!("Failed to emit sdk-request: {}", e))?;
+
+        // Wait for response with timeout
+        match timeout(Duration::from_secs(20), rx).await {
+            Ok(Ok(Ok(val))) => Ok(val),
+            Ok(Ok(Err(err))) => Err(err),
+            Ok(Err(_canceled)) => Err("Response channel canceled".to_string()),
+            Err(_t) => Err("Timed out waiting for JS SDK response".to_string()),
+        }
+    }
+
+    pub async fn resolve_response(
+        &self,
+        id: String,
+        result: Result<JsonValue, String>,
+    ) -> Result<(), String> {
+        let sender_opt = { self.pending.lock().await.remove(&id) };
+        if let Some(sender) = sender_opt {
+            let _ = sender.send(result);
+            Ok(())
+        } else {
+            Err("No pending request for given id".to_string())
+        }
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct DownloadProgress {
@@ -435,19 +500,31 @@ async fn get_sdk_connected_sessions(
     Ok(ws_server.get_connected_sessions().await)
 }
 
+// JS calls this to respond to sdk-request events
+#[tauri::command]
+async fn sdk_response(
+    bridge: State<'_, Arc<SdkBridge>>,
+    id: String,
+    ok: bool,
+    data: Option<JsonValue>,
+    error: Option<String>,
+) -> Result<(), String> {
+    let result = if ok {
+        Ok(data.unwrap_or(serde_json::json!({})))
+    } else {
+        Err(error.unwrap_or_else(|| "Unknown error".to_string()))
+    };
+    bridge.resolve_response(id, result).await
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Create WebSocket server
-    let ws_server = Arc::new(WebSocketServer::new());
-    let ws_server_clone = ws_server.clone();
-
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_shell::init())
-        .manage(ws_server)
         .invoke_handler(tauri::generate_handler![
             greet,
             check_version_compatibility,
@@ -457,12 +534,16 @@ pub fn run() {
             uninstall_game,
             update_sdk_user_info,
             clear_sdk_user_info,
-            get_sdk_connected_sessions
+            get_sdk_connected_sessions,
+            sdk_response
         ])
         .setup(|app| {
-            let ws_server = ws_server_clone;
+            // Create JS bridge and WebSocket server after Tauri has initialized
+            let bridge = Arc::new(SdkBridge::new(app.handle().clone()));
+            let ws_server = Arc::new(WebSocketServer::new(bridge.clone()));
+            app.manage(ws_server.clone());
+            app.manage(bridge.clone());
 
-            // Start WebSocket server after Tauri has initialized
             tauri::async_runtime::spawn(async move {
                 if let Err(e) = ws_server.start(7878).await {
                     eprintln!("Failed to start WebSocket server: {}", e);

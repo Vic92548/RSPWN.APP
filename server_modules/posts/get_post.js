@@ -41,7 +41,10 @@ export async function getPost(id, userId = "anonymous") {
     const post = await postsCollection.findOne({ id });
 
     if (!post) {
-        return new Response("Post not found", { status: 404 });
+        return new Response(JSON.stringify({ error: "Post not found" }), {
+            status: 404,
+            headers: { "Content-Type": "application/json" }
+        });
     }
 
     try {
@@ -92,7 +95,10 @@ export async function getPostList(userId) {
     const posts = await postsCollection.find({ userId }).sort({ timestamp: -1 }).toArray();
 
     if (!posts.length) {
-        return new Response("No posts found", { status: 404 });
+        return new Response(JSON.stringify({ error: "No posts found" }), {
+            status: 404,
+            headers: { "Content-Type": "application/json" }
+        });
     }
 
     const postsWithCounts = await Promise.all(posts.map(async post => {

@@ -182,6 +182,93 @@ app.get('/me/posts', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
+// Fetch feed (authenticated if possible, otherwise anonymous)
+app.get('/feed', rateLimiters.general, async (req, res) => {
+    try {
+        const authResult = await authenticateRequest(req);
+        const userId = authResult?.isValid ? authResult.userData.id : 'anonymous';
+        const response = await getNextFeedPosts(userId);
+        const data = await response.json();
+        res.status(response.status).json(data);
+    } catch (err) {
+        console.error('Error fetching feed:', err);
+        res.status(500).json({ error: config.messages.errors.internalError });
+    }
+});
+
+// Get all posts by a specific user
+app.get('/api/user/:userId/posts', rateLimiters.general, async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const user = await usersCollection.findOne({ id: userId }, { projection: { id: 1 } });
+        if (!user) {
+            return res.status(404).json({ error: config.messages.errors.userNotFound });
+        }
+
+        const response = await getPostList(userId);
+        const data = await response.json();
+        res.status(response.status).json(data);
+    } catch (err) {
+        console.error('Error fetching user posts:', err);
+        res.status(500).json({ error: config.messages.errors.internalError });
+    }
+});
+
+// Resolve a post by URL or ID and return essential data
+app.get('/api/post/resolve', rateLimiters.general, async (req, res) => {
+    try {
+        let { id, url } = req.query;
+
+        if (!id && !url) {
+            return res.status(400).json({ error: 'id or url required' });
+        }
+
+        if (!id && url) {
+            try {
+                const possible = String(url).match(/[a-f0-9-]{36}/i);
+                if (possible && possible[0]) {
+                    id = possible[0].toLowerCase();
+                }
+            } catch {}
+        }
+
+        if (!id || !config.validation.postId.test(id)) {
+            return res.status(400).json({ error: config.messages.errors.invalidPostId });
+        }
+
+        const post = await getPostData(id);
+        if (!post || post.userId === 'unknown') {
+            return res.status(404).json({ error: config.messages.errors.postNotFound });
+        }
+
+        let media = post.content || null;
+        let thumbnail = null;
+        const mediaType = post.mediaType || 'image';
+
+        if (typeof media === 'string' && media.includes('iframe.mediadelivery.net')) {
+            try {
+                const videoId = await getVideoIdByPostId(id);
+                thumbnail = `https://vz-3641e40e-815.b-cdn.net/${videoId}/thumbnail.jpg`;
+            } catch (error) {
+                console.error('Error getting video thumbnail:', error);
+            }
+        }
+
+        const payload = {
+            id: post.id,
+            title: post.title || '',
+            media,
+            mediaType,
+            thumbnail,
+            taggedGame: post.taggedGame || null
+        };
+
+        res.json(payload);
+    } catch (err) {
+        console.error('Error resolving post:', err);
+        res.status(500).json({ error: config.messages.errors.internalError });
+    }
+});
 app.get('/me/update-background', authMiddleware, async (req, res) => {
     const backgroundId = req.query.backgroundId;
     if (!backgroundId || !config.validation.backgroundId.test(backgroundId)) {

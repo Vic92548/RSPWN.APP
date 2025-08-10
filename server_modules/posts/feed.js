@@ -59,7 +59,10 @@ export async function getNextFeedPosts(userid) {
     console.log(posts);
 
     if (posts.length === 0) {
-        return new Response("No new posts to display", { status: 404 });
+        return new Response(JSON.stringify({ error: "No new posts to display" }), {
+            status: 404,
+            headers: { "Content-Type": "application/json" }
+        });
     } else {
         return new Response(JSON.stringify(posts), {
             status: 200,

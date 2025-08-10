@@ -20,7 +20,7 @@ export const config = {
         },
         auth: {
             windowMs: 15 * 60 * 1000,
-            max: 5,
+            max: 20,
             message: 'Too many authentication attempts, please try again later.'
         },
         createPost: {

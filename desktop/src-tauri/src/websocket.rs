@@ -1,5 +1,8 @@
 use futures_util::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
+use serde_json::json;
+
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -8,13 +11,16 @@ use tokio::sync::{broadcast, RwLock};
 use tokio_tungstenite::{accept_async, tungstenite::Message};
 use uuid::Uuid;
 use chrono::Local;
+use crate::SdkBridge;
 
 // Add a macro for timestamped debug logs
 macro_rules! debug_log {
-    ($($arg:tt)*) => {
+    ($($arg:tt)*) => {{
         println!("[{}] {}", Local::now().format("%Y-%m-%d %H:%M:%S%.3f"), format!($($arg)*));
-    };
+    }};
 }
+
+// Requests are routed via the JS API client through SdkBridge
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserInfo {
@@ -32,11 +38,17 @@ pub enum WebSocketMessage {
     // Messages from game to launcher
     GetUserInfo,
     Ping,
+    GetFeed,
+    GetUserPosts { user_id: String },
+    ResolvePost { id: Option<String>, url: Option<String> },
 
     // Messages from launcher to game
     UserInfo(UserInfo),
     Pong,
     Error { message: String },
+    Feed { data: JsonValue },
+    UserPosts { data: JsonValue },
+    ResolvedPost { data: JsonValue },
 
     // Events
     UserUpdated(UserInfo),
@@ -47,14 +59,16 @@ pub enum WebSocketMessage {
 pub struct WebSocketServer {
     connections: Arc<RwLock<HashMap<String, broadcast::Sender<WebSocketMessage>>>>,
     user_info: Arc<RwLock<Option<UserInfo>>>,
+    bridge: Arc<SdkBridge>,
 }
 
 impl WebSocketServer {
-    pub fn new() -> Self {
+    pub fn new(bridge: Arc<SdkBridge>) -> Self {
         debug_log!("Creating new WebSocket server instance");
         Self {
             connections: Arc::new(RwLock::new(HashMap::new())),
             user_info: Arc::new(RwLock::new(None)),
+            bridge,
         }
     }
 
@@ -283,6 +297,54 @@ impl WebSocketServer {
             WebSocketMessage::Ping => {
                 debug_log!("Processing Ping - sending Pong");
                 tx.send(WebSocketMessage::Pong)?;
+            }
+            WebSocketMessage::GetFeed => {
+                debug_log!("Processing GetFeed request via JS bridge");
+                match self.bridge.request("getFeed", json!({})).await {
+                    Ok(data) => {
+                        tx.send(WebSocketMessage::Feed { data })?;
+                    }
+                    Err(e) => {
+                        tx.send(WebSocketMessage::Error { message: format!(
+                            "Feed request failed: {}", e
+                        )})?;
+                    }
+                }
+            }
+            WebSocketMessage::GetUserPosts { user_id } => {
+                debug_log!("Processing GetUserPosts for user_id={} via JS bridge", user_id);
+                match self.bridge.request("getUserPosts", json!({ "userId": user_id })).await {
+                    Ok(data) => {
+                        tx.send(WebSocketMessage::UserPosts { data })?;
+                    }
+                    Err(e) => {
+                        tx.send(WebSocketMessage::Error { message: format!(
+                            "GetUserPosts failed: {}", e
+                        )})?;
+                    }
+                }
+            }
+            WebSocketMessage::ResolvePost { id, url } => {
+                debug_log!("Processing ResolvePost via JS bridge id={:?} url={:?}", id, url);
+                let payload = if let Some(i) = id {
+                    json!({ "id": i })
+                } else if let Some(u) = url {
+                    json!({ "url": u })
+                } else {
+                    tx.send(WebSocketMessage::Error { message: "ResolvePost requires id or url".to_string() })?;
+                    return Ok(());
+                };
+
+                match self.bridge.request("resolvePost", payload).await {
+                    Ok(data) => {
+                        tx.send(WebSocketMessage::ResolvedPost { data })?;
+                    }
+                    Err(e) => {
+                        tx.send(WebSocketMessage::Error { message: format!(
+                            "ResolvePost failed: {}", e
+                        )})?;
+                    }
+                }
             }
             _ => {
                 debug_log!("⚠ Ignoring unexpected message type from game: {:?}", message);
