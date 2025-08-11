@@ -242,7 +242,7 @@ function hideWebOnly(){
 }
 
 function navigateToMyProfile() {
-    router.navigate(`/@${window.user.username}`, true);
+    router.navigate(`/@${window.user.username}`, false);
 }
 
 window.closeProfileCard = function() {
