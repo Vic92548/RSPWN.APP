@@ -27,6 +27,10 @@ class VAPRRouter {
         const path = window.location.pathname;
         this.previousRoute = this.currentRoute;
 
+        if (cardManager.currentCard && !cardManager.isNavigating) {
+            cardManager.hide(cardManager.currentCard);
+        }
+
         if (path.startsWith('/@')) {
             this.currentRoute = '/@:username';
             const handler = this.routes.get('/@:username');
@@ -77,3 +81,7 @@ class VAPRRouter {
 }
 
 window.router = new VAPRRouter();
+
+window.addEventListener('popstate', () => {
+    router.handleRoute();
+});

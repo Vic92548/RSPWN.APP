@@ -15,7 +15,9 @@ function displayPost(postId = undefined){
             current_post_id = data.id;
             current_post = data;
             drawPost(data);
-            history.pushState(null, null, "/post/" + data.id);
+            if (!cardManager.isNavigating) {
+                history.pushState(null, null, "/post/" + data.id);
+            }
         }else{
             APIHandler.handle(
                 () => api.getFeed(),
@@ -38,7 +40,9 @@ function displayPost(postId = undefined){
                     current_post_id = data.id;
                     current_post = data;
                     drawPost(data);
-                    history.pushState(null, null, "/post/" + data.id);
+                    if (!cardManager.isNavigating) {
+                        history.pushState(null, null, "/post/" + data.id);
+                    }
                 }
             }
         );

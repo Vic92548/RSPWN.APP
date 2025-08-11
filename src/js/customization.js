@@ -1,4 +1,5 @@
 cardManager.register('backgrounds-card', {
+    route: '/backgrounds',
     onShow: () => {
         displayBackgroundImages();
     }
@@ -10,7 +11,8 @@ function openCustomizationMenu() {
         return;
     }
 
-    cardManager.show('backgrounds-card');
+    hideMenu();
+    router.navigate('/backgrounds', true);
 }
 
 function closeBackgroundsCard() {

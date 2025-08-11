@@ -1,4 +1,3 @@
-// Legal pages helpers: open/close Terms and Privacy within SPA
 (function(){
   function safeNavigate(path){
     if (window.router && typeof window.router.navigate === 'function') {
@@ -20,11 +19,9 @@
 
   window.closeTermsCard = function(){
     if (window.cardManager) cardManager.hide('terms-card');
-    safeNavigate('/');
   };
 
   window.closePrivacyCard = function(){
     if (window.cardManager) cardManager.hide('privacy-card');
-    safeNavigate('/');
   };
 })();

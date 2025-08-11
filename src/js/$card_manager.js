@@ -1,12 +1,15 @@
 const cardManager = {
     currentCard: null,
     cards: new Map(),
+    isNavigating: false,
+    previousPath: null,
 
     register(cardId, options = {}) {
         this.cards.set(cardId, {
             onShow: options.onShow || (() => {}),
             onHide: options.onHide || (() => {}),
             onLoad: options.onLoad || null,
+            route: options.route || null,
             ...options
         });
     },
@@ -19,6 +22,8 @@ const cardManager = {
         }
 
         if (window.hideMenu) hideMenu();
+
+        this.previousPath = window.location.pathname;
 
         if (this.currentCard && this.currentCard !== cardId) {
             await this.hideCard(this.currentCard, true);
@@ -38,6 +43,16 @@ const cardManager = {
         this.currentCard = cardId;
 
         const config = this.cards.get(cardId) || {};
+
+        if (config.route && window.router && !this.isNavigating) {
+            const currentPath = window.location.pathname;
+            if (currentPath !== config.route) {
+                this.isNavigating = true;
+                window.history.pushState(null, null, config.route);
+                this.isNavigating = false;
+            }
+        }
+
         if (config.onLoad) {
             this.showLoading(cardId);
             try {
@@ -82,6 +97,20 @@ const cardManager = {
 
                 if (this.currentCard === cardId) {
                     this.currentCard = null;
+                }
+
+                if (!skipPostRestore && window.router && !this.isNavigating) {
+                    let targetPath = '/';
+
+                    if (this.previousPath && this.previousPath !== window.location.pathname) {
+                        targetPath = this.previousPath;
+                    } else if (window.current_post_id) {
+                        targetPath = `/post/${window.current_post_id}`;
+                    }
+
+                    this.isNavigating = true;
+                    router.navigate(targetPath, true);
+                    this.isNavigating = false;
                 }
 
                 resolve();

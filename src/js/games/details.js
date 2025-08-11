@@ -1,25 +1,39 @@
 let currentGameDetails = null;
 
-cardManager.register('game-details-card', {
-    onLoad: async () => {
-        if (currentGameDetails) {
-            await loadGameDetails(currentGameDetails);
-        }
-    }
-});
-
 async function showGameDetails(gameId) {
     currentGameDetails = gameId;
+
+    const game = gamesData.allGames.find(g => g.id === gameId) ||
+        gamesData.tebexGames?.find(g => g.id === gameId);
+
+    if (game) {
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        const slug = toSlug(game.title);
+
+        if (!cardManager.cards.has('game-details-card')) {
+            cardManager.register('game-details-card', {
+                route: `/games/${slug}`,
+                onLoad: async () => {
+                    if (currentGameDetails) {
+                        await loadGameDetails(currentGameDetails);
+                    }
+                }
+            });
+        } else {
+            const config = cardManager.cards.get('game-details-card');
+            config.route = `/games/${slug}`;
+        }
+    }
+
     await cardManager.show('game-details-card');
 }
 
 function closeGameDetails() {
     cardManager.hide('game-details-card');
-    // After closing, navigate back to home (client-side) so the feed shows again
-    if (window.router) {
-        window.router.navigate('/', true);
-    }
-    currentGameDetails = null;
 }
 
 async function loadGameDetails(gameId) {

@@ -5,7 +5,6 @@ let creators = {};
 
 function showInitialPost() {
     const path = window.location.pathname.split('/');
-    // Always reset the post view so it is visible on home
     showPost();
     if(path.length < 3){
         displayPost();
@@ -47,6 +46,7 @@ function hidePost() {
 }
 
 cardManager.register('add-post-card', {
+    route: '/new-post',
     onShow: () => {
         setTimeout(() => {
             const titleInput = DOM.get('title');
@@ -57,7 +57,8 @@ cardManager.register('add-post-card', {
 
 function opeNewPostModel() {
     if (isUserLoggedIn()) {
-        cardManager.show('add-post-card');
+        hideMenu();
+        router.navigate('/new-post', true);
     } else {
         openRegisterModal();
     }
@@ -241,12 +242,11 @@ function hideWebOnly(){
 }
 
 function navigateToMyProfile() {
-    router.navigate(`/@${window.user.username}`);
+    router.navigate(`/@${window.user.username}`, true);
 }
 
 window.closeProfileCard = function() {
     cardManager.hide('profile-card');
-    router.navigate('/',true);
 };
 
 router.handleRoute();

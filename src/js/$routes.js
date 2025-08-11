@@ -13,7 +13,38 @@ router.register('/@:username', async (params) => {
     cardManager.show('profile-card');
 });
 
-// Display game details by slug: /games/:gameName
+router.register('/analytics', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('analytics-card');
+});
+
+router.register('/backgrounds', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('backgrounds-card');
+});
+
+router.register('/games', async () => {
+    hidePost();
+    await cardManager.show('games-card');
+});
+
+router.register('/library', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('library-card');
+});
+
 router.register('/games/:gameName', async (params) => {
     try {
         hidePost();
@@ -23,7 +54,6 @@ router.register('/games/:gameName', async (params) => {
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
 
-        // Ensure games data is loaded
         if (!window.gamesData || (!gamesData.allGames?.length && !gamesData.tebexGames?.length)) {
             try {
                 if (typeof loadGamesData === 'function') await loadGamesData();
@@ -55,22 +85,42 @@ router.register('/games/:gameName', async (params) => {
     }
 });
 
-// Creator Program page: /creator-program
 router.register('/creator-program', async () => {
     try {
         hidePost();
-        if (typeof openCreatorProgram === 'function') {
-            await openCreatorProgram();
-        } else {
-            // Fallback: show card directly if function missing
-            cardManager.show('creator-program-card');
-        }
+        await cardManager.show('creator-program-card');
     } catch (err) {
         console.error('Error opening creator program:', err);
     }
 });
 
-// Terms of Service page: /terms
+router.register('/developer', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('developer-dashboard-card');
+});
+
+router.register('/creator-dashboard', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('creator-dashboard-card');
+});
+
+router.register('/new-post', async () => {
+    hidePost();
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    await cardManager.show('add-post-card');
+});
+
 router.register('/terms', () => {
     try {
         hidePost();
@@ -80,7 +130,6 @@ router.register('/terms', () => {
     }
 });
 
-// Privacy Policy page: /privacy
 router.register('/privacy', () => {
     try {
         hidePost();

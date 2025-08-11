@@ -1,4 +1,5 @@
 cardManager.register('games-card', {
+    route: '/games',
     onLoad: async () => {
         await Promise.all([
             loadGamesData(),
@@ -8,6 +9,7 @@ cardManager.register('games-card', {
 });
 
 cardManager.register('library-card', {
+    route: '/library',
     onLoad: async () => {
         await loadLibraryData();
     }
@@ -30,7 +32,8 @@ function initGameEventListeners() {
 }
 
 async function openGamesShowcase() {
-    await cardManager.show('games-card');
+    hideMenu();
+    router.navigate('/games', true);
 }
 
 async function openMyLibrary() {
@@ -38,7 +41,8 @@ async function openMyLibrary() {
         openRegisterModal();
         return;
     }
-    await cardManager.show('library-card');
+    hideMenu();
+    router.navigate('/library', true);
 }
 
 function closeGamesCard() {
@@ -160,6 +164,93 @@ function closeKeyManagementCard() {
 function closeVersionManagementCard() {
     cardManager.hide('version-management-card');
 }
+
+VAPR.on('game-item', 'mounted', (element) => {
+    const viewDetailsBtn = element.querySelector('[onclick*="showGameDetails"]');
+    if (viewDetailsBtn) {
+        const gameId = element.getAttribute('game-id');
+        viewDetailsBtn.onclick = (e) => {
+            e.stopPropagation();
+            const game = gamesData.allGames.find(g => g.id === gameId);
+            if (game) {
+                const toSlug = (s) => String(s)
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                const slug = toSlug(game.title);
+                router.navigate(`/games/${slug}`, true);
+            }
+        };
+    }
+});
+
+VAPR.on('tebex-game-item', 'mounted', (element) => {
+    const gameId = element.getAttribute('game-id');
+    element.onclick = () => {
+        const game = gamesData.tebexGames.find(g => g.id === gameId);
+        if (game) {
+            const toSlug = (s) => String(s)
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            const slug = toSlug(game.title);
+            router.navigate(`/games/${slug}`, true);
+        }
+    };
+});
+
+VAPR.on('.game-tag-item', 'mounted', (element) => {
+    const titleEl = element.querySelector('.game-tag-item-title');
+    if (titleEl) {
+        const gameTitle = titleEl.textContent;
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        const slug = toSlug(gameTitle);
+
+        element.onclick = (e) => {
+            e.preventDefault();
+            router.navigate(`/games/${slug}`, true);
+        };
+    }
+});
+
+window.openTaggedGame = async function() {
+    loading.show();
+    if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
+        if (current_post && current_post.id) {
+            try {
+                const gameId = window.currentPostTaggedGame.id;
+                console.log('Tracking game click for game:', gameId, 'post:', current_post.id);
+
+                await api.request('/api/creators/track-game-click', {
+                    method: 'POST',
+                    body: {
+                        gameId: gameId,
+                        postId: current_post.id
+                    }
+                });
+                console.log('Successfully tracked game click for creator attribution');
+            } catch (error) {
+                console.error('Failed to track game click:', error);
+            }
+        }
+
+        if (!gamesData.tebexGames || gamesData.tebexGames.length === 0) {
+            await loadTebexGames();
+        }
+
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        const slug = toSlug(window.currentPostTaggedGame.title);
+
+        loading.hide();
+        router.navigate(`/games/${slug}`, true);
+    }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     initGameEventListeners();

@@ -6,6 +6,7 @@ let developerData = {
 };
 
 cardManager.register('developer-dashboard-card', {
+    route: '/developer',
     onLoad: async () => {
         await loadDeveloperData();
     }
@@ -17,7 +18,8 @@ async function openDeveloperDashboard() {
         return;
     }
 
-    await cardManager.show('developer-dashboard-card');
+    hideMenu();
+    router.navigate('/developer', true);
 }
 
 function closeDeveloperDashboard() {

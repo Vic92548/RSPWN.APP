@@ -4,6 +4,7 @@ let analyticsData = {
 };
 
 cardManager.register('analytics-card', {
+    route: '/analytics',
     onLoad: async () => {
         resetAnalyticsUI();
         await loadAnalyticsData();
@@ -16,7 +17,8 @@ async function openAnalytics() {
         return;
     }
 
-    await cardManager.show('analytics-card');
+    hideMenu();
+    router.navigate('/analytics', true);
 }
 
 function closeAnalyticsCard() {
