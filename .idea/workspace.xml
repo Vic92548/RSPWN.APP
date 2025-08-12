@@ -5,11 +5,236 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9fdf49d-a7bd-46f9-abcd-01932399e592" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/creator-admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/creator-admin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/server_modules/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_modules/game_update_upload.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.hintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/VAPR.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CONTRIBUTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai_prep.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/creator-admin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/.vscode/extensions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/app-icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/Cargo.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/Cargo.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/build.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/capabilities/default.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/128x128.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/128x128@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/32x32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/64x64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square107x107Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square142x142Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square150x150Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square284x284Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square30x30Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square310x310Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square44x44Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square71x71Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/Square89x89Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/StoreLogo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-hdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-mdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/icon.icns" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/icon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-20x20@1x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-20x20@2x-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-20x20@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-20x20@3x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-29x29@1x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-29x29@2x-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-29x29@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-29x29@3x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-40x40@1x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-40x40@2x-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-40x40@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-40x40@3x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-512@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-60x60@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-60x60@3x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-76x76@1x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-76x76@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/icons/ios/AppIcon-83.5x83.5@2x.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/relic.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/src/lib.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/src/main.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/src/websocket.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/src-tauri/tauri.conf.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/discord_callback.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongodb-indexes.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimize-indexes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/dylan.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/bg_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/bg_2.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/dark_forest_background.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/discord.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/forest_background.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/script.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/style.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/add-game.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/manage-games.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/creators.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/database.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/discord.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/game_updates.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/games.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/middleware/render.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/playtime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/post.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/create.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/feed.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/follow.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/get_post.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/interactions.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/invitations.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/notify_by_email.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/reactions.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/posts/video.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/routes/analytics.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/routes/xp_today.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/rpg.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/security.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/template_engine.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_modules/user_profile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/discord_callback.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/add_post.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/analytics.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/background_gallery.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/creator_program.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/developer_dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/game_details.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/games.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/privacy.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/terms.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/forms/text_modal.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/menu.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/post.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/rpg/xp_bar.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/developer/developer-game-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/developer/key-management-card.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/developer/version-management-card.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/game-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/game-key-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/library-game-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/tebex-game-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/version-form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/games/version-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/menu-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/menu-section.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/post-item.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/templates/user-info-card.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$_vapr-template-engine.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$card_manager.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$dom.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$init.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/$routes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/analytics.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/api.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/authentication.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/background_images.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/creators/program.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/customization.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/developer/dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/data.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/details.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/display.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/downloads.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/keys.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/redeem.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/state.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/tebex-display.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/tebex-integration.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/updates.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/utils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/games/versions.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/github.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/legal.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/loadUserPreferences.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/menu.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/post_Draw.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/post_Show.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/reactions.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/register.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/rpg.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/sdk_integration.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/tebex/api.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/tebex/integration.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/tinder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/upload.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/utils/animations.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/utils/loading.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/utils/notifications.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/version_check.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/_mixins.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/_variables.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/base/_base.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_add-post.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_analytics.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_animations.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_backgrounds.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_character.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_creator-program.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_customization.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_desktop-download.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_developer.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_errors.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_feed.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_game-details.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_game-tag.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_games.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_glass-system.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_keys_filter.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_legal.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_loading.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_menu.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_post.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_profile-card.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_responsive.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_size-system.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_tebex.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_vapr-card.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/components/_version-modal.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/main.scss" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +244,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="HTML File" />
+        <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -36,25 +262,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\victo\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "C:\\Users\\victo\\Documents\\GitHub\\VAPR\\dashboards\\partners\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -77,5 +303,11 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/dashboards/partners/vite.config.d.ts" />
+        <option value="$PROJECT_DIR$/dashboards/partners/vite.config.js" />
+      </list>
+    </option>
   </component>
 </project>

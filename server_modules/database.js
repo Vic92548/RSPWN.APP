@@ -172,26 +172,33 @@ class CacheSystem extends EventEmitter {
                 // Handle operators like $gte, $in, etc. for other fields
                 Object.entries(value).forEach(([op, val]) => {
                     const field = key === '_id' ? '_id' : `json_extract(_doc, '$.${key}')`;
+
+                    // Convert dates to ISO strings for SQLite
+                    let processedVal = val;
+                    if (val instanceof Date) {
+                        processedVal = val.toISOString();
+                    }
+
                     switch (op) {
                         case '$gte':
                             conditions.push(`${field} >= ?`);
-                            params.push(val);
+                            params.push(processedVal);
                             break;
                         case '$gt':
                             conditions.push(`${field} > ?`);
-                            params.push(val);
+                            params.push(processedVal);
                             break;
                         case '$lte':
                             conditions.push(`${field} <= ?`);
-                            params.push(val);
+                            params.push(processedVal);
                             break;
                         case '$lt':
                             conditions.push(`${field} < ?`);
-                            params.push(val);
+                            params.push(processedVal);
                             break;
                         case '$ne':
                             conditions.push(`${field} != ?`);
-                            params.push(val);
+                            params.push(processedVal);
                             break;
                         case '$exists':
                             conditions.push(`${field} IS ${val ? 'NOT NULL' : 'NULL'}`);
@@ -200,14 +207,20 @@ class CacheSystem extends EventEmitter {
                             if (Array.isArray(val) && val.length > 0) {
                                 const placeholders = val.map(() => '?').join(',');
                                 conditions.push(`${field} IN (${placeholders})`);
-                                params.push(...val.map(v => v?.toString() || v));
+                                params.push(...val.map(v => {
+                                    if (v instanceof Date) return v.toISOString();
+                                    return v?.toString() || v;
+                                }));
                             }
                             break;
                         case '$nin':
                             if (Array.isArray(val) && val.length > 0) {
                                 const placeholders = val.map(() => '?').join(',');
                                 conditions.push(`${field} NOT IN (${placeholders})`);
-                                params.push(...val.map(v => v?.toString() || v));
+                                params.push(...val.map(v => {
+                                    if (v instanceof Date) return v.toISOString();
+                                    return v?.toString() || v;
+                                }));
                             }
                             break;
                     }
@@ -215,7 +228,12 @@ class CacheSystem extends EventEmitter {
             } else {
                 // Simple equality check
                 conditions.push(`json_extract(_doc, '$.${key}') = ?`);
-                params.push(value);
+                // Convert dates to ISO strings for simple equality too
+                if (value instanceof Date) {
+                    params.push(value.toISOString());
+                } else {
+                    params.push(value);
+                }
             }
         });
 

@@ -1,0 +1,306 @@
+import { useEffect, useState } from 'react'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import apiClient from "@/lib/api-client"
+import {
+    Gamepad2,
+    Key,
+    BarChart3,
+    Users,
+    Clock,
+    ExternalLink,
+    Package,
+    TrendingUp,
+    Eye,
+    Heart,
+    UserPlus,
+    LogOut,
+    Plus
+} from "lucide-react"
+
+interface Game {
+    id: string;
+    title: string;
+    description: string;
+    coverImage: string;
+    downloadUrl: string;
+    currentVersion: string;
+    createdAt: string;
+    ownedAt: string;
+    totalPlaytimeSeconds: number;
+}
+
+interface User {
+    id: string;
+    username: string;
+    email: string;
+    avatar: string;
+    level: number;
+    xp: number;
+    xp_required: number;
+}
+
+interface Analytics {
+    totals: {
+        views: number;
+        likes: number;
+        dislikes: number;
+        follows: number;
+        clicks: number;
+        followers: number;
+    };
+}
+
+export default function Dashboard() {
+    const [user, setUser] = useState<User | null>(null);
+    const [games, setGames] = useState<Game[]>([]);
+    const [analytics, setAnalytics] = useState<Analytics | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadDashboardData();
+    }, []);
+
+    const loadDashboardData = async () => {
+        try {
+            setLoading(true);
+            const [userData, gamesData, analyticsData] = await Promise.all([
+                apiClient.getMe(),
+                apiClient.getMyGames(),
+                apiClient.getAnalytics('30')
+            ]);
+
+            setUser(userData);
+            setGames(gamesData.games);
+            setAnalytics(analyticsData);
+        } catch (error) {
+            console.error('Failed to load dashboard data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        apiClient.logout();
+        window.location.href = '/';
+    };
+
+    const formatPlaytime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        if (hours > 0) {
+            return `${hours}h ${minutes}m`;
+        }
+        return `${minutes}m`;
+    };
+
+    const formatNumber = (num: number) => {
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toString();
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <Gamepad2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+                    <p className="text-muted-foreground">Loading dashboard...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <header className="border-b">
+                <div className="container mx-auto px-4 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                            <Gamepad2 className="h-8 w-8 text-primary" />
+                            <div>
+                                <h1 className="text-2xl font-bold">VAPR Partners Dashboard</h1>
+                                <p className="text-sm text-muted-foreground">Manage your games and community</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <div className="text-right">
+                                <p className="font-semibold">{user?.username}</p>
+                                <p className="text-sm text-muted-foreground">Level {user?.level}</p>
+                            </div>
+                            <img
+                                src={user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : '/default-avatar.png'}
+                                alt={user?.username}
+                                className="h-10 w-10 rounded-full"
+                            />
+                            <Button variant="ghost" size="icon" onClick={handleLogout}>
+                                <LogOut className="h-5 w-5" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div className="container mx-auto px-4 py-8">
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{formatNumber(analytics?.totals.views || 0)}</div>
+                            <p className="text-xs text-muted-foreground">Across all content</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Likes</CardTitle>
+                            <Heart className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{formatNumber(analytics?.totals.likes || 0)}</div>
+                            <p className="text-xs text-muted-foreground">Player engagement</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Followers</CardTitle>
+                            <UserPlus className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{formatNumber(analytics?.totals.followers || 0)}</div>
+                            <p className="text-xs text-muted-foreground">Growing community</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Games</CardTitle>
+                            <Gamepad2 className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{games.length}</div>
+                            <p className="text-xs text-muted-foreground">Published games</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Games Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-2xl font-bold">My Games</h2>
+                        <Button className="gap-2">
+                            <Plus className="h-4 w-4" />
+                            Add New Game
+                        </Button>
+                    </div>
+
+                    {games.length === 0 ? (
+                        <Card>
+                            <CardContent className="text-center py-12">
+                                <Gamepad2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                                <h3 className="text-lg font-semibold mb-2">No games yet</h3>
+                                <p className="text-muted-foreground mb-4">Start by adding your first game to VAPR</p>
+                                <Button>
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Your First Game
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {games.map((game) => (
+                                <Card key={game.id} className="overflow-hidden">
+                                    <div className="aspect-video relative">
+                                        <img
+                                            src={game.coverImage || '/default-game-cover.png'}
+                                            alt={game.title}
+                                            className="object-cover w-full h-full"
+                                        />
+                                        <Badge className="absolute top-2 right-2" variant="secondary">
+                                            v{game.currentVersion}
+                                        </Badge>
+                                    </div>
+                                    <CardHeader>
+                                        <CardTitle>{game.title}</CardTitle>
+                                        <CardDescription className="line-clamp-2">
+                                            {game.description}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                                <span>{formatPlaytime(game.totalPlaytimeSeconds)}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Users className="h-4 w-4 text-muted-foreground" />
+                                                <span>0 players</span>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter className="grid grid-cols-3 gap-2">
+                                        <Button variant="outline" size="sm" className="gap-1">
+                                            <BarChart3 className="h-3 w-3" />
+                                            Stats
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="gap-1">
+                                            <Key className="h-3 w-3" />
+                                            Keys
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="gap-1">
+                                            <Package className="h-3 w-3" />
+                                            Update
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Quick Actions */}
+                <div className="mt-12">
+                    <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <TrendingUp className="h-8 w-8 text-primary mb-2" />
+                                <CardTitle>View Analytics</CardTitle>
+                                <CardDescription>
+                                    Deep dive into your game performance metrics
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
+
+                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <Key className="h-8 w-8 text-primary mb-2" />
+                                <CardTitle>Generate Keys</CardTitle>
+                                <CardDescription>
+                                    Create game keys for distribution and giveaways
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
+
+                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <ExternalLink className="h-8 w-8 text-primary mb-2" />
+                                <CardTitle>Creator Program</CardTitle>
+                                <CardDescription>
+                                    Partner with content creators to grow your reach
+                                </CardDescription>
+                            </CardHeader>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -912,7 +912,27 @@ app.get('/sitemap.xml', async (req, res) => {
     }
 });
 
+// Serve static files for partners dashboard
+app.use('/partners', serveStatic(join(__dirname, 'public/partners'), {
+    maxAge: config.static.maxAge,
+    setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', config.static.cacheControl);
+        res.setHeader('Pragma', config.static.pragma);
+        res.setHeader('Expires', config.static.expires);
+        res.setHeader('Surrogate-Control', config.static.surrogateControl);
 
+        if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    },
+    fallthrough: true
+}));
+
+// Handle client-side routing for partners dashboard
+// Use a regex pattern instead of wildcard
+app.get(/^\/partners(\/.*)?$/, (req, res) => {
+    res.sendFile(join(__dirname, 'public/partners/index.html'));
+});
 
 app.use(serveStatic(join(__dirname, 'public'), {
     maxAge: config.static.maxAge,
