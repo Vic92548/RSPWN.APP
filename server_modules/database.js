@@ -1,36 +1,419 @@
 import { MongoClient } from "mongodb";
+import Database from 'better-sqlite3';
+import EventEmitter from 'events';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const databaseUrl = process.env.DATABASE_URL;
 
+// MongoDB Client for writes
 const client = new MongoClient(databaseUrl);
 await client.connect();
-console.log("Connected");
+console.log("Connected to MongoDB");
 const db = client.db("vapr");
 
-const postsCollection = db.collection("posts");
-const usersCollection = db.collection("users");
-const viewsCollection = db.collection("views");
-const likesCollection = db.collection("likes");
-const videosCollection = db.collection("videos");
-const dislikesCollection = db.collection("dislikes");
-const skipsCollection = db.collection("skips");
-const followsCollection = db.collection("follows");
-const reactionsCollection = db.collection("reactions");
-const linkClicksCollection = db.collection("linkClicks");
-const registrationReferralsCollection = db.collection("registrationReferrals");
-const xpLogCollection = db.collection("xpLog");
-const secretKeysCollection = db.collection("secretKeys");
-const gamesCollection = db.collection("games");
-const gameKeysCollection = db.collection("gameKeys");
-const userGamesCollection = db.collection("userGames");
-const gameVersionsCollection = db.collection("gameVersions");
-const gameUpdatesCollection = db.collection("gameUpdates");
-const creatorApplicationsCollection = db.collection("creatorApplications");
-const creatorsCollection = db.collection("creators");
-const gameCreatorClicksCollection = db.collection("gameCreatorClicks");
-const playtimeSessionsCollection = db.collection("playtimeSessions");
+// SQLite in-memory cache for reads
+const sqliteDb = new Database(':memory:');
+sqliteDb.pragma('foreign_keys = ON');
+sqliteDb.pragma('journal_mode = WAL');
+
+// Cache system
+class CacheSystem extends EventEmitter {
+    constructor() {
+        super();
+        this.changeStreams = new Map();
+        this.collections = new Map();
+    }
+
+    async initCollection(name, mongoCollection) {
+        // Create SQLite table
+        sqliteDb.exec(`
+            CREATE TABLE IF NOT EXISTS ${name} (
+                _id TEXT PRIMARY KEY,
+                _doc JSON NOT NULL,
+                _updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        `);
+
+        // Create indexes for common fields
+        const indexMap = {
+            posts: ['userId', 'timestamp', 'id'],
+            users: ['id', 'username', 'email'],
+            views: ['postId', 'userId'],
+            likes: ['postId', 'userId'],
+            dislikes: ['postId', 'userId'],
+            skips: ['postId', 'userId'],
+            follows: ['followerId', 'creatorId'],
+            reactions: ['postId', 'userId'],
+            games: ['id', 'ownerId', 'slug'],
+            gameKeys: ['gameId', 'key'],
+            userGames: ['userId', 'gameId'],
+            creators: ['userId', 'username']
+        };
+
+        if (indexMap[name]) {
+            indexMap[name].forEach(field => {
+                try {
+                    sqliteDb.exec(`CREATE INDEX IF NOT EXISTS idx_${name}_${field} ON ${name}(json_extract(_doc, '$.${field}'))`);
+                } catch (e) {
+                    // Index might already exist
+                }
+            });
+        }
+
+        // Initial sync
+        console.log(`Syncing ${name}...`);
+        const docs = await mongoCollection.find({}).toArray();
+        const stmt = sqliteDb.prepare(`INSERT OR REPLACE INTO ${name} (_id, _doc) VALUES (?, ?)`);
+        const insertMany = sqliteDb.transaction((documents) => {
+            for (const doc of documents) {
+                // For users collection, use 'id' field as the primary key
+                let docId;
+                if (name === 'users' && doc.id) {
+                    docId = doc.id;
+                } else {
+                    docId = doc._id?.toString() || doc.id?.toString() || JSON.stringify(doc._id);
+                }
+                stmt.run(docId, JSON.stringify(doc));
+            }
+        });
+        insertMany(docs);
+        console.log(`Synced ${docs.length} documents for ${name}`);
+
+        // Setup change stream
+        const changeStream = mongoCollection.watch([], { fullDocument: 'updateLookup' });
+
+        changeStream.on('change', (change) => {
+            try {
+                switch (change.operationType) {
+                    case 'insert':
+                        let insertId;
+                        if (name === 'users' && change.fullDocument.id) {
+                            insertId = change.fullDocument.id;
+                        } else {
+                            insertId = change.fullDocument._id?.toString() || change.fullDocument.id?.toString();
+                        }
+                        sqliteDb.prepare(`INSERT OR REPLACE INTO ${name} (_id, _doc) VALUES (?, ?)`).run(
+                            insertId,
+                            JSON.stringify(change.fullDocument)
+                        );
+                        break;
+                    case 'update':
+                    case 'replace':
+                        if (change.fullDocument) {
+                            const updateId = change.documentKey._id?.toString() || change.documentKey.id?.toString();
+                            sqliteDb.prepare(`UPDATE ${name} SET _doc = ? WHERE _id = ?`).run(
+                                JSON.stringify(change.fullDocument),
+                                updateId
+                            );
+                        }
+                        break;
+                    case 'delete':
+                        const deleteId = change.documentKey._id?.toString() || change.documentKey.id?.toString();
+                        sqliteDb.prepare(`DELETE FROM ${name} WHERE _id = ?`).run(deleteId);
+                        break;
+                }
+            } catch (error) {
+                console.error(`Error handling change for ${name}:`, error);
+            }
+        });
+
+        changeStream.on('error', (error) => {
+            console.error(`Change stream error for ${name}:`, error);
+            // Attempt to reconnect
+            setTimeout(() => {
+                console.log(`Attempting to reconnect change stream for ${name}`);
+                this.initCollection(name, mongoCollection);
+            }, 5000);
+        });
+
+        this.changeStreams.set(name, changeStream);
+        this.collections.set(name, mongoCollection);
+    }
+
+    buildWhereClause(filter) {
+        if (!filter || Object.keys(filter).length === 0) {
+            return { where: '', params: [] };
+        }
+
+        const conditions = [];
+        const params = [];
+
+        Object.entries(filter).forEach(([key, value]) => {
+            if (key === '_id') {
+                if (typeof value === 'object' && value.$in) {
+                    // Handle _id: { $in: [...] }
+                    const placeholders = value.$in.map(() => '?').join(',');
+                    conditions.push(`_id IN (${placeholders})`);
+                    params.push(...value.$in.map(v => v?.toString() || v));
+                } else {
+                    conditions.push('_id = ?');
+                    params.push(value?.toString() || value);
+                }
+            } else if (key === 'id') {
+                if (typeof value === 'object' && value.$in) {
+                    // Handle id: { $in: [...] }
+                    const placeholders = value.$in.map(() => '?').join(',');
+                    conditions.push(`json_extract(_doc, '$.id') IN (${placeholders})`);
+                    params.push(...value.$in.map(v => v?.toString() || v));
+                } else {
+                    // Special handling for 'id' field - search in JSON
+                    conditions.push(`json_extract(_doc, '$.id') = ?`);
+                    params.push(value?.toString() || value);
+                }
+            } else if (key === '$or' && Array.isArray(value)) {
+                const orConds = value.map(f => {
+                    const sub = this.buildWhereClause(f);
+                    params.push(...sub.params);
+                    return sub.where.replace('WHERE ', '');
+                });
+                conditions.push(`(${orConds.join(' OR ')})`);
+            } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                // Handle operators like $gte, $in, etc. for other fields
+                Object.entries(value).forEach(([op, val]) => {
+                    const field = key === '_id' ? '_id' : `json_extract(_doc, '$.${key}')`;
+                    switch (op) {
+                        case '$gte':
+                            conditions.push(`${field} >= ?`);
+                            params.push(val);
+                            break;
+                        case '$gt':
+                            conditions.push(`${field} > ?`);
+                            params.push(val);
+                            break;
+                        case '$lte':
+                            conditions.push(`${field} <= ?`);
+                            params.push(val);
+                            break;
+                        case '$lt':
+                            conditions.push(`${field} < ?`);
+                            params.push(val);
+                            break;
+                        case '$ne':
+                            conditions.push(`${field} != ?`);
+                            params.push(val);
+                            break;
+                        case '$exists':
+                            conditions.push(`${field} IS ${val ? 'NOT NULL' : 'NULL'}`);
+                            break;
+                        case '$in':
+                            if (Array.isArray(val) && val.length > 0) {
+                                const placeholders = val.map(() => '?').join(',');
+                                conditions.push(`${field} IN (${placeholders})`);
+                                params.push(...val.map(v => v?.toString() || v));
+                            }
+                            break;
+                        case '$nin':
+                            if (Array.isArray(val) && val.length > 0) {
+                                const placeholders = val.map(() => '?').join(',');
+                                conditions.push(`${field} NOT IN (${placeholders})`);
+                                params.push(...val.map(v => v?.toString() || v));
+                            }
+                            break;
+                    }
+                });
+            } else {
+                // Simple equality check
+                conditions.push(`json_extract(_doc, '$.${key}') = ?`);
+                params.push(value);
+            }
+        });
+
+        return { where: conditions.length ? `WHERE ${conditions.join(' AND ')}` : '', params };
+    }
+}
+
+const cache = new CacheSystem();
+
+// Create cached collection wrapper
+class CachedCollection {
+    constructor(name, mongoCollection) {
+        this.name = name;
+        this.mongoCollection = mongoCollection;
+    }
+
+    async init() {
+        await cache.initCollection(this.name, this.mongoCollection);
+    }
+
+    // Read operations (from SQLite)
+    async findOne(filter = {}, options = {}) {
+        const { where, params } = cache.buildWhereClause(filter);
+        const row = sqliteDb.prepare(`SELECT _doc FROM ${this.name} ${where} LIMIT 1`).get(...params);
+        if (!row) return null;
+
+        const doc = JSON.parse(row._doc);
+        if (options.projection) {
+            const projected = {};
+            const isInclusion = Object.values(options.projection).some(v => v === 1);
+
+            if (isInclusion) {
+                Object.entries(options.projection).forEach(([k, v]) => {
+                    if (v === 1 && doc[k] !== undefined) projected[k] = doc[k];
+                });
+                // Always include _id unless explicitly excluded
+                if (options.projection._id !== 0) {
+                    projected._id = doc._id;
+                }
+                // Handle 'id' field
+                if (options.projection.id !== 0 && doc.id !== undefined) {
+                    projected.id = doc.id;
+                }
+            } else {
+                Object.assign(projected, doc);
+                Object.entries(options.projection).forEach(([k, v]) => {
+                    if (v === 0) delete projected[k];
+                });
+            }
+            return projected;
+        }
+        return doc;
+    }
+
+    find(filter = {}, options = {}) {
+        const self = this;
+        const state = { filter, options };
+
+        return {
+            async toArray() {
+                const { where, params } = cache.buildWhereClause(state.filter);
+                const orderBy = state.options.sort ?
+                    `ORDER BY ${Object.entries(state.options.sort).map(([k, v]) => {
+                        if (k === '_id') return `_id ${v === 1 ? 'ASC' : 'DESC'}`;
+                        return `json_extract(_doc, '$.${k}') ${v === 1 ? 'ASC' : 'DESC'}`;
+                    }).join(', ')}` : '';
+                const limit = state.options.limit ? `LIMIT ${state.options.limit}` : '';
+                const offset = state.options.skip ? `OFFSET ${state.options.skip}` : '';
+
+                const rows = sqliteDb.prepare(
+                    `SELECT _doc FROM ${self.name} ${where} ${orderBy} ${limit} ${offset}`
+                ).all(...params);
+
+                return rows.map(row => {
+                    const doc = JSON.parse(row._doc);
+                    if (state.options.projection) {
+                        const projected = {};
+                        const isInclusion = Object.values(state.options.projection).some(v => v === 1);
+
+                        if (isInclusion) {
+                            Object.entries(state.options.projection).forEach(([k, v]) => {
+                                if (v === 1 && doc[k] !== undefined) projected[k] = doc[k];
+                            });
+                            if (state.options.projection._id !== 0) projected._id = doc._id;
+                            if (state.options.projection.id !== 0 && doc.id !== undefined) projected.id = doc.id;
+                        } else {
+                            Object.assign(projected, doc);
+                            Object.entries(state.options.projection).forEach(([k, v]) => {
+                                if (v === 0) delete projected[k];
+                            });
+                        }
+                        return projected;
+                    }
+                    return doc;
+                });
+            },
+            sort(spec) { state.options.sort = spec; return this; },
+            limit(n) { state.options.limit = n; return this; },
+            skip(n) { state.options.skip = n; return this; },
+            project(proj) { state.options.projection = proj; return this; }
+        };
+    }
+
+    async countDocuments(filter = {}) {
+        const { where, params } = cache.buildWhereClause(filter);
+        const result = sqliteDb.prepare(`SELECT COUNT(*) as count FROM ${this.name} ${where}`).get(...params);
+        return result.count;
+    }
+
+    aggregate(pipeline) {
+        // Return a cursor-like object that matches MongoDB's API
+        const self = this;
+        return {
+            async toArray() {
+                return self.mongoCollection.aggregate(pipeline).toArray();
+            }
+        };
+    }
+
+    // Write operations (to MongoDB)
+    async insertOne(doc) { return this.mongoCollection.insertOne(doc); }
+    async insertMany(docs) { return this.mongoCollection.insertMany(docs); }
+    async updateOne(filter, update, options) { return this.mongoCollection.updateOne(filter, update, options); }
+    async updateMany(filter, update, options) { return this.mongoCollection.updateMany(filter, update, options); }
+    async deleteOne(filter) { return this.mongoCollection.deleteOne(filter); }
+    async deleteMany(filter) { return this.mongoCollection.deleteMany(filter); }
+}
+
+// Initialize all collections
+const collectionNames = [
+    'posts', 'users', 'views', 'likes', 'videos', 'dislikes', 'skips',
+    'follows', 'reactions', 'linkClicks', 'registrationReferrals', 'xpLog',
+    'secretKeys', 'games', 'gameKeys', 'userGames', 'gameVersions',
+    'gameUpdates', 'creatorApplications', 'creators', 'gameCreatorClicks',
+    'playtimeSessions'
+];
+
+const collections = {};
+for (const name of collectionNames) {
+    const cached = new CachedCollection(name, db.collection(name));
+    await cached.init();
+    collections[name] = cached;
+}
+
+// Export collections
+const postsCollection = collections.posts;
+const usersCollection = collections.users;
+const viewsCollection = collections.views;
+const likesCollection = collections.likes;
+const videosCollection = collections.videos;
+const dislikesCollection = collections.dislikes;
+const skipsCollection = collections.skips;
+const followsCollection = collections.follows;
+const reactionsCollection = collections.reactions;
+const linkClicksCollection = collections.linkClicks;
+const registrationReferralsCollection = collections.registrationReferrals;
+const xpLogCollection = collections.xpLog;
+const secretKeysCollection = collections.secretKeys;
+const gamesCollection = collections.games;
+const gameKeysCollection = collections.gameKeys;
+const userGamesCollection = collections.userGames;
+const gameVersionsCollection = collections.gameVersions;
+const gameUpdatesCollection = collections.gameUpdates;
+const creatorApplicationsCollection = collections.creatorApplications;
+const creatorsCollection = collections.creators;
+const gameCreatorClicksCollection = collections.gameCreatorClicks;
+const playtimeSessionsCollection = collections.playtimeSessions;
+
+// Log cache stats periodically
+setInterval(() => {
+    const tables = sqliteDb.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    console.log('Cache Stats:');
+    tables.forEach(table => {
+        const count = sqliteDb.prepare(`SELECT COUNT(*) as count FROM ${table.name}`).get();
+        console.log(`  ${table.name}: ${count.count} documents`);
+    });
+}, 60000);
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+    console.log('Closing database connections...');
+    for (const stream of cache.changeStreams.values()) {
+        await stream.close();
+    }
+    sqliteDb.close();
+    await client.close();
+    process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+    console.log('Closing database connections...');
+    for (const stream of cache.changeStreams.values()) {
+        await stream.close();
+    }
+    sqliteDb.close();
+    await client.close();
+    process.exit(0);
+});
 
 export {
     postsCollection,

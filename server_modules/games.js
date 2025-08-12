@@ -20,6 +20,8 @@ export async function getUserGames(userId) {
     try {
         const userGames = await userGamesCollection.find({ userId }).toArray();
         const gameIds = userGames.map(ug => ug.gameId);
+
+        // Use the fixed $in operator
         const games = await gamesCollection.find({ id: { $in: gameIds } }).toArray();
 
         // Aggregate total playtime per game for this user

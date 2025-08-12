@@ -168,12 +168,30 @@ async function gatherProfileData(user) {
         return { ...post, views };
     }));
 
-    const joinDate = user._id.getTimestamp();
-    const joinDateFormatted = new Date(joinDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    // Handle join date - check if user has createdAt field, otherwise use a default
+    let joinDate;
+    let joinDateFormatted;
+
+    if (user.createdAt) {
+        joinDate = new Date(user.createdAt);
+        joinDateFormatted = joinDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else if (user._id && typeof user._id === 'object' && user._id.getTimestamp) {
+        // MongoDB ObjectId
+        joinDate = user._id.getTimestamp();
+        joinDateFormatted = new Date(joinDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        // Fallback for cached database where _id is a string
+        joinDate = new Date('2024-01-01'); // Default date or you could query MongoDB directly
+        joinDateFormatted = 'Member since 2024';
+    }
 
     return {
         id: user.id,

@@ -1,6 +1,6 @@
 {
   "name": "vapr",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "type": "module",
   "scripts": {
     "start": "node server.js",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",
+    "better-sqlite3": "^12.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
