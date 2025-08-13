@@ -76,6 +76,9 @@ async function main() {
 
         gameData.ownerId = owner.id;
 
+        const isHiddenResponse = await question('Should this game be hidden (require key to view)? (y/n): ');
+        gameData.isHidden = isHiddenResponse.toLowerCase() === 'y';
+
         console.log('\n📋 Game Summary:');
         console.log('================');
         console.log(`Title: ${gameData.title}`);
@@ -84,6 +87,7 @@ async function main() {
         console.log(`External Link: ${gameData.externalLink || 'None'}`);
         console.log(`Download URL: ${gameData.downloadUrl || 'None'}`);
         console.log(`Owner: ${owner.username} (${owner.id})`);
+        console.log(`Hidden: ${gameData.isHidden ? 'Yes (Key required)' : 'No (Public)'}`);
         console.log(`Game ID: ${gameData.id}`);
         console.log('================\n');
 

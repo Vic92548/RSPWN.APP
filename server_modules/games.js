@@ -1,9 +1,26 @@
 import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollection, playtimeSessionsCollection } from './database.js';
 
-export async function getAllGames() {
+export async function getAllGames(userId = null) {
     try {
-        const games = await gamesCollection.find({}).toArray();
-        return new Response(JSON.stringify({ success: true, games }), {
+        const publicGames = await gamesCollection.find({ isHidden: { $ne: true } }).toArray();
+
+        let hiddenGames = [];
+        if (userId && userId !== 'anonymous') {
+            const userGames = await userGamesCollection.find({ userId }).toArray();
+            const ownedGameIds = userGames.map(ug => ug.gameId);
+
+            if (ownedGameIds.length > 0) {
+                hiddenGames = await gamesCollection.find({
+                    id: { $in: ownedGameIds },
+                    isHidden: true
+                }).toArray();
+            }
+        }
+
+        const allGames = [...publicGames, ...hiddenGames];
+        const uniqueGames = Array.from(new Map(allGames.map(g => [g.id, g])).values());
+
+        return new Response(JSON.stringify({ success: true, games: uniqueGames }), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
@@ -21,10 +38,8 @@ export async function getUserGames(userId) {
         const userGames = await userGamesCollection.find({ userId }).toArray();
         const gameIds = userGames.map(ug => ug.gameId);
 
-        // Use the fixed $in operator
         const games = await gamesCollection.find({ id: { $in: gameIds } }).toArray();
 
-        // Aggregate total playtime per game for this user
         const playtimeAgg = await playtimeSessionsCollection.aggregate([
             { $match: { userId, gameId: { $in: gameIds } } },
             { $group: { _id: '$gameId', totalSeconds: { $sum: '$durationSeconds' } } }

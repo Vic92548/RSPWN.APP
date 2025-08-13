@@ -19,7 +19,7 @@ const BACKEND_DIR = 'server_modules';
 const FRONTEND_DIR = 'src';
 const PARTNERS_DIR = 'dashboards/partners';
 const DESKTOP_DIR = 'desktop';
-const ROOT_FILES = ['server.js', 'build.js'];
+const ROOT_FILES = ['server.js', 'build.js', 'scripts/add-game.js','scripts/manage-games.js'];
 const OUTPUT_FILE = 'output.txt';
 
 // File extensions by category

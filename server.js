@@ -360,13 +360,11 @@ app.get('/games/:gameName', async (req, res) => {
 
         const slug = (req.params.gameName || '').toLowerCase();
 
-        // Attempt to find by explicit slug field first if present
         let game = await gamesCollection.findOne({ slug });
 
         if (!game) {
-            // Fallback: fetch minimal fields and match by slugified title
             const games = await gamesCollection
-                .find({}, { projection: { id: 1, title: 1, description: 1, coverImage: 1 } })
+                .find({}, { projection: { id: 1, title: 1, description: 1, coverImage: 1, isHidden: 1 } })
                 .toArray();
             game = games.find(g => toSlug(g.title) === slug) || null;
         }
@@ -374,6 +372,34 @@ app.get('/games/:gameName', async (req, res) => {
         const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
 
         if (game) {
+            if (game.isHidden) {
+                const authResult = await authenticateRequest(req);
+                if (!authResult.isValid) {
+                    await res.render('index.html', {
+                        meta_description: 'This game requires authentication to view.',
+                        meta_author: 'VAPR',
+                        meta_image: config.meta.default.image,
+                        meta_url: baseUrl + req.path
+                    });
+                    return;
+                }
+
+                const ownership = await userGamesCollection.findOne({
+                    userId: authResult.userData.id,
+                    gameId: game.id
+                });
+
+                if (!ownership) {
+                    await res.render('index.html', {
+                        meta_description: 'This game is hidden. You need a valid key to access it.',
+                        meta_author: 'VAPR',
+                        meta_image: config.meta.default.image,
+                        meta_url: baseUrl + req.path
+                    });
+                    return;
+                }
+            }
+
             const cleanDesc = (game.description || '').replace(/<[^>]*>/g, '').trim();
             await res.render('index.html', {
                 meta_description: cleanDesc || config.meta.default.description,
@@ -382,7 +408,6 @@ app.get('/games/:gameName', async (req, res) => {
                 meta_url: baseUrl + req.path
             });
         } else {
-            // If no match, render with defaults to allow client-side 404/handling
             await res.render('index.html', {
                 meta_description: config.meta.default.description,
                 meta_author: config.meta.default.author,
@@ -651,7 +676,10 @@ import {
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
 
 app.get('/api/games', async (req, res) => {
-    const response = await getAllGames();
+    const authResult = await authenticateRequest(req);
+    const userId = authResult?.isValid ? authResult.userData.id : null;
+
+    const response = await getAllGames(userId);
     const data = await response.json();
     res.status(response.status).json(data);
 });

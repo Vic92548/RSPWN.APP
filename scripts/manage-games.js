@@ -33,9 +33,10 @@ async function main() {
             console.log('5. Generate keys for a game');
             console.log('6. View keys for a game');
             console.log('7. View game ownership stats');
-            console.log('8. Exit');
+            console.log('8. Toggle game visibility (hidden/visible)');
+            console.log('9. Exit');
 
-            const choice = await question('\nSelect option (1-8): ');
+            const choice = await question('\nSelect option (1-9): ');
 
             switch (choice) {
                 case '1':
@@ -43,10 +44,11 @@ async function main() {
                     console.log(`\n📚 Total games: ${games.length}\n`);
                     for (const game of games) {
                         const owner = await usersCollection.findOne({ id: game.ownerId });
-                        console.log(`${game.title}`);
+                        console.log(`${game.title}${game.isHidden ? ' 🔒' : ''}`);
                         console.log(`  ID: ${game.id}`);
                         console.log(`  Owner: ${owner ? owner.username : 'Unknown'}`);
                         console.log(`  External: ${game.externalLink || 'None'}`);
+                        console.log(`  Hidden: ${game.isHidden ? 'YES' : 'NO'}`);
                         console.log('');
                     }
                     break;
@@ -69,6 +71,7 @@ async function main() {
                         console.log(`Cover: ${game.coverImage}`);
                         console.log(`External Link: ${game.externalLink || 'None'}`);
                         console.log(`Download URL: ${game.downloadUrl || 'None'}`);
+                        console.log(`Hidden: ${game.isHidden ? 'YES (Key required)' : 'NO (Public)'}`);
                         console.log(`\n📊 Statistics:`);
                         console.log(`Total Keys: ${totalKeys}`);
                         console.log(`Used Keys: ${usedKeys}`);
@@ -198,7 +201,7 @@ async function main() {
                         const totalKeys = await gameKeysCollection.countDocuments({ gameId: g.id });
                         const usedKeys = await gameKeysCollection.countDocuments({ gameId: g.id, usedBy: { $ne: null } });
 
-                        console.log(`${g.title}`);
+                        console.log(`${g.title}${g.isHidden ? ' 🔒' : ''}`);
                         console.log(`  Owners: ${owners}`);
                         console.log(`  Keys: ${usedKeys}/${totalKeys} used`);
                         console.log('');
@@ -206,6 +209,21 @@ async function main() {
                     break;
 
                 case '8':
+                    const toggleId = await question('Enter game ID to toggle visibility: ');
+                    const gameToToggle = await gamesCollection.findOne({ id: toggleId });
+                    if (gameToToggle) {
+                        const newHiddenStatus = !gameToToggle.isHidden;
+                        await gamesCollection.updateOne(
+                            { id: toggleId },
+                            { $set: { isHidden: newHiddenStatus } }
+                        );
+                        console.log(`✅ Game "${gameToToggle.title}" is now ${newHiddenStatus ? 'HIDDEN' : 'VISIBLE'}`);
+                    } else {
+                        console.log('❌ Game not found!');
+                    }
+                    break;
+
+                case '9':
                     console.log('\n👋 Goodbye!');
                     process.exit(0);
 
