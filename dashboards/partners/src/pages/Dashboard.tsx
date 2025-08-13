@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import GameStatsModal from "@/components/GameStatsModal"
+import GameKeysModal from "@/components/GameKeysModal"
+import GameUpdateModal from "@/components/GameUpdateModal"
 import apiClient from "@/lib/api-client"
 import {
     Gamepad2,
@@ -57,6 +60,25 @@ export default function Dashboard() {
     const [games, setGames] = useState<Game[]>([]);
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
     const [loading, setLoading] = useState(true);
+    const [gamePlayers, setGamePlayers] = useState<Record<string, number>>({});
+
+    // Modal states
+    const [statsModal, setStatsModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string }>({
+        isOpen: false,
+        gameId: '',
+        gameTitle: ''
+    });
+    const [keysModal, setKeysModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string }>({
+        isOpen: false,
+        gameId: '',
+        gameTitle: ''
+    });
+    const [updateModal, setUpdateModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string; currentVersion: string }>({
+        isOpen: false,
+        gameId: '',
+        gameTitle: '',
+        currentVersion: ''
+    });
 
     useEffect(() => {
         loadDashboardData();
@@ -74,6 +96,18 @@ export default function Dashboard() {
             setUser(userData);
             setGames(gamesData.games);
             setAnalytics(analyticsData);
+
+            // Load player counts for each game
+            const playerCounts: Record<string, number> = {};
+            for (const game of gamesData.games) {
+                try {
+                    const keysData = await apiClient.getGameKeys(game.id);
+                    playerCounts[game.id] = keysData.keys.filter(k => k.usedBy).length;
+                } catch (error) {
+                    playerCounts[game.id] = 0;
+                }
+            }
+            setGamePlayers(playerCounts);
         } catch (error) {
             console.error('Failed to load dashboard data:', error);
         } finally {
@@ -119,7 +153,6 @@ export default function Dashboard() {
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                            <Gamepad2 className="h-8 w-8 text-primary" />
                             <div>
                                 <h1 className="text-2xl font-bold">VAPR Partners Dashboard</h1>
                                 <p className="text-sm text-muted-foreground">Manage your games and community</p>
@@ -241,20 +274,40 @@ export default function Dashboard() {
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Users className="h-4 w-4 text-muted-foreground" />
-                                                <span>0 players</span>
+                                                <span>{gamePlayers[game.id] || 0} players</span>
                                             </div>
                                         </div>
                                     </CardContent>
                                     <CardFooter className="grid grid-cols-3 gap-2">
-                                        <Button variant="outline" size="sm" className="gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="gap-1"
+                                            onClick={() => setStatsModal({ isOpen: true, gameId: game.id, gameTitle: game.title })}
+                                        >
                                             <BarChart3 className="h-3 w-3" />
                                             Stats
                                         </Button>
-                                        <Button variant="outline" size="sm" className="gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="gap-1"
+                                            onClick={() => setKeysModal({ isOpen: true, gameId: game.id, gameTitle: game.title })}
+                                        >
                                             <Key className="h-3 w-3" />
                                             Keys
                                         </Button>
-                                        <Button variant="outline" size="sm" className="gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="gap-1"
+                                            onClick={() => setUpdateModal({
+                                                isOpen: true,
+                                                gameId: game.id,
+                                                gameTitle: game.title,
+                                                currentVersion: game.currentVersion
+                                            })}
+                                        >
                                             <Package className="h-3 w-3" />
                                             Update
                                         </Button>
@@ -301,6 +354,29 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
+            <GameStatsModal
+                isOpen={statsModal.isOpen}
+                onClose={() => setStatsModal({ isOpen: false, gameId: '', gameTitle: '' })}
+                gameId={statsModal.gameId}
+                gameTitle={statsModal.gameTitle}
+            />
+
+            <GameKeysModal
+                isOpen={keysModal.isOpen}
+                onClose={() => setKeysModal({ isOpen: false, gameId: '', gameTitle: '' })}
+                gameId={keysModal.gameId}
+                gameTitle={keysModal.gameTitle}
+            />
+
+            <GameUpdateModal
+                isOpen={updateModal.isOpen}
+                onClose={() => setUpdateModal({ isOpen: false, gameId: '', gameTitle: '', currentVersion: '' })}
+                gameId={updateModal.gameId}
+                gameTitle={updateModal.gameTitle}
+                currentVersion={updateModal.currentVersion}
+            />
         </div>
     );
 }
