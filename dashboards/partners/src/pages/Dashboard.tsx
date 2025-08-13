@@ -322,7 +322,7 @@ export default function Dashboard() {
                 <div className="mt-12">
                     <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                             <CardHeader>
                                 <TrendingUp className="h-8 w-8 text-primary mb-2" />
                                 <CardTitle>View Analytics</CardTitle>
@@ -332,7 +332,7 @@ export default function Dashboard() {
                             </CardHeader>
                         </Card>
 
-                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                             <CardHeader>
                                 <Key className="h-8 w-8 text-primary mb-2" />
                                 <CardTitle>Generate Keys</CardTitle>
@@ -342,7 +342,7 @@ export default function Dashboard() {
                             </CardHeader>
                         </Card>
 
-                        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                             <CardHeader>
                                 <ExternalLink className="h-8 w-8 text-primary mb-2" />
                                 <CardTitle>Creator Program</CardTitle>

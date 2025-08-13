@@ -74,7 +74,7 @@ export default function LandingPage() {
             {/* Hero Section */}
             <section className="w-full">
                 <div className="container mx-auto px-4 py-20 text-center">
-                    <Badge className="mb-4 bg-primary/20 text-primary border-primary/30" variant="secondary">
+                    <Badge className="mb-4 bg-muted text-foreground border-border" variant="secondary">
                         🎮 Game Developer Platform
                     </Badge>
                     <h1 className="text-5xl font-bold tracking-tight mb-6">
@@ -88,7 +88,7 @@ export default function LandingPage() {
                         <Button size="lg" onClick={handleGetStarted} className="gap-2 bg-primary hover:bg-primary/90">
                             Get Started <ArrowRight className="h-4 w-4" />
                         </Button>
-                        <Button size="lg" variant="outline" className="border-primary/20 hover:bg-primary/10">
+                        <Button size="lg" variant="outline" className="border-border hover:bg-accent">
                             Learn More
                         </Button>
                     </div>
@@ -122,7 +122,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <TrendingUp className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Analytics Dashboard</CardTitle>
@@ -133,22 +133,22 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Real-time view tracking
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Player engagement metrics
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Conversion analytics
                                     </li>
                                 </ul>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <Users className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Community Building</CardTitle>
@@ -159,22 +159,22 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Direct player feedback
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Community posts & updates
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Follower notifications
                                     </li>
                                 </ul>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <Key className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Key Management</CardTitle>
@@ -185,22 +185,22 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Bulk key generation
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Usage tracking
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         CSV export
                                     </li>
                                 </ul>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <Zap className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Version Control</CardTitle>
@@ -211,22 +211,22 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Automatic update notifications
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Changelog management
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Version history
                                     </li>
                                 </ul>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <BarChart3 className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Creator Program</CardTitle>
@@ -237,22 +237,22 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Creator partnerships
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Revenue sharing
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Performance tracking
                                     </li>
                                 </ul>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card border-border hover:border-primary/50 transition-colors">
+                        <Card className="bg-card border-border hover:border-accent transition-colors">
                             <CardHeader>
                                 <Globe className="h-10 w-10 text-primary mb-2" />
                                 <CardTitle>Global Reach</CardTitle>
@@ -263,15 +263,15 @@ export default function LandingPage() {
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         International exposure
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Multi-language support
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                        <CheckCircle2 className="h-4 w-4 text-primary" />
                                         Global payment options
                                     </li>
                                 </ul>
@@ -284,7 +284,7 @@ export default function LandingPage() {
             {/* CTA Section */}
             <section className="w-full">
                 <div className="container mx-auto px-4 py-20">
-                    <Card className="bg-primary/10 border-primary/20">
+                    <Card className="bg-secondary border-border">
                         <CardContent className="text-center py-12">
                             <Shield className="h-12 w-12 mx-auto mb-4 text-primary" />
                             <h3 className="text-3xl font-bold mb-4">Ready to Launch Your Game?</h3>
