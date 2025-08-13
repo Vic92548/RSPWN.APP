@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import GameStatsModal from "@/components/GameStatsModal"
-import GameKeysModal from "@/components/GameKeysModal"
-import GameUpdateModal from "@/components/GameUpdateModal"
+import Layout from "@/components/Layout"
 import apiClient from "@/lib/api-client"
 import {
     Gamepad2,
@@ -12,13 +11,10 @@ import {
     BarChart3,
     Users,
     Clock,
-    ExternalLink,
     Package,
-    TrendingUp,
     Eye,
     Heart,
     UserPlus,
-    LogOut,
     Plus
 } from "lucide-react"
 
@@ -62,24 +58,6 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [gamePlayers, setGamePlayers] = useState<Record<string, number>>({});
 
-    // Modal states
-    const [statsModal, setStatsModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string }>({
-        isOpen: false,
-        gameId: '',
-        gameTitle: ''
-    });
-    const [keysModal, setKeysModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string }>({
-        isOpen: false,
-        gameId: '',
-        gameTitle: ''
-    });
-    const [updateModal, setUpdateModal] = useState<{ isOpen: boolean; gameId: string; gameTitle: string; currentVersion: string }>({
-        isOpen: false,
-        gameId: '',
-        gameTitle: '',
-        currentVersion: ''
-    });
-
     useEffect(() => {
         loadDashboardData();
     }, []);
@@ -115,11 +93,6 @@ export default function Dashboard() {
         }
     };
 
-    const handleLogout = async () => {
-        apiClient.logout();
-        window.location.href = '/';
-    };
-
     const formatPlaytime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -137,45 +110,19 @@ export default function Dashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <Gamepad2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-                    <p className="text-muted-foreground">Loading dashboard...</p>
+            <Layout user={user}>
+                <div className="min-h-screen flex items-center justify-center">
+                    <div className="text-center">
+                        <Gamepad2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+                        <p className="text-muted-foreground">Loading dashboard...</p>
+                    </div>
                 </div>
-            </div>
+            </Layout>
         );
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div>
-                                <h1 className="text-2xl font-bold">VAPR Partners Dashboard</h1>
-                                <p className="text-sm text-muted-foreground">Manage your games and community</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <div className="text-right">
-                                <p className="font-semibold">{user?.username}</p>
-                                <p className="text-sm text-muted-foreground">Level {user?.level}</p>
-                            </div>
-                            <img
-                                src={user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : '/default-avatar.png'}
-                                alt={user?.username}
-                                className="h-10 w-10 rounded-full"
-                            />
-                            <Button variant="ghost" size="icon" onClick={handleLogout}>
-                                <LogOut className="h-5 w-5" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
+        <Layout user={user}>
             <div className="container mx-auto px-4 py-8">
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -279,104 +226,43 @@ export default function Dashboard() {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="grid grid-cols-3 gap-2">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="gap-1"
-                                            onClick={() => setStatsModal({ isOpen: true, gameId: game.id, gameTitle: game.title })}
-                                        >
-                                            <BarChart3 className="h-3 w-3" />
-                                            Stats
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="gap-1"
-                                            onClick={() => setKeysModal({ isOpen: true, gameId: game.id, gameTitle: game.title })}
-                                        >
-                                            <Key className="h-3 w-3" />
-                                            Keys
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="gap-1"
-                                            onClick={() => setUpdateModal({
-                                                isOpen: true,
-                                                gameId: game.id,
-                                                gameTitle: game.title,
-                                                currentVersion: game.currentVersion
-                                            })}
-                                        >
-                                            <Package className="h-3 w-3" />
-                                            Update
-                                        </Button>
+                                        <Link to={`/games/${game.id}/stats`}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="gap-1 w-full"
+                                            >
+                                                <BarChart3 className="h-3 w-3" />
+                                                Stats
+                                            </Button>
+                                        </Link>
+                                        <Link to={`/games/${game.id}/keys`}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="gap-1 w-full"
+                                            >
+                                                <Key className="h-3 w-3" />
+                                                Keys
+                                            </Button>
+                                        </Link>
+                                        <Link to={`/games/${game.id}/updates`}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="gap-1 w-full"
+                                            >
+                                                <Package className="h-3 w-3" />
+                                                Update
+                                            </Button>
+                                        </Link>
                                     </CardFooter>
                                 </Card>
                             ))}
                         </div>
                     )}
                 </div>
-
-                {/* Quick Actions */}
-                <div className="mt-12">
-                    <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                            <CardHeader>
-                                <TrendingUp className="h-8 w-8 text-primary mb-2" />
-                                <CardTitle>View Analytics</CardTitle>
-                                <CardDescription>
-                                    Deep dive into your game performance metrics
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                            <CardHeader>
-                                <Key className="h-8 w-8 text-primary mb-2" />
-                                <CardTitle>Generate Keys</CardTitle>
-                                <CardDescription>
-                                    Create game keys for distribution and giveaways
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-
-                        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                            <CardHeader>
-                                <ExternalLink className="h-8 w-8 text-primary mb-2" />
-                                <CardTitle>Creator Program</CardTitle>
-                                <CardDescription>
-                                    Partner with content creators to grow your reach
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-                    </div>
-                </div>
             </div>
-
-            {/* Modals */}
-            <GameStatsModal
-                isOpen={statsModal.isOpen}
-                onClose={() => setStatsModal({ isOpen: false, gameId: '', gameTitle: '' })}
-                gameId={statsModal.gameId}
-                gameTitle={statsModal.gameTitle}
-            />
-
-            <GameKeysModal
-                isOpen={keysModal.isOpen}
-                onClose={() => setKeysModal({ isOpen: false, gameId: '', gameTitle: '' })}
-                gameId={keysModal.gameId}
-                gameTitle={keysModal.gameTitle}
-            />
-
-            <GameUpdateModal
-                isOpen={updateModal.isOpen}
-                onClose={() => setUpdateModal({ isOpen: false, gameId: '', gameTitle: '', currentVersion: '' })}
-                gameId={updateModal.gameId}
-                gameTitle={updateModal.gameTitle}
-                currentVersion={updateModal.currentVersion}
-            />
-        </div>
+        </Layout>
     );
 }

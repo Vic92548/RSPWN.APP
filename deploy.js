@@ -666,7 +666,7 @@ async function deploy() {
         // Build the web project
         if (!skipBuild) {
             log('\n📦 Building web project...', colors.yellow);
-            execCommand('npm run build');
+            execCommand('npm run build:all');
             log('✅ Web build completed', colors.green);
         } else {
             log('\n⏩ Skipping web build step', colors.yellow);

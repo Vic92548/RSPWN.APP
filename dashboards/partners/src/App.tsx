@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useEffect, useState } from 'react'
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
+import GameKeys from './pages/GameKeys'
+import GameStats from './pages/GameStats'
+import GameUpdates from './pages/GameUpdates'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -49,6 +52,18 @@ function App() {
                 <Route
                     path="/dashboard"
                     element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/keys"
+                    element={isAuthenticated ? <GameKeys /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/stats"
+                    element={isAuthenticated ? <GameStats /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/updates"
+                    element={isAuthenticated ? <GameUpdates /> : <Navigate to="/" />}
                 />
                 <Route
                     path="*"
