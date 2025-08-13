@@ -307,3 +307,11 @@ class VAPRTemplateEngine {
 
 window.VAPR = new VAPRTemplateEngine();
 window.VAPR.init();
+
+// Hide Desktop App section when running in Tauri
+VAPR.on('.menu-section', 'mounted', (element) => {
+    const title = element.querySelector('.menu-section-title');
+    if (title && title.textContent === 'Desktop App' && typeof window.__TAURI__ !== 'undefined') {
+        element.style.display = 'none';
+    }
+});

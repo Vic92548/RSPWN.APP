@@ -232,15 +232,6 @@ function copyReferrerId() {
 
 processJoinQueryParam();
 
-function hideWebOnly(){
-    if(isRunningInTauri()){
-        const webOnlyElements = document.getElementsByClassName('webOnly');
-        for (let i = 0; i < webOnlyElements.length; i++) {
-            webOnlyElements[i].style.display = 'none';
-        }
-    }
-}
-
 function navigateToMyProfile() {
     router.navigate(`/@${window.user.username}`, false);
 }
