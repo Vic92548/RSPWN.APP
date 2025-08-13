@@ -29,10 +29,10 @@ class CacheSystem extends EventEmitter {
         // Create SQLite table
         sqliteDb.exec(`
             CREATE TABLE IF NOT EXISTS ${name} (
-                _id TEXT PRIMARY KEY,
-                _doc JSON NOT NULL,
-                _updated_at INTEGER DEFAULT (strftime('%s', 'now'))
-            )
+                                                   _id TEXT PRIMARY KEY,
+                                                   _doc JSON NOT NULL,
+                                                   _updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+                )
         `);
 
         // Create indexes for common fields
@@ -173,10 +173,12 @@ class CacheSystem extends EventEmitter {
                 Object.entries(value).forEach(([op, val]) => {
                     const field = key === '_id' ? '_id' : `json_extract(_doc, '$.${key}')`;
 
-                    // Convert dates to ISO strings for SQLite
+                    // Convert dates to ISO strings and booleans to integers for SQLite
                     let processedVal = val;
                     if (val instanceof Date) {
                         processedVal = val.toISOString();
+                    } else if (typeof val === 'boolean') {
+                        processedVal = val ? 1 : 0;
                     }
 
                     switch (op) {
@@ -209,6 +211,7 @@ class CacheSystem extends EventEmitter {
                                 conditions.push(`${field} IN (${placeholders})`);
                                 params.push(...val.map(v => {
                                     if (v instanceof Date) return v.toISOString();
+                                    if (typeof v === 'boolean') return v ? 1 : 0;
                                     return v?.toString() || v;
                                 }));
                             }
@@ -219,6 +222,7 @@ class CacheSystem extends EventEmitter {
                                 conditions.push(`${field} NOT IN (${placeholders})`);
                                 params.push(...val.map(v => {
                                     if (v instanceof Date) return v.toISOString();
+                                    if (typeof v === 'boolean') return v ? 1 : 0;
                                     return v?.toString() || v;
                                 }));
                             }
@@ -228,9 +232,11 @@ class CacheSystem extends EventEmitter {
             } else {
                 // Simple equality check
                 conditions.push(`json_extract(_doc, '$.${key}') = ?`);
-                // Convert dates to ISO strings for simple equality too
+                // Convert dates to ISO strings and booleans to integers
                 if (value instanceof Date) {
                     params.push(value.toISOString());
+                } else if (typeof value === 'boolean') {
+                    params.push(value ? 1 : 0);
                 } else {
                     params.push(value);
                 }

@@ -17,10 +17,18 @@ const NO_CSS = args.includes('--no-css');
 // Configuration
 const BACKEND_DIR = 'server_modules';
 const FRONTEND_DIR = 'src';
-const PARTNERS_DIR = 'dashboards/partners';
+const DASHBOARDS_BASE = 'dashboards';
 const DESKTOP_DIR = 'desktop';
 const ROOT_FILES = ['server.js', 'build.js', 'scripts/add-game.js','scripts/manage-games.js'];
 const OUTPUT_FILE = 'output.txt';
+
+// Dashboard frontends configuration
+const DASHBOARD_FRONTENDS = {
+    partners: path.join(DASHBOARDS_BASE, 'partners'),
+    store: path.join(DASHBOARDS_BASE, 'store'),
+    library: path.join(DASHBOARDS_BASE, 'library'),
+    creators: path.join(DASHBOARDS_BASE, 'creators')
+};
 
 // File extensions by category
 const EXTENSIONS = {
@@ -107,13 +115,14 @@ function processRegularFrontend(extensions) {
     }
 }
 
-// Process partners dashboard files
-function processPartnersFrontend(extensions) {
-    console.log('\n👥 Processing partners dashboard files...');
-    if (fs.existsSync(PARTNERS_DIR)) {
-        walkDir(PARTNERS_DIR, extensions);
+// Process dashboard frontend files
+function processDashboardFrontend(dashboardName, extensions) {
+    const dashboardPath = DASHBOARD_FRONTENDS[dashboardName];
+    console.log(`\n📊 Processing ${dashboardName} dashboard files...`);
+    if (fs.existsSync(dashboardPath)) {
+        walkDir(dashboardPath, extensions);
     } else {
-        console.warn(`  ⚠️  Partners dashboard directory not found: ${PARTNERS_DIR}`);
+        console.warn(`  ⚠️  ${dashboardName} dashboard directory not found: ${dashboardPath}`);
     }
 }
 
@@ -186,6 +195,27 @@ async function getFrontendExtensions() {
     return extensions;
 }
 
+// Get dashboard selections
+async function getDashboardSelections() {
+    const selectedDashboards = {};
+
+    console.log('\nSelect which dashboard frontends to include:');
+
+    for (const [name, path] of Object.entries(DASHBOARD_FRONTENDS)) {
+        const exists = fs.existsSync(path);
+        const status = exists ? '✅ Available' : '❌ Not found';
+        const includeChoice = await question(
+            `  Include ${name} dashboard? ${status} (y/n): `
+        );
+
+        if (includeChoice.toLowerCase() === 'y') {
+            selectedDashboards[name] = true;
+        }
+    }
+
+    return selectedDashboards;
+}
+
 // Main interactive function
 async function main() {
     console.log('🚀 VAPR Project File Merger\n');
@@ -200,14 +230,14 @@ async function main() {
         const frontendTypeChoice = await question(
             'Step 1: Which frontend would you like to include?\n' +
             '  1) Regular frontend (src directory)\n' +
-            '  2) Partners dashboard (dashboards/partners)\n' +
-            '  3) Both frontends\n' +
+            '  2) Dashboard frontends (partners, store, library, creators)\n' +
+            '  3) Both regular and dashboard frontends\n' +
             '  4) No frontend\n' +
             '\nEnter your choice (1-4): '
         );
 
         let includeRegularFrontend = false;
-        let includePartnersFrontend = false;
+        let selectedDashboards = {};
         let frontendExtensions = [];
 
         switch (frontendTypeChoice) {
@@ -216,12 +246,14 @@ async function main() {
                 frontendExtensions = await getFrontendExtensions();
                 break;
             case '2':
-                includePartnersFrontend = true;
-                frontendExtensions = await getFrontendExtensions();
+                selectedDashboards = await getDashboardSelections();
+                if (Object.values(selectedDashboards).some(v => v)) {
+                    frontendExtensions = await getFrontendExtensions();
+                }
                 break;
             case '3':
                 includeRegularFrontend = true;
-                includePartnersFrontend = true;
+                selectedDashboards = await getDashboardSelections();
                 frontendExtensions = await getFrontendExtensions();
                 break;
             case '4':
@@ -294,7 +326,13 @@ async function main() {
         // Show summary
         console.log('\n📋 Summary:');
         console.log(`  Regular Frontend: ${includeRegularFrontend ? '✅' : '❌'}`);
-        console.log(`  Partners Frontend: ${includePartnersFrontend ? '✅' : '❌'}`);
+
+        // Show selected dashboards
+        console.log('  Dashboard Frontends:');
+        for (const [name, selected] of Object.entries(selectedDashboards)) {
+            console.log(`    - ${name}: ${selected ? '✅' : '❌'}`);
+        }
+
         console.log(`  Backend: ${includeBackend ? '✅' : '❌'}`);
         console.log(`  Desktop: ${includeDesktop ? '✅' : '❌'}`);
         console.log(`  File types: ${allExtensions.join(', ')}`);
@@ -322,8 +360,11 @@ async function main() {
             processRegularFrontend(frontendExtensions);
         }
 
-        if (includePartnersFrontend) {
-            processPartnersFrontend(frontendExtensions);
+        // Process selected dashboards
+        for (const [name, selected] of Object.entries(selectedDashboards)) {
+            if (selected) {
+                processDashboardFrontend(name, frontendExtensions);
+            }
         }
 
         if (includeDesktop) {

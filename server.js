@@ -939,28 +939,27 @@ app.get('/sitemap.xml', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+const side_apps = ['creators','partners','library','store'];
+for (let i = 0; i < side_apps.length; i++) {
+    const current_app = side_apps[i];
 
-// Serve static files for partners dashboard
-app.use('/partners', serveStatic(join(__dirname, 'public/partners'), {
-    maxAge: config.static.maxAge,
-    setHeaders: (res, path) => {
-        res.setHeader('Cache-Control', config.static.cacheControl);
-        res.setHeader('Pragma', config.static.pragma);
-        res.setHeader('Expires', config.static.expires);
-        res.setHeader('Surrogate-Control', config.static.surrogateControl);
+    // Static assets first
+    app.use(`/${current_app}`, serveStatic(join(__dirname, `public/${current_app}`), {
+        maxAge: config.static.maxAge,
+        setHeaders: (res, path) => {
+            res.setHeader('Cache-Control', config.static.cacheControl);
+            res.setHeader('Pragma', config.static.pragma);
+            res.setHeader('Expires', config.static.expires);
+            res.setHeader('Surrogate-Control', config.static.surrogateControl);
+            if (path.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
+        },
+        fallthrough: true
+    }));
 
-        if (path.endsWith('.js')) {
-            res.setHeader('Content-Type', 'application/javascript');
-        }
-    },
-    fallthrough: true
-}));
-
-// Handle client-side routing for partners dashboard
-// Use a regex pattern instead of wildcard
-app.get(/^\/partners(\/.*)?$/, (req, res) => {
-    res.sendFile(join(__dirname, 'public/partners/index.html'));
-});
+    app.get(new RegExp(`^/${current_app}(?:/.*)?$`), (req, res) => {
+        res.sendFile(join(__dirname, `public/${current_app}/index.html`));
+    });
+}
 
 app.use(serveStatic(join(__dirname, 'public'), {
     maxAge: config.static.maxAge,
