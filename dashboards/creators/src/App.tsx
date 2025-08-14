@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useEffect, useState } from 'react'
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
-import GameKeys from './pages/GameKeys'
-import GameStats from './pages/GameStats'
-import GameUpdates from './pages/GameUpdates'
+import PostAnalytics from './pages/PostAnalytics'
+import ContentCalendar from './pages/ContentCalendar'
+import Audience from './pages/Audience'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -43,7 +43,7 @@ function App() {
     }
 
     return (
-        <Router basename="/partners">
+        <Router basename="/creators">
             <Routes>
                 <Route
                     path="/"
@@ -54,16 +54,16 @@ function App() {
                     element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
                 />
                 <Route
-                    path="/games/:gameId/keys"
-                    element={isAuthenticated ? <GameKeys /> : <Navigate to="/" />}
+                    path="/analytics/:postId"
+                    element={isAuthenticated ? <PostAnalytics /> : <Navigate to="/" />}
                 />
                 <Route
-                    path="/games/:gameId/stats"
-                    element={isAuthenticated ? <GameStats /> : <Navigate to="/" />}
+                    path="/content"
+                    element={isAuthenticated ? <ContentCalendar /> : <Navigate to="/" />}
                 />
                 <Route
-                    path="/games/:gameId/updates"
-                    element={isAuthenticated ? <GameUpdates /> : <Navigate to="/" />}
+                    path="/audience"
+                    element={isAuthenticated ? <Audience /> : <Navigate to="/" />}
                 />
                 <Route
                     path="*"

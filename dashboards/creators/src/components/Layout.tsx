@@ -2,11 +2,13 @@ import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import {
-    Gamepad2,
+    PenTool,
     LayoutDashboard,
     LogOut,
     ExternalLink,
-    Home
+    Home,
+    Calendar,
+    Users
 } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
@@ -42,8 +44,8 @@ export default function Layout({ children, user }: LayoutProps) {
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-8">
                             <Link to="/dashboard" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                                <Gamepad2 className="h-8 w-8 text-primary" />
-                                <span className="text-xl font-bold">VAPR Partners</span>
+                                <PenTool className="h-8 w-8 text-primary" />
+                                <span className="text-xl font-bold">VAPR Creators</span>
                             </Link>
 
                             <nav className="hidden md:flex items-center space-x-6">
@@ -55,6 +57,26 @@ export default function Layout({ children, user }: LayoutProps) {
                                 >
                                     <LayoutDashboard className="h-4 w-4" />
                                     Dashboard
+                                </Link>
+
+                                <Link
+                                    to="/content"
+                                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
+                                        isActive('/content') ? 'text-primary' : 'text-muted-foreground'
+                                    }`}
+                                >
+                                    <Calendar className="h-4 w-4" />
+                                    Content
+                                </Link>
+
+                                <Link
+                                    to="/audience"
+                                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
+                                        isActive('/audience') ? 'text-primary' : 'text-muted-foreground'
+                                    }`}
+                                >
+                                    <Users className="h-4 w-4" />
+                                    Audience
                                 </Link>
 
                                 <button
@@ -90,10 +112,10 @@ export default function Layout({ children, user }: LayoutProps) {
 
             <div className="md:hidden border-b">
                 <div className="container mx-auto px-4 py-2">
-                    <nav className="flex items-center space-x-4">
+                    <nav className="flex items-center space-x-4 overflow-x-auto">
                         <Link
                             to="/dashboard"
-                            className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
+                            className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
                                 isActive('/dashboard') ? 'text-primary' : 'text-muted-foreground'
                             }`}
                         >
@@ -101,9 +123,29 @@ export default function Layout({ children, user }: LayoutProps) {
                             Dashboard
                         </Link>
 
+                        <Link
+                            to="/content"
+                            className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
+                                isActive('/content') ? 'text-primary' : 'text-muted-foreground'
+                            }`}
+                        >
+                            <Calendar className="h-4 w-4" />
+                            Content
+                        </Link>
+
+                        <Link
+                            to="/audience"
+                            className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
+                                isActive('/audience') ? 'text-primary' : 'text-muted-foreground'
+                            }`}
+                        >
+                            <Users className="h-4 w-4" />
+                            Audience
+                        </Link>
+
                         <button
                             onClick={handleBackToVapr}
-                            className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                            className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary whitespace-nowrap"
                         >
                             <Home className="h-4 w-4" />
                             VAPR

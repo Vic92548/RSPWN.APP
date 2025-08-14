@@ -89,12 +89,23 @@ export async function analyticsHandler(request, authResult) {
         }, { views: 0, likes: 0, dislikes: 0, follows: 0, clicks: 0, reactions: {} });
 
         const timeSeriesData = await getTimeSeriesData(postIds, timeRange);
-
         const followerGrowth = await getFollowerGrowth(userId, timeRange);
-
-        const comparison = await calculatePeriodComparison(postIds, timeRange);
+        const comparison = await calculatePeriodComparison(postIds, userId, timeRange);
 
         const totalFollowers = await followsCollection.countDocuments({ creatorId: userId });
+
+        let newFollowersInPeriod = 0;
+        if (timeRange !== 'all') {
+            const days = parseInt(timeRange);
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+            newFollowersInPeriod = await followsCollection.countDocuments({
+                creatorId: userId,
+                timestamp: { $gte: startDate }
+            });
+        } else {
+            newFollowersInPeriod = totalFollowers;
+        }
 
         return new Response(JSON.stringify({
             success: true,
@@ -102,7 +113,8 @@ export async function analyticsHandler(request, authResult) {
             posts: postsWithMetrics,
             totals: {
                 ...totals,
-                followers: totalFollowers
+                followers: totalFollowers,
+                newFollowers: newFollowersInPeriod
             },
             charts: {
                 timeSeries: timeSeriesData,
@@ -197,7 +209,7 @@ async function getFollowerGrowth(userId, timeRange) {
     return data;
 }
 
-async function calculatePeriodComparison(postIds, timeRange) {
+async function calculatePeriodComparison(postIds, userId, timeRange) {
     if (timeRange === 'all') return null;
 
     const days = parseInt(timeRange);
@@ -207,7 +219,7 @@ async function calculatePeriodComparison(postIds, timeRange) {
     const previousStart = new Date();
     previousStart.setDate(previousStart.getDate() - (days * 2));
 
-    const [currentViews, previousViews, currentLikes, previousLikes, currentFollows, previousFollows] = await Promise.all([
+    const [currentViews, previousViews, currentLikes, previousLikes] = await Promise.all([
         viewsCollection.countDocuments({
             postId: { $in: postIds },
             timestamp: { $gte: currentStart }
@@ -223,13 +235,16 @@ async function calculatePeriodComparison(postIds, timeRange) {
         likesCollection.countDocuments({
             postId: { $in: postIds },
             timestamp: { $gte: previousStart, $lt: currentStart }
-        }),
+        })
+    ]);
+
+    const [currentFollows, previousFollows] = await Promise.all([
         followsCollection.countDocuments({
-            postId: { $in: postIds },
+            creatorId: userId,
             timestamp: { $gte: currentStart }
         }),
         followsCollection.countDocuments({
-            postId: { $in: postIds },
+            creatorId: userId,
             timestamp: { $gte: previousStart, $lt: currentStart }
         })
     ]);
@@ -238,17 +253,17 @@ async function calculatePeriodComparison(postIds, timeRange) {
         views: {
             current: currentViews,
             previous: previousViews,
-            change: previousViews > 0 ? ((currentViews - previousViews) / previousViews * 100).toFixed(1) : 100
+            change: previousViews > 0 ? ((currentViews - previousViews) / previousViews * 100).toFixed(1) : currentViews > 0 ? '100' : '0'
         },
         likes: {
             current: currentLikes,
             previous: previousLikes,
-            change: previousLikes > 0 ? ((currentLikes - previousLikes) / previousLikes * 100).toFixed(1) : 100
+            change: previousLikes > 0 ? ((currentLikes - previousLikes) / previousLikes * 100).toFixed(1) : currentLikes > 0 ? '100' : '0'
         },
         follows: {
             current: currentFollows,
             previous: previousFollows,
-            change: previousFollows > 0 ? ((currentFollows - previousFollows) / previousFollows * 100).toFixed(1) : 100
+            change: previousFollows > 0 ? ((currentFollows - previousFollows) / previousFollows * 100).toFixed(1) : currentFollows > 0 ? '100' : '0'
         }
     };
 }

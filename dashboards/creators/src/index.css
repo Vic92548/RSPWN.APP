@@ -33,7 +33,7 @@
     --primary-foreground: 0 0% 5%;
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 15%;
+    --muted: 0 0% 12%;
     --muted-foreground: 0 0% 60%;
     --accent: 0 0% 20%;
     --accent-foreground: 0 0% 95%;
@@ -42,6 +42,25 @@
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 0 0% 70%;
+  }
+}
+
+/* Custom styles for better tab visibility */
+@layer components {
+  /* Make active tabs more prominent */
+  [data-state="active"] {
+    position: relative;
+  }
+
+  /* Optional: Add a subtle bottom border to active tabs */
+  .tabs-with-border [data-state="active"]::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: hsl(var(--primary));
   }
 }
 

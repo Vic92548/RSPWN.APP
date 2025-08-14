@@ -112,7 +112,7 @@ async function main() {
         }
         console.log('✅ Files modified for subpath\n');
 
-        console.log('🎉 Partners Dashboard build completed successfully!');
+        console.log('🎉 Creators Dashboard build completed successfully!');
         console.log(`📍 Files built to: ${outputDir}`);
 
     } catch (error) {

@@ -3,7 +3,12 @@ import {
     creatorsCollection,
     gameCreatorClicksCollection,
     usersCollection,
-    postsCollection
+    postsCollection,
+    followsCollection,
+    likesCollection,
+    viewsCollection,
+    reactionsCollection,
+    gamesCollection
 } from './database.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
 
@@ -496,6 +501,505 @@ export async function getCreatorStats(creatorId) {
         return new Response(JSON.stringify({
             success: false,
             error: 'Failed to get creator stats'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getCreatorFollowers(creatorId, limit = 50, offset = 0) {
+    try {
+        const creator = await usersCollection.findOne({ id: creatorId });
+        if (!creator) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Creator not found'
+            }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const followers = await followsCollection
+            .find({ creatorId })
+            .sort({ timestamp: -1 })
+            .skip(offset)
+            .limit(limit)
+            .toArray();
+
+        const followerIds = followers.map(f => f.followerId);
+        const followerUsers = await usersCollection
+            .find({
+                id: { $in: followerIds }
+            }, {
+                projection: {
+                    id: 1,
+                    username: 1,
+                    avatar: 1,
+                    level: 1
+                }
+            })
+            .toArray();
+
+        const userMap = new Map(followerUsers.map(u => [u.id, u]));
+
+        const followersWithDetails = followers
+            .map(follow => {
+                const user = userMap.get(follow.followerId);
+                if (!user) return null;
+
+                return {
+                    id: user.id,
+                    username: user.username,
+                    avatar: user.avatar,
+                    level: user.level || 0,
+                    followedAt: follow.timestamp
+                };
+            })
+            .filter(f => f !== null);
+
+        const totalCount = await followsCollection.countDocuments({ creatorId });
+
+        return new Response(JSON.stringify({
+            success: true,
+            followers: followersWithDetails,
+            total: totalCount,
+            hasMore: totalCount > (offset + limit)
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error getting creator followers:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to get followers'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getPopularContentFromFollowedCreators(userId, limit = 20) {
+    try {
+        const followedCreators = await followsCollection
+            .find({ followerId: userId })
+            .toArray();
+
+        const creatorIds = followedCreators.map(f => f.creatorId);
+
+        if (creatorIds.length === 0) {
+            return new Response(JSON.stringify({
+                success: true,
+                posts: [],
+                message: 'Not following any creators yet'
+            }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const posts = await postsCollection
+            .find({
+                userId: { $in: creatorIds },
+                timestamp: { $gte: thirtyDaysAgo }
+            })
+            .toArray();
+
+        const postsWithMetrics = await Promise.all(posts.map(async (post) => {
+            const [likes, views, reactions, followers] = await Promise.all([
+                likesCollection.countDocuments({ postId: post.id }),
+                viewsCollection.countDocuments({ postId: post.id }),
+                reactionsCollection.countDocuments({ postId: post.id }),
+                followsCollection.countDocuments({ postId: post.id })
+            ]);
+
+            const creator = await usersCollection.findOne(
+                { id: post.userId },
+                { projection: { username: 1, avatar: 1, level: 1 } }
+            );
+
+            let taggedGame = null;
+            if (post.taggedGameId) {
+                const game = await gamesCollection.findOne(
+                    { id: post.taggedGameId },
+                    { projection: { id: 1, title: 1, coverImage: 1 } }
+                );
+                taggedGame = game;
+            }
+
+            const engagementScore = likes + (reactions * 0.5) + (followers * 2);
+
+            return {
+                id: post.id,
+                title: post.title,
+                content: post.content,
+                mediaType: post.mediaType,
+                timestamp: post.timestamp,
+                creator: {
+                    id: creator?.id || post.userId,
+                    username: creator?.username || 'Unknown',
+                    avatar: creator?.avatar || null,
+                    level: creator?.level || 0
+                },
+                metrics: {
+                    likes,
+                    views,
+                    reactions,
+                    followers,
+                    engagement: views > 0 ? ((likes + reactions + followers) / views * 100).toFixed(2) : 0
+                },
+                engagementScore,
+                taggedGame
+            };
+        }));
+
+        const sortedPosts = postsWithMetrics
+            .sort((a, b) => b.engagementScore - a.engagementScore)
+            .slice(0, limit);
+
+        return new Response(JSON.stringify({
+            success: true,
+            posts: sortedPosts
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error getting popular content:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to get popular content'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getTopEngagedFollowers(creatorId, limit = 10, timeRange = 30) {
+    try {
+        const creator = await usersCollection.findOne({ id: creatorId });
+        if (!creator) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Creator not found'
+            }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const dateFilter = new Date();
+        dateFilter.setDate(dateFilter.getDate() - timeRange);
+
+        const creatorPosts = await postsCollection
+            .find({
+                userId: creatorId,
+                timestamp: { $gte: dateFilter }
+            })
+            .toArray();
+
+        const postIds = creatorPosts.map(p => p.id);
+
+        if (postIds.length === 0) {
+            return new Response(JSON.stringify({
+                success: true,
+                followers: [],
+                message: 'No posts in the specified time range'
+            }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const engagementData = await Promise.all([
+            likesCollection.aggregate([
+                { $match: { postId: { $in: postIds }, timestamp: { $gte: dateFilter } } },
+                { $group: { _id: '$userId', count: { $sum: 1 } } }
+            ]).toArray(),
+
+            viewsCollection.aggregate([
+                { $match: { postId: { $in: postIds }, timestamp: { $gte: dateFilter } } },
+                { $group: { _id: '$userId', count: { $sum: 1 } } }
+            ]).toArray(),
+
+            reactionsCollection.aggregate([
+                { $match: { postId: { $in: postIds }, timestamp: { $gte: dateFilter } } },
+                { $group: { _id: '$userId', count: { $sum: 1 } } }
+            ]).toArray(),
+
+            followsCollection.aggregate([
+                { $match: { postId: { $in: postIds }, timestamp: { $gte: dateFilter } } },
+                { $group: { _id: '$followerId', count: { $sum: 1 } } }
+            ]).toArray()
+        ]);
+
+        const [likesByUser, viewsByUser, reactionsByUser, followsByUser] = engagementData;
+
+        const engagementMap = new Map();
+
+        likesByUser.forEach(item => {
+            if (!engagementMap.has(item._id)) {
+                engagementMap.set(item._id, { likes: 0, views: 0, reactions: 0, follows: 0 });
+            }
+            engagementMap.get(item._id).likes = item.count;
+        });
+
+        viewsByUser.forEach(item => {
+            if (!engagementMap.has(item._id)) {
+                engagementMap.set(item._id, { likes: 0, views: 0, reactions: 0, follows: 0 });
+            }
+            engagementMap.get(item._id).views = item.count;
+        });
+
+        reactionsByUser.forEach(item => {
+            if (!engagementMap.has(item._id)) {
+                engagementMap.set(item._id, { likes: 0, views: 0, reactions: 0, follows: 0 });
+            }
+            engagementMap.get(item._id).reactions = item.count;
+        });
+
+        followsByUser.forEach(item => {
+            if (!engagementMap.has(item._id)) {
+                engagementMap.set(item._id, { likes: 0, views: 0, reactions: 0, follows: 0 });
+            }
+            engagementMap.get(item._id).follows = item.count;
+        });
+
+        const followerIds = await followsCollection
+            .find({ creatorId })
+            .toArray()
+            .then(follows => follows.map(f => f.followerId));
+
+        const engagedFollowers = [];
+
+        for (const [userId, engagement] of engagementMap) {
+            if (!followerIds.includes(userId)) continue;
+
+            const engagementScore =
+                (engagement.likes * 5) +
+                (engagement.reactions * 3) +
+                (engagement.follows * 10) +
+                (engagement.views * 1);
+
+            if (engagementScore > 0) {
+                engagedFollowers.push({
+                    userId,
+                    engagement,
+                    engagementScore
+                });
+            }
+        }
+
+        engagedFollowers.sort((a, b) => b.engagementScore - a.engagementScore);
+
+        const topEngaged = engagedFollowers.slice(0, limit);
+
+        const userIds = topEngaged.map(e => e.userId);
+        const users = await usersCollection
+            .find({
+                id: { $in: userIds }
+            }, {
+                projection: {
+                    id: 1,
+                    username: 1,
+                    avatar: 1,
+                    level: 1
+                }
+            })
+            .toArray();
+
+        const userMap = new Map(users.map(u => [u.id, u]));
+
+        const followDates = await followsCollection
+            .find({
+                creatorId,
+                followerId: { $in: userIds }
+            })
+            .toArray();
+
+        const followDateMap = new Map(followDates.map(f => [f.followerId, f.timestamp]));
+
+        const result = topEngaged.map(engaged => {
+            const user = userMap.get(engaged.userId);
+            return {
+                id: engaged.userId,
+                username: user?.username || 'Unknown',
+                avatar: user?.avatar || null,
+                level: user?.level || 0,
+                followedAt: followDateMap.get(engaged.userId) || new Date(),
+                engagementScore: engaged.engagementScore,
+                engagementStats: {
+                    likes: engaged.engagement.likes,
+                    views: engaged.engagement.views,
+                    reactions: engaged.engagement.reactions,
+                    follows: engaged.engagement.follows
+                }
+            };
+        });
+
+        return new Response(JSON.stringify({
+            success: true,
+            followers: result,
+            timeRange: timeRange
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error getting top engaged followers:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to get top engaged followers'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getPopularContentLovedByFollowers(creatorId, limit = 20, timeRange = 30) {
+    try {
+        const creator = await usersCollection.findOne({ id: creatorId });
+        if (!creator) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Creator not found'
+            }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const dateFilter = new Date();
+        dateFilter.setDate(dateFilter.getDate() - timeRange);
+
+        const myFollowers = await followsCollection
+            .find({ creatorId })
+            .toArray();
+
+        const followerIds = myFollowers.map(f => f.followerId);
+
+        if (followerIds.length === 0) {
+            return new Response(JSON.stringify({
+                success: true,
+                posts: [],
+                message: 'No followers yet'
+            }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const followerLikes = await likesCollection
+            .find({
+                userId: { $in: followerIds },
+                timestamp: { $gte: dateFilter }
+            })
+            .toArray();
+
+        const postIdCounts = {};
+        followerLikes.forEach(like => {
+            postIdCounts[like.postId] = (postIdCounts[like.postId] || 0) + 1;
+        });
+
+        const popularPostIds = Object.entries(postIdCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, limit * 2)
+            .map(([postId]) => postId);
+
+        if (popularPostIds.length === 0) {
+            return new Response(JSON.stringify({
+                success: true,
+                posts: [],
+                message: 'Your followers haven\'t liked any posts recently'
+            }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const posts = await postsCollection
+            .find({
+                id: { $in: popularPostIds },
+                userId: { $ne: creatorId }
+            })
+            .toArray();
+
+        const postsWithMetrics = await Promise.all(posts.map(async (post) => {
+            const [totalLikes, totalViews, totalReactions, creator] = await Promise.all([
+                likesCollection.countDocuments({ postId: post.id }),
+                viewsCollection.countDocuments({ postId: post.id }),
+                reactionsCollection.countDocuments({ postId: post.id }),
+                usersCollection.findOne(
+                    { id: post.userId },
+                    { projection: { id: 1, username: 1, avatar: 1, level: 1 } }
+                )
+            ]);
+
+            let taggedGame = null;
+            if (post.taggedGameId) {
+                const game = await gamesCollection.findOne(
+                    { id: post.taggedGameId },
+                    { projection: { id: 1, title: 1, coverImage: 1 } }
+                );
+                taggedGame = game;
+            }
+
+            const followerLikeCount = postIdCounts[post.id] || 0;
+
+            return {
+                id: post.id,
+                title: post.title,
+                content: post.content,
+                mediaType: post.mediaType,
+                timestamp: post.timestamp,
+                creator: {
+                    id: creator?.id || post.userId,
+                    username: creator?.username || 'Unknown',
+                    avatar: creator?.avatar || null,
+                    level: creator?.level || 0
+                },
+                metrics: {
+                    totalLikes,
+                    totalViews,
+                    totalReactions,
+                    followerLikes: followerLikeCount,
+                    followerLikePercentage: followerIds.length > 0
+                        ? ((followerLikeCount / followerIds.length) * 100).toFixed(1)
+                        : 0
+                },
+                taggedGame
+            };
+        }));
+
+        const sortedPosts = postsWithMetrics
+            .sort((a, b) => b.metrics.followerLikes - a.metrics.followerLikes)
+            .slice(0, limit);
+
+        return new Response(JSON.stringify({
+            success: true,
+            posts: sortedPosts,
+            totalFollowers: followerIds.length
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error getting popular content loved by followers:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to get popular content'
         }), {
             status: 500,
             headers: { "Content-Type": "application/json" }

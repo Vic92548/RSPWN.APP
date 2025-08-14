@@ -51,7 +51,9 @@ import {
     rejectCreatorApplication,
     trackGameCreatorClick,
     getCreatorCodeForPurchase,
-    getCreatorStats
+    getCreatorStats,
+    getCreatorFollowers,
+    getPopularContentFromFollowedCreators, getTopEngagedFollowers, getPopularContentLovedByFollowers
 } from './server_modules/creators.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -181,7 +183,6 @@ app.get('/me/posts', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
-// Fetch feed (authenticated if possible, otherwise anonymous)
 app.get('/feed', rateLimiters.general, async (req, res) => {
     try {
         const authResult = await authenticateRequest(req);
@@ -195,7 +196,6 @@ app.get('/feed', rateLimiters.general, async (req, res) => {
     }
 });
 
-// Get all posts by a specific user
 app.get('/api/user/:userId/posts', rateLimiters.general, async (req, res) => {
     const userId = req.params.userId;
     try {
@@ -213,7 +213,6 @@ app.get('/api/user/:userId/posts', rateLimiters.general, async (req, res) => {
     }
 });
 
-// Resolve a post by URL or ID and return essential data
 app.get('/api/post/resolve', rateLimiters.general, async (req, res) => {
     try {
         let { id, url } = req.query;
@@ -350,7 +349,6 @@ app.get('/post/:id', async (req, res) => {
     });
 });
 
-// Server-side route for game details pages: /games/:gameName
 app.get('/games/:gameName', async (req, res) => {
     try {
         const toSlug = (s) => String(s)
@@ -426,7 +424,6 @@ app.get('/games/:gameName', async (req, res) => {
     }
 });
 
-// Server-side route for creator program page: /creator-program
 app.get('/creator-program', async (req, res) => {
     const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
     await res.render('index.html', {
@@ -437,7 +434,6 @@ app.get('/creator-program', async (req, res) => {
     });
 });
 
-// Server-side route for Terms of Service page: /terms
 app.get('/terms', async (req, res) => {
     const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
     await res.render('index.html', {
@@ -448,7 +444,6 @@ app.get('/terms', async (req, res) => {
     });
 });
 
-// Server-side route for Privacy Policy page: /privacy
 app.get('/privacy', async (req, res) => {
     const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
     await res.render('index.html', {
@@ -690,7 +685,6 @@ app.get('/api/my-games', authMiddleware, async (req, res) => {
     res.status(response.status).json(data);
 });
 
-// Playtime APIs
 app.post('/api/playtime/session', authMiddleware, async (req, res) => {
     const response = await recordPlaytimeSession(req.userData.id, req.body || {});
     const data = await response.json();
@@ -847,6 +841,41 @@ app.get('/api/creators/code-for-purchase/:gameId', async (req, res) => {
     res.status(response.status).json(data);
 });
 
+app.get('/api/creators/:creatorId/followers', authMiddleware, async (req, res) => {
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+
+    const response = await getCreatorFollowers(req.params.creatorId, limit, offset);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/:creatorId/top-engaged-followers', authMiddleware, async (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const timeRange = parseInt(req.query.timeRange) || 30;
+
+    const response = await getTopEngagedFollowers(req.params.creatorId, limit, timeRange);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/following/popular-content', authMiddleware, async (req, res) => {
+    const limit = parseInt(req.query.limit) || 20;
+
+    const response = await getPopularContentFromFollowedCreators(req.userData.id, limit);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/creators/:creatorId/popular-with-followers', authMiddleware, async (req, res) => {
+    const limit = parseInt(req.query.limit) || 20;
+    const timeRange = parseInt(req.query.timeRange) || 30;
+
+    const response = await getPopularContentLovedByFollowers(req.params.creatorId, limit, timeRange);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
 app.get('/@:username', async (req, res) => {
     const username = req.params.username;
 
@@ -943,7 +972,6 @@ const side_apps = ['creators','partners','library','store'];
 for (let i = 0; i < side_apps.length; i++) {
     const current_app = side_apps[i];
 
-    // Static assets first
     app.use(`/${current_app}`, serveStatic(join(__dirname, `public/${current_app}`), {
         maxAge: config.static.maxAge,
         setHeaders: (res, path) => {
