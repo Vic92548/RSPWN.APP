@@ -1,7 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import Library from './pages/Library'
-import GameDetail from './pages/GameDetail'
+import LandingPage from './pages/LandingPage'
+import Dashboard from './pages/Dashboard'
+import GameKeys from './pages/GameKeys'
+import GameStats from './pages/GameStats'
+import GameUpdates from './pages/GameUpdates'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -10,6 +13,7 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Force dark mode on the document
         document.documentElement.classList.add('dark');
         document.documentElement.style.colorScheme = 'dark';
         checkAuth();
@@ -26,6 +30,7 @@ function App() {
         }
     };
 
+    // Show loading state while checking authentication
     if (loading) {
         return (
             <div className="min-h-screen w-full flex items-center justify-center bg-background">
@@ -37,17 +42,33 @@ function App() {
         );
     }
 
-    if (!isAuthenticated) {
-        window.location.href = '/login';
-        return null;
-    }
-
     return (
-        <Router basename="/library">
+        <Router basename="/partners">
             <Routes>
-                <Route path="/" element={<Library />} />
-                <Route path="/games/:gameId" element={<GameDetail />} />
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route
+                    path="/"
+                    element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />}
+                />
+                <Route
+                    path="/dashboard"
+                    element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/keys"
+                    element={isAuthenticated ? <GameKeys /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/stats"
+                    element={isAuthenticated ? <GameStats /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/updates"
+                    element={isAuthenticated ? <GameUpdates /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="*"
+                    element={<Navigate to="/" />}
+                />
             </Routes>
         </Router>
     )

@@ -1,0 +1,66 @@
+<article class="analytics-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="analytics-card" style="display:none;">
+    <div id="analyticsContent">
+        <div class="vapr-card-header glass-section-bg">
+            <div class="header-content">
+                <h2><i class="fa-solid fa-chart-line"></i> Analytics</h2>
+                <p class="glass-text-muted">Your content performance</p>
+            </div>
+            <button type="button" class="glass-close-btn" onclick="closeAnalyticsCard()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="vapr-card-body vapr-scrollbar">
+            <div class="vapr-grid vapr-grid-2">
+                <div class="metric-card glass-secondary">
+                    <div class="metric-header">
+                        <i class="fa-solid fa-eye"></i>
+                        <span class="metric-label">Views</span>
+                    </div>
+                    <div class="metric-value" id="total_views">0</div>
+                </div>
+                <div class="metric-card glass-secondary">
+                    <div class="metric-header">
+                        <i class="fa-solid fa-heart"></i>
+                        <span class="metric-label">Likes</span>
+                    </div>
+                    <div class="metric-value" id="total_likes">0</div>
+                </div>
+                <div class="metric-card glass-secondary">
+                    <div class="metric-header">
+                        <i class="fa-solid fa-users"></i>
+                        <span class="metric-label">Followers</span>
+                    </div>
+                    <div class="metric-value" id="total_followers">0</div>
+                </div>
+                <div class="metric-card glass-secondary">
+                    <div class="metric-header">
+                        <i class="fa-solid fa-link"></i>
+                        <span class="metric-label">Link Clicks</span>
+                    </div>
+                    <div class="metric-value" id="total_clicks">0</div>
+                </div>
+            </div>
+
+            <div class="posts-section">
+                <div class="posts-header">
+                    <h3>Your Posts</h3>
+                    <select class="sort-select glass-input" id="sort_posts">
+                        <option value="views">Most Viewed</option>
+                        <option value="likes">Most Liked</option>
+                        <option value="engagement">Best Engagement</option>
+                        <option value="recent">Most Recent</option>
+                    </select>
+                </div>
+                <div class="posts-list" id="posts_list"></div>
+            </div>
+        </div>
+
+        <div class="vapr-loading" id="analytics-loading" style="display:none;">
+            <div class="vapr-loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+            </div>
+            <p class="vapr-loading-text glass-text-muted">Loading analytics...</p>
+        </div>
+    </div>
+</article>

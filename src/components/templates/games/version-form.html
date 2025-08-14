@@ -1,0 +1,30 @@
+<template data-vapr="version-form">
+    <div class="version-form">
+        <h4>Release New Version</h4>
+        <div class="version-inputs">
+            <div class="input-group">
+                <label for="version-number">Version Number</label>
+                <input type="text" id="version-number" placeholder="1.0.0" class="glass-input" pattern="\d+\.\d+\.\d+">
+            </div>
+
+            <div class="input-group">
+                <label for="version-url">Download URL</label>
+                <input type="url" id="version-url" placeholder="https://..." class="glass-input" required>
+            </div>
+
+            <div class="input-group full-width">
+                <label for="version-changelog">Changelog</label>
+                <textarea id="version-changelog" placeholder="What's new in this version..." class="glass-input" rows="4"></textarea>
+            </div>
+            <div class="input-group">
+                <label>
+                    <input type="checkbox" id="version-required">
+                    Required Update
+                </label>
+            </div>
+            <button class="glass-button primary" onclick="publishVersion()">
+                <i class="fa-solid fa-upload"></i> <span id="publish-btn-text">Publish Version</span>
+            </button>
+        </div>
+    </div>
+</template>

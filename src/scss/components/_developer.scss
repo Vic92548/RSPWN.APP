@@ -1,0 +1,224 @@
+// src/scss/components/_developer.scss
+.developer-section {
+  .menu-item-icon {
+    &.developer {
+      background: rgba(155, 89, 182, 0.1);
+      border-color: rgba(155, 89, 182, 0.2);
+      color: #b370db;
+    }
+
+    &.dev-analytics {
+      background: rgba(52, 152, 219, 0.1);
+      border-color: rgba(52, 152, 219, 0.2);
+      color: #5cadff;
+    }
+  }
+}
+
+.dev-stats-grid {
+  margin-bottom: 30px;
+
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+
+    .stat-icon {
+      font-size: 28px;
+      color: $text-secondary;
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+  }
+}
+
+.dev-actions {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.dev-games-section {
+  h3 {
+    margin: 30px 0 20px;
+    font-size: 20px;
+    color: $text-primary;
+  }
+}
+
+.dev-games-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.dev-game-item {
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: $glass-bg-primary;
+  }
+}
+
+.dev-game-header {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.dev-game-cover {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.dev-game-info {
+  flex: 1;
+
+  h4 {
+    margin: 0 0 5px;
+    font-size: 18px;
+    color: $text-primary;
+  }
+}
+
+.version-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: $glass-bg-tertiary;
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.update-indicator {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.dev-game-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+
+  .dev-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: $text-secondary;
+
+    i {
+      color: $text-faint;
+    }
+  }
+}
+
+.dev-game-actions {
+  display: flex;
+  gap: 10px;
+
+  .glass-button.small {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  color: $text-weak;
+
+  i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  h4 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    color: $text-secondary;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.add-game-form {
+  max-width: 500px;
+  padding: 30px;
+
+  h3 {
+    margin: 0 0 25px;
+    text-align: center;
+    font-size: 24px;
+    color: $text-primary;
+  }
+
+  .input-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: $text-secondary;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: $glass-bg-secondary;
+      border: 1px solid $glass-border-light;
+      color: $text-primary;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        background: $glass-bg-primary;
+        border-color: $glass-border-heavy;
+      }
+    }
+  }
+}
+
+.dev-game-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .glass-button.small {
+    padding: 8px 14px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 90px;
+
+    &.primary {
+      background: rgba(78, 205, 196, 0.2);
+      border-color: rgba(78, 205, 196, 0.3);
+
+      &:hover {
+        background: rgba(78, 205, 196, 0.3);
+      }
+    }
+  }
+}
