@@ -1,9 +1,11 @@
+// dashboards/partners/src/pages/Dashboard.tsx
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Layout from "@/components/Layout"
+import TebexOnboardingModal from "@/components/TebexOnboardingModal"
 import apiClient from "@/lib/api-client"
 import {
     Gamepad2,
@@ -16,7 +18,8 @@ import {
     Heart,
     UserPlus,
     Plus,
-    EyeOff
+    EyeOff,
+    ShoppingCart
 } from "lucide-react"
 
 interface Game {
@@ -60,6 +63,8 @@ export default function Dashboard() {
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
     const [loading, setLoading] = useState(true);
     const [gamePlayers, setGamePlayers] = useState<Record<string, number>>({});
+    const [showTebexOnboarding, setShowTebexOnboarding] = useState(false);
+    const [hasTebexConfig, setHasTebexConfig] = useState(false);
 
     useEffect(() => {
         loadDashboardData();
@@ -68,15 +73,26 @@ export default function Dashboard() {
     const loadDashboardData = async () => {
         try {
             setLoading(true);
-            const [userData, gamesData, analyticsData] = await Promise.all([
+            const [userData, gamesData, analyticsData, tebexData] = await Promise.all([
                 apiClient.getMe(),
                 apiClient.getMyGames(),
-                apiClient.getAnalytics('30')
+                apiClient.getAnalytics('30'),
+                apiClient.getTebexConfig()
             ]);
 
             setUser(userData);
             setGames(gamesData.games);
             setAnalytics(analyticsData);
+
+            // Check if user has Tebex configured
+            const hasConfig = tebexData.config && tebexData.config.hasConfig;
+            // @ts-ignore
+            setHasTebexConfig(hasConfig);
+
+            // Show onboarding if they have games but no Tebex config
+            if (gamesData.games.length > 0 && !hasConfig) {
+                setShowTebexOnboarding(true);
+            }
 
             // Load player counts for each game
             const playerCounts: Record<string, number> = {};
@@ -94,6 +110,13 @@ export default function Dashboard() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleTebexOnboardingComplete = () => {
+        setShowTebexOnboarding(false);
+        setHasTebexConfig(true);
+        // Optionally reload data to reflect changes
+        loadDashboardData();
     };
 
     const formatPlaytime = (seconds: number) => {
@@ -127,6 +150,32 @@ export default function Dashboard() {
     return (
         <Layout user={user}>
             <div className="container mx-auto px-4 py-8">
+                {/* Tebex Setup Banner */}
+                {games.length > 0 && !hasTebexConfig && !showTebexOnboarding && (
+                    <Card className="mb-8 border-yellow-600/50 bg-yellow-600/10">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <ShoppingCart className="h-5 w-5 text-yellow-600" />
+                                    <div>
+                                        <p className="font-semibold">Complete Your Setup</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Configure Tebex to start accepting payments for your games
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowTebexOnboarding(true)}
+                                >
+                                    Setup Payments
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <Card>
@@ -281,6 +330,13 @@ export default function Dashboard() {
                     )}
                 </div>
             </div>
+
+            {/* Tebex Onboarding Modal */}
+            <TebexOnboardingModal
+                isOpen={showTebexOnboarding}
+                onComplete={handleTebexOnboardingComplete}
+                canSkip={false}
+            />
         </Layout>
     );
 }

@@ -659,6 +659,7 @@ import {
     getGameDownloadUrl, downloadKeysAsCSV, getDeveloperGames
 } from './server_modules/games.js';
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
+import {getAllTebexConfigs, getTebexConfig, removeTebexConfig, setTebexConfig} from "./server_modules/tebex_config.js";
 
 app.get('/api/games', async (req, res) => {
     const authResult = await authenticateRequest(req);
@@ -868,6 +869,30 @@ app.get('/api/creators/:creatorId/popular-with-followers', authMiddleware, async
     const timeRange = parseInt(req.query.timeRange) || 30;
 
     const response = await getPopularContentLovedByFollowers(req.params.creatorId, limit, timeRange);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/developer/tebex-config', authMiddleware, async (req, res) => {
+    const response = await setTebexConfig(req.userData.id, req.body);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/developer/tebex-config', authMiddleware, async (req, res) => {
+    const response = await getTebexConfig(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.delete('/api/developer/tebex-config', authMiddleware, async (req, res) => {
+    const response = await removeTebexConfig(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/tebex-configs', async (req, res) => {
+    const response = await getAllTebexConfigs();
     const data = await response.json();
     res.status(response.status).json(data);
 });

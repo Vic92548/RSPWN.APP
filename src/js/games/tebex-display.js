@@ -1,9 +1,10 @@
 async function loadTebexGames() {
     try {
-        const tebexResponse = await tebexAPI.getPackages();
+        // Load games from all configured Tebex stores
+        const tebexResponse = await tebexAPI.getAllPackages();
         const tebexGames = tebexResponse.data || [];
 
-        console.log({tebexGames});
+        console.log('Loaded games from multiple Tebex stores:', tebexGames);
 
         const transformedGames = transformTebexGames(tebexGames);
 
@@ -29,6 +30,9 @@ function transformTebexGames(tebexPackages) {
         onSale: pkg.discount > 0,
         originalPrice: pkg.base_price,
         salePrice: pkg.total_price,
-        discount: pkg.discount
+        discount: pkg.discount,
+        // Store information for checkout
+        storeInfo: pkg.storeInfo,
+        developer: pkg.storeInfo?.username || 'Unknown'
     }));
 }

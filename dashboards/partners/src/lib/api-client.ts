@@ -247,6 +247,36 @@ class ApiClient {
     async getUserCount() {
         return this.request<{ count: number }>('/api/user-count');
     }
+
+    async getTebexConfig() {
+        return this.request<{
+            success: boolean;
+            config: {
+                webstoreToken: string;
+                storeName: string;
+                hasConfig: boolean;
+            } | null;
+        }>('/api/developer/tebex-config');
+    }
+
+    async setTebexConfig(config: { webstoreToken: string; storeName?: string }) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>('/api/developer/tebex-config', {
+            method: 'POST',
+            body: JSON.stringify(config),
+        });
+    }
+
+    async removeTebexConfig() {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>('/api/developer/tebex-config', {
+            method: 'DELETE',
+        });
+    }
 }
 
 export const apiClient = new ApiClient();

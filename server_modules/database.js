@@ -374,7 +374,7 @@ const collectionNames = [
     'follows', 'reactions', 'linkClicks', 'registrationReferrals', 'xpLog',
     'secretKeys', 'games', 'gameKeys', 'userGames', 'gameVersions',
     'gameUpdates', 'creatorApplications', 'creators', 'gameCreatorClicks',
-    'playtimeSessions'
+    'playtimeSessions', 'tebexConfigs'
 ];
 
 const collections = {};
@@ -407,6 +407,7 @@ const creatorApplicationsCollection = collections.creatorApplications;
 const creatorsCollection = collections.creators;
 const gameCreatorClicksCollection = collections.gameCreatorClicks;
 const playtimeSessionsCollection = collections.playtimeSessions;
+const tebexConfigsCollection = collections.tebexConfigs;
 
 // Log cache stats periodically
 setInterval(() => {
@@ -461,5 +462,6 @@ export {
     creatorApplicationsCollection,
     creatorsCollection,
     gameCreatorClicksCollection,
-    playtimeSessionsCollection
+    playtimeSessionsCollection,
+    tebexConfigsCollection
 };

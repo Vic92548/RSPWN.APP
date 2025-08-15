@@ -225,6 +225,24 @@ class API {
     async getPlaytimeTotals() {
         return this.get('/api/playtime/totals');
     }
+
+    async setTebexConfig(config) {
+        return this.post('/api/developer/tebex-config', config);
+    }
+
+    async getTebexConfig() {
+        return this.get('/api/developer/tebex-config');
+    }
+
+    async removeTebexConfig() {
+        return this.request('/api/developer/tebex-config', {
+            method: 'DELETE'
+        });
+    }
+
+    async getAllTebexConfigs() {
+        return this.get('/api/tebex-configs', false);
+    }
 }
 
 class APIHandler {
