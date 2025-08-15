@@ -254,10 +254,53 @@ class CachedCollection {
     constructor(name, mongoCollection) {
         this.name = name;
         this.mongoCollection = mongoCollection;
+        this.replicationPromises = new Map(); // Track pending replications
     }
 
     async init() {
         await cache.initCollection(this.name, this.mongoCollection);
+    }
+
+    // Add this method to wait for replication
+    async waitForReplication(documentId, timeout = 5000) {
+        const startTime = Date.now();
+
+        while (Date.now() - startTime < timeout) {
+            // Check if document exists in cache
+            const cached = await this.findOne({ id: documentId });
+            if (cached) {
+                return true;
+            }
+
+            // Wait a bit before checking again
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        console.warn(`Replication timeout for ${this.name} document ${documentId}`);
+        return false;
+    }
+
+    // Add method to manually sync specific documents
+    async syncDocument(filter) {
+        try {
+            const doc = await this.mongoCollection.findOne(filter);
+            if (doc) {
+                let docId;
+                if (this.name === 'users' && doc.id) {
+                    docId = doc.id;
+                } else {
+                    docId = doc._id?.toString() || doc.id?.toString() || JSON.stringify(doc._id);
+                }
+
+                const stmt = sqliteDb.prepare(`INSERT OR REPLACE INTO ${this.name} (_id, _doc) VALUES (?, ?)`);
+                stmt.run(docId, JSON.stringify(doc));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error(`Error syncing document in ${this.name}:`, error);
+            return false;
+        }
     }
 
     // Read operations (from SQLite)
@@ -360,12 +403,65 @@ class CachedCollection {
     }
 
     // Write operations (to MongoDB)
-    async insertOne(doc) { return this.mongoCollection.insertOne(doc); }
-    async insertMany(docs) { return this.mongoCollection.insertMany(docs); }
-    async updateOne(filter, update, options) { return this.mongoCollection.updateOne(filter, update, options); }
-    async updateMany(filter, update, options) { return this.mongoCollection.updateMany(filter, update, options); }
-    async deleteOne(filter) { return this.mongoCollection.deleteOne(filter); }
-    async deleteMany(filter) { return this.mongoCollection.deleteMany(filter); }
+    async insertOne(doc, options = {}) {
+        const result = await this.mongoCollection.insertOne(doc);
+
+        // If waitForReplication option is set, wait for the document to appear in cache
+        if (options.waitForReplication) {
+            const docId = doc.id || doc._id?.toString() || result.insertedId?.toString();
+            await this.waitForReplication(docId, options.replicationTimeout || 5000);
+        }
+
+        return result;
+    }
+
+    async insertMany(docs, options = {}) {
+        const result = await this.mongoCollection.insertMany(docs);
+
+        // If waitForReplication option is set, wait for all documents to appear in cache
+        if (options.waitForReplication) {
+            const waitPromises = docs.map((doc, index) => {
+                const docId = doc.id || doc._id?.toString() || result.insertedIds[index]?.toString();
+                return this.waitForReplication(docId, options.replicationTimeout || 5000);
+            });
+            await Promise.all(waitPromises);
+        }
+
+        return result;
+    }
+
+    async updateOne(filter, update, options = {}) {
+        const result = await this.mongoCollection.updateOne(filter, update, options);
+
+        if (options.waitForReplication && result.modifiedCount > 0) {
+            // Try to find the document ID from the filter
+            const docId = filter.id || filter._id?.toString();
+            if (docId) {
+                await this.waitForReplication(docId, options.replicationTimeout || 5000);
+            }
+        }
+
+        return result;
+    }
+
+    async updateMany(filter, update, options = {}) {
+        const result = await this.mongoCollection.updateMany(filter, update, options);
+
+        if (options.waitForReplication && result.modifiedCount > 0) {
+            // For updateMany, we might need to fetch the affected documents
+            console.warn('waitForReplication with updateMany may not wait for all documents');
+        }
+
+        return result;
+    }
+
+    async deleteOne(filter, options = {}) {
+        return this.mongoCollection.deleteOne(filter);
+    }
+
+    async deleteMany(filter, options = {}) {
+        return this.mongoCollection.deleteMany(filter);
+    }
 }
 
 // Initialize all collections
