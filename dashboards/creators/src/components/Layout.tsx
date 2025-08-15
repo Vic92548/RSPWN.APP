@@ -8,7 +8,8 @@ import {
     ExternalLink,
     Home,
     Calendar,
-    Users
+    Users,
+    DollarSign
 } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
@@ -79,6 +80,16 @@ export default function Layout({ children, user }: LayoutProps) {
                                     Audience
                                 </Link>
 
+                                <Link
+                                    to="/creator-program"
+                                    className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
+                                        isActive('/creator-program') ? 'text-primary' : 'text-muted-foreground'
+                                    }`}
+                                >
+                                    <DollarSign className="h-4 w-4" />
+                                    Creator Program
+                                </Link>
+
                                 <button
                                     onClick={handleBackToVapr}
                                     className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -141,6 +152,16 @@ export default function Layout({ children, user }: LayoutProps) {
                         >
                             <Users className="h-4 w-4" />
                             Audience
+                        </Link>
+
+                        <Link
+                            to="/creator-program"
+                            className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
+                                isActive('/creator-program') ? 'text-primary' : 'text-muted-foreground'
+                            }`}
+                        >
+                            <DollarSign className="h-4 w-4" />
+                            Creator Program
                         </Link>
 
                         <button

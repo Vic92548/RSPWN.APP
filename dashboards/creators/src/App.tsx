@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import PostAnalytics from './pages/PostAnalytics'
 import ContentCalendar from './pages/ContentCalendar'
 import Audience from './pages/Audience'
+import CreatorProgram from './pages/CreatorProgram'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -64,6 +65,11 @@ function App() {
                 <Route
                     path="/audience"
                     element={isAuthenticated ? <Audience /> : <Navigate to="/" />}
+                />
+                {/* Creator Program is accessible to everyone */}
+                <Route
+                    path="/creator-program"
+                    element={<CreatorProgram isAuthenticated={isAuthenticated} />}
                 />
                 <Route
                     path="*"

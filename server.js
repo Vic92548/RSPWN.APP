@@ -424,16 +424,6 @@ app.get('/games/:gameName', async (req, res) => {
     }
 });
 
-app.get('/creator-program', async (req, res) => {
-    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
-    await res.render('index.html', {
-        meta_description: 'Join the VAPR Creator Program to earn rewards and grow your audience with game content.',
-        meta_author: 'VAPR',
-        meta_image: config.meta.default.image,
-        meta_url: baseUrl + req.path
-    });
-});
-
 app.get('/terms', async (req, res) => {
     const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
     await res.render('index.html', {
