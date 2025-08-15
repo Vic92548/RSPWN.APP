@@ -301,12 +301,6 @@ window.openAnalytics = function() {
     originalOpenAnalytics();
 };
 
-const originalOpenCustomizationMenu = window.openCustomizationMenu;
-window.openCustomizationMenu = function() {
-    hideMenu();
-    originalOpenCustomizationMenu();
-};
-
 const originalOpenLeaderboardModal = window.openLeaderboardModal;
 window.openLeaderboardModal = function() {
     hideMenu();
@@ -338,7 +332,6 @@ if (typeof document !== 'undefined') {
     };
 }
 
-// Ensure Account section visibility after template rendering
 if (window.VAPR && typeof window.VAPR.on === 'function') {
     const toggleAccountSection = (el) => {
         if (isUserLoggedIn()) {

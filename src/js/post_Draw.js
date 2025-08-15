@@ -145,6 +145,9 @@ function drawPost(data){
             imageEl.style.filter = "none";
             imageEl.style.transition = "filter 0.3s ease";
         };
+
+        window.currentPostImageUrl = data.content;
+        updateSetBackgroundButton();
     }else if(data.content.includes("iframe.mediadelivery.net")){
         DOM.show("post_video");
         setTimeout(() => {
@@ -152,6 +155,8 @@ function drawPost(data){
         }, 100);
         DOM.hide("post_content");
         DOM.hide("post_image");
+        window.currentPostImageUrl = null;
+        updateSetBackgroundButton();
     }
 
     DOM.get("post_image").onclick = function () {
@@ -180,6 +185,64 @@ function drawPost(data){
     }
 }
 
+function updateSetBackgroundButton() {
+    let setBackgroundBtn = DOM.get("set_background_btn");
+
+    if (!setBackgroundBtn) {
+        setBackgroundBtn = DOM.create('button', {
+            id: 'set_background_btn',
+            class: 'glass-button set-background-btn',
+            onclick: () => setPostAsBackground()
+        });
+        setBackgroundBtn.innerHTML = '<i class="fa-solid fa-image"></i><span>Set as Background</span>';
+
+        const actionBar = DOM.query('.action-bar');
+        if (actionBar) {
+            actionBar.appendChild(setBackgroundBtn);
+        }
+    }
+
+    if (window.currentPostImageUrl) {
+        DOM.show(setBackgroundBtn, 'inline-flex');
+
+        const currentBackground = localStorage.getItem('background_url');
+        if (currentBackground === window.currentPostImageUrl) {
+            setBackgroundBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Current Background</span>';
+            setBackgroundBtn.classList.add('active');
+            setBackgroundBtn.disabled = true;
+        } else {
+            setBackgroundBtn.innerHTML = '<i class="fa-solid fa-image"></i><span>Set as Background</span>';
+            setBackgroundBtn.classList.remove('active');
+            setBackgroundBtn.disabled = false;
+        }
+    } else {
+        DOM.hide(setBackgroundBtn);
+    }
+}
+
+function setPostAsBackground() {
+    if (!window.currentPostImageUrl) return;
+
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+
+    equipBackground(window.currentPostImageUrl, true);
+    updateSetBackgroundButton();
+
+    notify.success("Background updated!");
+
+    if (typeof confetti !== 'undefined') {
+        confetti({
+            particleCount: 50,
+            spread: 50,
+            origin: { y: 0.6 },
+            colors: ['#4ecdc4', '#44a3aa', '#3d9a92']
+        });
+    }
+}
+
 window.openTaggedGame = async function() {
     loading.show();
     if (window.currentPostTaggedGame && window.currentPostTaggedGame.id) {
@@ -205,8 +268,14 @@ window.openTaggedGame = async function() {
             await loadTebexGames();
         }
 
-        showGameDetails(window.currentPostTaggedGame.id);
+        const toSlug = (s) => String(s)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        const slug = toSlug(window.currentPostTaggedGame.title);
+
         loading.hide();
+        router.navigate(`/games/${slug}`, true);
     }
 }
 

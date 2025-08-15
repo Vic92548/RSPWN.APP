@@ -12,10 +12,9 @@ function loadUserData(){
         updateUsername();
         updateLevel();
 
-        // Notify creator program (and any other listeners) that auth is available
         try {
             if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();
-        } catch (e) { /* no-op */ }
+        } catch (e) { }
 
         const oldUser = {
             xp: 0,
@@ -38,13 +37,8 @@ function loadUserData(){
 
         handleReferral();
 
-        setTimeout(() => {
-            migrateLocalBackgroundToBackend();
-        }, 1000);
-
         loadGamesData().then(() => {
             updateDeveloperSection();
-            // Ensure Account section (with Logout) is visible when authenticated
             const accountSection = DOM.get('account_section');
             if (accountSection) DOM.show(accountSection);
         });
@@ -59,30 +53,20 @@ function loadUserData(){
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
 
-        // Ensure guest-facing UI (like creator program apply section) is gated
         try {
             if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();
-        } catch (e) { /* no-op */ }
+        } catch (e) { }
 
-        // Hide Account section when unauthenticated
         const accountSection = DOM.get('account_section');
         if (accountSection) DOM.hide(accountSection);
     })
 }
 
 function syncBackgroundFromBackend() {
-    if (window.user && window.user.backgroundId) {
-        const userBackground = background_images.find(bg => bg.id === window.user.backgroundId);
-
-        if (userBackground) {
-            equipBackground(userBackground.image_url, true);
-            localStorage.setItem('background_url', userBackground.image_url);
-            localStorage.setItem('background_id', userBackground.id);
-            console.log('Background synchronized from backend:', userBackground.title);
-        } else {
-            console.log('User background ID not found in available backgrounds:', window.user.backgroundId);
-            setDefaultBackground();
-        }
+    if (window.user && window.user.backgroundUrl) {
+        equipBackground(window.user.backgroundUrl, false);
+        localStorage.setItem('background_url', window.user.backgroundUrl);
+        console.log('Background synchronized from backend:', window.user.backgroundUrl);
     } else {
         const savedBackgroundUrl = localStorage.getItem('background_url');
         if (savedBackgroundUrl) {
@@ -90,14 +74,5 @@ function syncBackgroundFromBackend() {
         } else {
             setDefaultBackground();
         }
-    }
-}
-
-function setDefaultBackground() {
-    if (background_images.length > 0) {
-        const defaultBg = background_images[0];
-        equipBackground(defaultBg.image_url, true);
-        localStorage.setItem('background_url', defaultBg.image_url);
-        localStorage.setItem('background_id', defaultBg.id);
     }
 }

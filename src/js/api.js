@@ -160,11 +160,8 @@ class API {
         return this.get('/me/posts');
     }
 
-    async updateBackground(backgroundId) {
-        if (!/^[a-zA-Z0-9_-]+$/.test(backgroundId)) {
-            throw new Error('Invalid background ID format');
-        }
-        return this.get(`/me/update-background?backgroundId=${encodeURIComponent(backgroundId)}`);
+    async updateBackground(backgroundUrl) {
+        return this.get(`/me/update-background?backgroundId=${encodeURIComponent(backgroundUrl)}`);
     }
 
     async acceptInvitation(ambassadorUserId) {

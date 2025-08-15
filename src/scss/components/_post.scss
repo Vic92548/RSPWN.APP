@@ -248,6 +248,7 @@
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid $glass-border-light;
+  flex-wrap: wrap;
 
   @include responsive(tablet) {
     gap: 8px;
@@ -355,6 +356,47 @@
       border-color: rgba(46, 204, 113, 0.3);
       transform: translateY(-2px);
       box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3);
+    }
+  }
+}
+
+.set-background-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #b370db;
+  min-width: auto;
+  white-space: nowrap;
+
+  &::before {
+    background: rgba(155, 89, 182, 0.2);
+  }
+
+  &:hover {
+    background: rgba(155, 89, 182, 0.2);
+    border-color: rgba(155, 89, 182, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(155, 89, 182, 0.3);
+  }
+
+  &.active {
+    background: rgba(155, 89, 182, 0.3);
+    border-color: rgba(155, 89, 182, 0.4);
+    color: #b370db;
+    cursor: default;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  @include responsive(tablet) {
+    padding: 8px 14px;
+    font-size: 12px;
+
+    i {
+      font-size: 14px;
     }
   }
 }
