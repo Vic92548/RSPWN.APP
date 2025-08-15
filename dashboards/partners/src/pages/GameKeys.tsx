@@ -5,8 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import Layout from "@/components/Layout";
-import { Copy, Download, Plus, Check, ArrowLeft, Key } from "lucide-react";
+import { Copy, Download, Plus, Check, ArrowLeft, Key, Filter, X } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
 export default function GameKeys() {
@@ -15,6 +22,9 @@ export default function GameKeys() {
     const [game, setGame] = useState<any>(null);
     const [user, setUser] = useState<any>(null);
     const [keys, setKeys] = useState<any[]>([]);
+    const [allKeys, setAllKeys] = useState<any[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [selectedTag, setSelectedTag] = useState<string>('all');
     const [generating, setGenerating] = useState(false);
     const [keyCount, setKeyCount] = useState(5);
     const [keyTag, setKeyTag] = useState('');
@@ -24,19 +34,37 @@ export default function GameKeys() {
         loadData();
     }, [gameId]);
 
+    useEffect(() => {
+        // Filter keys based on selected tag
+        if (selectedTag === 'all') {
+            setKeys(allKeys);
+        } else {
+            setKeys(allKeys.filter(key => key.tag === selectedTag));
+        }
+    }, [selectedTag, allKeys]);
+
     const loadData = async () => {
         try {
             setLoading(true);
             const [userData, gamesData, keysData] = await Promise.all([
                 apiClient.getMe(),
                 apiClient.getMyGames(),
-                apiClient.getGameKeys(gameId!)
+                apiClient.getGameKeys(gameId!) // No tag parameter - original API call
             ]);
 
             setUser(userData);
             const gameData = gamesData.games.find(g => g.id === gameId);
             setGame(gameData);
+            setAllKeys(keysData.keys);
             setKeys(keysData.keys);
+
+            // Extract unique tags from keys
+            const uniqueTags = Array.from(new Set(keysData.keys
+                .filter(key => key.tag)
+                .map(key => key.tag)
+            )).sort();
+            // @ts-ignore
+            setTags(uniqueTags);
         } catch (error) {
             console.error('Failed to load data:', error);
         } finally {
@@ -64,12 +92,39 @@ export default function GameKeys() {
         setTimeout(() => setCopiedKey(null), 2000);
     };
 
-    const handleDownloadKeys = async () => {
-        try {
-            await apiClient.downloadKeysCSV(gameId!);
-        } catch (error) {
-            console.error('Failed to download keys:', error);
-        }
+    const downloadKeysAsCSV = (keysToDownload: any[], filename: string) => {
+        // Create CSV content with one key per line followed by comma
+        const csvContent = keysToDownload.map(key => `${key.key},`).join('\n');
+
+        // Create blob and download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    };
+
+    const handleDownloadAllKeys = () => {
+        const filename = selectedTag !== 'all'
+            ? `game_keys_${game.title.replace(/\s+/g, '_')}_tag_${selectedTag}.csv`
+            : `game_keys_${game.title.replace(/\s+/g, '_')}_all.csv`;
+        downloadKeysAsCSV(keys, filename);
+    };
+
+    const handleDownloadAvailableKeys = () => {
+        const availableKeys = keys.filter(k => !k.usedBy);
+        const filename = selectedTag !== 'all'
+            ? `game_keys_${game.title.replace(/\s+/g, '_')}_tag_${selectedTag}_available.csv`
+            : `game_keys_${game.title.replace(/\s+/g, '_')}_available.csv`;
+        downloadKeysAsCSV(availableKeys, filename);
+    };
+
+    const handleClearFilter = () => {
+        setSelectedTag('all');
     };
 
     const unusedKeys = keys.filter(k => !k.usedBy);
@@ -125,6 +180,9 @@ export default function GameKeys() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{keys.length}</div>
+                            {selectedTag !== 'all' && (
+                                <p className="text-sm text-muted-foreground">Filtered by: {selectedTag}</p>
+                            )}
                         </CardContent>
                     </Card>
                     <Card>
@@ -195,17 +253,63 @@ export default function GameKeys() {
                                 <CardTitle>Keys List</CardTitle>
                                 <CardDescription>All generated keys for this game</CardDescription>
                             </div>
-                            <Button variant="outline" onClick={handleDownloadKeys}>
-                                <Download className="h-4 w-4 mr-2" />
-                                Download CSV
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                {tags.length > 0 && (
+                                    <div className="flex items-center gap-2">
+                                        <Filter className="h-4 w-4 text-muted-foreground" />
+                                        <Select value={selectedTag} onValueChange={setSelectedTag}>
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Filter by tag" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All tags</SelectItem>
+                                                {tags.map((tag) => (
+                                                    <SelectItem key={tag} value={tag}>
+                                                        {tag}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        {selectedTag !== 'all' && (
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={handleClearFilter}
+                                                title="Clear filter"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        )}
+                                    </div>
+                                )}
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleDownloadAllKeys}
+                                        disabled={keys.length === 0}
+                                        title={selectedTag !== 'all' ? `Download all keys with tag: ${selectedTag}` : "Download all keys"}
+                                    >
+                                        <Download className="h-4 w-4 mr-2" />
+                                        All Keys ({keys.length})
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleDownloadAvailableKeys}
+                                        disabled={unusedKeys.length === 0}
+                                        title={selectedTag !== 'all' ? `Download available keys with tag: ${selectedTag}` : "Download available keys only"}
+                                    >
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Available ({unusedKeys.length})
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <div className="border rounded-lg divide-y max-h-[600px] overflow-y-auto">
                             {keys.length === 0 ? (
                                 <div className="p-8 text-center text-muted-foreground">
-                                    No keys generated yet
+                                    {selectedTag !== 'all' ? `No keys found with tag: ${selectedTag}` : 'No keys generated yet'}
                                 </div>
                             ) : (
                                 keys.map((key) => (
