@@ -15,7 +15,8 @@ import {
     Eye,
     Heart,
     UserPlus,
-    Plus
+    Plus,
+    EyeOff
 } from "lucide-react"
 
 interface Game {
@@ -28,6 +29,8 @@ interface Game {
     createdAt: string;
     ownedAt: string;
     totalPlaytimeSeconds: number;
+    isHidden?: boolean;
+    ownerId?: string;
 }
 
 interface User {
@@ -203,9 +206,17 @@ export default function Dashboard() {
                                             alt={game.title}
                                             className="object-cover w-full h-full"
                                         />
-                                        <Badge className="absolute top-2 right-2" variant="secondary">
-                                            v{game.currentVersion}
-                                        </Badge>
+                                        <div className="absolute top-2 right-2 flex gap-2">
+                                            <Badge variant="secondary">
+                                                v{game.currentVersion}
+                                            </Badge>
+                                            {game.isHidden && (
+                                                <Badge variant="destructive" className="gap-1">
+                                                    <EyeOff className="h-3 w-3" />
+                                                    Hidden
+                                                </Badge>
+                                            )}
+                                        </div>
                                     </div>
                                     <CardHeader>
                                         <CardTitle>{game.title}</CardTitle>
@@ -224,6 +235,13 @@ export default function Dashboard() {
                                                 <span>{gamePlayers[game.id] || 0} players</span>
                                             </div>
                                         </div>
+                                        {game.isHidden && (
+                                            <div className="mt-3 p-2 bg-muted rounded-md">
+                                                <p className="text-xs text-muted-foreground">
+                                                    This game requires a key to access
+                                                </p>
+                                            </div>
+                                        )}
                                     </CardContent>
                                     <CardFooter className="grid grid-cols-3 gap-2">
                                         <Link to={`/games/${game.id}/stats`}>

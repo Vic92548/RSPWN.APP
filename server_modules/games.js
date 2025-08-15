@@ -2,22 +2,31 @@ import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollecti
 
 export async function getAllGames(userId = null) {
     try {
+        // Get all public games
         const publicGames = await gamesCollection.find({ isHidden: { $ne: true } }).toArray();
 
-        let hiddenGames = [];
+        let userOwnedGames = [];
+        let userAccessGames = [];
+
         if (userId && userId !== 'anonymous') {
+            // Get games where the user is the owner (regardless of hidden status)
+            userOwnedGames = await gamesCollection.find({ ownerId: userId }).toArray();
+
+            // Get games where the user has redeemed a key
             const userGames = await userGamesCollection.find({ userId }).toArray();
             const ownedGameIds = userGames.map(ug => ug.gameId);
 
             if (ownedGameIds.length > 0) {
-                hiddenGames = await gamesCollection.find({
+                userAccessGames = await gamesCollection.find({
                     id: { $in: ownedGameIds },
-                    isHidden: true
+                    isHidden: true,
+                    ownerId: { $ne: userId } // Don't duplicate owner's games
                 }).toArray();
             }
         }
 
-        const allGames = [...publicGames, ...hiddenGames];
+        // Combine all games and remove duplicates
+        const allGames = [...publicGames, ...userOwnedGames, ...userAccessGames];
         const uniqueGames = Array.from(new Map(allGames.map(g => [g.id, g])).values());
 
         return new Response(JSON.stringify({ success: true, games: uniqueGames }), {
@@ -49,7 +58,7 @@ export async function getUserGames(userId) {
         const gamesWithOwnership = games.map(game => {
             const userGame = userGames.find(ug => ug.gameId === game.id);
             return {
-                ...game,
+                ...game, // This includes all properties including isHidden
                 ownedAt: userGame.ownedAt,
                 acquiredBy: userGame.acquiredBy,
                 totalPlaytimeSeconds: totalsMap.get(game.id) || 0

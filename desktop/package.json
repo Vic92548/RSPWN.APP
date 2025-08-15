@@ -1,7 +1,7 @@
 {
   "name": "vapr-desktop",
   "private": true,
-  "version": "1.8.1",
+  "version": "1.9.1",
   "type": "module",
   "scripts": {
     "tauri": "tauri"

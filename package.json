@@ -1,6 +1,6 @@
 {
   "name": "vapr",
-  "version": "1.8.1",
+  "version": "1.9.1",
   "type": "module",
   "scripts": {
     "start": "node server.js",
