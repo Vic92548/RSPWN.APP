@@ -1,4 +1,3 @@
-// dashboards/partners/src/pages/Dashboard.tsx
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,12 +13,12 @@ import {
     Users,
     Clock,
     Package,
-    Eye,
-    Heart,
     UserPlus,
     Plus,
     EyeOff,
-    ShoppingCart
+    ShoppingCart,
+    Activity,
+    TrendingUp
 } from "lucide-react"
 
 interface Game {
@@ -34,6 +33,13 @@ interface Game {
     totalPlaytimeSeconds: number;
     isHidden?: boolean;
     ownerId?: string;
+    stats?: {
+        playerCount: number;
+        totalKeys: number;
+        usedKeys: number;
+        availableKeys: number;
+        totalPlaytimeSeconds: number;
+    };
 }
 
 interface User {
@@ -63,6 +69,7 @@ export default function Dashboard() {
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
     const [loading, setLoading] = useState(true);
     const [gamePlayers, setGamePlayers] = useState<Record<string, number>>({});
+    const [gameAnalytics, setGameAnalytics] = useState<Record<string, any>>({});
     const [showTebexOnboarding, setShowTebexOnboarding] = useState(false);
     const [hasTebexConfig, setHasTebexConfig] = useState(false);
 
@@ -84,27 +91,34 @@ export default function Dashboard() {
             setGames(gamesData.games);
             setAnalytics(analyticsData);
 
-            // Check if user has Tebex configured
             const hasConfig = tebexData.config && tebexData.config.hasConfig;
             // @ts-ignore
             setHasTebexConfig(hasConfig);
 
-            // Show onboarding if they have games but no Tebex config
             if (gamesData.games.length > 0 && !hasConfig) {
                 setShowTebexOnboarding(true);
             }
 
-            // Load player counts for each game
             const playerCounts: Record<string, number> = {};
+            const gameAnalyticsData: Record<string, any> = {};
+
             for (const game of gamesData.games) {
                 try {
-                    const keysData = await apiClient.getGameKeys(game.id);
+                    const [keysData, analyticsResponse] = await Promise.all([
+                        apiClient.getGameKeys(game.id),
+                        apiClient.getGameAnalytics(game.id, 7)
+                    ]);
+
                     playerCounts[game.id] = keysData.keys.filter(k => k.usedBy).length;
+                    gameAnalyticsData[game.id] = analyticsResponse.analytics;
                 } catch (error) {
                     playerCounts[game.id] = 0;
+                    gameAnalyticsData[game.id] = null;
                 }
             }
+
             setGamePlayers(playerCounts);
+            setGameAnalytics(gameAnalyticsData);
         } catch (error) {
             console.error('Failed to load dashboard data:', error);
         } finally {
@@ -115,7 +129,6 @@ export default function Dashboard() {
     const handleTebexOnboardingComplete = () => {
         setShowTebexOnboarding(false);
         setHasTebexConfig(true);
-        // Optionally reload data to reflect changes
         loadDashboardData();
     };
 
@@ -134,6 +147,24 @@ export default function Dashboard() {
         return num.toString();
     };
 
+    const calculateTotalMetrics = () => {
+        let totalPlayers = 0;
+        let totalActivePlayers = 0;
+        let totalPlaytimeHours = 0;
+        let totalSessions = 0;
+
+        Object.values(gameAnalytics).forEach(analytics => {
+            if (analytics) {
+                totalPlayers += analytics.overview.totalPlayers || 0;
+                totalActivePlayers += analytics.overview.activePlayers || 0;
+                totalPlaytimeHours += analytics.overview.totalPlaytimeHours || 0;
+                totalSessions += analytics.overview.totalSessions || 0;
+            }
+        });
+
+        return { totalPlayers, totalActivePlayers, totalPlaytimeHours, totalSessions };
+    };
+
     if (loading) {
         return (
             <Layout user={user}>
@@ -147,10 +178,11 @@ export default function Dashboard() {
         );
     }
 
+    const totals = calculateTotalMetrics();
+
     return (
         <Layout user={user}>
             <div className="container mx-auto px-4 py-8">
-                {/* Tebex Setup Banner */}
                 {games.length > 0 && !hasTebexConfig && !showTebexOnboarding && (
                     <Card className="mb-8 border-yellow-600/50 bg-yellow-600/10">
                         <CardContent className="pt-6">
@@ -176,27 +208,37 @@ export default function Dashboard() {
                     </Card>
                 )}
 
-                {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-                            <Eye className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-sm font-medium">Total Players</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(analytics?.totals.views || 0)}</div>
-                            <p className="text-xs text-muted-foreground">Across all content</p>
+                            <div className="text-2xl font-bold">{formatNumber(totals.totalPlayers)}</div>
+                            <p className="text-xs text-muted-foreground">Across all games</p>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Likes</CardTitle>
-                            <Heart className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-sm font-medium">Active Players</CardTitle>
+                            <Activity className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(analytics?.totals.likes || 0)}</div>
-                            <p className="text-xs text-muted-foreground">Player engagement</p>
+                            <div className="text-2xl font-bold">{formatNumber(totals.totalActivePlayers)}</div>
+                            <p className="text-xs text-muted-foreground">Last 7 days</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Playtime</CardTitle>
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{formatPlaytime(totals.totalPlaytimeHours * 3600)}</div>
+                            <p className="text-xs text-muted-foreground">Last 7 days</p>
                         </CardContent>
                     </Card>
 
@@ -210,20 +252,8 @@ export default function Dashboard() {
                             <p className="text-xs text-muted-foreground">Growing community</p>
                         </CardContent>
                     </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Games</CardTitle>
-                            <Gamepad2 className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{games.length}</div>
-                            <p className="text-xs text-muted-foreground">Published games</p>
-                        </CardContent>
-                    </Card>
                 </div>
 
-                {/* Games Section */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-bold">My Games</h2>
@@ -247,91 +277,110 @@ export default function Dashboard() {
                         </Card>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {games.map((game) => (
-                                <Card key={game.id} className="overflow-hidden">
-                                    <div className="aspect-video relative">
-                                        <img
-                                            src={game.coverImage || '/default-game-cover.png'}
-                                            alt={game.title}
-                                            className="object-cover w-full h-full"
-                                        />
-                                        <div className="absolute top-2 right-2 flex gap-2">
-                                            <Badge variant="secondary">
-                                                v{game.currentVersion}
-                                            </Badge>
-                                            {game.isHidden && (
-                                                <Badge variant="destructive" className="gap-1">
-                                                    <EyeOff className="h-3 w-3" />
-                                                    Hidden
+                            {games.map((game) => {
+                                const gameStats = gameAnalytics[game.id];
+                                const activePlayers = gameStats?.overview?.activePlayers || 0;
+                                const avgSession = gameStats?.overview?.avgSessionMinutes || 0;
+                                const recentPlaytime = gameStats?.overview?.totalPlaytimeHours || 0;
+
+                                return (
+                                    <Card key={game.id} className="overflow-hidden">
+                                        <div className="aspect-video relative">
+                                            <img
+                                                src={game.coverImage || '/default-game-cover.png'}
+                                                alt={game.title}
+                                                className="object-cover w-full h-full"
+                                            />
+                                            <div className="absolute top-2 right-2 flex gap-2">
+                                                <Badge variant="secondary">
+                                                    v{game.currentVersion}
                                                 </Badge>
+                                                {game.isHidden && (
+                                                    <Badge variant="destructive" className="gap-1">
+                                                        <EyeOff className="h-3 w-3" />
+                                                        Hidden
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            {game.totalPlaytimeSeconds > 0 && (
+                                                <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                                                    {formatPlaytime(game.totalPlaytimeSeconds)} total
+                                                </div>
                                             )}
                                         </div>
-                                    </div>
-                                    <CardHeader>
-                                        <CardTitle>{game.title}</CardTitle>
-                                        <CardDescription className="line-clamp-2">
-                                            {game.description}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="grid grid-cols-2 gap-4 text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <span>{formatPlaytime(game.totalPlaytimeSeconds)}</span>
+                                        <CardHeader>
+                                            <CardTitle>{game.title}</CardTitle>
+                                            <CardDescription className="line-clamp-2">
+                                                {game.description}
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <Users className="h-4 w-4 text-muted-foreground" />
+                                                    <span>{gamePlayers[game.id] || 0} players</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Activity className="h-4 w-4 text-muted-foreground" />
+                                                    <span>{activePlayers} active</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                                    <span>{formatPlaytime(recentPlaytime * 3600)} (7d)</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                                                    <span>{avgSession}m avg</span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <Users className="h-4 w-4 text-muted-foreground" />
-                                                <span>{gamePlayers[game.id] || 0} players</span>
-                                            </div>
-                                        </div>
-                                        {game.isHidden && (
-                                            <div className="mt-3 p-2 bg-muted rounded-md">
-                                                <p className="text-xs text-muted-foreground">
-                                                    This game requires a key to access
-                                                </p>
-                                            </div>
-                                        )}
-                                    </CardContent>
-                                    <CardFooter className="grid grid-cols-3 gap-2">
-                                        <Link to={`/games/${game.id}/stats`}>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="gap-1 w-full"
-                                            >
-                                                <BarChart3 className="h-3 w-3" />
-                                                Stats
-                                            </Button>
-                                        </Link>
-                                        <Link to={`/games/${game.id}/keys`}>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="gap-1 w-full"
-                                            >
-                                                <Key className="h-3 w-3" />
-                                                Keys
-                                            </Button>
-                                        </Link>
-                                        <Link to={`/games/${game.id}/updates`}>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="gap-1 w-full"
-                                            >
-                                                <Package className="h-3 w-3" />
-                                                Update
-                                            </Button>
-                                        </Link>
-                                    </CardFooter>
-                                </Card>
-                            ))}
+                                            {game.isHidden && (
+                                                <div className="mt-3 p-2 bg-muted rounded-md">
+                                                    <p className="text-xs text-muted-foreground">
+                                                        This game requires a key to access
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                        <CardFooter className="grid grid-cols-3 gap-2">
+                                            <Link to={`/games/${game.id}/stats`}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="gap-1 w-full"
+                                                >
+                                                    <BarChart3 className="h-3 w-3" />
+                                                    Analytics
+                                                </Button>
+                                            </Link>
+                                            <Link to={`/games/${game.id}/keys`}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="gap-1 w-full"
+                                                >
+                                                    <Key className="h-3 w-3" />
+                                                    Keys
+                                                </Button>
+                                            </Link>
+                                            <Link to={`/games/${game.id}/updates`}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="gap-1 w-full"
+                                                >
+                                                    <Package className="h-3 w-3" />
+                                                    Update
+                                                </Button>
+                                            </Link>
+                                        </CardFooter>
+                                    </Card>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Tebex Onboarding Modal */}
             <TebexOnboardingModal
                 isOpen={showTebexOnboarding}
                 onComplete={handleTebexOnboardingComplete}

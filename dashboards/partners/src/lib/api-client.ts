@@ -277,6 +277,43 @@ class ApiClient {
             method: 'DELETE',
         });
     }
+
+    async getGameAnalytics(gameId: string, timeRange: number = 30) {
+        return this.request<{
+            success: boolean;
+            analytics: {
+                overview: {
+                    totalPlayers: number;
+                    activePlayers: number;
+                    totalPlaytimeHours: number;
+                    avgSessionMinutes: number;
+                    totalSessions: number;
+                };
+                charts: {
+                    daily: Array<{
+                        date: string;
+                        activeUsers: number;
+                        totalPlaytimeHours: number;
+                        sessions: number;
+                        avgPlaytimeHours: number;
+                    }>;
+                    retention: Array<{
+                        day: number;
+                        retention: string;
+                    }>;
+                    playtimeDistribution: Array<{
+                        range: string;
+                        count: number;
+                    }>;
+                    peakHours: Array<{
+                        hour: string;
+                        sessions: number;
+                    }>;
+                };
+                timeRange: number;
+            };
+        }>(`/api/games/${gameId}/analytics?timeRange=${timeRange}`);
+    }
 }
 
 export const apiClient = new ApiClient();

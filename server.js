@@ -656,7 +656,7 @@ import {
     redeemGameKey,
     generateGameKeys,
     getGameKeys,
-    getGameDownloadUrl, downloadKeysAsCSV, getDeveloperGames
+    getGameDownloadUrl, downloadKeysAsCSV, getDeveloperGames, getGameAnalytics
 } from './server_modules/games.js';
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
 import {getAllTebexConfigs, getTebexConfig, removeTebexConfig, setTebexConfig} from "./server_modules/tebex_config.js";
@@ -666,6 +666,14 @@ app.get('/api/games', async (req, res) => {
     const userId = authResult?.isValid ? authResult.userData.id : null;
 
     const response = await getAllGames(userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/games/:id/analytics', authMiddleware, async (req, res) => {
+    const gameId = req.params.id;
+    const timeRange = parseInt(req.query.timeRange) || 30;
+    const response = await getGameAnalytics(gameId, req.userData.id, timeRange);
     const data = await response.json();
     res.status(response.status).json(data);
 });

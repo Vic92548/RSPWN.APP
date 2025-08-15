@@ -3,8 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Layout from "@/components/Layout";
-import { ArrowLeft, BarChart3, Eye, Heart, Users, Calendar, TrendingUp } from "lucide-react";
+import { ArrowLeft, BarChart3, Eye, Heart, Users, Calendar, TrendingUp, Clock, Activity, GamepadIcon } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
 export default function GameStats() {
@@ -14,34 +15,35 @@ export default function GameStats() {
     const [user, setUser] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
     const [players, setPlayers] = useState<any[]>([]);
+    const [analytics, setAnalytics] = useState<any>(null);
+    const [timeRange, setTimeRange] = useState(30);
 
     useEffect(() => {
         loadData();
-    }, [gameId]);
+    }, [gameId, timeRange]);
 
     const loadData = async () => {
         try {
             setLoading(true);
-            const [userData, gamesData, keysData, postsData] = await Promise.all([
+            const [userData, gamesData, keysData, postsData, analyticsData] = await Promise.all([
                 apiClient.getMe(),
                 apiClient.getMyGames(),
                 apiClient.getGameKeys(gameId!),
-                apiClient.getMyPosts()
+                apiClient.getMyPosts(),
+                apiClient.getGameAnalytics(gameId!, timeRange)
             ]);
 
             setUser(userData);
             const gameData = gamesData.games.find(g => g.id === gameId);
             setGame(gameData);
+            setAnalytics(analyticsData.analytics);
 
-            // Filter posts that tagged this game
             const gamePosts = postsData.filter(post => post.taggedGame?.id === gameId);
 
-            // Calculate stats
             const totalViews = gamePosts.reduce((sum, post) => sum + post.viewsCount, 0);
             const totalLikes = gamePosts.reduce((sum, post) => sum + post.likesCount, 0);
             const totalFollows = gamePosts.reduce((sum, post) => sum + post.followersCount, 0);
 
-            // Get players who redeemed keys
             const redeemedKeys = keysData.keys.filter(key => key.usedBy);
 
             setStats({
@@ -102,7 +104,6 @@ export default function GameStats() {
     return (
         <Layout user={user}>
             <div className="container mx-auto px-4 py-8">
-                {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/dashboard">
                         <Button variant="ghost" size="icon">
@@ -112,139 +113,235 @@ export default function GameStats() {
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold flex items-center gap-2">
                             <BarChart3 className="h-8 w-8" />
-                            Game Statistics - {game.title}
+                            Game Analytics - {game.title}
                         </h1>
                         <p className="text-muted-foreground">Detailed analytics and player information</p>
                     </div>
+                    <Select value={timeRange.toString()} onValueChange={(value) => setTimeRange(parseInt(value))}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select time range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="7">Last 7 days</SelectItem>
+                            <SelectItem value="30">Last 30 days</SelectItem>
+                            <SelectItem value="90">Last 90 days</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
-                {/* Overview Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Players</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats?.totalPlayers || 0}</div>
-                            <p className="text-xs text-muted-foreground">Active players</p>
+                            <div className="text-2xl font-bold">{analytics?.overview.totalPlayers || 0}</div>
+                            <p className="text-xs text-muted-foreground">All time</p>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Key Usage</CardTitle>
+                            <CardTitle className="text-sm font-medium">Active Players</CardTitle>
+                            <Activity className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{analytics?.overview.activePlayers || 0}</div>
+                            <p className="text-xs text-muted-foreground">Last {timeRange} days</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Playtime</CardTitle>
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{formatNumber(analytics?.overview.totalPlaytimeHours || 0)}h</div>
+                            <p className="text-xs text-muted-foreground">Last {timeRange} days</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Avg Session</CardTitle>
+                            <GamepadIcon className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{analytics?.overview.avgSessionMinutes || 0}m</div>
+                            <p className="text-xs text-muted-foreground">Per session</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
                             <TrendingUp className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">
-                                {((stats?.usedKeys / stats?.totalKeys) * 100 || 0).toFixed(1)}%
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                {stats?.usedKeys || 0} of {stats?.totalKeys || 0} keys
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(stats?.totalViews || 0)}</div>
-                            <p className="text-xs text-muted-foreground">Content views</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Engagement</CardTitle>
-                            <Heart className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{formatNumber(stats?.totalLikes || 0)}</div>
-                            <p className="text-xs text-muted-foreground">Total likes</p>
+                            <div className="text-2xl font-bold">{formatNumber(analytics?.overview.totalSessions || 0)}</div>
+                            <p className="text-xs text-muted-foreground">Last {timeRange} days</p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Detailed Stats Tabs */}
-                <Tabs defaultValue="overview" className="space-y-4">
-                    <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="players">Players ({players.length})</TabsTrigger>
-                        <TabsTrigger value="posts">Posts ({stats?.posts?.length || 0})</TabsTrigger>
+                <Tabs defaultValue="daily" className="space-y-4">
+                    <TabsList className="grid w-full grid-cols-6">
+                        <TabsTrigger value="daily">Daily Stats</TabsTrigger>
+                        <TabsTrigger value="retention">Retention</TabsTrigger>
+                        <TabsTrigger value="playtime">Playtime</TabsTrigger>
+                        <TabsTrigger value="peakhours">Peak Hours</TabsTrigger>
+                        <TabsTrigger value="players">Players</TabsTrigger>
+                        <TabsTrigger value="posts">Posts</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="overview" className="space-y-4">
+                    <TabsContent value="daily" className="space-y-4">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Key Redemption Progress</CardTitle>
-                                <CardDescription>Track how many keys have been redeemed</CardDescription>
+                                <CardTitle>Daily Active Users & Playtime</CardTitle>
+                                <CardDescription>Player activity over the last {timeRange} days</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between text-sm">
-                                        <span>Redeemed Keys</span>
-                                        <span className="font-bold">
-                                            {stats?.usedKeys || 0} / {stats?.totalKeys || 0}
-                                        </span>
+                                <div className="space-y-8">
+                                    <div>
+                                        <h4 className="text-sm font-medium mb-4">Active Users</h4>
+                                        <div className="h-[200px] w-full">
+                                            <div className="flex h-full items-end justify-between gap-1">
+                                                {analytics?.charts.daily.slice(-30).map((day: any, index: number) => {
+                                                    const maxUsers = Math.max(...analytics.charts.daily.map((d: any) => d.activeUsers));
+                                                    const height = maxUsers > 0 ? (day.activeUsers / maxUsers) * 100 : 0;
+                                                    return (
+                                                        <div key={index} className="flex-1 flex flex-col items-center">
+                                                            <div className="w-full bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
+                                                                <div className="w-full bg-primary rounded-t hover:bg-primary/80 transition-colors"
+                                                                     style={{ height: '100%' }}
+                                                                     title={`${formatDate(day.date)}: ${day.activeUsers} users`} />
+                                                            </div>
+                                                            {index % 5 === 0 && (
+                                                                <span className="text-xs text-muted-foreground mt-1">
+                                                                    {new Date(day.date).getDate()}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="w-full bg-secondary rounded-full h-4">
-                                        <div
-                                            className="bg-primary h-4 rounded-full transition-all"
-                                            style={{ width: `${(stats?.usedKeys / stats?.totalKeys) * 100 || 0}%` }}
-                                        />
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {((stats?.usedKeys / stats?.totalKeys) * 100 || 0).toFixed(1)}% redemption rate
+
+                                    <div>
+                                        <h4 className="text-sm font-medium mb-4">Average Playtime per User</h4>
+                                        <div className="h-[200px] w-full">
+                                            <div className="flex h-full items-end justify-between gap-1">
+                                                {analytics?.charts.daily.slice(-30).map((day: any, index: number) => {
+                                                    const maxHours = Math.max(...analytics.charts.daily.map((d: any) => d.avgPlaytimeHours));
+                                                    const height = maxHours > 0 ? (day.avgPlaytimeHours / maxHours) * 100 : 0;
+                                                    return (
+                                                        <div key={index} className="flex-1 flex flex-col items-center">
+                                                            <div className="w-full bg-green-500/20 rounded-t" style={{ height: `${height}%` }}>
+                                                                <div className="w-full bg-green-500 rounded-t hover:bg-green-500/80 transition-colors"
+                                                                     style={{ height: '100%' }}
+                                                                     title={`${formatDate(day.date)}: ${day.avgPlaytimeHours}h avg`} />
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
                         </Card>
+                    </TabsContent>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Game Info</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Current Version</span>
-                                        <span className="font-mono">v{game.currentVersion}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Published</span>
-                                        <span>{formatDate(game.createdAt)}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Total Playtime</span>
-                                        <span>{Math.floor(game.totalPlaytimeSeconds / 3600)}h</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                    <TabsContent value="retention" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Player Retention</CardTitle>
+                                <CardDescription>Percentage of players returning each day</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {analytics?.charts.retention.map((day: any) => (
+                                        <div key={day.day} className="flex items-center gap-4">
+                                            <div className="w-20 text-sm font-medium">Day {day.day}</div>
+                                            <div className="flex-1">
+                                                <div className="w-full bg-secondary rounded-full h-6">
+                                                    <div
+                                                        className="bg-primary h-6 rounded-full flex items-center justify-end pr-2 transition-all"
+                                                        style={{ width: `${day.retention}%` }}
+                                                    >
+                                                        <span className="text-xs font-medium">{day.retention}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Engagement Metrics</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Avg. Views per Post</span>
-                                        <span>{Math.round(stats?.totalViews / (stats?.posts?.length || 1))}</span>
+                    <TabsContent value="playtime" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Playtime Distribution</CardTitle>
+                                <CardDescription>How long players are playing your game</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {analytics?.charts.playtimeDistribution.map((bucket: any, index: number) => (
+                                        <div key={index} className="flex items-center gap-4">
+                                            <div className="w-24 text-sm font-medium">{bucket.range}</div>
+                                            <div className="flex-1">
+                                                <div className="w-full bg-secondary rounded-full h-6">
+                                                    <div
+                                                        className="bg-blue-500 h-6 rounded-full flex items-center justify-end pr-2 transition-all"
+                                                        style={{ width: `${(bucket.count / analytics.overview.totalPlayers) * 100}%` }}
+                                                    >
+                                                        <span className="text-xs font-medium">{bucket.count} players</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    <TabsContent value="peakhours" className="space-y-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Peak Playing Hours</CardTitle>
+                                <CardDescription>When players are most active (UTC)</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-[300px] w-full">
+                                    <div className="flex h-full items-end justify-between gap-1">
+                                        {analytics?.charts.peakHours.map((hour: any, index: number) => {
+                                            const maxSessions = Math.max(...analytics.charts.peakHours.map((h: any) => h.sessions));
+                                            const height = maxSessions > 0 ? (hour.sessions / maxSessions) * 100 : 0;
+                                            return (
+                                                <div key={index} className="flex-1 flex flex-col items-center justify-end">
+                                                    <div className="w-full bg-purple-500/20 rounded-t" style={{ height: `${height}%` }}>
+                                                        <div className="w-full bg-purple-500 rounded-t hover:bg-purple-500/80 transition-colors"
+                                                             style={{ height: '100%' }}
+                                                             title={`${hour.hour}: ${hour.sessions} sessions`} />
+                                                    </div>
+                                                    {index % 3 === 0 && (
+                                                        <span className="text-xs text-muted-foreground mt-1">
+                                                            {hour.hour}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Avg. Likes per Post</span>
-                                        <span>{Math.round(stats?.totalLikes / (stats?.posts?.length || 1))}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Total Follows</span>
-                                        <span>{stats?.totalFollows || 0}</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </TabsContent>
 
                     <TabsContent value="players" className="space-y-4">

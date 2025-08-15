@@ -380,3 +380,187 @@ function generateKey() {
     }
     return segments.join('-');
 }
+
+export async function getGameAnalytics(gameId, ownerId, timeRange = 30) {
+    try {
+        const game = await gamesCollection.findOne({ id: gameId });
+
+        if (!game) {
+            return new Response(JSON.stringify({ success: false, error: 'Game not found' }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        if (game.ownerId !== ownerId) {
+            return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const now = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - timeRange);
+
+        const gameOwners = await userGamesCollection.find({ gameId }).toArray();
+        const playerIds = gameOwners.map(go => go.userId);
+
+        const sessions = await playtimeSessionsCollection
+            .find({
+                gameId,
+                startedAt: { $gte: startDate }
+            })
+            .toArray();
+
+        const dailyActiveUsers = {};
+        const dailyPlaytime = {};
+        const dailySessions = {};
+
+        for (let i = 0; i < timeRange; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            date.setHours(0, 0, 0, 0);
+            const dateStr = date.toISOString().split('T')[0];
+
+            dailyActiveUsers[dateStr] = new Set();
+            dailyPlaytime[dateStr] = 0;
+            dailySessions[dateStr] = 0;
+        }
+
+        sessions.forEach(session => {
+            const dateStr = new Date(session.startedAt).toISOString().split('T')[0];
+            if (dailyActiveUsers[dateStr]) {
+                dailyActiveUsers[dateStr].add(session.userId);
+                dailyPlaytime[dateStr] += session.durationSeconds;
+                dailySessions[dateStr]++;
+            }
+        });
+
+        const chartData = Object.keys(dailyActiveUsers)
+            .sort()
+            .map(date => ({
+                date,
+                activeUsers: dailyActiveUsers[date].size,
+                totalPlaytimeHours: Math.round(dailyPlaytime[date] / 3600 * 10) / 10,
+                sessions: dailySessions[date],
+                avgPlaytimeHours: dailyActiveUsers[date].size > 0
+                    ? Math.round((dailyPlaytime[date] / dailyActiveUsers[date].size / 3600) * 10) / 10
+                    : 0
+            }));
+
+        const totalPlaytimeSeconds = sessions.reduce((sum, s) => sum + s.durationSeconds, 0);
+        const uniquePlayers = new Set(sessions.map(s => s.userId)).size;
+        const avgSessionLength = sessions.length > 0 ? totalPlaytimeSeconds / sessions.length : 0;
+
+        const playerRetention = await calculateRetention(gameId, playerIds, startDate);
+
+        const playtimeDistribution = await playtimeSessionsCollection.aggregate([
+            { $match: { gameId, startedAt: { $gte: startDate } } },
+            { $group: {
+                    _id: '$userId',
+                    totalPlaytime: { $sum: '$durationSeconds' }
+                }},
+            { $bucket: {
+                    groupBy: '$totalPlaytime',
+                    boundaries: [0, 3600, 7200, 18000, 36000, 72000, 180000, Infinity],
+                    default: 'Other',
+                    output: {
+                        count: { $sum: 1 },
+                        players: { $push: '$_id' }
+                    }
+                }}
+        ]).toArray();
+
+        const peakHours = await calculatePeakHours(sessions);
+
+        return new Response(JSON.stringify({
+            success: true,
+            analytics: {
+                overview: {
+                    totalPlayers: gameOwners.length,
+                    activePlayers: uniquePlayers,
+                    totalPlaytimeHours: Math.round(totalPlaytimeSeconds / 3600),
+                    avgSessionMinutes: Math.round(avgSessionLength / 60),
+                    totalSessions: sessions.length
+                },
+                charts: {
+                    daily: chartData,
+                    retention: playerRetention,
+                    playtimeDistribution: playtimeDistribution.map(bucket => ({
+                        range: getPlaytimeRangeLabel(bucket._id),
+                        count: bucket.count
+                    })),
+                    peakHours
+                },
+                timeRange
+            }
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error fetching game analytics:', error);
+        return new Response(JSON.stringify({ success: false, error: 'Failed to fetch analytics' }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+async function calculateRetention(gameId, playerIds, startDate) {
+    const retentionData = [];
+    const cohortSize = playerIds.length;
+
+    for (let day = 0; day <= 7; day++) {
+        const checkDate = new Date(startDate);
+        checkDate.setDate(checkDate.getDate() + day);
+        const nextDay = new Date(checkDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+
+        const sessions = await playtimeSessionsCollection.find({
+            gameId,
+            userId: { $in: playerIds },
+            startedAt: { $gte: checkDate, $lt: nextDay }
+        }).toArray();
+
+        const uniqueUsers = new Set(sessions.map(s => s.userId));
+        const activePlayers = Array.from(uniqueUsers);
+
+        retentionData.push({
+            day,
+            retention: cohortSize > 0 ? (activePlayers.length / cohortSize * 100).toFixed(1) : 0
+        });
+    }
+
+    return retentionData;
+}
+
+async function calculatePeakHours(sessions) {
+    const hourCounts = new Array(24).fill(0);
+
+    sessions.forEach(session => {
+        const hour = new Date(session.startedAt).getHours();
+        hourCounts[hour]++;
+    });
+
+    return hourCounts.map((count, hour) => ({
+        hour: `${hour.toString().padStart(2, '0')}:00`,
+        sessions: count
+    }));
+}
+
+function getPlaytimeRangeLabel(boundary) {
+    const ranges = {
+        0: '0-1h',
+        3600: '1-2h',
+        7200: '2-5h',
+        18000: '5-10h',
+        36000: '10-20h',
+        72000: '20-50h',
+        180000: '50h+',
+        'Other': 'Unknown'
+    };
+    return ranges[boundary] || 'Unknown';
+}
