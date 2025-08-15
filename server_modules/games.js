@@ -2,17 +2,14 @@ import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollecti
 
 export async function getAllGames(userId = null) {
     try {
-        // Get all public games
         const publicGames = await gamesCollection.find({ isHidden: { $ne: true } }).toArray();
 
         let userOwnedGames = [];
         let userAccessGames = [];
 
         if (userId && userId !== 'anonymous') {
-            // Get games where the user is the owner (regardless of hidden status)
             userOwnedGames = await gamesCollection.find({ ownerId: userId }).toArray();
 
-            // Get games where the user has redeemed a key
             const userGames = await userGamesCollection.find({ userId }).toArray();
             const ownedGameIds = userGames.map(ug => ug.gameId);
 
@@ -20,12 +17,11 @@ export async function getAllGames(userId = null) {
                 userAccessGames = await gamesCollection.find({
                     id: { $in: ownedGameIds },
                     isHidden: true,
-                    ownerId: { $ne: userId } // Don't duplicate owner's games
+                    ownerId: { $ne: userId }
                 }).toArray();
             }
         }
 
-        // Combine all games and remove duplicates
         const allGames = [...publicGames, ...userOwnedGames, ...userAccessGames];
         const uniqueGames = Array.from(new Map(allGames.map(g => [g.id, g])).values());
 
@@ -58,7 +54,7 @@ export async function getUserGames(userId) {
         const gamesWithOwnership = games.map(game => {
             const userGame = userGames.find(ug => ug.gameId === game.id);
             return {
-                ...game, // This includes all properties including isHidden
+                ...game,
                 ownedAt: userGame.ownedAt,
                 acquiredBy: userGame.acquiredBy,
                 totalPlaytimeSeconds: totalsMap.get(game.id) || 0
@@ -72,6 +68,61 @@ export async function getUserGames(userId) {
     } catch (error) {
         console.error('Error fetching user games:', error);
         return new Response(JSON.stringify({ success: false, error: 'Failed to fetch user games' }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getDeveloperGames(userId) {
+    try {
+        const games = await gamesCollection.find({ ownerId: userId }).toArray();
+
+        const enrichedGames = await Promise.all(games.map(async (game) => {
+            const playerCount = await userGamesCollection.countDocuments({ gameId: game.id });
+
+            const totalKeys = await gameKeysCollection.countDocuments({ gameId: game.id });
+            const usedKeys = await gameKeysCollection.countDocuments({
+                gameId: game.id,
+                usedBy: { $ne: null }
+            });
+
+            const playtimeAgg = await playtimeSessionsCollection.aggregate([
+                { $match: { gameId: game.id } },
+                { $group: { _id: null, totalSeconds: { $sum: '$durationSeconds' } } }
+            ]).toArray();
+            const totalPlaytimeSeconds = playtimeAgg[0]?.totalSeconds || 0;
+
+            const developerOwnership = await userGamesCollection.findOne({
+                userId,
+                gameId: game.id
+            });
+
+            return {
+                ...game,
+                stats: {
+                    playerCount,
+                    totalKeys,
+                    usedKeys,
+                    availableKeys: totalKeys - usedKeys,
+                    totalPlaytimeSeconds
+                },
+                ownedAt: developerOwnership?.ownedAt || game.createdAt,
+                acquiredBy: developerOwnership?.acquiredBy || 'developer',
+                personalPlaytimeSeconds: developerOwnership ? (await playtimeSessionsCollection.aggregate([
+                    { $match: { userId, gameId: game.id } },
+                    { $group: { _id: null, totalSeconds: { $sum: '$durationSeconds' } } }
+                ]).toArray())[0]?.totalSeconds || 0 : 0
+            };
+        }));
+
+        return new Response(JSON.stringify({ success: true, games: enrichedGames }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+    } catch (error) {
+        console.error('Error fetching developer games:', error);
+        return new Response(JSON.stringify({ success: false, error: 'Failed to fetch developer games' }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });

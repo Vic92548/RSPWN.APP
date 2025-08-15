@@ -72,8 +72,17 @@ class ApiClient {
                 createdAt: string;
                 ownedAt: string;
                 totalPlaytimeSeconds: number;
+                isHidden?: boolean;
+                stats?: {
+                    playerCount: number;
+                    totalKeys: number;
+                    usedKeys: number;
+                    availableKeys: number;
+                    totalPlaytimeSeconds: number;
+                };
+                personalPlaytimeSeconds?: number;
             }>;
-        }>('/api/my-games');
+        }>('/api/developer/games'); // Changed from '/api/my-games'
     }
 
     async getAllGames() {

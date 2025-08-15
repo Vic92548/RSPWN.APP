@@ -656,7 +656,7 @@ import {
     redeemGameKey,
     generateGameKeys,
     getGameKeys,
-    getGameDownloadUrl, downloadKeysAsCSV
+    getGameDownloadUrl, downloadKeysAsCSV, getDeveloperGames
 } from './server_modules/games.js';
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
 
@@ -671,6 +671,12 @@ app.get('/api/games', async (req, res) => {
 
 app.get('/api/my-games', authMiddleware, async (req, res) => {
     const response = await getUserGames(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/developer/games', authMiddleware, async (req, res) => {
+    const response = await getDeveloperGames(req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
 });
