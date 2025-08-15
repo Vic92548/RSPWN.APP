@@ -406,10 +406,15 @@ class CachedCollection {
     async insertOne(doc, options = {}) {
         const result = await this.mongoCollection.insertOne(doc);
 
-        // If waitForReplication option is set, wait for the document to appear in cache
         if (options.waitForReplication) {
             const docId = doc.id || doc._id?.toString() || result.insertedId?.toString();
             await this.waitForReplication(docId, options.replicationTimeout || 5000);
+        }
+
+        // If we waited for replication, we can return the document from cache
+        if (options.waitForReplication && options.returnDocument) {
+            const insertedDoc = await this.findOne({ id: doc.id || result.insertedId?.toString() });
+            return { ...result, document: insertedDoc };
         }
 
         return result;
