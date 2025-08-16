@@ -285,9 +285,12 @@ class ApiClient {
                 creatorId: string;
                 username: string;
                 creatorCode: string;
+                tebexWalletId: string | null;
                 avatar: string | null;
                 isAddedToTebex: boolean;
                 confirmedAt: string | null;
+                revenueShare: number;
+                customerDiscount: number;
             }>;
             totalCreators: number;
             addedCount: number;

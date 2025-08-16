@@ -27,9 +27,12 @@ interface Creator {
     creatorId: string;
     username: string;
     creatorCode: string;
+    tebexWalletId: string | null;
     avatar: string | null;
     isAddedToTebex: boolean;
     confirmedAt: string | null;
+    revenueShare: number;
+    customerDiscount: number;
 }
 
 export default function CreatorCodes() {
@@ -361,7 +364,7 @@ function CreatorRow({ creator, updating, onToggle, onCopyCode, copiedCode }: {
                         className={undefined}                    />
                     <AvatarFallback className={undefined}>{creator.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="flex-1">
                     <p className="font-medium">{creator.username}</p>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <code className="bg-muted px-2 py-0.5 rounded">{creator.creatorCode}</code>
@@ -377,6 +380,11 @@ function CreatorRow({ creator, updating, onToggle, onCopyCode, copiedCode }: {
                                 <Copy className="h-3 w-3" />
                             )}
                         </Button>
+                    </div>
+                    <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                        <span>Wallet: <code className="bg-muted px-1.5 py-0.5 rounded">{creator.tebexWalletId || 'Not set'}</code></span>
+                        <span>Revenue Share: <strong className="text-foreground">{creator.revenueShare}%</strong></span>
+                        <span>Customer Discount: <strong className="text-foreground">{creator.customerDiscount}%</strong></span>
                     </div>
                 </div>
             </div>

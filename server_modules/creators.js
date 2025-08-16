@@ -1037,9 +1037,12 @@ export async function getCreatorsForPartner(partnerId) {
                 creatorId: creator.userId,
                 username: creator.username,
                 creatorCode: creator.username,
+                tebexWalletId: creator.tebexWalletId || null,
                 avatar: user?.avatar || null,
                 isAddedToTebex: link?.addedToTebex || false,
-                confirmedAt: link?.confirmedAt || null
+                confirmedAt: link?.confirmedAt || null,
+                revenueShare: 20, // Fixed at 20% for now
+                customerDiscount: 5 // Fixed at 5% for now
             };
         }));
 
