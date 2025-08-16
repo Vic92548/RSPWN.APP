@@ -1,5 +1,3 @@
-// API Client for VAPR Store
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 interface Game {
@@ -101,7 +99,6 @@ class ApiClient {
         }
     }
 
-    // Auth methods
     async login(): Promise<void> {
         window.location.href = `/login`;
     }
@@ -127,7 +124,6 @@ class ApiClient {
         }>('/me');
     }
 
-    // Get VAPR games (for metadata)
     private async getVAPRGames() {
         if (!this.vaprGamesCache) {
             const response = await this.request<{
@@ -139,7 +135,6 @@ class ApiClient {
         return this.vaprGamesCache;
     }
 
-    // Tebex methods
     async loadTebexConfigs() {
         try {
             const response = await this.request<{
@@ -189,11 +184,9 @@ class ApiClient {
     }
 
     async transformTebexGames(tebexPackages: TebexPackage[]): Promise<Game[]> {
-        // Get VAPR games for additional metadata
         const vaprGames = await this.getVAPRGames();
 
         return tebexPackages.map(pkg => {
-            // Find matching VAPR game for additional info
             const vaprGame = vaprGames.find(g =>
                 g.title.toLowerCase() === pkg.name.toLowerCase()
             );
@@ -217,25 +210,32 @@ class ApiClient {
                 createdAt: vaprGame?.createdAt || new Date().toISOString(),
                 currentVersion: vaprGame?.currentVersion,
                 changelog: vaprGame?.changelog,
-                webstoreToken: pkg.storeInfo?.webstoreToken
+                webstoreToken: pkg.storeInfo?.webstoreToken,
+                isHidden: vaprGame?.isHidden
             };
         });
     }
 
-    // Store methods - Only return Tebex games
     async getAllGames() {
-        // Get Tebex games
         const tebexPackages = await this.getTebexPackages();
         const tebexGames = await this.transformTebexGames(tebexPackages);
 
-        // Cache games
-        this.tebexGamesCache = tebexGames;
+        const vaprGames = await this.getVAPRGames();
+
+        const visibleTebexGames = tebexGames.filter(tebexGame => {
+            const vaprGame = vaprGames.find(g => g.title.toLowerCase() === tebexGame.title.toLowerCase());
+
+            if (!vaprGame) return true;
+
+            return !vaprGame.isHidden;
+        });
+
+        this.tebexGamesCache = visibleTebexGames;
 
         return { success: true, games: this.tebexGamesCache };
     }
 
     async getGame(gameId: string) {
-        // Get from cache or fetch all games
         if (!this.tebexGamesCache) {
             await this.getAllGames();
         }
@@ -257,19 +257,16 @@ class ApiClient {
     }
 
     async getGameKeys(gameId: string) {
-        // If it's a Tebex game ID, we need to find the corresponding VAPR game
         if (gameId.startsWith('tebex-')) {
             const vaprGames = await this.getVAPRGames();
             const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
 
             if (tebexGame) {
-                // Find the VAPR game that matches this Tebex game by title
                 const vaprGame = vaprGames.find(g =>
                     g.title.toLowerCase() === tebexGame.title.toLowerCase()
                 );
 
                 if (vaprGame) {
-                    // Use the VAPR game ID to get the keys
                     return this.request<{
                         success: boolean;
                         keys: Array<{
@@ -286,10 +283,8 @@ class ApiClient {
                 }
             }
 
-            // No matching VAPR game found
             return { success: true, keys: [] };
         } else {
-            // It's already a VAPR game ID, use it directly
             return this.request<{
                 success: boolean;
                 keys: Array<{
@@ -323,7 +318,6 @@ class ApiClient {
         });
     }
 
-    // Tebex checkout methods
     async createTebexBasket(_packageId: number, webstoreToken: string) {
         const response = await fetch(`https://headless.tebex.io/api/accounts/${webstoreToken}/baskets`, {
             method: 'POST',
@@ -397,14 +391,11 @@ class ApiClient {
             throw new Error('Invalid game for Tebex checkout');
         }
 
-        // Create basket
         const basketResponse = await this.createTebexBasket(game.tebexId, game.webstoreToken);
         const basketIdent = basketResponse.data.ident;
 
-        // Add to basket
         await this.addToTebexBasket(basketIdent, game.tebexId);
 
-        // Try to apply creator code if applicable
         try {
             const vaprGames = await this.getVAPRGames();
             const vaprGame = vaprGames.find(g =>
@@ -426,19 +417,15 @@ class ApiClient {
             console.error('Failed to apply creator code:', error);
         }
 
-        // Get basket with checkout URL
         const basketData = await this.getTebexBasket(basketIdent, game.webstoreToken);
 
-        // Redirect to checkout
         window.location.href = basketData.data.links.checkout;
     }
 
-    // Track game click for creator attribution
     async trackGameClick(gameId: string, postId?: string) {
         if (!postId) return;
 
         try {
-            // Find the VAPR game ID
             const vaprGames = await this.getVAPRGames();
             const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
 
@@ -462,7 +449,6 @@ class ApiClient {
         }
     }
 
-    // User/Developer info
     async getUser(userId: string) {
         return this.request<{
             id: string;
@@ -472,12 +458,10 @@ class ApiClient {
         }>(`/api/user/${userId}`);
     }
 
-    // Cart methods - Not used for Tebex, but kept for compatibility
     getCart(): string[] {
         return [];
     }
 
-    // Wishlist methods (using local storage)
     getWishlist(): string[] {
         const saved = localStorage.getItem('vapr_wishlist');
         return saved ? JSON.parse(saved) : [];
@@ -509,7 +493,6 @@ class ApiClient {
         return this.getWishlist().includes(gameId);
     }
 
-    // Reviews
     async getGameReviews(gameId: string): Promise<{ success: boolean; reviews: GameReview[] }> {
         const reviews = JSON.parse(localStorage.getItem(`reviews_${gameId}`) || '[]');
         return { success: true, reviews };

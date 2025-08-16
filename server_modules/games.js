@@ -5,25 +5,24 @@ export async function getAllGames(userId = null) {
     try {
         const publicGames = await gamesCollection.find({ isHidden: { $ne: true } }).toArray();
 
-        let userOwnedGames = [];
-        let userAccessGames = [];
+        let userOwnedHiddenGames = [];
 
         if (userId && userId !== 'anonymous') {
-            userOwnedGames = await gamesCollection.find({ ownerId: userId }).toArray();
-
             const userGames = await userGamesCollection.find({ userId }).toArray();
             const ownedGameIds = userGames.map(ug => ug.gameId);
 
             if (ownedGameIds.length > 0) {
-                userAccessGames = await gamesCollection.find({
+                userOwnedHiddenGames = await gamesCollection.find({
                     id: { $in: ownedGameIds },
-                    isHidden: true,
-                    ownerId: { $ne: userId }
+                    isHidden: true
                 }).toArray();
             }
         }
 
-        const enrichedPublicGames = await Promise.all(publicGames.map(async (game) => {
+        const allVisibleGames = [...publicGames, ...userOwnedHiddenGames];
+        const uniqueGames = Array.from(new Map(allVisibleGames.map(g => [g.id, g])).values());
+
+        const enrichedGames = await Promise.all(uniqueGames.map(async (game) => {
             const complianceCheck = await checkPartnerCreatorCompliance(game.ownerId);
             const compliance = await complianceCheck.json();
 
@@ -33,10 +32,7 @@ export async function getAllGames(userId = null) {
             };
         }));
 
-        const allGames = [...enrichedPublicGames, ...userOwnedGames, ...userAccessGames];
-        const uniqueGames = Array.from(new Map(allGames.map(g => [g.id, g])).values());
-
-        return new Response(JSON.stringify({ success: true, games: uniqueGames }), {
+        return new Response(JSON.stringify({ success: true, games: enrichedGames }), {
             status: 200,
             headers: { "Content-Type": "application/json" }
         });
