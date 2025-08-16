@@ -287,11 +287,11 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                         {/* Media Gallery */}
                         <div className="space-y-4">
                             {/* Main Display */}
-                            <div className="aspect-video rounded-lg overflow-hidden bg-black">
+                            <div className="aspect-video rounded-lg overflow-hidden bg-background relative">
                                 <img
                                     src={game.screenshots[selectedImage]}
                                     alt={`Screenshot ${selectedImage + 1}`}
-                                    className="w-full h-full object-contain"
+                                    className="absolute inset-0 w-full h-full object-contain"
                                 />
                             </div>
 
@@ -301,14 +301,14 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                     <button
                                         key={index}
                                         onClick={() => setSelectedImage(index)}
-                                        className={`aspect-video rounded overflow-hidden ${
+                                        className={`aspect-video rounded overflow-hidden bg-background relative ${
                                             selectedImage === index ? 'ring-2 ring-primary' : ''
                                         }`}
                                     >
                                         <img
                                             src={screenshot}
                                             alt={`Screenshot ${index + 1}`}
-                                            className="w-full h-full object-cover hover:opacity-80 transition-opacity"
+                                            className="absolute inset-0 w-full h-full object-cover hover:opacity-80 transition-opacity"
                                         />
                                     </button>
                                 ))}
@@ -486,11 +486,13 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                     <div className="space-y-4">
                         <Card>
                             <CardContent className="pt-6">
-                                <img
-                                    src={game.coverImage || '/default-game-cover.png'}
-                                    alt={game.title}
-                                    className="w-full rounded-lg mb-4"
-                                />
+                                <div className="aspect-[3/4] relative bg-background rounded-lg overflow-hidden mb-4">
+                                    <img
+                                        src={game.coverImage || '/default-game-cover.png'}
+                                        alt={game.title}
+                                        className="absolute inset-0 w-full h-full object-contain"
+                                    />
+                                </div>
 
                                 {/* Price Display */}
                                 <div className="mb-4">

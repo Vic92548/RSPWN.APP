@@ -41,11 +41,12 @@ export default function GameCard({ game, onBuyNow, onAddToWishlist, isAuthentica
     return (
         <Card className="overflow-hidden hover:ring-2 hover:ring-primary transition-all h-full flex flex-col">
             <Link to={`/game/${game.id}`} className="flex-1 flex flex-col">
-                <div className="aspect-[3/4] relative">
+                <div className="relative bg-background overflow-hidden">
                     <img
                         src={game.coverImage || '/default-game-cover.png'}
                         alt={game.title}
-                        className="object-cover w-full h-full"
+                        className="w-full h-auto"
+                        style={{ maxHeight: '400px', objectFit: 'contain' }}
                     />
                     {game.onSale && game.discount && (
                         <Badge className="absolute top-2 right-2" variant="destructive">

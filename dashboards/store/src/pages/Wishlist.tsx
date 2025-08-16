@@ -79,11 +79,11 @@ export default function Wishlist() {
                         {games.map((game) => (
                             <Card key={game.id} className="overflow-hidden hover:ring-2 hover:ring-primary transition-all">
                                 <Link to={`/game/${game.id}`}>
-                                    <div className="aspect-[3/4] relative">
+                                    <div className="relative bg-background overflow-hidden">
                                         <img
                                             src={game.coverImage || '/default-game-cover.png'}
                                             alt={game.title}
-                                            className="object-cover w-full h-full"
+                                            className="absolute inset-0 w-full h-full object-contain"
                                         />
                                     </div>
                                 </Link>
