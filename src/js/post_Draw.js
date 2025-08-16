@@ -147,6 +147,7 @@ function drawPost(data){
         };
 
         window.currentPostImageUrl = data.content;
+        window.currentPostId = data.id;
         updateSetBackgroundButton();
     }else if(data.content.includes("iframe.mediadelivery.net")){
         DOM.show("post_video");
@@ -156,6 +157,7 @@ function drawPost(data){
         DOM.hide("post_content");
         DOM.hide("post_image");
         window.currentPostImageUrl = null;
+        window.currentPostId = null;
         updateSetBackgroundButton();
     }
 
@@ -202,11 +204,11 @@ function updateSetBackgroundButton() {
         }
     }
 
-    if (window.currentPostImageUrl) {
+    if (window.currentPostImageUrl && window.currentPostId) {
         DOM.show(setBackgroundBtn, 'inline-flex');
 
-        const currentBackground = localStorage.getItem('background_url');
-        if (currentBackground === window.currentPostImageUrl) {
+        const currentBackgroundId = localStorage.getItem('background_id');
+        if (currentBackgroundId === window.currentPostId) {
             setBackgroundBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Current Background</span>';
             setBackgroundBtn.classList.add('active');
             setBackgroundBtn.disabled = true;
@@ -221,16 +223,17 @@ function updateSetBackgroundButton() {
 }
 
 function setPostAsBackground() {
-    if (!window.currentPostImageUrl) return;
+    if (!window.currentPostImageUrl || !window.currentPostId) return;
 
     if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
 
-    equipBackground(window.currentPostImageUrl, true);
-    updateSetBackgroundButton();
+    // Let equipBackground handle everything
+    equipBackground(window.currentPostId, true);
 
+    updateSetBackgroundButton();
     notify.success("Background updated!");
 
     if (typeof confetti !== 'undefined') {

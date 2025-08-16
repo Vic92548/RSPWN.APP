@@ -28,8 +28,6 @@ async function loadGamesData() {
                 gamesData.installedGames = [];
             }
         }
-
-        displayGames();
     } catch (error) {
         console.error('Error loading games:', error);
     } finally {

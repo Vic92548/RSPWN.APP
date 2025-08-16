@@ -63,14 +63,14 @@ function loadUserData(){
 }
 
 function syncBackgroundFromBackend() {
-    if (window.user && window.user.backgroundUrl) {
-        equipBackground(window.user.backgroundUrl, false);
-        localStorage.setItem('background_url', window.user.backgroundUrl);
-        console.log('Background synchronized from backend:', window.user.backgroundUrl);
+    console.log(window.user);
+    if (window.user && window.user.backgroundId) {
+        equipBackground(window.user.backgroundId, false);
+        console.log('Background synchronized from backend:', window.user.backgroundId);
     } else {
-        const savedBackgroundUrl = localStorage.getItem('background_url');
-        if (savedBackgroundUrl) {
-            equipBackground(savedBackgroundUrl, false);
+        const background_id = localStorage.getItem('background_id');
+        if (background_id) {
+            equipBackground(background_id, false);
         } else {
             setDefaultBackground();
         }

@@ -1,15 +1,24 @@
-function equipBackground(url, save = true) {
-    document.body.style.backgroundImage = 'url(' + url + ')';
+async function equipBackground(postId, save = true) {
+    let imageUrl = null;
 
-    if (save) {
-        localStorage.setItem('background_url', url);
+    if (window.currentPostId === postId && window.currentPostImageUrl) {
+        imageUrl = window.currentPostImageUrl;
+    } else {
+        imageUrl = await loadBackgroundFromPost(postId);
+    }
 
-        if (isUserLoggedIn() && navigator.onLine) {
-            api.updateBackground(url)
+    if (imageUrl) {
+        document.body.style.backgroundImage = 'url(' + imageUrl + ')';
+
+        localStorage.setItem('background_url', imageUrl);
+        localStorage.setItem('background_id', postId);
+
+        if (save && isUserLoggedIn() && navigator.onLine) {
+            api.updateBackground(postId)
                 .then(response => {
                     console.log('Background synced successfully:', response);
                     if (window.user) {
-                        window.user.backgroundUrl = url;
+                        window.user.backgroundId = postId;
                     }
                 })
                 .catch(error => {
@@ -19,21 +28,20 @@ function equipBackground(url, save = true) {
     }
 }
 
-function setDefaultBackground() {
-    const defaultBgUrl = "https://vapr-club.b-cdn.net/backgrounds/sunset_crush.png";
-    equipBackground(defaultBgUrl, true);
+async function loadBackgroundFromPost(postId) {
+    try {
+        const post = await api.resolvePost(postId);
+        if (post && post.media) {
+            document.body.style.backgroundImage = 'url(' + post.media + ')';
+            return post.media;
+        }
+    } catch (error) {
+        console.error('Failed to load background from post:', error);
+    }
+    return null;
 }
 
-window.addEventListener('online', async () => {
-    if (isUserLoggedIn()) {
-        const pendingBackgroundUrl = localStorage.getItem('background_url');
-        if (pendingBackgroundUrl && window.user && window.user.backgroundUrl !== pendingBackgroundUrl) {
-            try {
-                await api.updateBackground(pendingBackgroundUrl);
-                console.log('Synced pending background change');
-            } catch (error) {
-                console.error('Failed to sync pending background:', error);
-            }
-        }
-    }
-});
+function setDefaultBackground() {
+    const defaultBgUrl = "2133e675-b741-4da0-9bd9-d519bfb72e1e";
+    equipBackground(defaultBgUrl, true);
+}

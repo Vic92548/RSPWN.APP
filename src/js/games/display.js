@@ -8,58 +8,6 @@ function formatDurationShort(totalSeconds) {
     return `${secs}s`;
 }
 
-function displayGames() {
-    const container = DOM.get('games-grid');
-    container.innerHTML = '';
-
-    const userGameIds = gamesData.userGames.map(g => g.id);
-    const tebexGames = gamesData.tebexGames || [];
-    const regularGames = gamesData.allGames.filter(g => !g.isTebexProduct);
-
-    const tebexGameTitles = tebexGames.map(g => g.title.toLowerCase());
-    const gamesToDisplay = regularGames.filter(game =>
-        !tebexGameTitles.includes(game.title.toLowerCase())
-    );
-
-    const allGamesToShow = [...gamesToDisplay, ...tebexGames];
-
-    allGamesToShow.forEach(game => {
-        const isOwned = userGameIds.includes(game.id) ||
-            userGameIds.some(id => {
-                const ownedGame = gamesData.userGames.find(g => g.id === id);
-                return ownedGame && ownedGame.title.toLowerCase() === game.title.toLowerCase();
-            });
-
-        if (game.isTebexProduct) {
-            VAPR.appendElement(container, 'tebex-game-item', {
-                gameId: game.id,
-                title: game.title,
-                coverImage: game.coverImage,
-                price: game.price.toFixed(2),
-                currency: game.currency,
-                onSale: game.onSale ? 'true' : '',
-                originalPrice: game.originalPrice?.toFixed(2),
-                discount: game.discount || 0,
-                tebexId: game.tebexId,
-                externalLink: game.externalLink || '',
-                isOwned: isOwned ? 'true' : ''
-            });
-        } else {
-            VAPR.appendElement(container, 'game-item', {
-                gameId: game.id,
-                title: game.title,
-                description: game.description,
-                coverImage: game.coverImage,
-                isOwned: isOwned ? 'true' : '',
-                isOwner: isUserLoggedIn() && game.ownerId === window.user.id ? 'true' : '',
-                externalLink: game.externalLink || ''
-            });
-        }
-    });
-
-    VAPR.refresh();
-}
-
 function displayLibrary() {
     const container = DOM.get('library-grid');
     container.innerHTML = '';
