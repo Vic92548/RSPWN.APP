@@ -1,3 +1,4 @@
+// dashboards/store/src/pages/GameDetails.tsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StoreLayout from "@/components/StoreLayout";
+import HtmlParser from "@/components/HtmlParser";
 import {
     Heart,
     Download,
@@ -360,7 +362,8 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                         <CardTitle>About This Game</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        <p className="text-muted-foreground whitespace-pre-wrap">{game.description}</p>
+                                        {/* Use HtmlParser for game description */}
+                                        <HtmlParser html={game.description} />
 
                                         {game.changelog && (
                                             <div>
