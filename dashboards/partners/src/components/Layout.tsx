@@ -1,12 +1,14 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     Gamepad2,
     LayoutDashboard,
     LogOut,
     ExternalLink,
-    Home
+    Home,
+    AlertTriangle
 } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
@@ -22,6 +24,26 @@ interface LayoutProps {
 
 export default function Layout({ children, user }: LayoutProps) {
     const location = useLocation();
+    const [compliance, setCompliance] = useState<any>(null);
+    const [loadingCompliance, setLoadingCompliance] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            checkCompliance();
+        }
+    }, [user]);
+
+    const checkCompliance = async () => {
+        try {
+            setLoadingCompliance(true);
+            const complianceData = await apiClient.checkPartnerCompliance();
+            setCompliance(complianceData);
+        } catch (error) {
+            console.error('Failed to check compliance:', error);
+        } finally {
+            setLoadingCompliance(false);
+        }
+    };
 
     const handleLogout = () => {
         apiClient.logout();
@@ -112,6 +134,23 @@ export default function Layout({ children, user }: LayoutProps) {
                     </nav>
                 </div>
             </div>
+
+            {!loadingCompliance && compliance && !compliance.isCompliant && (
+                <div className="bg-destructive/10 border-b border-destructive/20">
+                    <div className="container mx-auto px-4 py-3">
+                        <Alert className="border-0 bg-transparent p-0">
+                            <AlertTriangle className="h-4 w-4 text-destructive" />
+                            <AlertDescription className="text-sm">
+                                <strong>Action Required:</strong> You need to add {compliance.missingCreators} creator{compliance.missingCreators !== 1 ? 's' : ''} to your Tebex store before your games can be public.
+                                All partners must add all approved creators to their Tebex creator codes system.
+                                <Link to="/creator-codes" className="ml-2 underline font-medium">
+                                    Manage Creator Codes
+                                </Link>
+                            </AlertDescription>
+                        </Alert>
+                    </div>
+                </div>
+            )}
 
             <main className="flex-1">
                 {children}

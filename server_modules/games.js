@@ -1,4 +1,5 @@
 import { gamesCollection, gameKeysCollection, userGamesCollection, usersCollection, playtimeSessionsCollection } from './database.js';
+import {checkPartnerCreatorCompliance} from "./creators.js";
 
 export async function getAllGames(userId = null) {
     try {
@@ -22,7 +23,17 @@ export async function getAllGames(userId = null) {
             }
         }
 
-        const allGames = [...publicGames, ...userOwnedGames, ...userAccessGames];
+        const enrichedPublicGames = await Promise.all(publicGames.map(async (game) => {
+            const complianceCheck = await checkPartnerCreatorCompliance(game.ownerId);
+            const compliance = await complianceCheck.json();
+
+            return {
+                ...game,
+                creatorCompliance: compliance
+            };
+        }));
+
+        const allGames = [...enrichedPublicGames, ...userOwnedGames, ...userAccessGames];
         const uniqueGames = Array.from(new Map(allGames.map(g => [g.id, g])).values());
 
         return new Response(JSON.stringify({ success: true, games: uniqueGames }), {

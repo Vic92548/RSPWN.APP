@@ -278,6 +278,50 @@ class ApiClient {
         });
     }
 
+    async getPartnerCreators() {
+        return this.request<{
+            success: boolean;
+            creators: Array<{
+                creatorId: string;
+                username: string;
+                creatorCode: string;
+                avatar: string | null;
+                isAddedToTebex: boolean;
+                confirmedAt: string | null;
+            }>;
+            totalCreators: number;
+            addedCount: number;
+        }>('/api/partner/creators');
+    }
+
+    async confirmCreatorAdded(creatorId: string) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>(`/api/partner/creators/${creatorId}/confirm`, {
+            method: 'POST'
+        });
+    }
+
+    async removeCreatorConfirmation(creatorId: string) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>(`/api/partner/creators/${creatorId}/confirm`, {
+            method: 'DELETE'
+        });
+    }
+
+    async checkPartnerCompliance() {
+        return this.request<{
+            success: boolean;
+            isCompliant: boolean;
+            totalCreators: number;
+            confirmedCreators: number;
+            missingCreators: number;
+        }>('/api/partner/compliance');
+    }
+
     async getGameAnalytics(gameId: string, timeRange: number = 30) {
         return this.request<{
             success: boolean;

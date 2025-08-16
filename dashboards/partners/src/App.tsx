@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import GameKeys from './pages/GameKeys'
 import GameStats from './pages/GameStats'
 import GameUpdates from './pages/GameUpdates'
+import CreatorCodes from './pages/CreatorCodes'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -13,7 +14,6 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Force dark mode on the document
         document.documentElement.classList.add('dark');
         document.documentElement.style.colorScheme = 'dark';
         checkAuth();
@@ -30,7 +30,6 @@ function App() {
         }
     };
 
-    // Show loading state while checking authentication
     if (loading) {
         return (
             <div className="min-h-screen w-full flex items-center justify-center bg-background">
@@ -52,6 +51,10 @@ function App() {
                 <Route
                     path="/dashboard"
                     element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/creator-codes"
+                    element={isAuthenticated ? <CreatorCodes /> : <Navigate to="/" />}
                 />
                 <Route
                     path="/games/:gameId/keys"

@@ -53,7 +53,10 @@ import {
     getCreatorCodeForPurchase,
     getCreatorStats,
     getCreatorFollowers,
-    getPopularContentFromFollowedCreators, getTopEngagedFollowers, getPopularContentLovedByFollowers
+    getPopularContentFromFollowedCreators,
+    getTopEngagedFollowers,
+    getPopularContentLovedByFollowers,
+    confirmCreatorAdded, removeCreatorConfirmation, checkPartnerCreatorCompliance, getCreatorsForPartner
 } from './server_modules/creators.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -686,6 +689,30 @@ app.get('/api/my-games', authMiddleware, async (req, res) => {
 
 app.get('/api/developer/games', authMiddleware, async (req, res) => {
     const response = await getDeveloperGames(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/partner/creators', authMiddleware, async (req, res) => {
+    const response = await getCreatorsForPartner(req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/partner/creators/:creatorId/confirm', authMiddleware, async (req, res) => {
+    const response = await confirmCreatorAdded(req.userData.id, req.params.creatorId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.delete('/api/partner/creators/:creatorId/confirm', authMiddleware, async (req, res) => {
+    const response = await removeCreatorConfirmation(req.userData.id, req.params.creatorId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/partner/compliance', authMiddleware, async (req, res) => {
+    const response = await checkPartnerCreatorCompliance(req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
 });

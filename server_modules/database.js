@@ -6,18 +6,15 @@ dotenv.config();
 
 const databaseUrl = process.env.DATABASE_URL;
 
-// MongoDB Client for writes
 const client = new MongoClient(databaseUrl);
 await client.connect();
 console.log("Connected to MongoDB");
 const db = client.db("vapr");
 
-// SQLite in-memory cache for reads
 const sqliteDb = new Database(':memory:');
 sqliteDb.pragma('foreign_keys = ON');
 sqliteDb.pragma('journal_mode = WAL');
 
-// Cache system
 class CacheSystem extends EventEmitter {
     constructor() {
         super();
@@ -26,7 +23,6 @@ class CacheSystem extends EventEmitter {
     }
 
     async initCollection(name, mongoCollection) {
-        // Create SQLite table
         sqliteDb.exec(`
             CREATE TABLE IF NOT EXISTS ${name} (
                                                    _id TEXT PRIMARY KEY,
@@ -35,7 +31,6 @@ class CacheSystem extends EventEmitter {
                 )
         `);
 
-        // Create indexes for common fields
         const indexMap = {
             posts: ['userId', 'timestamp', 'id'],
             users: ['id', 'username', 'email'],
@@ -48,7 +43,8 @@ class CacheSystem extends EventEmitter {
             games: ['id', 'ownerId', 'slug'],
             gameKeys: ['gameId', 'key'],
             userGames: ['userId', 'gameId'],
-            creators: ['userId', 'username']
+            creators: ['userId', 'username'],
+            partnerCreatorLinks: ['partnerId', 'creatorId']
         };
 
         if (indexMap[name]) {
@@ -56,18 +52,15 @@ class CacheSystem extends EventEmitter {
                 try {
                     sqliteDb.exec(`CREATE INDEX IF NOT EXISTS idx_${name}_${field} ON ${name}(json_extract(_doc, '$.${field}'))`);
                 } catch (e) {
-                    // Index might already exist
                 }
             });
         }
 
-        // Initial sync
         console.log(`Syncing ${name}...`);
         const docs = await mongoCollection.find({}).toArray();
         const stmt = sqliteDb.prepare(`INSERT OR REPLACE INTO ${name} (_id, _doc) VALUES (?, ?)`);
         const insertMany = sqliteDb.transaction((documents) => {
             for (const doc of documents) {
-                // For users collection, use 'id' field as the primary key
                 let docId;
                 if (name === 'users' && doc.id) {
                     docId = doc.id;
@@ -80,7 +73,6 @@ class CacheSystem extends EventEmitter {
         insertMany(docs);
         console.log(`Synced ${docs.length} documents for ${name}`);
 
-        // Setup change stream
         const changeStream = mongoCollection.watch([], { fullDocument: 'updateLookup' });
 
         changeStream.on('change', (change) => {
@@ -120,7 +112,6 @@ class CacheSystem extends EventEmitter {
 
         changeStream.on('error', (error) => {
             console.error(`Change stream error for ${name}:`, error);
-            // Attempt to reconnect
             setTimeout(() => {
                 console.log(`Attempting to reconnect change stream for ${name}`);
                 this.initCollection(name, mongoCollection);
@@ -142,7 +133,6 @@ class CacheSystem extends EventEmitter {
         Object.entries(filter).forEach(([key, value]) => {
             if (key === '_id') {
                 if (typeof value === 'object' && value.$in) {
-                    // Handle _id: { $in: [...] }
                     const placeholders = value.$in.map(() => '?').join(',');
                     conditions.push(`_id IN (${placeholders})`);
                     params.push(...value.$in.map(v => v?.toString() || v));
@@ -152,12 +142,10 @@ class CacheSystem extends EventEmitter {
                 }
             } else if (key === 'id') {
                 if (typeof value === 'object' && value.$in) {
-                    // Handle id: { $in: [...] }
                     const placeholders = value.$in.map(() => '?').join(',');
                     conditions.push(`json_extract(_doc, '$.id') IN (${placeholders})`);
                     params.push(...value.$in.map(v => v?.toString() || v));
                 } else {
-                    // Special handling for 'id' field - search in JSON
                     conditions.push(`json_extract(_doc, '$.id') = ?`);
                     params.push(value?.toString() || value);
                 }
@@ -169,11 +157,9 @@ class CacheSystem extends EventEmitter {
                 });
                 conditions.push(`(${orConds.join(' OR ')})`);
             } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                // Handle operators like $gte, $in, etc. for other fields
                 Object.entries(value).forEach(([op, val]) => {
                     const field = key === '_id' ? '_id' : `json_extract(_doc, '$.${key}')`;
 
-                    // Convert dates to ISO strings and booleans to integers for SQLite
                     let processedVal = val;
                     if (val instanceof Date) {
                         processedVal = val.toISOString();
@@ -230,9 +216,7 @@ class CacheSystem extends EventEmitter {
                     }
                 });
             } else {
-                // Simple equality check
                 conditions.push(`json_extract(_doc, '$.${key}') = ?`);
-                // Convert dates to ISO strings and booleans to integers
                 if (value instanceof Date) {
                     params.push(value.toISOString());
                 } else if (typeof value === 'boolean') {
@@ -249,30 +233,26 @@ class CacheSystem extends EventEmitter {
 
 const cache = new CacheSystem();
 
-// Create cached collection wrapper
 class CachedCollection {
     constructor(name, mongoCollection) {
         this.name = name;
         this.mongoCollection = mongoCollection;
-        this.replicationPromises = new Map(); // Track pending replications
+        this.replicationPromises = new Map();
     }
 
     async init() {
         await cache.initCollection(this.name, this.mongoCollection);
     }
 
-    // Add this method to wait for replication
     async waitForReplication(documentId, timeout = 5000) {
         const startTime = Date.now();
 
         while (Date.now() - startTime < timeout) {
-            // Check if document exists in cache
             const cached = await this.findOne({ id: documentId });
             if (cached) {
                 return true;
             }
 
-            // Wait a bit before checking again
             await new Promise(resolve => setTimeout(resolve, 50));
         }
 
@@ -280,7 +260,6 @@ class CachedCollection {
         return false;
     }
 
-    // Add method to manually sync specific documents
     async syncDocument(filter) {
         try {
             const doc = await this.mongoCollection.findOne(filter);
@@ -303,7 +282,6 @@ class CachedCollection {
         }
     }
 
-    // Read operations (from SQLite)
     async findOne(filter = {}, options = {}) {
         const { where, params } = cache.buildWhereClause(filter);
         const row = sqliteDb.prepare(`SELECT _doc FROM ${this.name} ${where} LIMIT 1`).get(...params);
@@ -318,11 +296,9 @@ class CachedCollection {
                 Object.entries(options.projection).forEach(([k, v]) => {
                     if (v === 1 && doc[k] !== undefined) projected[k] = doc[k];
                 });
-                // Always include _id unless explicitly excluded
                 if (options.projection._id !== 0) {
                     projected._id = doc._id;
                 }
-                // Handle 'id' field
                 if (options.projection.id !== 0 && doc.id !== undefined) {
                     projected.id = doc.id;
                 }
@@ -393,7 +369,6 @@ class CachedCollection {
     }
 
     aggregate(pipeline) {
-        // Return a cursor-like object that matches MongoDB's API
         const self = this;
         return {
             async toArray() {
@@ -402,7 +377,6 @@ class CachedCollection {
         };
     }
 
-    // Write operations (to MongoDB)
     async insertOne(doc, options = {}) {
         const result = await this.mongoCollection.insertOne(doc);
 
@@ -411,7 +385,6 @@ class CachedCollection {
             await this.waitForReplication(docId, options.replicationTimeout || 5000);
         }
 
-        // If we waited for replication, we can return the document from cache
         if (options.waitForReplication && options.returnDocument) {
             const insertedDoc = await this.findOne({ id: doc.id || result.insertedId?.toString() });
             return { ...result, document: insertedDoc };
@@ -423,7 +396,6 @@ class CachedCollection {
     async insertMany(docs, options = {}) {
         const result = await this.mongoCollection.insertMany(docs);
 
-        // If waitForReplication option is set, wait for all documents to appear in cache
         if (options.waitForReplication) {
             const waitPromises = docs.map((doc, index) => {
                 const docId = doc.id || doc._id?.toString() || result.insertedIds[index]?.toString();
@@ -439,7 +411,6 @@ class CachedCollection {
         const result = await this.mongoCollection.updateOne(filter, update, options);
 
         if (options.waitForReplication && result.modifiedCount > 0) {
-            // Try to find the document ID from the filter
             const docId = filter.id || filter._id?.toString();
             if (docId) {
                 await this.waitForReplication(docId, options.replicationTimeout || 5000);
@@ -453,7 +424,6 @@ class CachedCollection {
         const result = await this.mongoCollection.updateMany(filter, update, options);
 
         if (options.waitForReplication && result.modifiedCount > 0) {
-            // For updateMany, we might need to fetch the affected documents
             console.warn('waitForReplication with updateMany may not wait for all documents');
         }
 
@@ -469,13 +439,12 @@ class CachedCollection {
     }
 }
 
-// Initialize all collections
 const collectionNames = [
     'posts', 'users', 'views', 'likes', 'videos', 'dislikes', 'skips',
     'follows', 'reactions', 'linkClicks', 'registrationReferrals', 'xpLog',
     'secretKeys', 'games', 'gameKeys', 'userGames', 'gameVersions',
     'gameUpdates', 'creatorApplications', 'creators', 'gameCreatorClicks',
-    'playtimeSessions', 'tebexConfigs'
+    'playtimeSessions', 'tebexConfigs', 'partnerCreatorLinks'
 ];
 
 const collections = {};
@@ -485,7 +454,6 @@ for (const name of collectionNames) {
     collections[name] = cached;
 }
 
-// Export collections
 const postsCollection = collections.posts;
 const usersCollection = collections.users;
 const viewsCollection = collections.views;
@@ -509,8 +477,8 @@ const creatorsCollection = collections.creators;
 const gameCreatorClicksCollection = collections.gameCreatorClicks;
 const playtimeSessionsCollection = collections.playtimeSessions;
 const tebexConfigsCollection = collections.tebexConfigs;
+const partnerCreatorLinksCollection = collections.partnerCreatorLinks;
 
-// Log cache stats periodically
 setInterval(() => {
     const tables = sqliteDb.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
     console.log('Cache Stats:');
@@ -520,7 +488,6 @@ setInterval(() => {
     });
 }, 60000);
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
     console.log('Closing database connections...');
     for (const stream of cache.changeStreams.values()) {
@@ -564,5 +531,6 @@ export {
     creatorsCollection,
     gameCreatorClicksCollection,
     playtimeSessionsCollection,
-    tebexConfigsCollection
+    tebexConfigsCollection,
+    partnerCreatorLinksCollection
 };

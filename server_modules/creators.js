@@ -8,7 +8,8 @@ import {
     likesCollection,
     viewsCollection,
     reactionsCollection,
-    gamesCollection
+    gamesCollection,
+    partnerCreatorLinksCollection
 } from './database.js';
 import { sendMessageToDiscordWebhook } from './discord.js';
 
@@ -1000,6 +1001,203 @@ export async function getPopularContentLovedByFollowers(creatorId, limit = 20, t
         return new Response(JSON.stringify({
             success: false,
             error: 'Failed to get popular content'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function getCreatorsForPartner(partnerId) {
+    try {
+        const games = await gamesCollection.find({ ownerId: partnerId }).toArray();
+        if (games.length === 0) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'You must be a game developer to access this'
+            }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const allCreators = await creatorsCollection.find({}).toArray();
+
+        const existingLinks = await partnerCreatorLinksCollection
+            .find({ partnerId })
+            .toArray();
+
+        const linkedCreatorIds = new Set(existingLinks.map(link => link.creatorId));
+
+        const creatorsWithStatus = await Promise.all(allCreators.map(async (creator) => {
+            const user = await usersCollection.findOne({ id: creator.userId });
+            const link = existingLinks.find(l => l.creatorId === creator.userId);
+
+            return {
+                creatorId: creator.userId,
+                username: creator.username,
+                creatorCode: creator.username,
+                avatar: user?.avatar || null,
+                isAddedToTebex: link?.addedToTebex || false,
+                confirmedAt: link?.confirmedAt || null
+            };
+        }));
+
+        return new Response(JSON.stringify({
+            success: true,
+            creators: creatorsWithStatus,
+            totalCreators: allCreators.length,
+            addedCount: existingLinks.filter(l => l.addedToTebex).length
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error getting creators for partner:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to get creators list'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function confirmCreatorAdded(partnerId, creatorId) {
+    try {
+        const games = await gamesCollection.find({ ownerId: partnerId }).toArray();
+        if (games.length === 0) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Unauthorized'
+            }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        const creator = await creatorsCollection.findOne({ userId: creatorId });
+        if (!creator) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Creator not found'
+            }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        await partnerCreatorLinksCollection.updateOne(
+            { partnerId, creatorId },
+            {
+                $set: {
+                    partnerId,
+                    creatorId,
+                    creatorCode: creator.username,
+                    addedToTebex: true,
+                    confirmedAt: new Date(),
+                    updatedAt: new Date()
+                },
+                $setOnInsert: {
+                    createdAt: new Date()
+                }
+            },
+            { upsert: true }
+        );
+
+        return new Response(JSON.stringify({
+            success: true,
+            message: 'Creator marked as added'
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error confirming creator added:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to confirm creator'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function removeCreatorConfirmation(partnerId, creatorId) {
+    try {
+        const games = await gamesCollection.find({ ownerId: partnerId }).toArray();
+        if (games.length === 0) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Unauthorized'
+            }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        await partnerCreatorLinksCollection.updateOne(
+            { partnerId, creatorId },
+            {
+                $set: {
+                    addedToTebex: false,
+                    confirmedAt: null,
+                    updatedAt: new Date()
+                }
+            }
+        );
+
+        return new Response(JSON.stringify({
+            success: true,
+            message: 'Creator confirmation removed'
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error removing creator confirmation:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to remove confirmation'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+export async function checkPartnerCreatorCompliance(partnerId) {
+    try {
+        const allCreators = await creatorsCollection.countDocuments({});
+
+        const confirmedLinks = await partnerCreatorLinksCollection.countDocuments({
+            partnerId,
+            addedToTebex: true
+        });
+
+        const isCompliant = confirmedLinks >= allCreators;
+
+        return new Response(JSON.stringify({
+            success: true,
+            isCompliant,
+            totalCreators: allCreators,
+            confirmedCreators: confirmedLinks,
+            missingCreators: Math.max(0, allCreators - confirmedLinks)
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error checking compliance:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to check compliance'
         }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
