@@ -13,8 +13,6 @@ export async function addReaction(postId, userId, emoji) {
             timestamp: new Date(),
             emoji
         });
-
-        console.log("Reaction added successfully:", reaction);
         return new Response(JSON.stringify({ success: true, reaction }), {
             status: 200,
             headers: { "Content-Type": "application/json" }
@@ -31,7 +29,6 @@ export async function addReaction(postId, userId, emoji) {
 export async function getReactionsByPostId(postId) {
     try {
         const reactions = await reactionsCollection.find({ postId }).toArray();
-        console.log("Reactions retrieved successfully:", reactions);
         return new Response(JSON.stringify({ success: true, reactions }), {
             status: 200,
             headers: { "Content-Type": "application/json" }

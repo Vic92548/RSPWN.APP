@@ -79,6 +79,7 @@ class CacheSystem extends EventEmitter {
             try {
                 switch (change.operationType) {
                     case 'insert':
+                        console.log(`[ChangeStream ${name}] Processing INSERT`);
                         let insertId;
                         if (name === 'users' && change.fullDocument.id) {
                             insertId = change.fullDocument.id;
@@ -93,14 +94,34 @@ class CacheSystem extends EventEmitter {
                     case 'update':
                     case 'replace':
                         if (change.fullDocument) {
-                            const updateId = change.documentKey._id?.toString() || change.documentKey.id?.toString();
-                            sqliteDb.prepare(`UPDATE ${name} SET _doc = ? WHERE _id = ?`).run(
+                            let updateId;
+
+                            // For users collection, ALWAYS use the 'id' field
+                            if (name === 'users' && change.fullDocument.id) {
+                                updateId = change.fullDocument.id;
+                            } else {
+                                updateId = change.documentKey._id?.toString() || change.documentKey.id?.toString();
+                            }
+
+                            const result = sqliteDb.prepare(`UPDATE ${name} SET _doc = ?, _updated_at = ? WHERE _id = ?`).run(
                                 JSON.stringify(change.fullDocument),
+                                Date.now(),
                                 updateId
                             );
+
+                            if (result.changes === 0 && name === 'users') {
+                                // For users, try inserting if update failed
+                                console.log(`[ChangeStream ${name}] Update failed, attempting insert for user ${change.fullDocument.id}`);
+                                sqliteDb.prepare(`INSERT OR REPLACE INTO ${name} (_id, _doc, _updated_at) VALUES (?, ?, ?)`).run(
+                                    change.fullDocument.id,
+                                    JSON.stringify(change.fullDocument),
+                                    Date.now()
+                                );
+                            }
                         }
                         break;
                     case 'delete':
+                        console.log(`[ChangeStream ${name}] Processing DELETE`);
                         const deleteId = change.documentKey._id?.toString() || change.documentKey.id?.toString();
                         sqliteDb.prepare(`DELETE FROM ${name} WHERE _id = ?`).run(deleteId);
                         break;
@@ -478,15 +499,6 @@ const gameCreatorClicksCollection = collections.gameCreatorClicks;
 const playtimeSessionsCollection = collections.playtimeSessions;
 const tebexConfigsCollection = collections.tebexConfigs;
 const partnerCreatorLinksCollection = collections.partnerCreatorLinks;
-
-setInterval(() => {
-    const tables = sqliteDb.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
-    console.log('Cache Stats:');
-    tables.forEach(table => {
-        const count = sqliteDb.prepare(`SELECT COUNT(*) as count FROM ${table.name}`).get();
-        console.log(`  ${table.name}: ${count.count} documents`);
-    });
-}, 60000);
 
 process.on('SIGINT', async () => {
     console.log('Closing database connections...');

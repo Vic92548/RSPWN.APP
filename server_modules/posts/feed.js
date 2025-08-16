@@ -56,8 +56,6 @@ export async function getNextFeedPosts(userid) {
         };
     }));
 
-    console.log(posts);
-
     if (posts.length === 0) {
         return new Response(JSON.stringify({ error: "No new posts to display" }), {
             status: 404,
