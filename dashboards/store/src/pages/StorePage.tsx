@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import StoreLayout from "@/components/StoreLayout";
-import { ShoppingCart, Heart, Gamepad2 } from "lucide-react";
+import { ShoppingCart, Heart, Gamepad2, ExternalLink } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
 interface Game {
@@ -13,10 +13,15 @@ interface Game {
     description: string;
     coverImage: string;
     price?: number;
+    currency?: string;
     tags?: string[];
     releaseDate?: string;
     publisher?: string;
     externalLink?: string | null;
+    onSale?: boolean;
+    originalPrice?: number;
+    discount?: number;
+    isTebexProduct?: boolean;
 }
 
 interface StorePageProps {
@@ -26,11 +31,9 @@ interface StorePageProps {
 export default function StorePage({ isAuthenticated }: StorePageProps) {
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
-    const [cart, setCart] = useState<string[]>([]);
 
     useEffect(() => {
         loadStoreData();
-        updateCart();
     }, []);
 
     const loadStoreData = async () => {
@@ -45,31 +48,18 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
         }
     };
 
-    const updateCart = () => {
-        const cartItems = apiClient.getCart();
-        setCart(cartItems);
-    };
-
-    const handleAddToCart = (gameId: string) => {
-        const game = games.find(g => g.id === gameId);
-
-        if (game?.externalLink) {
-            window.open(game.externalLink, '_blank');
-        } else {
-            apiClient.addToCart(gameId);
-            updateCart();
+    const handleBuyNow = async (gameId: string) => {
+        try {
+            await apiClient.checkoutTebexGame(gameId);
+        } catch (error) {
+            console.error('Failed to start checkout:', error);
         }
     };
 
-    const formatPrice = (price?: number) => {
-        return price === 0 || !price ? 'Free' : `$${price.toFixed(2)}`;
-    };
-
-    const getButtonText = (game: Game) => {
-        if (game.externalLink) {
-            return 'Get Game';
-        }
-        return cart.includes(game.id) ? 'In Cart' : 'Add to Cart';
+    const formatPrice = (price?: number, currency?: string) => {
+        const curr = currency || 'USD';
+        const currencySymbol = curr === 'USD' ? '$' : curr === 'EUR' ? '€' : curr === 'GBP' ? '£' : curr + ' ';
+        return `${currencySymbol}${price?.toFixed(2) || '0.00'}`;
     };
 
     if (loading) {
@@ -80,6 +70,21 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
                         <p className="text-muted-foreground">Loading store...</p>
                     </div>
+                </div>
+            </StoreLayout>
+        );
+    }
+
+    if (games.length === 0) {
+        return (
+            <StoreLayout isAuthenticated={isAuthenticated}>
+                <div className="container mx-auto px-4 py-8">
+                    <Card>
+                        <CardContent className="text-center py-12">
+                            <Gamepad2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-lg text-muted-foreground">No games available at the moment</p>
+                        </CardContent>
+                    </Card>
                 </div>
             </StoreLayout>
         );
@@ -112,15 +117,31 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                                         <h2 className="text-3xl font-bold mb-4">{games[0].title}</h2>
                                         <p className="text-muted-foreground mb-6 line-clamp-3">{games[0].description}</p>
                                         <div className="flex items-center gap-4">
-                                            <span className="text-2xl font-bold">{formatPrice(games[0].price)}</span>
+                                            {games[0].onSale && games[0].originalPrice ? (
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="text-2xl font-bold text-primary">
+                                                        {formatPrice(games[0].price, games[0].currency)}
+                                                    </span>
+                                                    <span className="text-lg text-muted-foreground line-through">
+                                                        {formatPrice(games[0].originalPrice, games[0].currency)}
+                                                    </span>
+                                                    {games[0].discount && (
+                                                        <Badge variant="destructive">-{games[0].discount}%</Badge>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="text-2xl font-bold">
+                                                    {formatPrice(games[0].price, games[0].currency)}
+                                                </span>
+                                            )}
                                             <Button
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    handleAddToCart(games[0].id);
+                                                    handleBuyNow(games[0].id);
                                                 }}
-                                                disabled={cart.includes(games[0].id) && !games[0].externalLink}
                                             >
-                                                {getButtonText(games[0])}
+                                                <ExternalLink className="h-4 w-4 mr-2" />
+                                                Buy Now
                                             </Button>
                                         </div>
                                     </div>
@@ -148,9 +169,9 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                                             alt={game.title}
                                             className="object-cover w-full h-full"
                                         />
-                                        {game.price === 0 && (
-                                            <Badge className="absolute top-2 right-2" variant="secondary">
-                                                Free
+                                        {game.onSale && game.discount && (
+                                            <Badge className="absolute top-2 right-2" variant="destructive">
+                                                -{game.discount}%
                                             </Badge>
                                         )}
                                     </div>
@@ -161,16 +182,29 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                                             {game.description}
                                         </p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-lg font-bold">{formatPrice(game.price)}</span>
+                                            {game.onSale && game.originalPrice ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm text-muted-foreground line-through">
+                                                        {formatPrice(game.originalPrice, game.currency)}
+                                                    </span>
+                                                    <span className="text-lg font-bold text-primary">
+                                                        {formatPrice(game.price, game.currency)}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-lg font-bold">
+                                                    {formatPrice(game.price, game.currency)}
+                                                </span>
+                                            )}
                                             <div className="flex gap-1">
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        handleAddToCart(game.id);
+                                                        handleBuyNow(game.id);
                                                     }}
-                                                    disabled={cart.includes(game.id) && !game.externalLink}
+                                                    title="Buy Now"
                                                 >
                                                     <ShoppingCart className="h-4 w-4" />
                                                 </Button>
@@ -182,6 +216,7 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                                                             e.preventDefault();
                                                             apiClient.addToWishlist(game.id);
                                                         }}
+                                                        title="Add to Wishlist"
                                                     >
                                                         <Heart className="h-4 w-4" />
                                                     </Button>

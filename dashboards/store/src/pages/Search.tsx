@@ -16,13 +16,11 @@ export default function Search({ isAuthenticated }: SearchProps) {
     const query = searchParams.get('q') || '';
     const [games, setGames] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [cart, setCart] = useState<string[]>([]);
 
     useEffect(() => {
         if (query) {
             searchGames();
         }
-        updateCart();
     }, [query]);
 
     const searchGames = async () => {
@@ -37,14 +35,12 @@ export default function Search({ isAuthenticated }: SearchProps) {
         }
     };
 
-    const updateCart = () => {
-        const cartItems = apiClient.getCart();
-        setCart(cartItems);
-    };
-
-    const handleAddToCart = (gameId: string) => {
-        apiClient.addToCart(gameId);
-        updateCart();
+    const handleBuyNow = async (gameId: string) => {
+        try {
+            await apiClient.checkoutTebexGame(gameId);
+        } catch (error) {
+            console.error('Failed to start checkout:', error);
+        }
     };
 
     const handleAddToWishlist = async (gameId: string) => {
@@ -54,14 +50,15 @@ export default function Search({ isAuthenticated }: SearchProps) {
         }
         try {
             await apiClient.addToWishlist(gameId);
-            // Show success message or update UI
         } catch (error) {
             console.error('Failed to add to wishlist:', error);
         }
     };
 
-    const formatPrice = (price?: number) => {
-        return price === 0 || !price ? 'Free' : `$${price.toFixed(2)}`;
+    const formatPrice = (price?: number, currency?: string) => {
+        const curr = currency || 'USD';
+        const currencySymbol = curr === 'USD' ? '$' : curr === 'EUR' ? '€' : curr === 'GBP' ? '£' : curr + ' ';
+        return `${currencySymbol}${price?.toFixed(2) || '0.00'}`;
     };
 
     if (loading) {
@@ -95,16 +92,11 @@ export default function Search({ isAuthenticated }: SearchProps) {
                                 No games found matching your search.
                             </p>
                             <p className="text-sm text-muted-foreground mb-6">
-                                Try searching with different keywords or browse our categories.
+                                Try searching with different keywords.
                             </p>
-                            <div className="flex gap-4 justify-center">
-                                <Link to="/">
-                                    <Button>Browse All Games</Button>
-                                </Link>
-                                <Link to="/category/indie">
-                                    <Button variant="outline">Browse Categories</Button>
-                                </Link>
-                            </div>
+                            <Link to="/">
+                                <Button>Browse All Games</Button>
+                            </Link>
                         </CardContent>
                     </Card>
                 ) : (
@@ -118,9 +110,9 @@ export default function Search({ isAuthenticated }: SearchProps) {
                                             alt={game.title}
                                             className="object-cover w-full h-full"
                                         />
-                                        {game.price === 0 && (
-                                            <Badge className="absolute top-2 right-2" variant="secondary">
-                                                Free
+                                        {game.onSale && game.discount && (
+                                            <Badge className="absolute top-2 right-2" variant="destructive">
+                                                -{game.discount}%
                                             </Badge>
                                         )}
                                     </div>
@@ -145,19 +137,31 @@ export default function Search({ isAuthenticated }: SearchProps) {
                                             </div>
                                         )}
                                         <div className="flex items-center justify-between mt-auto">
-                                            <span className="text-lg font-bold">{formatPrice(game.price)}</span>
+                                            {game.onSale && game.originalPrice ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm text-muted-foreground line-through">
+                                                        {formatPrice(game.originalPrice, game.currency)}
+                                                    </span>
+                                                    <span className="text-lg font-bold text-primary">
+                                                        {formatPrice(game.price, game.currency)}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-lg font-bold">
+                                                    {formatPrice(game.price, game.currency)}
+                                                </span>
+                                            )}
                                             <div className="flex gap-1">
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        handleAddToCart(game.id);
+                                                        handleBuyNow(game.id);
                                                     }}
-                                                    disabled={cart.includes(game.id)}
-                                                    title={cart.includes(game.id) ? "Already in cart" : "Add to cart"}
+                                                    title="Buy Now"
                                                 >
-                                                    <ShoppingCart className={`h-4 w-4 ${cart.includes(game.id) ? 'text-primary' : ''}`} />
+                                                    <ShoppingCart className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                     size="sm"
@@ -177,21 +181,6 @@ export default function Search({ isAuthenticated }: SearchProps) {
                             </Card>
                         ))}
                     </div>
-                )}
-
-                {/* Search Tips */}
-                {query && games.length > 0 && games.length < 3 && (
-                    <Card className="mt-8">
-                        <CardContent className="pt-6">
-                            <h3 className="font-semibold mb-2">Search Tips</h3>
-                            <ul className="text-sm text-muted-foreground space-y-1">
-                                <li>• Try using more general keywords</li>
-                                <li>• Check your spelling</li>
-                                <li>• Browse by category to discover similar games</li>
-                                <li>• Use tags like "action", "adventure", or "indie"</li>
-                            </ul>
-                        </CardContent>
-                    </Card>
                 )}
             </div>
         </StoreLayout>

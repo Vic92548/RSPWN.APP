@@ -15,11 +15,59 @@ interface Game {
     createdAt?: string;
     tags?: string[];
     price?: number;
+    currency?: string;
     publisher?: string;
+    developer?: string;
+    currentVersion?: string;
+    changelog?: string;
+    isTebexProduct?: boolean;
+    tebexId?: number;
+    onSale?: boolean;
+    originalPrice?: number;
+    discount?: number;
+    webstoreToken?: string;
+}
+
+interface TebexConfig {
+    userId: string;
+    username: string;
+    storeName: string;
+    webstoreToken: string;
+}
+
+interface TebexPackage {
+    id: number;
+    name: string;
+    description: string;
+    image?: string;
+    total_price: number;
+    base_price: number;
+    currency: string;
+    discount: number;
+    category?: { name: string };
+    storeInfo?: {
+        userId: string;
+        username: string;
+        storeName: string;
+        webstoreToken: string;
+    };
+}
+
+interface GameReview {
+    id: string;
+    userId: string;
+    username: string;
+    avatar?: string;
+    rating: number;
+    content: string;
+    createdAt: string;
+    helpful: number;
 }
 
 class ApiClient {
-    private gamesCache: Game[] | null = null;
+    private tebexGamesCache: Game[] | null = null;
+    private tebexConfigs: TebexConfig[] = [];
+    private vaprGamesCache: Game[] | null = null;
 
     private async request<T>(
         endpoint: string,
@@ -79,66 +127,121 @@ class ApiClient {
         }>('/me');
     }
 
-    // Store methods - all work with the single /api/games endpoint
+    // Get VAPR games (for metadata)
+    private async getVAPRGames() {
+        if (!this.vaprGamesCache) {
+            const response = await this.request<{
+                success: boolean;
+                games: Game[];
+            }>('/api/games');
+            this.vaprGamesCache = response.games;
+        }
+        return this.vaprGamesCache;
+    }
+
+    // Tebex methods
+    async loadTebexConfigs() {
+        try {
+            const response = await this.request<{
+                success: boolean;
+                configs: TebexConfig[];
+            }>('/api/tebex-configs');
+            if (response.success) {
+                this.tebexConfigs = response.configs;
+            }
+        } catch (error) {
+            console.error('Failed to load Tebex configurations:', error);
+        }
+    }
+
+    async getTebexPackages(): Promise<TebexPackage[]> {
+        if (this.tebexConfigs.length === 0) {
+            await this.loadTebexConfigs();
+        }
+
+        const allPackages: TebexPackage[] = [];
+
+        for (const config of this.tebexConfigs) {
+            try {
+                const response = await fetch(`https://headless.tebex.io/api/accounts/${config.webstoreToken}/packages`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const packages = data.data || [];
+
+                    const packagesWithStore = packages.map((pkg: any) => ({
+                        ...pkg,
+                        storeInfo: {
+                            userId: config.userId,
+                            username: config.username,
+                            storeName: config.storeName,
+                            webstoreToken: config.webstoreToken
+                        }
+                    }));
+
+                    allPackages.push(...packagesWithStore);
+                }
+            } catch (error) {
+                console.error(`Failed to load packages for store ${config.storeName}:`, error);
+            }
+        }
+
+        return allPackages;
+    }
+
+    async transformTebexGames(tebexPackages: TebexPackage[]): Promise<Game[]> {
+        // Get VAPR games for additional metadata
+        const vaprGames = await this.getVAPRGames();
+
+        return tebexPackages.map(pkg => {
+            // Find matching VAPR game for additional info
+            const vaprGame = vaprGames.find(g =>
+                g.title.toLowerCase() === pkg.name.toLowerCase()
+            );
+
+            return {
+                id: `tebex-${pkg.id}`,
+                title: pkg.name,
+                description: pkg.description || vaprGame?.description || 'No description available',
+                coverImage: pkg.image || vaprGame?.coverImage || 'https://via.placeholder.com/300x400?text=No+Image',
+                price: pkg.total_price,
+                currency: pkg.currency,
+                isTebexProduct: true,
+                tebexId: pkg.id,
+                tags: [pkg.category?.name || 'Games'],
+                onSale: pkg.discount > 0,
+                originalPrice: pkg.base_price,
+                discount: pkg.discount,
+                developer: pkg.storeInfo?.username || 'Unknown Developer',
+                publisher: pkg.storeInfo?.username || 'Unknown Publisher',
+                ownerId: pkg.storeInfo?.userId || vaprGame?.ownerId || '',
+                createdAt: vaprGame?.createdAt || new Date().toISOString(),
+                currentVersion: vaprGame?.currentVersion,
+                changelog: vaprGame?.changelog,
+                webstoreToken: pkg.storeInfo?.webstoreToken
+            };
+        });
+    }
+
+    // Store methods - Only return Tebex games
     async getAllGames() {
-        const response = await this.request<{
-            success: boolean;
-            games: Game[];
-        }>('/api/games');
+        // Get Tebex games
+        const tebexPackages = await this.getTebexPackages();
+        const tebexGames = await this.transformTebexGames(tebexPackages);
 
-        console.log(response);
-        // Cache games and enhance with default values
-        this.gamesCache = response.games.map(game => ({
-            ...game,
-            price: game.price || 0,
-            tags: game.tags || ['indie'],
-            publisher: game.publisher || 'VAPR Developer'
-        }));
+        // Cache games
+        this.tebexGamesCache = tebexGames;
 
-        return { success: true, games: this.gamesCache };
+        return { success: true, games: this.tebexGamesCache };
     }
 
     async getGame(gameId: string) {
         // Get from cache or fetch all games
-        if (!this.gamesCache) {
+        if (!this.tebexGamesCache) {
             await this.getAllGames();
         }
 
-        const game = this.gamesCache?.find(g => g.id === gameId);
+        const game = this.tebexGamesCache?.find(g => g.id === gameId);
         return { success: !!game, game };
-    }
-
-    async getFeaturedGames() {
-        const { games } = await this.getAllGames();
-        // Return first 3 games as featured
-        return { success: true, games: games.slice(0, 3) };
-    }
-
-    async getGamesByCategory(category: string) {
-        const { games } = await this.getAllGames();
-
-        // Filter by tags or return all for certain categories
-        if (category === 'new') {
-            // Sort by creation date and return newest
-            const sorted = [...games].sort((a, b) => {
-                const dateA = new Date(a.createdAt || 0).getTime();
-                const dateB = new Date(b.createdAt || 0).getTime();
-                return dateB - dateA;
-            });
-            return { success: true, games: sorted };
-        }
-
-        if (category === 'top' || category === 'popular') {
-            // For now, just return all games
-            return { success: true, games };
-        }
-
-        // Filter by tag
-        const filtered = games.filter(game =>
-            game.tags?.some(tag => tag.toLowerCase() === category.toLowerCase())
-        );
-
-        return { success: true, games: filtered.length > 0 ? filtered : games };
     }
 
     async searchGames(query: string) {
@@ -151,6 +254,56 @@ class ApiClient {
         );
 
         return { success: true, games: searchResults };
+    }
+
+    async getGameKeys(gameId: string) {
+        // If it's a Tebex game ID, we need to find the corresponding VAPR game
+        if (gameId.startsWith('tebex-')) {
+            const vaprGames = await this.getVAPRGames();
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+
+            if (tebexGame) {
+                // Find the VAPR game that matches this Tebex game by title
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+
+                if (vaprGame) {
+                    // Use the VAPR game ID to get the keys
+                    return this.request<{
+                        success: boolean;
+                        keys: Array<{
+                            key: string;
+                            usedBy?: string;
+                            userInfo?: {
+                                id: string;
+                                username: string;
+                                avatar?: string;
+                            };
+                            usedAt?: string;
+                        }>;
+                    }>(`/api/games/${vaprGame.id}/keys`);
+                }
+            }
+
+            // No matching VAPR game found
+            return { success: true, keys: [] };
+        } else {
+            // It's already a VAPR game ID, use it directly
+            return this.request<{
+                success: boolean;
+                keys: Array<{
+                    key: string;
+                    usedBy?: string;
+                    userInfo?: {
+                        id: string;
+                        username: string;
+                        avatar?: string;
+                    };
+                    usedAt?: string;
+                }>;
+            }>(`/api/games/${gameId}/keys`);
+        }
     }
 
     async getMyLibrary() {
@@ -170,29 +323,157 @@ class ApiClient {
         });
     }
 
-    // Local storage methods for cart and wishlist
-    getCart(): string[] {
-        const savedCart = localStorage.getItem('vapr_cart');
-        return savedCart ? JSON.parse(savedCart) : [];
-    }
+    // Tebex checkout methods
+    async createTebexBasket(_packageId: number, webstoreToken: string) {
+        const response = await fetch(`https://headless.tebex.io/api/accounts/${webstoreToken}/baskets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                complete_url: `${window.location.origin}/store/checkout/success`,
+                cancel_url: `${window.location.origin}/store/checkout/cancel`,
+                complete_auto_redirect: true
+            })
+        });
 
-    addToCart(gameId: string) {
-        const cart = this.getCart();
-        if (!cart.includes(gameId)) {
-            cart.push(gameId);
-            localStorage.setItem('vapr_cart', JSON.stringify(cart));
+        if (!response.ok) {
+            throw new Error('Failed to create basket');
         }
-        return cart;
+
+        return response.json();
     }
 
-    removeFromCart(gameId: string) {
-        const cart = this.getCart().filter(id => id !== gameId);
-        localStorage.setItem('vapr_cart', JSON.stringify(cart));
-        return cart;
+    async addToTebexBasket(basketIdent: string, packageId: number) {
+        const response = await fetch(`https://headless.tebex.io/api/baskets/${basketIdent}/packages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                package_id: packageId,
+                quantity: 1
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to add to basket');
+        }
+
+        return response.json();
     }
 
-    clearCart() {
-        localStorage.removeItem('vapr_cart');
+    async applyCreatorCode(basketIdent: string, creatorCode: string, webstoreToken: string) {
+        try {
+            const response = await fetch(`https://headless.tebex.io/api/accounts/${webstoreToken}/baskets/${basketIdent}/creator-codes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    creator_code: creatorCode
+                })
+            });
+
+            if (!response.ok) {
+                console.error('Failed to apply creator code');
+            }
+        } catch (error) {
+            console.error('Error applying creator code:', error);
+        }
+    }
+
+    async getTebexBasket(basketIdent: string, webstoreToken: string) {
+        const response = await fetch(`https://headless.tebex.io/api/accounts/${webstoreToken}/baskets/${basketIdent}`);
+        if (!response.ok) {
+            throw new Error('Failed to get basket');
+        }
+        return response.json();
+    }
+
+    async checkoutTebexGame(gameId: string) {
+        const game = this.tebexGamesCache?.find(g => g.id === gameId);
+        if (!game || !game.isTebexProduct || !game.tebexId || !game.webstoreToken) {
+            throw new Error('Invalid game for Tebex checkout');
+        }
+
+        // Create basket
+        const basketResponse = await this.createTebexBasket(game.tebexId, game.webstoreToken);
+        const basketIdent = basketResponse.data.ident;
+
+        // Add to basket
+        await this.addToTebexBasket(basketIdent, game.tebexId);
+
+        // Try to apply creator code if applicable
+        try {
+            const vaprGames = await this.getVAPRGames();
+            const vaprGame = vaprGames.find(g =>
+                g.title.toLowerCase() === game.title.toLowerCase()
+            );
+
+            if (vaprGame) {
+                const creatorResponse = await this.request<{
+                    success: boolean;
+                    hasCreatorCode: boolean;
+                    creatorCode?: string;
+                }>(`/api/creators/code-for-purchase/${vaprGame.id}`);
+
+                if (creatorResponse.success && creatorResponse.hasCreatorCode && creatorResponse.creatorCode) {
+                    await this.applyCreatorCode(basketIdent, creatorResponse.creatorCode, game.webstoreToken);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to apply creator code:', error);
+        }
+
+        // Get basket with checkout URL
+        const basketData = await this.getTebexBasket(basketIdent, game.webstoreToken);
+
+        // Redirect to checkout
+        window.location.href = basketData.data.links.checkout;
+    }
+
+    // Track game click for creator attribution
+    async trackGameClick(gameId: string, postId?: string) {
+        if (!postId) return;
+
+        try {
+            // Find the VAPR game ID
+            const vaprGames = await this.getVAPRGames();
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+
+            if (tebexGame) {
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+
+                if (vaprGame) {
+                    await this.request('/api/creators/track-game-click', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            gameId: vaprGame.id,
+                            postId
+                        })
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Failed to track game click:', error);
+        }
+    }
+
+    // User/Developer info
+    async getUser(userId: string) {
+        return this.request<{
+            id: string;
+            username: string;
+            avatar?: string;
+            level?: number;
+        }>(`/api/user/${userId}`);
+    }
+
+    // Cart methods - Not used for Tebex, but kept for compatibility
+    getCart(): string[] {
         return [];
     }
 
@@ -228,15 +509,15 @@ class ApiClient {
         return this.getWishlist().includes(gameId);
     }
 
-    // Mock reviews (stored in local storage)
-    async getGameReviews(gameId: string) {
+    // Reviews
+    async getGameReviews(gameId: string): Promise<{ success: boolean; reviews: GameReview[] }> {
         const reviews = JSON.parse(localStorage.getItem(`reviews_${gameId}`) || '[]');
         return { success: true, reviews };
     }
 
     async submitReview(gameId: string, rating: number, content: string) {
         const user = await this.getMe();
-        const review = {
+        const review: GameReview = {
             id: Date.now().toString(),
             userId: user.id,
             username: user.username,

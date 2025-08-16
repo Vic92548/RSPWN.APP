@@ -4,6 +4,8 @@ import StorePage from './pages/StorePage'
 import GameDetails from './pages/GameDetails'
 import Wishlist from './pages/Wishlist'
 import Search from './pages/Search'
+import CheckoutSuccess from './pages/CheckoutSuccess'
+import CheckoutCancel from './pages/CheckoutCancel'
 import apiClient from './lib/api-client'
 import './App.css'
 
@@ -48,6 +50,8 @@ function App() {
                 <Route path="/game/:gameId" element={<GameDetails isAuthenticated={isAuthenticated} />} />
                 <Route path="/wishlist" element={isAuthenticated ? <Wishlist /> : <Navigate to="/" />} />
                 <Route path="/search" element={<Search isAuthenticated={isAuthenticated} />} />
+                <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                <Route path="/checkout/cancel" element={<CheckoutCancel />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>

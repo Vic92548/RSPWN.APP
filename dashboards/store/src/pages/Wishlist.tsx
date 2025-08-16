@@ -4,17 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import StoreLayout from "@/components/StoreLayout";
-import { ShoppingCart, Heart, Trash2 } from "lucide-react";
+import { Heart, Trash2, ExternalLink } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
 export default function Wishlist() {
     const [games, setGames] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [cart, setCart] = useState<string[]>([]);
 
     useEffect(() => {
         loadWishlist();
-        updateCart();
     }, []);
 
     const loadWishlist = async () => {
@@ -29,14 +27,12 @@ export default function Wishlist() {
         }
     };
 
-    const updateCart = () => {
-        const cartItems = apiClient.getCart();
-        setCart(cartItems);
-    };
-
-    const handleAddToCart = (gameId: string) => {
-        apiClient.addToCart(gameId);
-        updateCart();
+    const handleBuyNow = async (gameId: string) => {
+        try {
+            await apiClient.checkoutTebexGame(gameId);
+        } catch (error) {
+            console.error('Failed to start checkout:', error);
+        }
     };
 
     const handleRemoveFromWishlist = async (gameId: string) => {
@@ -44,8 +40,10 @@ export default function Wishlist() {
         setGames(games.filter(game => game.id !== gameId));
     };
 
-    const formatPrice = (price: number) => {
-        return price === 0 ? 'Free' : `$${price.toFixed(2)}`;
+    const formatPrice = (price: number, currency?: string) => {
+        const curr = currency || 'USD';
+        const currencySymbol = curr === 'USD' ? '$' : curr === 'EUR' ? '€' : curr === 'GBP' ? '£' : curr + ' ';
+        return `${currencySymbol}${price.toFixed(2)}`;
     };
 
     if (loading) {
@@ -104,17 +102,16 @@ export default function Wishlist() {
                                         ))}
                                     </div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className="text-lg font-bold">{formatPrice(game.price || 0)}</span>
+                                        <span className="text-lg font-bold">{formatPrice(game.price || 0, game.currency)}</span>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button
                                             size="sm"
                                             className="flex-1"
-                                            onClick={() => handleAddToCart(game.id)}
-                                            disabled={cart.includes(game.id)}
+                                            onClick={() => handleBuyNow(game.id)}
                                         >
-                                            <ShoppingCart className="h-4 w-4 mr-1" />
-                                            {cart.includes(game.id) ? 'In Cart' : 'Add to Cart'}
+                                            <ExternalLink className="h-4 w-4 mr-1" />
+                                            Buy Now
                                         </Button>
                                         <Button
                                             size="sm"

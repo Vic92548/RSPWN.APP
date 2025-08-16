@@ -5,7 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StoreLayout from "@/components/StoreLayout";
-import { ShoppingCart, Heart, Download, Star, Calendar, User, Monitor, HardDrive, ArrowLeft, ExternalLink } from "lucide-react";
+import {
+    Heart,
+    Download,
+    Star,
+    Calendar,
+    User,
+    Monitor,
+    HardDrive,
+    ArrowLeft,
+    ExternalLink,
+    Users,
+    Info,
+    ChevronDown,
+    Gift
+} from "lucide-react";
 import apiClient from "@/lib/api-client";
 
 interface GameDetailsProps {
@@ -17,11 +31,13 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
     const navigate = useNavigate();
     const [game, setGame] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [inCart, setInCart] = useState(false);
     const [owned, setOwned] = useState(false);
     const [inWishlist, setInWishlist] = useState(false);
     const [reviews, setReviews] = useState<any[]>([]);
     const [selectedImage, setSelectedImage] = useState(0);
+    const [playerCount, setPlayerCount] = useState(0);
+    const [developer, setDeveloper] = useState<{ username: string; id: string } | null>(null);
+    const [showDisclaimer, setShowDisclaimer] = useState(false);
 
     useEffect(() => {
         if (gameId) {
@@ -41,25 +57,54 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                 return;
             }
 
-            // Enhance game with mock data for store display
-            const enhancedGame = {
-                ...gameData.game,
-                price: gameData.game.price || 0,
-                tags: gameData.game.tags || ['indie', 'action'],
-                publisher: gameData.game.publisher || 'VAPR Developer',
+            let enhancedGame = gameData.game;
+
+            // Get player count if it's a VAPR game
+            try {
+                const keysResponse = await apiClient.getGameKeys(gameId!);
+                if (keysResponse.success) {
+                    const usedKeys = keysResponse.keys.filter(k => k.usedBy).length;
+                    setPlayerCount(usedKeys);
+                }
+            } catch (error) {
+                console.error('Failed to get player count:', error);
+            }
+
+            // Get developer info
+            if (enhancedGame.ownerId) {
+                try {
+                    const userInfo = await apiClient.getUser(enhancedGame.ownerId);
+                    setDeveloper({
+                        username: userInfo.username,
+                        id: userInfo.id
+                    });
+                } catch (error) {
+                    console.error('Failed to get developer info:', error);
+                }
+            }
+
+            // Enhance game with additional data
+            // @ts-ignore
+            enhancedGame = {
+                ...enhancedGame,
+                price: enhancedGame.price || 0,
+                currency: enhancedGame.currency || 'USD',
+                tags: enhancedGame.tags || ['indie', 'action'],
+                publisher: enhancedGame.publisher || developer?.username || 'VAPR Developer',
+                // @ts-ignore
                 screenshots: [
-                    gameData.game.coverImage,
-                    gameData.game.coverImage,
-                    gameData.game.coverImage,
-                    gameData.game.coverImage
+                    enhancedGame.coverImage,
+                    enhancedGame.coverImage,
+                    enhancedGame.coverImage,
+                    enhancedGame.coverImage
                 ],
                 systemRequirements: {
                     minimum: 'OS: Windows 10 64-bit\nProcessor: Intel Core i3-2100\nMemory: 4 GB RAM\nGraphics: NVIDIA GeForce GTX 660\nDirectX: Version 11\nStorage: 2 GB available space',
                     recommended: 'OS: Windows 11 64-bit\nProcessor: Intel Core i7-4770\nMemory: 8 GB RAM\nGraphics: NVIDIA GeForce RTX 3060\nDirectX: Version 12\nStorage: 2 GB available space'
                 },
                 rating: 4.5,
-                reviewCount: 3,
-                releaseDate: gameData.game.createdAt || new Date().toISOString(),
+                reviewCount: reviews.length,
+                releaseDate: enhancedGame.createdAt || new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
                 fileSize: '1.5 GB',
                 languages: ['English'],
@@ -68,10 +113,6 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
 
             setGame(enhancedGame);
 
-            // Check if in cart
-            const cart = apiClient.getCart();
-            setInCart(cart.includes(gameId!));
-
             // Check if in wishlist
             setInWishlist(apiClient.isInWishlist(gameId!));
 
@@ -79,15 +120,31 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
             if (isAuthenticated) {
                 try {
                     const myGames = await apiClient.getMyLibrary();
-                    setOwned(myGames.games.some(g => g.id === gameId));
+                    const isOwned = myGames.games.some(g => {
+                        // Check direct ID match
+                        if (g.id === gameId) return true;
+                        // Check if it's a Tebex game and title matches
+                        if (enhancedGame.isTebexProduct) {
+                            return g.title.toLowerCase() === enhancedGame.title.toLowerCase();
+                        }
+                        return false;
+                    });
+                    setOwned(isOwned);
                 } catch (error) {
                     console.error('Failed to check ownership:', error);
                 }
             }
 
-            // Load reviews from local storage
+            // Load reviews
             const reviewsData = await apiClient.getGameReviews(gameId!);
             setReviews(reviewsData.reviews);
+
+            // Track game view if coming from a post
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('from_post');
+            if (postId) {
+                await apiClient.trackGameClick(gameId!, postId);
+            }
 
         } catch (error) {
             console.error('Failed to load game details:', error);
@@ -97,30 +154,18 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
         }
     };
 
-    const handleAddToCart = () => {
-        if (game?.externalLink) {
-            window.open(game.externalLink, '_blank');
-        } else if (gameId) {
-            apiClient.addToCart(gameId);
-            setInCart(true);
-        }
-    };
-
-    const handleRemoveFromCart = () => {
-        if (gameId) {
-            apiClient.removeFromCart(gameId);
-            setInCart(false);
-        }
-    };
-
-    const handleBuyNow = () => {
-        if (game?.externalLink) {
-            window.open(game.externalLink, '_blank');
-        } else {
-            if (gameId && !inCart) {
-                apiClient.addToCart(gameId);
+    const handleBuyNow = async () => {
+        if (game?.isTebexProduct) {
+            try {
+                await apiClient.checkoutTebexGame(game.id);
+            } catch (error) {
+                console.error('Failed to checkout:', error);
+                if (game.externalLink) {
+                    window.open(game.externalLink, '_blank');
+                }
             }
-            navigate('/cart');
+        } else if (game?.externalLink) {
+            window.open(game.externalLink, '_blank');
         }
     };
 
@@ -144,8 +189,10 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
         }
     };
 
-    const formatPrice = (price: number) => {
-        return price === 0 ? 'Free' : `$${price.toFixed(2)}`;
+    const formatPrice = (price: number, currency?: string) => {
+        const curr = currency || 'USD';
+        const currencySymbol = curr === 'USD' ? '$' : curr === 'EUR' ? '€' : curr === 'GBP' ? '£' : curr + ' ';
+        return `${currencySymbol}${price.toFixed(2)}`;
     };
 
     if (loading) {
@@ -204,18 +251,34 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                         <div>
                             <h1 className="text-4xl font-bold mb-2">{game.title}</h1>
                             <div className="flex items-center gap-4 text-muted-foreground">
-                                <span className="flex items-center gap-1">
-                                    <User className="h-4 w-4" />
-                                    {game.publisher}
-                                </span>
+                                {developer ? (
+                                    <a
+                                        href={`/@${developer.username}`}
+                                        className="flex items-center gap-1 hover:text-primary transition-colors"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            window.location.href = `/@${developer.username}`;
+                                        }}
+                                    >
+                                        <User className="h-4 w-4" />
+                                        @{developer.username}
+                                    </a>
+                                ) : (
+                                    <span className="flex items-center gap-1">
+                                        <User className="h-4 w-4" />
+                                        {game.publisher}
+                                    </span>
+                                )}
                                 <span className="flex items-center gap-1">
                                     <Calendar className="h-4 w-4" />
                                     {new Date(game.releaseDate).toLocaleDateString()}
                                 </span>
-                                <div className="flex items-center gap-1">
-                                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                                    <span>{game.rating}/5 ({game.reviewCount} reviews)</span>
-                                </div>
+                                {playerCount > 0 && (
+                                    <span className="flex items-center gap-1">
+                                        <Users className="h-4 w-4" />
+                                        {playerCount} players
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -250,12 +313,45 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                             </div>
                         </div>
 
+                        {/* Tebex Disclaimer */}
+                        {game.isTebexProduct && (
+                            <Card className="border-primary/20 bg-primary/5">
+                                <CardHeader
+                                    className="cursor-pointer select-none"
+                                    onClick={() => setShowDisclaimer(!showDisclaimer)}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <Info className="h-5 w-5 text-primary" />
+                                            <h3 className="text-lg font-semibold">How to activate your game</h3>
+                                        </div>
+                                        <ChevronDown className={`h-4 w-4 transition-transform ${showDisclaimer ? 'rotate-180' : ''}`} />
+                                    </div>
+                                </CardHeader>
+                                {showDisclaimer && (
+                                    <CardContent>
+                                        <ol className="list-decimal list-inside space-y-2 text-sm">
+                                            <li>After purchase, you'll receive a VAPR.CLUB key by email</li>
+                                            <li>Go to <strong>My Library</strong> in the VAPR menu</li>
+                                            <li>Click <strong>Redeem Key</strong> button</li>
+                                            <li>Enter your key in the format: <code className="bg-muted px-1 py-0.5 rounded">XXXX-XXXX-XXXX-XXXX</code></li>
+                                            <li>Your game will be added to your library instantly!</li>
+                                        </ol>
+                                        <p className="mt-4 text-sm text-muted-foreground">
+                                            <Info className="inline h-4 w-4 mr-1" />
+                                            Check your email inbox (including spam folder) for your activation key
+                                        </p>
+                                    </CardContent>
+                                )}
+                            </Card>
+                        )}
+
                         {/* Tabs */}
                         <Tabs defaultValue="about">
                             <TabsList className="grid w-full grid-cols-3">
                                 <TabsTrigger value="about">About</TabsTrigger>
                                 <TabsTrigger value="requirements">System Requirements</TabsTrigger>
-                                <TabsTrigger value="reviews">Reviews ({game.reviewCount})</TabsTrigger>
+                                <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="about" className="space-y-4">
@@ -264,7 +360,16 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                         <CardTitle>About This Game</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        <p className="text-muted-foreground">{game.description}</p>
+                                        <p className="text-muted-foreground whitespace-pre-wrap">{game.description}</p>
+
+                                        {game.changelog && (
+                                            <div>
+                                                <h4 className="font-semibold mb-2">Latest Updates</h4>
+                                                <div className="text-sm text-muted-foreground whitespace-pre-wrap bg-muted/20 p-4 rounded">
+                                                    {game.changelog}
+                                                </div>
+                                            </div>
+                                        )}
 
                                         {game.features && game.features.length > 0 && (
                                             <div>
@@ -316,7 +421,7 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                     <div>
                                         <h3 className="text-lg font-semibold">User Reviews</h3>
                                         <p className="text-sm text-muted-foreground">
-                                            {game.reviewCount} reviews • {game.rating}/5 average rating
+                                            {reviews.length} reviews • {game.rating}/5 average rating
                                         </p>
                                     </div>
                                     {isAuthenticated && owned && (
@@ -383,7 +488,27 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                     alt={game.title}
                                     className="w-full rounded-lg mb-4"
                                 />
-                                <div className="text-3xl font-bold mb-4">{formatPrice(game.price)}</div>
+
+                                {/* Price Display */}
+                                <div className="mb-4">
+                                    {game.onSale && game.originalPrice ? (
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-3xl font-bold text-primary">
+                                                {formatPrice(game.price, game.currency)}
+                                            </span>
+                                            <span className="text-xl text-muted-foreground line-through">
+                                                {formatPrice(game.originalPrice, game.currency)}
+                                            </span>
+                                            {game.discount && (
+                                                <Badge variant="destructive">-{game.discount}%</Badge>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="text-3xl font-bold">
+                                            {formatPrice(game.price, game.currency)}
+                                        </div>
+                                    )}
+                                </div>
 
                                 {owned ? (
                                     <div className="space-y-2">
@@ -391,42 +516,26 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                             <Download className="h-4 w-4 mr-2" />
                                             You Own This Game
                                         </Button>
-                                        <Button variant="outline" className="w-full" onClick={() => navigate('/library')}>
+                                        <Button variant="outline" className="w-full" onClick={() => window.location.href = '/library'}>
                                             View in Library
                                         </Button>
+                                        {game.isTebexProduct && (
+                                            <Button
+                                                variant="secondary"
+                                                className="w-full"
+                                                onClick={handleBuyNow}
+                                            >
+                                                <Gift className="h-4 w-4 mr-2" />
+                                                Purchase as Gift
+                                            </Button>
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        {game.externalLink ? (
-                                            <Button className="w-full" size="lg" onClick={handleBuyNow}>
-                                                <ExternalLink className="h-4 w-4 mr-2" />
-                                                Get Game
-                                            </Button>
-                                        ) : (
-                                            <>
-                                                <Button className="w-full" size="lg" onClick={handleBuyNow}>
-                                                    Buy Now
-                                                </Button>
-                                                {inCart ? (
-                                                    <Button
-                                                        variant="outline"
-                                                        className="w-full"
-                                                        onClick={handleRemoveFromCart}
-                                                    >
-                                                        Remove from Cart
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        variant="outline"
-                                                        className="w-full"
-                                                        onClick={handleAddToCart}
-                                                    >
-                                                        <ShoppingCart className="h-4 w-4 mr-2" />
-                                                        Add to Cart
-                                                    </Button>
-                                                )}
-                                            </>
-                                        )}
+                                        <Button className="w-full" size="lg" onClick={handleBuyNow}>
+                                            <ExternalLink className="h-4 w-4 mr-2" />
+                                            Buy Now
+                                        </Button>
                                         <Button
                                             variant="ghost"
                                             className="w-full"
@@ -447,12 +556,42 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                             <CardContent className="space-y-2">
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Developer</span>
-                                    <span>{game.publisher}</span>
+                                    {developer ? (
+                                        <a
+                                            href={`/@${developer.username}`}
+                                            className="hover:text-primary transition-colors"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                window.location.href = `/@${developer.username}`;
+                                            }}
+                                        >
+                                            @{developer.username}
+                                        </a>
+                                    ) : (
+                                        <span>{game.publisher}</span>
+                                    )}
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Release Date</span>
                                     <span>{new Date(game.releaseDate).toLocaleDateString()}</span>
                                 </div>
+                                {game.currentVersion && (
+                                    <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Version</span>
+                                        <span className="flex items-center gap-1">
+                                            {game.currentVersion}
+                                        </span>
+                                    </div>
+                                )}
+                                {playerCount > 0 && (
+                                    <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Players</span>
+                                        <span className="flex items-center gap-1">
+                                            <Users className="h-3 w-3" />
+                                            {playerCount}
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Size</span>
                                     <span className="flex items-center gap-1">
@@ -478,6 +617,21 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                             <Badge key={lang} variant="outline">{lang}</Badge>
                                         ))}
                                     </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {game.externalLink && (
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={() => window.open(game.externalLink, '_blank')}
+                                    >
+                                        <ExternalLink className="h-4 w-4 mr-2" />
+                                        Visit Official Website
+                                    </Button>
                                 </CardContent>
                             </Card>
                         )}
