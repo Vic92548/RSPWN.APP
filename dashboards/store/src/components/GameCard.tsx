@@ -19,6 +19,7 @@ interface GameCardProps {
         onSale?: boolean;
         originalPrice?: number;
         discount?: number;
+        isEarlyAccess?: boolean;
     };
     onBuyNow: (gameId: string) => void;
     onAddToWishlist?: (gameId: string) => void;
@@ -48,11 +49,21 @@ export default function GameCard({ game, onBuyNow, onAddToWishlist, isAuthentica
                         className="w-full h-auto"
                         style={{ maxHeight: '400px', objectFit: 'contain' }}
                     />
-                    {game.onSale && game.discount && (
-                        <Badge className="absolute top-2 right-2" variant="destructive">
-                            -{game.discount}%
-                        </Badge>
-                    )}
+                    {/* Badge container - position badges in top corners */}
+                    <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
+                        {/* Early Access badge on the left */}
+                        {game.isEarlyAccess && (
+                            <Badge className="bg-blue-600 text-white border-blue-600">
+                                Early Access
+                            </Badge>
+                        )}
+                        {/* Sale badge on the right */}
+                        {game.onSale && game.discount && (
+                            <Badge className="ml-auto" variant="destructive">
+                                -{game.discount}%
+                            </Badge>
+                        )}
+                    </div>
                 </div>
                 <CardContent className="p-4 flex-1 flex flex-col">
                     <h3 className="font-semibold mb-1 line-clamp-1">{game.title}</h3>

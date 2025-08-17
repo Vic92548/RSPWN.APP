@@ -25,6 +25,7 @@ interface Game {
     originalPrice?: number;
     discount?: number;
     isTebexProduct?: boolean;
+    isEarlyAccess?: boolean;
 }
 
 interface StorePageProps {
@@ -34,6 +35,7 @@ interface StorePageProps {
 export default function StorePage({ isAuthenticated }: StorePageProps) {
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showEarlyAccess, setShowEarlyAccess] = useState<boolean | null>(null);
 
     useEffect(() => {
         loadStoreData();
@@ -77,6 +79,12 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
         return `${currencySymbol}${price?.toFixed(2) || '0.00'}`;
     };
 
+    // Filter games based on early access status
+    const filteredGames = games.filter(game => {
+        if (showEarlyAccess === null) return true;
+        return game.isEarlyAccess === showEarlyAccess;
+    });
+
     if (loading) {
         return (
             <StoreLayout isAuthenticated={isAuthenticated}>
@@ -116,45 +124,52 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                     </div>
 
                     {/* Featured Game - First game as hero */}
-                    {games.length > 0 && (
-                        <Link to={`/game/${games[0].id}`}>
+                    {filteredGames.length > 0 && (
+                        <Link to={`/game/${filteredGames[0].id}`}>
                             <Card className="overflow-hidden hover:ring-2 hover:ring-primary transition-all mb-8">
                                 <div className="grid md:grid-cols-2 gap-0">
                                     <div className="aspect-video md:aspect-auto md:h-full relative bg-background">
                                         <img
-                                            src={games[0].coverImage || '/default-game-cover.png'}
-                                            alt={games[0].title}
+                                            src={filteredGames[0].coverImage || '/default-game-cover.png'}
+                                            alt={filteredGames[0].title}
                                             className="absolute inset-0 w-full h-full object-contain"
                                         />
                                     </div>
                                     <div className="p-8 flex flex-col justify-center">
-                                        <Badge className="mb-4 w-fit">Featured</Badge>
-                                        <h2 className="text-3xl font-bold mb-4">{games[0].title}</h2>
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Badge className="w-fit">Featured</Badge>
+                                            {filteredGames[0].isEarlyAccess && (
+                                                <Badge className="w-fit bg-blue-600 text-white border-blue-600">
+                                                    Early Access
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <h2 className="text-3xl font-bold mb-4">{filteredGames[0].title}</h2>
                                         <div className="mb-6 line-clamp-3">
-                                            <HtmlParser html={games[0].description} className="text-muted-foreground" />
+                                            <HtmlParser html={filteredGames[0].description} className="text-muted-foreground" />
                                         </div>
                                         <div className="flex items-center gap-4">
-                                            {games[0].onSale && games[0].originalPrice ? (
+                                            {filteredGames[0].onSale && filteredGames[0].originalPrice ? (
                                                 <div className="flex items-baseline gap-2">
                                                     <span className="text-2xl font-bold text-primary">
-                                                        {formatPrice(games[0].price, games[0].currency)}
+                                                        {formatPrice(filteredGames[0].price, filteredGames[0].currency)}
                                                     </span>
                                                     <span className="text-lg text-muted-foreground line-through">
-                                                        {formatPrice(games[0].originalPrice, games[0].currency)}
+                                                        {formatPrice(filteredGames[0].originalPrice, filteredGames[0].currency)}
                                                     </span>
-                                                    {games[0].discount && (
-                                                        <Badge variant="destructive">-{games[0].discount}%</Badge>
+                                                    {filteredGames[0].discount && (
+                                                        <Badge variant="destructive">-{filteredGames[0].discount}%</Badge>
                                                     )}
                                                 </div>
                                             ) : (
                                                 <span className="text-2xl font-bold">
-                                                    {formatPrice(games[0].price, games[0].currency)}
+                                                    {formatPrice(filteredGames[0].price, filteredGames[0].currency)}
                                                 </span>
                                             )}
                                             <Button
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    handleBuyNow(games[0].id);
+                                                    handleBuyNow(filteredGames[0].id);
                                                 }}
                                             >
                                                 <ExternalLink className="h-4 w-4 mr-2" />
@@ -170,14 +185,41 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
 
                 {/* All Games Grid */}
                 <section>
-                    <div className="flex items-center gap-2 mb-6">
-                        <Gamepad2 className="h-6 w-6 text-primary" />
-                        <h2 className="text-2xl font-bold">All Games</h2>
-                        <span className="text-muted-foreground">({games.length})</span>
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2">
+                            <Gamepad2 className="h-6 w-6 text-primary" />
+                            <h2 className="text-2xl font-bold">All Games</h2>
+                            <span className="text-muted-foreground">({filteredGames.length})</span>
+                        </div>
+
+                        {/* Filter buttons */}
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant={showEarlyAccess === null ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setShowEarlyAccess(null)}
+                            >
+                                All Games
+                            </Button>
+                            <Button
+                                variant={showEarlyAccess === false ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setShowEarlyAccess(false)}
+                            >
+                                Released
+                            </Button>
+                            <Button
+                                variant={showEarlyAccess === true ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setShowEarlyAccess(true)}
+                            >
+                                Early Access
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {games.map((game) => (
+                        {filteredGames.map((game) => (
                             <GameCard
                                 key={game.id}
                                 game={game}

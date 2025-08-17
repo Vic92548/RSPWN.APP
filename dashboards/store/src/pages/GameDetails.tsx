@@ -99,7 +99,6 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
             }
 
             // Enhance game with additional data
-            // @ts-ignore
             enhancedGame = {
                 ...enhancedGame,
                 price: enhancedGame.price || 0,
@@ -286,7 +285,14 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                     <div className="lg:col-span-2 space-y-6">
                         {/* Game Header */}
                         <div>
-                            <h1 className="text-4xl font-bold mb-2">{game.title}</h1>
+                            <div className="flex items-center gap-3 mb-2">
+                                <h1 className="text-4xl font-bold">{game.title}</h1>
+                                {game.isEarlyAccess && (
+                                    <Badge className="bg-blue-600 text-white border-blue-600">
+                                        Early Access
+                                    </Badge>
+                                )}
+                            </div>
                             <div className="flex items-center gap-4 text-muted-foreground">
                                 {developer ? (
                                     <a
@@ -442,6 +448,24 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                             </>
                         )}
                     </div>
+
+                    {/* Early Access Notice */}
+                    {game.isEarlyAccess && (
+                        <Card className="border-blue-600/20 bg-blue-600/5">
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-lg font-semibold">Early Access Game</h3>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">
+                                    This game is currently in Early Access and is still under active development.
+                                    Features, content, and gameplay may change significantly before the final release.
+                                    By purchasing this game, you're supporting its ongoing development.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Tebex Disclaimer */}
                     {game.isTebexProduct && (
@@ -708,6 +732,14 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                     <span className="text-muted-foreground">Release Date</span>
                     <span>{new Date(game.releaseDate).toLocaleDateString()}</span>
                 </div>
+                {game.isEarlyAccess && (
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Status</span>
+                        <span className="flex items-center gap-1 text-blue-600">
+                                            Early Access
+                                        </span>
+                    </div>
+                )}
                 {game.currentVersion && (
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Version</span>

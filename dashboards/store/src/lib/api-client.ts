@@ -9,6 +9,7 @@ interface Game {
     downloadUrl?: string | null;
     ownerId: string;
     isHidden?: boolean;
+    isEarlyAccess?: boolean;
     slug?: string;
     createdAt?: string;
     tags?: string[];
@@ -218,7 +219,8 @@ class ApiClient {
                 currentVersion: vaprGame?.currentVersion,
                 changelog: vaprGame?.changelog,
                 webstoreToken: pkg.storeInfo?.webstoreToken,
-                isHidden: vaprGame?.isHidden
+                isHidden: vaprGame?.isHidden,
+                isEarlyAccess: vaprGame?.isEarlyAccess || false
             };
         });
     }
