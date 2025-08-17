@@ -9,7 +9,7 @@ import {
     User,
     LogOut,
     Menu,
-    X
+    X, ExternalLink, Home
 } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
@@ -60,6 +60,10 @@ export default function StoreLayout({ children, isAuthenticated }: StoreLayoutPr
         return location.pathname === path;
     };
 
+    const handleBackToVapr = () => {
+        window.location.href = '/';
+    };
+
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -80,6 +84,14 @@ export default function StoreLayout({ children, isAuthenticated }: StoreLayoutPr
                                 >
                                     Store
                                 </Link>
+                                <button
+                                    onClick={handleBackToVapr}
+                                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                                >
+                                    <Home className="h-4 w-4" />
+                                    Back to VAPR
+                                    <ExternalLink className="h-3 w-3" />
+                                </button>
                             </nav>
                         </div>
 
@@ -205,14 +217,13 @@ export default function StoreLayout({ children, isAuthenticated }: StoreLayoutPr
                         <div>
                             <h4 className="font-semibold mb-4">Community</h4>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="/" className="text-muted-foreground hover:text-foreground">Main Site</a></li>
-                                <li><a href="https://discord.gg/vapr" className="text-muted-foreground hover:text-foreground">Discord</a></li>
+                                <li><a href="/" className="text-muted-foreground hover:text-foreground">VAPR</a></li>
+                                <li><a href="https://discord.gg/vtsnj3zphd" className="text-muted-foreground hover:text-foreground">Discord</a></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="font-semibold mb-4">Support</h4>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="/support" className="text-muted-foreground hover:text-foreground">Help Center</a></li>
                                 <li><a href="/terms" className="text-muted-foreground hover:text-foreground">Terms</a></li>
                                 <li><a href="/privacy" className="text-muted-foreground hover:text-foreground">Privacy</a></li>
                             </ul>

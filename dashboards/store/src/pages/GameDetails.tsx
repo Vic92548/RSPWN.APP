@@ -15,7 +15,6 @@ import {
     Calendar,
     User,
     Monitor,
-    HardDrive,
     ArrowLeft,
     ExternalLink,
     Users,
@@ -557,7 +556,7 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
 
                     {/* Tabs */}
                     <Tabs defaultValue="about">
-                        <TabsList className="grid w-full grid-cols-3">
+                        <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="about">About</TabsTrigger>
                             <TabsTrigger value="reviews">
                                 Reviews {reviewStats && reviewStats.totalReviews > 0 && `(${reviewStats.totalReviews})`}
@@ -832,13 +831,6 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                         </span>
                     </div>
                 )}
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">Size</span>
-                    <span className="flex items-center gap-1">
-                                        <HardDrive className="h-3 w-3" />
-                        {game.fileSize}
-                                    </span>
-                </div>
                 <div className="flex justify-between">
                     <span className="text-muted-foreground">Platform</span>
                     <Monitor className="h-4 w-4" />

@@ -146,7 +146,7 @@ export default function CreatorProgram({ isAuthenticated }: CreatorProgramProps)
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle>Your Creator Code</CardTitle>
-                            <CardDescription>Share this code with your audience. They get 10% off and you earn 20% commission!</CardDescription>
+                            <CardDescription>Share this code with your audience. They get 5% off and you earn 20% commission!</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center gap-4">
@@ -335,7 +335,7 @@ export default function CreatorProgram({ isAuthenticated }: CreatorProgramProps)
                             <h2 className="text-3xl font-bold mb-4">Turn Your Content Into Revenue</h2>
                             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                                 Join the VAPR Creator Program and earn 20% commission on every sale made with your creator code,
-                                while your viewers enjoy 10% off their purchases!
+                                while your viewers enjoy 5% off their purchases!
                             </p>
                         </div>
                     </CardContent>
@@ -358,11 +358,11 @@ export default function CreatorProgram({ isAuthenticated }: CreatorProgramProps)
                     <Card>
                         <CardHeader className="text-center">
                             <DollarSign className="h-10 w-10 text-primary mx-auto mb-2" />
-                            <CardTitle className="text-lg">10% Discount</CardTitle>
+                            <CardTitle className="text-lg">5% Discount</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-center text-muted-foreground">
-                                Your viewers get 10% off their purchase
+                                Your viewers get 5% off their purchase
                             </p>
                         </CardContent>
                     </Card>

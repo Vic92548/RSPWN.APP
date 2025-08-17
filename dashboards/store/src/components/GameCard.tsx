@@ -71,20 +71,6 @@ export default function GameCard({ game, onBuyNow, onAddToWishlist, isAuthentica
                     <p className="text-xs text-muted-foreground mb-3 line-clamp-2 flex-1">
                         {getPlainTextDescription(game.description)}
                     </p>
-                    {game.tags && game.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                            {game.tags.slice(0, 2).map((tag: string) => (
-                                <Badge key={tag} variant="secondary" className="text-xs">
-                                    {tag}
-                                </Badge>
-                            ))}
-                            {game.tags.length > 2 && (
-                                <Badge variant="secondary" className="text-xs">
-                                    +{game.tags.length - 2}
-                                </Badge>
-                            )}
-                        </div>
-                    )}
                     <div className="flex items-center justify-between mt-auto">
                         {game.onSale && game.originalPrice ? (
                             <div className="flex flex-col">
