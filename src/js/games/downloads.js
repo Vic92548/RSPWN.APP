@@ -13,29 +13,22 @@ async function downloadGame(event, gameId, gameTitle, downloadUrl) {
             throw new Error('Game not found');
         }
 
-        // Add to download manager
-        const downloadId = await downloadManager.addDownload({
-            id: gameId,
-            title: gameTitle,
-            coverImage: game.coverImage || '',
+        // Generate a unique download ID
+        const downloadId = `download-${Date.now()}-${gameId}`;
+
+        // Start the download
+        await window.__TAURI__.core.invoke('start_download', {
+            downloadId: downloadId,
+            gameId: gameId,
+            gameName: gameTitle,
             downloadUrl: downloadUrl
         });
 
-        // Show notification
-        const result = await Swal.fire({
-            icon: 'info',
-            title: 'Download Started',
-            text: `${gameTitle} has been added to your downloads.`,
-            showConfirmButton: true,
-            confirmButtonText: 'View Downloads',
-            confirmButtonColor: '#4ecdc4',
-            showCancelButton: true,
-            cancelButtonText: 'OK'
-        });
+        // Open the downloads window
+        await window.__TAURI__.core.invoke('open_downloads_window');
 
-        if (result.isConfirmed) {
-            router.navigate('/downloads', true);
-        }
+        // Show notification
+        notify.success('Download started', `${gameTitle} has been added to your downloads.`);
 
         // Update library view to show downloading state
         if (typeof displayLibrary === 'function') {
