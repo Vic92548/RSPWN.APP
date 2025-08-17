@@ -63,6 +63,7 @@ class ApiClient {
         return this.request<{
             success: boolean;
             games: Array<{
+                isEarlyAccess: boolean;
                 id: string;
                 title: string;
                 description: string;
@@ -421,6 +422,21 @@ class ApiClient {
             posts: any[];
             bucketId: string | null;
         }>(`/api/games/${gameId}/post-management`);
+    }
+
+    async updateGame(gameId: string, updates: {
+        title?: string;
+        description?: string;
+        isHidden?: boolean;
+        isEarlyAccess?: boolean;
+    }) {
+        return this.request<{
+            success: boolean;
+            game: any;
+        }>(`/api/games/${gameId}`, {
+            method: 'PUT',
+            body: JSON.stringify(updates),
+        });
     }
 
     async getGameAnalytics(gameId: string, timeRange: number = 30) {

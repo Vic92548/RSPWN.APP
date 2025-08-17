@@ -1,3 +1,5 @@
+// dashboards/partners/src/pages/Dashboard.tsx
+
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,17 +10,15 @@ import TebexOnboardingModal from "@/components/TebexOnboardingModal"
 import apiClient from "@/lib/api-client"
 import {
     Gamepad2,
-    Key,
-    BarChart3,
     Users,
     Clock,
-    Package,
     UserPlus,
     Plus,
     EyeOff,
     ShoppingCart,
     Activity,
-    TrendingUp, FileText
+    TrendingUp,
+    Settings
 } from "lucide-react"
 
 interface Game {
@@ -32,6 +32,7 @@ interface Game {
     ownedAt: string;
     totalPlaytimeSeconds: number;
     isHidden?: boolean;
+    isEarlyAccess?: boolean;
     ownerId?: string;
     stats?: {
         playerCount: number;
@@ -284,106 +285,77 @@ export default function Dashboard() {
                                 const recentPlaytime = gameStats?.overview?.totalPlaytimeHours || 0;
 
                                 return (
-                                    <Card key={game.id} className="overflow-hidden">
-                                        <div className="aspect-video relative">
-                                            <img
-                                                src={game.coverImage || '/default-game-cover.png'}
-                                                alt={game.title}
-                                                className="object-cover w-full h-full"
-                                            />
-                                            <div className="absolute top-2 right-2 flex gap-2">
-                                                <Badge variant="secondary">
-                                                    v{game.currentVersion}
-                                                </Badge>
-                                                {game.isHidden && (
-                                                    <Badge variant="destructive" className="gap-1">
-                                                        <EyeOff className="h-3 w-3" />
-                                                        Hidden
+                                    <Link to={`/games/${game.id}`} key={game.id} className="block">
+                                        <Card className="overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02]">
+                                            <div className="aspect-video relative">
+                                                <img
+                                                    src={game.coverImage || '/default-game-cover.png'}
+                                                    alt={game.title}
+                                                    className="object-cover w-full h-full"
+                                                />
+                                                <div className="absolute top-2 right-2 flex gap-2">
+                                                    <Badge variant="secondary">
+                                                        v{game.currentVersion}
                                                     </Badge>
+                                                    {game.isHidden && (
+                                                        <Badge variant="destructive" className="gap-1">
+                                                            <EyeOff className="h-3 w-3" />
+                                                            Hidden
+                                                        </Badge>
+                                                    )}
+                                                    {game.isEarlyAccess && (
+                                                        <Badge variant="secondary" className="gap-1">
+                                                            Early Access
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                {game.totalPlaytimeSeconds > 0 && (
+                                                    <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                                                        {formatPlaytime(game.totalPlaytimeSeconds)} total
+                                                    </div>
                                                 )}
                                             </div>
-                                            {game.totalPlaytimeSeconds > 0 && (
-                                                <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                                                    {formatPlaytime(game.totalPlaytimeSeconds)} total
+                                            <CardHeader>
+                                                <CardTitle>{game.title}</CardTitle>
+                                                <CardDescription className="line-clamp-2">
+                                                    {game.description}
+                                                </CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <Users className="h-4 w-4 text-muted-foreground" />
+                                                        <span>{gamePlayers[game.id] || 0} players</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Activity className="h-4 w-4 text-muted-foreground" />
+                                                        <span>{activePlayers} active</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock className="h-4 w-4 text-muted-foreground" />
+                                                        <span>{formatPlaytime(recentPlaytime * 3600)} (7d)</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                                                        <span>{avgSession}m avg</span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <CardHeader>
-                                            <CardTitle>{game.title}</CardTitle>
-                                            <CardDescription className="line-clamp-2">
-                                                {game.description}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="grid grid-cols-2 gap-4 text-sm mb-3">
-                                                <div className="flex items-center gap-2">
-                                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                                    <span>{gamePlayers[game.id] || 0} players</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Activity className="h-4 w-4 text-muted-foreground" />
-                                                    <span>{activePlayers} active</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                                    <span>{formatPlaytime(recentPlaytime * 3600)} (7d)</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                                                    <span>{avgSession}m avg</span>
-                                                </div>
-                                            </div>
-                                            {game.isHidden && (
-                                                <div className="mt-3 p-2 bg-muted rounded-md">
-                                                    <p className="text-xs text-muted-foreground">
-                                                        This game requires a key to access
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                        <CardFooter className="grid grid-cols-2 gap-2">
-                                            <Link to={`/games/${game.id}/stats`}>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="gap-1 w-full"
-                                                >
-                                                    <BarChart3 className="h-3 w-3" />
-                                                    Analytics
+                                                {game.isHidden && (
+                                                    <div className="mt-3 p-2 bg-muted rounded-md">
+                                                        <p className="text-xs text-muted-foreground">
+                                                            This game requires a key to access
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </CardContent>
+                                            <CardFooter>
+                                                <Button variant="outline" className="w-full" onClick={(e) => e.preventDefault()}>
+                                                    <Settings className="h-4 w-4 mr-2" />
+                                                    Manage Game
                                                 </Button>
-                                            </Link>
-                                            <Link to={`/games/${game.id}/keys`}>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="gap-1 w-full"
-                                                >
-                                                    <Key className="h-3 w-3" />
-                                                    Keys
-                                                </Button>
-                                            </Link>
-                                            <Link to={`/games/${game.id}/updates`}>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="gap-1 w-full"
-                                                >
-                                                    <Package className="h-3 w-3" />
-                                                    Update
-                                                </Button>
-                                            </Link>
-                                            <Link to={`/games/${game.id}/posts`}>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="gap-1 w-full"
-                                                >
-                                                    <FileText className="h-3 w-3" />
-                                                    Posts
-                                                </Button>
-                                            </Link>
-                                        </CardFooter>
-                                    </Card>
+                                            </CardFooter>
+                                        </Card>
+                                    </Link>
                                 );
                             })}
                         </div>

@@ -388,6 +388,91 @@ function generateKey() {
     return segments.join('-');
 }
 
+export async function updateGame(gameId, ownerId, updates) {
+    try {
+        const game = await gamesCollection.findOne({ id: gameId });
+
+        if (!game) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Game not found'
+            }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        if (game.ownerId !== ownerId) {
+            return new Response(JSON.stringify({
+                success: false,
+                error: 'Unauthorized'
+            }), {
+                status: 403,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        // Validate and sanitize updates
+        const allowedUpdates = ['title', 'description', 'isHidden', 'isEarlyAccess'];
+        const updateData = {};
+
+        for (const field of allowedUpdates) {
+            if (updates[field] !== undefined) {
+                if (field === 'title' && (!updates[field] || updates[field].trim().length === 0)) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: 'Title cannot be empty'
+                    }), {
+                        status: 400,
+                        headers: { "Content-Type": "application/json" }
+                    });
+                }
+
+                if (field === 'title' || field === 'description') {
+                    updateData[field] = updates[field].trim();
+                } else {
+                    updateData[field] = updates[field];
+                }
+            }
+        }
+
+        // Update slug if title changes
+        if (updateData.title) {
+            updateData.slug = updateData.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        updateData.updatedAt = new Date();
+
+        await gamesCollection.updateOne(
+            { id: gameId },
+            { $set: updateData }
+        );
+
+        const updatedGame = await gamesCollection.findOne({ id: gameId });
+
+        return new Response(JSON.stringify({
+            success: true,
+            game: updatedGame
+        }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
+
+    } catch (error) {
+        console.error('Error updating game:', error);
+        return new Response(JSON.stringify({
+            success: false,
+            error: 'Failed to update game'
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
 export async function getGameAnalytics(gameId, ownerId, timeRange = 30) {
     try {
         const game = await gamesCollection.findOne({ id: gameId });
