@@ -465,7 +465,7 @@ const collectionNames = [
     'follows', 'reactions', 'linkClicks', 'registrationReferrals', 'xpLog',
     'secretKeys', 'games', 'gameKeys', 'userGames', 'gameVersions',
     'gameUpdates', 'creatorApplications', 'creators', 'gameCreatorClicks',
-    'playtimeSessions', 'tebexConfigs', 'partnerCreatorLinks', 'buckets', 'bucketItems'
+    'playtimeSessions', 'tebexConfigs', 'partnerCreatorLinks', 'buckets', 'bucketItems', 'gameReviews'
 ];
 
 const collections = {};
@@ -501,6 +501,7 @@ const tebexConfigsCollection = collections.tebexConfigs;
 const partnerCreatorLinksCollection = collections.partnerCreatorLinks;
 const bucketsCollection = collections.buckets;
 const bucketItemsCollection = collections.bucketItems;
+const gameReviewsCollection = collections.gameReviews;
 
 process.on('SIGINT', async () => {
     console.log('Closing database connections...');
@@ -548,5 +549,6 @@ export {
     tebexConfigsCollection,
     partnerCreatorLinksCollection,
     bucketsCollection,
-    bucketItemsCollection
+    bucketItemsCollection,
+    gameReviewsCollection
 };

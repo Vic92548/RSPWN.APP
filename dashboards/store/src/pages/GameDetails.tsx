@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StoreLayout from "@/components/StoreLayout";
 import HtmlParser from "@/components/HtmlParser";
+import ReviewForm from "@/components/ReviewForm";
 import {
     Heart,
     Download,
@@ -20,7 +21,8 @@ import {
     Users,
     Info,
     ChevronDown,
-    Gift
+    Gift,
+    ThumbsUp
 } from "lucide-react";
 import apiClient from "@/lib/api-client";
 
@@ -42,6 +44,9 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const [gameMedia, setGameMedia] = useState<any[]>([]);
     const [mediaLoading, setMediaLoading] = useState(true);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewStats, setReviewStats] = useState<any>(null);
+    const [userReview, setUserReview] = useState<any>(null);
 
     useEffect(() => {
         if (gameId) {
@@ -110,8 +115,6 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                     minimum: 'OS: Windows 10 64-bit\nProcessor: Intel Core i3-2100\nMemory: 4 GB RAM\nGraphics: NVIDIA GeForce GTX 660\nDirectX: Version 11\nStorage: 2 GB available space',
                     recommended: 'OS: Windows 11 64-bit\nProcessor: Intel Core i7-4770\nMemory: 8 GB RAM\nGraphics: NVIDIA GeForce RTX 3060\nDirectX: Version 12\nStorage: 2 GB available space'
                 },
-                rating: 4.5,
-                reviewCount: reviews.length,
                 releaseDate: enhancedGame.createdAt || new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
                 fileSize: '1.5 GB',
@@ -171,9 +174,25 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                 }
             }
 
-            // Load reviews
-            const reviewsData = await apiClient.getGameReviews(gameId!);
+            // Load reviews and stats
+            const [reviewsData, statsData] = await Promise.all([
+                apiClient.getGameReviews(gameId!),
+                apiClient.getGameReviewStats(gameId!)
+            ]);
+
             setReviews(reviewsData.reviews);
+            setReviewStats(statsData.stats);
+
+            // Check if user has already reviewed
+            if (isAuthenticated) {
+                try {
+                    const user = await apiClient.getMe();
+                    const existingReview = reviewsData.reviews.find(r => r.userId === user.id);
+                    setUserReview(existingReview);
+                } catch (error) {
+                    console.error('Failed to check user review:', error);
+                }
+            }
 
             // Track game view if coming from a post
             const urlParams = new URLSearchParams(window.location.search);
@@ -222,6 +241,42 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
             }
         } catch (error) {
             console.error('Failed to update wishlist:', error);
+        }
+    };
+
+    const handleSubmitReview = async (rating: number, content: string) => {
+        try {
+            const result = await apiClient.submitReview(gameId!, rating, content);
+            if (result.success) {
+                // Reload reviews
+                const [reviewsData, statsData] = await Promise.all([
+                    apiClient.getGameReviews(gameId!),
+                    apiClient.getGameReviewStats(gameId!)
+                ]);
+                setReviews(reviewsData.reviews);
+                setReviewStats(statsData.stats);
+                setUserReview(result.review);
+                setShowReviewForm(false);
+            }
+        } catch (error) {
+            console.error('Failed to submit review:', error);
+            alert('Failed to submit review. Make sure you own this game.');
+        }
+    };
+
+    const handleMarkHelpful = async (reviewId: string) => {
+        if (!isAuthenticated) {
+            apiClient.login();
+            return;
+        }
+
+        try {
+            await apiClient.markReviewHelpful(reviewId);
+            // Reload reviews to update helpful counts
+            const reviewsData = await apiClient.getGameReviews(gameId!);
+            setReviews(reviewsData.reviews);
+        } catch (error) {
+            console.error('Failed to mark review as helpful:', error);
         }
     };
 
@@ -505,7 +560,9 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="about">About</TabsTrigger>
                             <TabsTrigger value="requirements">System Requirements</TabsTrigger>
-                            <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
+                            <TabsTrigger value="reviews">
+                                Reviews {reviewStats && reviewStats.totalReviews > 0 && `(${reviewStats.totalReviews})`}
+                            </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="about" className="space-y-4">
@@ -575,60 +632,121 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                             <div className="flex items-center justify-between mb-4">
                                 <div>
                                     <h3 className="text-lg font-semibold">User Reviews</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        {reviews.length} reviews • {game.rating}/5 average rating
-                                    </p>
+                                    {reviewStats && (
+                                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                            <span>{reviewStats.totalReviews} reviews</span>
+                                            <div className="flex items-center gap-1">
+                                                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                                <span>{reviewStats.averageRating}/5 average rating</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                {isAuthenticated && owned && (
-                                    <Button>Write a Review</Button>
+                                {isAuthenticated && owned && !userReview && !showReviewForm && (
+                                    <Button onClick={() => setShowReviewForm(true)}>
+                                        Write a Review
+                                    </Button>
                                 )}
                             </div>
 
-                            {reviews.length === 0 ? (
+                            {/* Rating distribution */}
+                            {reviewStats && reviewStats.totalReviews > 0 && (
+                                <Card className="mb-6">
+                                    <CardContent className="pt-6">
+                                        <div className="space-y-2">
+                                            {[5, 4, 3, 2, 1].map((rating) => (
+                                                <div key={rating} className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-1 w-20">
+                                                        <span className="text-sm">{rating}</span>
+                                                        <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                                    </div>
+                                                    <div className="flex-1 bg-secondary rounded-full h-2 overflow-hidden">
+                                                        <div
+                                                            className="bg-yellow-500 h-full transition-all"
+                                                            style={{
+                                                                width: `${(reviewStats.ratingDistribution[rating] / reviewStats.totalReviews) * 100}%`
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-sm text-muted-foreground w-12 text-right">
+                                                            {reviewStats.ratingDistribution[rating]}
+                                                        </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {showReviewForm && (
+                                <ReviewForm
+                                    gameId={gameId!}
+                                    onSubmit={handleSubmitReview}
+                                    onCancel={() => setShowReviewForm(false)}
+                                />
+                            )}
+
+                            {reviews.length === 0 && !showReviewForm ? (
                                 <Card>
                                     <CardContent className="text-center py-8">
                                         <p className="text-muted-foreground">No reviews yet. Be the first to review!</p>
                                     </CardContent>
                                 </Card>
                             ) : (
-                                reviews.map((review) => (
-                                    <Card key={review.id}>
-                                        <CardContent className="pt-6">
-                                            <div className="flex items-start gap-4">
-                                                <img
-                                                    src={review.avatar ? `https://cdn.discordapp.com/avatars/${review.userId}/${review.avatar}.png` : '/default-avatar.png'}
-                                                    alt={review.username}
-                                                    className="h-10 w-10 rounded-full"
-                                                />
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div>
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-semibold">{review.username}</span>
-                                                                <div className="flex items-center gap-1">
-                                                                    {[...Array(5)].map((_, i) => (
-                                                                        <Star
-                                                                            key={i}
-                                                                            className={`h-4 w-4 ${
-                                                                                i < review.rating
-                                                                                    ? 'fill-yellow-500 text-yellow-500'
-                                                                                    : 'text-muted-foreground'
-                                                                            }`}
-                                                                        />
-                                                                    ))}
+                                <div className="space-y-4">
+                                    {reviews.map((review) => (
+                                        <Card key={review.id} className={review.userId === userReview?.userId ? 'ring-2 ring-primary' : ''}>
+                                            <CardContent className="pt-6">
+                                                <div className="flex items-start gap-4">
+                                                    <img
+                                                        src={review.avatar ? `https://cdn.discordapp.com/avatars/${review.userId}/${review.avatar}.png` : '/default-avatar.png'}
+                                                        alt={review.username}
+                                                        className="h-10 w-10 rounded-full"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="font-semibold">{review.username}</span>
+                                                                    {review.userId === userReview?.userId && (
+                                                                        <Badge variant="outline" className="text-xs">Your Review</Badge>
+                                                                    )}
+                                                                    <div className="flex items-center gap-1">
+                                                                        {[...Array(5)].map((_, i) => (
+                                                                            <Star
+                                                                                key={i}
+                                                                                className={`h-4 w-4 ${
+                                                                                    i < review.rating
+                                                                                        ? 'fill-yellow-500 text-yellow-500'
+                                                                                        : 'text-muted-foreground'
+                                                                                }`}
+                                                                            />
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
+                                                                <p className="text-xs text-muted-foreground">
+                                                                    Level {review.level || 0} • {new Date(review.createdAt).toLocaleDateString()}
+                                                                </p>
                                                             </div>
                                                         </div>
-                                                        <span className="text-sm text-muted-foreground">
-                                                                {new Date(review.createdAt).toLocaleDateString()}
-                                                            </span>
+                                                        <p className="text-muted-foreground mb-3">{review.content}</p>
+                                                        <div className="flex items-center gap-4">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => handleMarkHelpful(review.id)}
+                                                                className={review.hasVoted ? 'text-primary' : ''}
+                                                            >
+                                                                <ThumbsUp className="h-4 w-4 mr-1" />
+                                                                Helpful ({review.helpful || 0})
+                                                            </Button>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-muted-foreground mb-2">{review.content}</p>
                                                 </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
                             )}
                         </TabsContent>
                     </Tabs>

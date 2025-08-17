@@ -661,6 +661,13 @@ import {
     getUserBuckets, removeItemFromBucket,
     updateBucket
 } from "./server_modules/buckets.js";
+import {
+    createGameReview, deleteGameReview,
+    getGameReviews,
+    getGameReviewStats,
+    markReviewHelpful,
+    updateGameReview
+} from "./server_modules/reviews.js";
 
 app.get('/api/games', async (req, res) => {
     const authResult = await authenticateRequest(req);
@@ -1066,6 +1073,51 @@ app.get('/api/games/:gameId/media', async (req, res) => {
         console.error('Error fetching game media:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch game media' });
     }
+});
+
+// Create a review
+app.post('/api/games/:gameId/reviews', authMiddleware, async (req, res) => {
+    const { rating, content } = req.body;
+    const response = await createGameReview(req.userData.id, req.params.gameId, rating, content);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Get reviews for a game
+app.get('/api/games/:gameId/reviews', async (req, res) => {
+    const authResult = await authenticateRequest(req);
+    const userId = authResult.isValid ? authResult.userData.id : null;
+    const response = await getGameReviews(req.params.gameId, userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Get review stats
+app.get('/api/games/:gameId/reviews/stats', async (req, res) => {
+    const response = await getGameReviewStats(req.params.gameId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Mark review as helpful
+app.post('/api/reviews/:reviewId/helpful', authMiddleware, async (req, res) => {
+    const response = await markReviewHelpful(req.params.reviewId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Update review
+app.put('/api/reviews/:reviewId', authMiddleware, async (req, res) => {
+    const response = await updateGameReview(req.params.reviewId, req.userData.id, req.body);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Delete review
+app.delete('/api/reviews/:reviewId', authMiddleware, async (req, res) => {
+    const response = await deleteGameReview(req.params.reviewId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
 });
 
 app.get('/@:username', async (req, res) => {

@@ -338,6 +338,113 @@ class ApiClient {
         });
     }
 
+    async getGameReviews(gameId: string): Promise<{ success: boolean; reviews: GameReview[] }> {
+        // Handle Tebex game IDs
+        if (gameId.startsWith('tebex-')) {
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+            if (tebexGame) {
+                const vaprGames = await this.getVAPRGames();
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+                if (vaprGame) {
+                    gameId = vaprGame.id;
+                } else {
+                    return { success: true, reviews: [] };
+                }
+            }
+        }
+
+        return this.request<{
+            success: boolean;
+            reviews: GameReview[];
+        }>(`/api/games/${gameId}/reviews`);
+    }
+
+    async getGameReviewStats(gameId: string) {
+        // Handle Tebex game IDs
+        if (gameId.startsWith('tebex-')) {
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+            if (tebexGame) {
+                const vaprGames = await this.getVAPRGames();
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+                if (vaprGame) {
+                    gameId = vaprGame.id;
+                } else {
+                    return {
+                        success: true,
+                        stats: {
+                            totalReviews: 0,
+                            averageRating: 0,
+                            ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+                        }
+                    };
+                }
+            }
+        }
+
+        return this.request<{
+            success: boolean;
+            stats: {
+                totalReviews: number;
+                averageRating: number;
+                ratingDistribution: Record<number, number>;
+            };
+        }>(`/api/games/${gameId}/reviews/stats`);
+    }
+
+    async submitReview(gameId: string, rating: number, content: string) {
+        // Handle Tebex game IDs
+        if (gameId.startsWith('tebex-')) {
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+            if (tebexGame) {
+                const vaprGames = await this.getVAPRGames();
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+                if (vaprGame) {
+                    gameId = vaprGame.id;
+                } else {
+                    throw new Error('Cannot review this game');
+                }
+            }
+        }
+
+        return this.request<{ success: boolean; review: GameReview }>(
+            `/api/games/${gameId}/reviews`,
+            {
+                method: 'POST',
+                body: JSON.stringify({ rating, content })
+            }
+        );
+    }
+
+    async markReviewHelpful(reviewId: string) {
+        return this.request<{ success: boolean }>(
+            `/api/reviews/${reviewId}/helpful`,
+            { method: 'POST' }
+        );
+    }
+
+    async updateReview(reviewId: string, updates: { rating?: number; content?: string }) {
+        return this.request<{ success: boolean }>(
+            `/api/reviews/${reviewId}`,
+            {
+                method: 'PUT',
+                body: JSON.stringify(updates)
+            }
+        );
+    }
+
+    async deleteReview(reviewId: string) {
+        return this.request<{ success: boolean }>(
+            `/api/reviews/${reviewId}`,
+            { method: 'DELETE' }
+        );
+    }
+
     async createTebexBasket(_packageId: number, webstoreToken: string) {
         const response = await fetch(`https://headless.tebex.io/api/accounts/${webstoreToken}/baskets`, {
             method: 'POST',
@@ -513,11 +620,6 @@ class ApiClient {
         return this.getWishlist().includes(gameId);
     }
 
-    async getGameReviews(gameId: string): Promise<{ success: boolean; reviews: GameReview[] }> {
-        const reviews = JSON.parse(localStorage.getItem(`reviews_${gameId}`) || '[]');
-        return { success: true, reviews };
-    }
-
     async getGameMedia(gameId: string) {
         // If it's a Tebex game, we need to find the corresponding VAPR game
         if (gameId.startsWith('tebex-')) {
@@ -550,26 +652,6 @@ class ApiClient {
                 };
             }>;
         }>(`/api/games/${gameId}/media`);
-    }
-
-    async submitReview(gameId: string, rating: number, content: string) {
-        const user = await this.getMe();
-        const review: GameReview = {
-            id: Date.now().toString(),
-            userId: user.id,
-            username: user.username,
-            avatar: user.avatar,
-            rating,
-            content,
-            createdAt: new Date().toISOString(),
-            helpful: 0
-        };
-
-        const reviews = JSON.parse(localStorage.getItem(`reviews_${gameId}`) || '[]');
-        reviews.push(review);
-        localStorage.setItem(`reviews_${gameId}`, JSON.stringify(reviews));
-
-        return { success: true };
     }
 }
 
