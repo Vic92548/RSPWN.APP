@@ -76,6 +76,8 @@ class VAPRRouter {
     handle404() {
         this.currentRoute = '404';
         console.log('No route found for:', window.location.pathname);
+        // Make sure to show the post when no route is found
+        showPost();
         displayPost();
     }
 }

@@ -1,4 +1,3 @@
-// src/js/downloads/manager.js
 class DownloadManager {
     constructor() {
         this.downloads = new Map();
@@ -6,29 +5,36 @@ class DownloadManager {
         this.activeDownloads = new Set();
         this.maxConcurrentDownloads = 3;
         this.listeners = new Map();
+        this.isActive = true;
 
         if (isRunningInTauri()) {
             this.initTauriListeners();
         }
     }
 
+    pauseEventProcessing() {
+        this.isActive = false;
+    }
+
+    resumeEventProcessing() {
+        this.isActive = true;
+    }
+
     async initTauriListeners() {
-        // Listen for download progress updates
         await window.__TAURI__.event.listen('download-progress', (event) => {
-            this.handleProgress(event.payload);
+            if (this.isActive) {
+                this.handleProgress(event.payload);
+            }
         });
 
-        // Listen for download status changes
         await window.__TAURI__.event.listen('download-status', (event) => {
             this.handleStatusChange(event.payload);
         });
 
-        // Listen for download completion
         await window.__TAURI__.event.listen('download-complete', (event) => {
             this.handleCompletion(event.payload);
         });
 
-        // Listen for download errors
         await window.__TAURI__.event.listen('download-error', (event) => {
             this.handleError(event.payload);
         });
@@ -85,7 +91,6 @@ class DownloadManager {
         this.emit('download-started', download);
 
         try {
-            // Call Tauri backend to start the download
             const result = await window.__TAURI__.core.invoke('start_download', {
                 downloadId: downloadId,
                 gameId: download.gameId,
@@ -203,7 +208,6 @@ class DownloadManager {
         this.activeDownloads.delete(payload.download_id);
         this.emit('download-completed', download);
 
-        // Process next in queue
         this.processQueue();
     }
 
@@ -217,7 +221,6 @@ class DownloadManager {
         this.activeDownloads.delete(payload.download_id);
         this.emit('download-error', download);
 
-        // Process next in queue
         this.processQueue();
     }
 
@@ -241,8 +244,16 @@ class DownloadManager {
     emit(event, data) {
         if (!this.listeners.has(event)) return;
 
+        if (!this.isActive && !['download-completed', 'download-error'].includes(event)) {
+            return;
+        }
+
         this.listeners.get(event).forEach(callback => {
-            callback(data);
+            try {
+                callback(data);
+            } catch (error) {
+                console.error(`Error in download manager listener for ${event}:`, error);
+            }
         });
     }
 
@@ -271,5 +282,4 @@ class DownloadManager {
     }
 }
 
-// Create global instance
 window.downloadManager = new DownloadManager();

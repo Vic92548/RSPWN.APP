@@ -27,6 +27,7 @@ const cardManager = {
 
         if (this.currentCard && this.currentCard !== cardId) {
             await this.hideCard(this.currentCard, true);
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
 
         const post = document.querySelector('.post');
@@ -81,40 +82,70 @@ const cardManager = {
 
             const config = this.cards.get(cardId) || {};
 
+            if (cardId === 'downloads-card' && window.downloadManager) {
+                window.downloadManager.pauseEventProcessing();
+            }
+
             card.classList.remove('show');
 
             setTimeout(() => {
                 card.style.display = 'none';
 
-                if (!skipPostRestore) {
-                    const post = document.querySelector('.post');
-                    if (post) {
-                        post.style.display = 'block';
+                if(config.onHide) {
+                    try {
+                        config.onHide();
+                    } catch (error) {
+                        console.error('Error in onHide:', error);
                     }
                 }
-
-                if(config.onHide) config.onHide();
 
                 if (this.currentCard === cardId) {
                     this.currentCard = null;
                 }
 
-                if (!skipPostRestore && window.router && !this.isNavigating) {
-                    let targetPath = '/';
+                if (cardId === 'downloads-card' && window.downloadManager) {
+                    setTimeout(() => {
+                        window.downloadManager.resumeEventProcessing();
+                    }, 100);
+                }
 
-                    if (this.previousPath && this.previousPath !== window.location.pathname) {
-                        targetPath = this.previousPath;
-                    } else if (window.current_post_id) {
-                        targetPath = `/post/${window.current_post_id}`;
+                if (!skipPostRestore) {
+                    const post = document.querySelector('.post');
+                    if (post) {
+                        post.style.display = 'block';
+                        post.style.transform = 'translate(0px, 0px) rotate(0deg)';
                     }
 
-                    this.isNavigating = true;
-                    router.navigate(targetPath, true);
-                    this.isNavigating = false;
+                    if (window.router && !this.isNavigating) {
+                        let targetPath = '/';
+
+                        if (window.current_post_id) {
+                            targetPath = `/post/${window.current_post_id}`;
+                        } else if (this.previousPath && this.previousPath !== window.location.pathname) {
+                            targetPath = this.previousPath;
+                        }
+
+                        this.isNavigating = true;
+                        window.history.pushState(null, null, targetPath);
+
+                        if (targetPath === '/' || targetPath.startsWith('/post/')) {
+                            if (window.showPost) window.showPost();
+                            if (window.displayPost) {
+                                if (targetPath.startsWith('/post/')) {
+                                    const postId = targetPath.split('/')[2];
+                                    window.displayPost(postId);
+                                } else {
+                                    window.displayPost();
+                                }
+                            }
+                        }
+
+                        this.isNavigating = false;
+                    }
                 }
 
                 resolve();
-            }, 800);
+            }, 300);
         });
     },
 

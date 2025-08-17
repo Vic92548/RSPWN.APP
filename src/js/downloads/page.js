@@ -1,16 +1,19 @@
-// src/js/downloads/page.js
+let isDownloadsCardVisible = false;
+let downloadUpdateInterval = null;
+
 cardManager.register('downloads-card', {
     route: '/downloads',
     onShow: () => {
+        isDownloadsCardVisible = true;
         updateDownloadsView();
         startDownloadUpdates();
     },
     onHide: () => {
+        isDownloadsCardVisible = false;
         stopDownloadUpdates();
+        return Promise.resolve();
     }
 });
-
-let downloadUpdateInterval = null;
 
 function openDownloadsPage() {
     hideMenu();
@@ -18,10 +21,25 @@ function openDownloadsPage() {
 }
 
 function closeDownloadsCard() {
-    cardManager.hide('downloads-card');
+    isDownloadsCardVisible = false;
+    stopDownloadUpdates();
+
+    if (cardManager.currentCard === 'downloads-card') {
+        cardManager.currentCard = null;
+    }
+
+    const card = document.getElementById('downloads-card');
+    if (card) {
+        card.classList.remove('show');
+        card.style.display = 'none';
+    }
+
+    router.navigate('/', true);
 }
 
 function updateDownloadsView() {
+    if (!window.downloadManager) return;
+
     const downloads = downloadManager.getDownloads();
     const container = DOM.get('downloads-list');
     const emptyState = DOM.get('downloads-empty');
@@ -38,7 +56,6 @@ function updateDownloadsView() {
 
     container.innerHTML = '';
 
-    // Sort downloads: active first, then queued, then completed
     const sortedDownloads = downloads.sort((a, b) => {
         const statusOrder = {
             'downloading': 0,
@@ -74,6 +91,8 @@ function updateDownloadsView() {
 }
 
 function updateDownloadStats() {
+    if (!window.downloadManager) return;
+
     const active = downloadManager.getActiveDownloads();
     const queued = downloadManager.getQueuedDownloads();
     const completed = downloadManager.getCompletedDownloads();
@@ -82,7 +101,6 @@ function updateDownloadStats() {
     DOM.setText('queued-downloads', queued.length);
     DOM.setText('completed-downloads', completed.length);
 
-    // Calculate total speed
     const totalSpeed = active.reduce((sum, d) => sum + (d.speed || 0), 0);
     DOM.setText('total-speed', formatSpeed(totalSpeed));
 }
@@ -129,10 +147,16 @@ function formatETA(seconds) {
 }
 
 function startDownloadUpdates() {
-    if (downloadUpdateInterval) return;
+    stopDownloadUpdates();
 
-    // Update every second when downloads are active
+    if (!isDownloadsCardVisible || !window.downloadManager) return;
+
     downloadUpdateInterval = setInterval(() => {
+        if (!isDownloadsCardVisible || cardManager.currentCard !== 'downloads-card') {
+            stopDownloadUpdates();
+            return;
+        }
+
         if (downloadManager.getActiveDownloads().length > 0) {
             updateDownloadsView();
         }
@@ -146,8 +170,9 @@ function stopDownloadUpdates() {
     }
 }
 
-// Download control functions
 async function pauseAllDownloads() {
+    if (!window.downloadManager) return;
+
     const active = downloadManager.getActiveDownloads();
     for (const download of active) {
         await downloadManager.pauseDownload(download.id);
@@ -156,6 +181,8 @@ async function pauseAllDownloads() {
 }
 
 async function resumeAllDownloads() {
+    if (!window.downloadManager) return;
+
     const paused = downloadManager.getDownloads().filter(d => d.status === 'paused');
     for (const download of paused) {
         await downloadManager.resumeDownload(download.id);
@@ -164,21 +191,29 @@ async function resumeAllDownloads() {
 }
 
 function clearCompletedDownloads() {
+    if (!window.downloadManager) return;
+
     downloadManager.clearCompleted();
     updateDownloadsView();
 }
 
 async function pauseDownload(downloadId) {
+    if (!window.downloadManager) return;
+
     await downloadManager.pauseDownload(downloadId);
     updateDownloadsView();
 }
 
 async function resumeDownload(downloadId) {
+    if (!window.downloadManager) return;
+
     await downloadManager.resumeDownload(downloadId);
     updateDownloadsView();
 }
 
 async function cancelDownload(downloadId) {
+    if (!window.downloadManager) return;
+
     const confirmed = await notify.confirm(
         'Cancel Download?',
         'Are you sure you want to cancel this download? You can restart it later from your library.'
@@ -191,7 +226,8 @@ async function cancelDownload(downloadId) {
 }
 
 function prioritizeDownload(downloadId) {
-    // Move to front of queue
+    if (!window.downloadManager) return;
+
     const index = downloadManager.queue.indexOf(downloadId);
     if (index > 0) {
         downloadManager.queue.splice(index, 1);
@@ -200,35 +236,42 @@ function prioritizeDownload(downloadId) {
     }
 }
 
-// Register download manager listeners
-downloadManager.on('download-progress', () => {
-    if (cardManager.currentCard === 'downloads-card') {
-        updateDownloadsView();
-    }
-});
+function initDownloadManagerListeners() {
+    if (!window.downloadManager) return;
 
-downloadManager.on('download-completed', (download) => {
-    notify.success(`${download.title} downloaded successfully!`);
+    downloadManager.on('download-progress', () => {
+        if (isDownloadsCardVisible && cardManager.currentCard === 'downloads-card') {
+            updateDownloadsView();
+        }
+    });
 
-    if (cardManager.currentCard === 'downloads-card') {
-        updateDownloadsView();
-    }
+    downloadManager.on('download-completed', (download) => {
+        notify.success(`${download.title} downloaded successfully!`);
 
-    // Refresh library if open
-    if (cardManager.currentCard === 'library-card') {
-        loadLibraryData();
-    }
-});
+        if (isDownloadsCardVisible && cardManager.currentCard === 'downloads-card') {
+            updateDownloadsView();
+        }
 
-downloadManager.on('download-error', (download) => {
-    notify.error('Download Failed', `Failed to download ${download.title}: ${download.error}`);
+        if (cardManager.currentCard === 'library-card') {
+            loadLibraryData();
+        }
+    });
 
-    if (cardManager.currentCard === 'downloads-card') {
-        updateDownloadsView();
-    }
-});
+    downloadManager.on('download-error', (download) => {
+        notify.error('Download Failed', `Failed to download ${download.title}: ${download.error}`);
 
-// Add global functions
+        if (isDownloadsCardVisible && cardManager.currentCard === 'downloads-card') {
+            updateDownloadsView();
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDownloadManagerListeners);
+} else {
+    setTimeout(initDownloadManagerListeners, 100);
+}
+
 window.pauseDownload = pauseDownload;
 window.resumeDownload = resumeDownload;
 window.cancelDownload = cancelDownload;
