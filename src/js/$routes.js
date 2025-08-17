@@ -138,3 +138,13 @@ router.register('/privacy', () => {
         console.error('Error opening Privacy Policy:', err);
     }
 });
+
+router.register('/downloads', async () => {
+
+    if (!isRunningInTauri()) {
+        notify.warning('Desktop App Required', 'The downloads manager requires the VAPR desktop app.');
+        return;
+    }
+    hidePost();
+    await cardManager.show('downloads-card');
+});

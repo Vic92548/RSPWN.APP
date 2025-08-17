@@ -70,14 +70,6 @@ class TebexAPI {
         return { data: allPackages };
     }
 
-    async getPackagesForStore(webstoreToken) {
-        return this.request(`/accounts/${webstoreToken}/packages`);
-    }
-
-    async getPackage(packageId, webstoreToken) {
-        return this.request(`/accounts/${webstoreToken}/packages/${packageId}`);
-    }
-
     async createBasket(completeUrl, cancelUrl, webstoreToken) {
         return this.request(`/accounts/${webstoreToken}/baskets`, {
             method: 'POST',

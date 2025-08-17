@@ -1,0 +1,44 @@
+<!-- src/components/templates/download-item.html -->
+<template data-vapr="download-item">
+    <div class="download-item {{status}}" data-download-id="{{id}}">
+        <div class="download-game-info">
+            <img src="{{coverImage}}" alt="{{title}}" class="download-game-cover">
+            <div class="download-game-details">
+                <h4>{{title}}</h4>
+                <p class="download-status-text">{{statusText}}</p>
+            </div>
+        </div>
+
+        <div class="download-progress-section">
+            <div class="download-progress-bar">
+                <div class="download-progress-fill" style="width: {{progress}}%"></div>
+            </div>
+            <div class="download-stats-row">
+                <span class="download-size">{{downloadedSize}} / {{totalSize}}</span>
+                <span class="download-speed">{{speed}}</span>
+                <span class="download-eta">{{eta}}</span>
+            </div>
+        </div>
+
+        <div class="download-actions">
+            {{#is-active}}
+            <button class="download-action-btn" onclick="pauseDownload('{{id}}')">
+                <i class="fa-solid fa-pause"></i>
+            </button>
+            {{/is-active}}
+            {{#is-paused}}
+            <button class="download-action-btn" onclick="resumeDownload('{{id}}')">
+                <i class="fa-solid fa-play"></i>
+            </button>
+            {{/is-paused}}
+            {{#is-queued}}
+            <button class="download-action-btn" onclick="prioritizeDownload('{{id}}')">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            {{/is-queued}}
+            <button class="download-action-btn danger" onclick="cancelDownload('{{id}}')">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+</template>

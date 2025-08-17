@@ -168,17 +168,6 @@ class API {
         return this.get(`/accept-invitation?ambassadorUserId=${ambassadorUserId}`);
     }
 
-    async getAnalytics(range = 7) {
-        if (!['7', '30', 'all'].includes(String(range))) {
-            range = 7;
-        }
-        return this.get(`/api/analytics?range=${range}`);
-    }
-
-    async getDailyXP() {
-        return this.get('/api/xp-today');
-    }
-
     async getUserCount() {
         const response = await fetch('/api/user-count', {
             credentials: 'include'
@@ -197,7 +186,6 @@ class API {
         return this.get(`/api/user/${userId}/posts`, false);
     }
 
-    // Resolve post info (title, media, tagged game) by ID or URL
     async resolvePost(input) {
         if (!input) {
             throw new Error('id or url required');
@@ -224,24 +212,6 @@ class API {
 
     async getPlaytimeTotals() {
         return this.get('/api/playtime/totals');
-    }
-
-    async setTebexConfig(config) {
-        return this.post('/api/developer/tebex-config', config);
-    }
-
-    async getTebexConfig() {
-        return this.get('/api/developer/tebex-config');
-    }
-
-    async removeTebexConfig() {
-        return this.request('/api/developer/tebex-config', {
-            method: 'DELETE'
-        });
-    }
-
-    async getAllTebexConfigs() {
-        return this.get('/api/tebex-configs', false);
     }
 }
 

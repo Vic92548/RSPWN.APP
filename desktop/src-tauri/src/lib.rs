@@ -3,16 +3,17 @@ mod websocket;
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use std::fs;
-use std::io::Cursor;
+use std::io::{Cursor, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tauri::AppHandle;
 use tauri::{Emitter, Manager, State};
 use semver::Version;
 use websocket::{UserInfo, WebSocketServer};
-use tokio::sync::{oneshot, Mutex};
+use tokio::sync::{oneshot, Mutex, RwLock};
 use uuid::Uuid;
 use tokio::time::{timeout, Duration};
 
@@ -76,6 +77,7 @@ impl SdkBridge {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct DownloadProgress {
+    download_id: String,
     game_id: String,
     downloaded: u64,
     total: u64,
@@ -98,6 +100,22 @@ struct VersionCheckResult {
     current_version: String,
     required_version: String,
     download_url: String,
+}
+
+#[derive(Debug, Clone)]
+struct DownloadState {
+    id: String,
+    game_id: String,
+    game_name: String,
+    download_url: String,
+    is_paused: Arc<AtomicBool>,
+    downloaded_bytes: Arc<Mutex<u64>>,
+    total_bytes: Arc<Mutex<u64>>,
+    start_time: Arc<Mutex<Option<std::time::Instant>>>,
+}
+
+struct AppState {
+    downloads: Arc<Mutex<HashMap<String, DownloadState>>>,
 }
 
 #[tauri::command]
@@ -204,6 +222,7 @@ async fn download_and_install_game(
         };
 
         let progress = DownloadProgress {
+            download_id: format!("legacy-{}", game_id),
             game_id: game_id.clone(),
             downloaded,
             total: total_size,
@@ -219,7 +238,7 @@ async fn download_and_install_game(
 
     window
         .emit("download-status", serde_json::json!({
-            "game_id": game_id.clone(),
+            "download_id": format!("legacy-{}", game_id),
             "status": "Extracting game files..."
         }))
         .map_err(|e| format!("Failed to emit status: {}", e))?;
@@ -289,6 +308,281 @@ async fn download_and_install_game(
         executable: Some(executable.to_string_lossy().to_string()),
         error: None,
     })
+}
+
+#[tauri::command]
+async fn start_download(
+    window: tauri::Window,
+    state: State<'_, AppState>,
+    download_id: String,
+    game_id: String,
+    game_name: String,
+    download_url: String,
+) -> Result<GameInstallResult, String> {
+    let download_state = DownloadState {
+        id: download_id.clone(),
+        game_id: game_id.clone(),
+        game_name: game_name.clone(),
+        download_url: download_url.clone(),
+        is_paused: Arc::new(AtomicBool::new(false)),
+        downloaded_bytes: Arc::new(Mutex::new(0)),
+        total_bytes: Arc::new(Mutex::new(0)),
+        start_time: Arc::new(Mutex::new(Some(std::time::Instant::now()))),
+    };
+
+    // Store download state
+    {
+        let mut downloads = state.downloads.lock().await;
+        downloads.insert(download_id.clone(), download_state.clone());
+    }
+
+    // Spawn download task
+    tauri::async_runtime::spawn(async move {
+        perform_download(window, download_state).await;
+    });
+
+    Ok(GameInstallResult {
+        success: true,
+        install_path: None,
+        executable: None,
+        error: None,
+    })
+}
+
+async fn perform_download(window: tauri::Window, download_state: DownloadState) {
+    let result = download_with_resume_support(window.clone(), download_state.clone()).await;
+
+    match result {
+        Ok((install_path, executable)) => {
+            window.emit("download-complete", serde_json::json!({
+                "download_id": download_state.id,
+                "install_path": install_path,
+                "executable": executable
+            })).unwrap();
+        }
+        Err(e) => {
+            window.emit("download-error", serde_json::json!({
+                "download_id": download_state.id,
+                "error": e.to_string()
+            })).unwrap();
+        }
+    }
+}
+
+async fn download_with_resume_support(
+    window: tauri::Window,
+    download_state: DownloadState,
+) -> Result<(String, String), Box<dyn std::error::Error + Send + Sync>> {
+    let client = reqwest::Client::new();
+
+    // Get already downloaded bytes if resuming
+    let start_byte = *download_state.downloaded_bytes.lock().await;
+
+    let mut request = client.get(&download_state.download_url);
+    if start_byte > 0 {
+        request = request.header("Range", format!("bytes={}-", start_byte));
+    }
+
+    let response = request.send().await?;
+    let total_size = response.content_length().unwrap_or(0) + start_byte;
+
+    *download_state.total_bytes.lock().await = total_size;
+
+    let vapr_games_dir = get_games_directory()?;
+    let safe_game_name = download_state.game_name.replace(" ", "_").replace(":", "");
+    let game_dir = vapr_games_dir.join(&safe_game_name);
+    fs::create_dir_all(&game_dir)?;
+
+    let temp_file_path = game_dir.join(format!("{}.download", safe_game_name));
+    let mut file = if start_byte > 0 {
+        fs::OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open(&temp_file_path)?
+    } else {
+        fs::File::create(&temp_file_path)?
+    };
+
+    let mut stream = response.bytes_stream();
+    let mut downloaded = start_byte;
+    let mut file_data = Vec::new();
+
+    use futures_util::StreamExt;
+    while let Some(chunk) = stream.next().await {
+        // Check if paused
+        if download_state.is_paused.load(Ordering::Relaxed) {
+            return Err("Download paused".into());
+        }
+
+        let chunk = chunk?;
+        file.write_all(&chunk)?;
+        file_data.extend_from_slice(&chunk);
+        downloaded += chunk.len() as u64;
+
+        *download_state.downloaded_bytes.lock().await = downloaded;
+
+        // Calculate speed and ETA
+        let elapsed = download_state.start_time.lock().await
+            .as_ref()
+            .map(|t| t.elapsed().as_secs_f64())
+            .unwrap_or(1.0);
+
+        let speed = if elapsed > 0.0 {
+            (downloaded - start_byte) as f64 / elapsed
+        } else {
+            0.0
+        };
+
+        let eta = if speed > 0.0 {
+            ((total_size - downloaded) as f64 / speed) as u64
+        } else {
+            0
+        };
+
+        let progress = DownloadProgress {
+            download_id: download_state.id.clone(),
+            game_id: download_state.game_id.clone(),
+            downloaded,
+            total: total_size,
+            percentage: (downloaded as f32 / total_size as f32) * 100.0,
+            speed: speed / 1024.0 / 1024.0, // Convert to MB/s
+            eta,
+        };
+
+        window.emit("download-progress", &progress)?;
+    }
+
+    // Drop the file handle to close it
+    drop(file);
+
+    // Now we need to extract the file
+    window.emit("download-status", serde_json::json!({
+        "download_id": download_state.id.clone(),
+        "status": "Extracting game files...",
+        "message": "Extracting game files..."
+    }))?;
+
+    // Read the complete file for extraction
+    let complete_data = fs::read(&temp_file_path)?;
+    let cursor = Cursor::new(complete_data);
+    let mut archive = zip::ZipArchive::new(cursor)?;
+
+    for i in 0..archive.len() {
+        let mut file = archive.by_index(i)?;
+
+        let outpath = match file.enclosed_name() {
+            Some(path) => game_dir.join(path),
+            None => continue,
+        };
+
+        if file.name().ends_with('/') {
+            fs::create_dir_all(&outpath)?;
+        } else {
+            if let Some(p) = outpath.parent() {
+                if !p.exists() {
+                    fs::create_dir_all(p)?;
+                }
+            }
+
+            let mut outfile = fs::File::create(&outpath)?;
+            std::io::copy(&mut file, &mut outfile)?;
+        }
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            if let Some(mode) = file.unix_mode() {
+                fs::set_permissions(&outpath, fs::Permissions::from_mode(mode))?;
+            }
+        }
+    }
+
+    // Clean up temp file
+    let _ = fs::remove_file(&temp_file_path);
+
+    // Find executable
+    let executable = find_game_executable(&game_dir)?;
+
+    // Save game info
+    let game_info = serde_json::json!({
+        "id": download_state.game_id,
+        "name": download_state.game_name,
+        "install_path": game_dir.to_string_lossy(),
+        "executable": executable.to_string_lossy(),
+        "installed_at": chrono::Utc::now().to_rfc3339(),
+    });
+
+    let game_info_path = game_dir.join("vapr_game_info.json");
+    fs::write(
+        &game_info_path,
+        serde_json::to_string_pretty(&game_info).unwrap(),
+    )?;
+
+    Ok((game_dir.to_string_lossy().to_string(), executable.to_string_lossy().to_string()))
+}
+
+#[tauri::command]
+async fn pause_download(
+    state: State<'_, AppState>,
+    download_id: String,
+) -> Result<(), String> {
+    let downloads = state.downloads.lock().await;
+    if let Some(download) = downloads.get(&download_id) {
+        download.is_paused.store(true, Ordering::Relaxed);
+        Ok(())
+    } else {
+        Err("Download not found".to_string())
+    }
+}
+
+#[tauri::command]
+async fn resume_download(
+    window: tauri::Window,
+    state: State<'_, AppState>,
+    download_id: String,
+) -> Result<(), String> {
+    let download_state = {
+        let downloads = state.downloads.lock().await;
+        downloads.get(&download_id).cloned()
+    };
+
+    if let Some(download) = download_state {
+        download.is_paused.store(false, Ordering::Relaxed);
+        *download.start_time.lock().await = Some(std::time::Instant::now());
+
+        // Restart download from where it left off
+        tauri::async_runtime::spawn(async move {
+            perform_download(window, download).await;
+        });
+
+        Ok(())
+    } else {
+        Err("Download not found".to_string())
+    }
+}
+
+#[tauri::command]
+async fn cancel_download(
+    state: State<'_, AppState>,
+    download_id: String,
+) -> Result<(), String> {
+    let mut downloads = state.downloads.lock().await;
+    if let Some(download) = downloads.remove(&download_id) {
+        download.is_paused.store(true, Ordering::Relaxed);
+
+        // Clean up temporary files
+        let safe_game_name = download.game_name.replace(" ", "_").replace(":", "");
+        let vapr_games_dir = get_games_directory()?;
+        let temp_file = vapr_games_dir.join(&safe_game_name).join(format!("{}.download", safe_game_name));
+
+        if temp_file.exists() {
+            let _ = fs::remove_file(temp_file);
+        }
+
+        Ok(())
+    } else {
+        Err("Download not found".to_string())
+    }
 }
 
 fn find_game_executable(game_dir: &Path) -> Result<PathBuf, String> {
@@ -535,9 +829,19 @@ pub fn run() {
             update_sdk_user_info,
             clear_sdk_user_info,
             get_sdk_connected_sessions,
-            sdk_response
+            sdk_response,
+            start_download,
+            pause_download,
+            resume_download,
+            cancel_download
         ])
         .setup(|app| {
+            // Create app state for downloads
+            let app_state = AppState {
+                downloads: Arc::new(Mutex::new(HashMap::new())),
+            };
+            app.manage(app_state);
+
             // Create JS bridge and WebSocket server after Tauri has initialized
             let bridge = Arc::new(SdkBridge::new(app.handle().clone()));
             let ws_server = Arc::new(WebSocketServer::new(bridge.clone()));

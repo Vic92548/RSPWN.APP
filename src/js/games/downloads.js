@@ -6,46 +6,45 @@ async function downloadGame(event, gameId, gameTitle, downloadUrl) {
         return;
     }
 
-    gamesData.downloadingGames.set(gameId, 0);
-    displayLibrary();
-
     try {
-        const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
-            const progress = event.payload;
-            if (progress.game_id === gameId) {
-                gamesData.downloadingGames.set(gameId, progress.percentage);
-                updateGameDownloadProgress(gameId, progress);
-            }
-        });
+        // Find the game in our data
+        const game = gamesData.userGames.find(g => g.id === gameId);
+        if (!game) {
+            throw new Error('Game not found');
+        }
 
-        const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
-            const data = event.payload;
-            if (data.game_id === gameId) {
-                updateGameDownloadStatus(gameId, data.status);
-            }
-        });
-
-        const result = await window.__TAURI__.core.invoke('download_and_install_game', {
-            gameId: gameId,
-            gameName: gameTitle,
+        // Add to download manager
+        const downloadId = await downloadManager.addDownload({
+            id: gameId,
+            title: gameTitle,
+            coverImage: game.coverImage || '',
             downloadUrl: downloadUrl
         });
 
-        unlisten();
-        statusUnlisten();
+        // Show notification
+        const result = await Swal.fire({
+            icon: 'info',
+            title: 'Download Started',
+            text: `${gameTitle} has been added to your downloads.`,
+            showConfirmButton: true,
+            confirmButtonText: 'View Downloads',
+            confirmButtonColor: '#4ecdc4',
+            showCancelButton: true,
+            cancelButtonText: 'OK'
+        });
 
-        if (result.success) {
-            gamesData.downloadingGames.delete(gameId);
-            notify.success(`${gameTitle} installed successfully!`);
-            await loadLibraryData();
-        } else {
-            throw new Error(result.error || 'Installation failed');
+        if (result.isConfirmed) {
+            router.navigate('/downloads', true);
         }
+
+        // Update library view to show downloading state
+        if (typeof displayLibrary === 'function') {
+            displayLibrary();
+        }
+
     } catch (error) {
-        console.error('Error downloading game:', error);
-        gamesData.downloadingGames.delete(gameId);
-        displayLibrary();
-        notify.error('Download Failed', error.message || 'Failed to download the game. Please try again.');
+        console.error('Error starting download:', error);
+        notify.error('Download Failed', error.message || 'Failed to start download');
     }
 }
 

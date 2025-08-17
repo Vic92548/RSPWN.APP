@@ -46,23 +46,29 @@ const NotificationUtils = {
         }
     },
 
-    info(title, html = null, options = {}) {
-        if (typeof Swal === 'undefined') return;
+    info(title, text = null, options = {}) {
+        if (typeof Swal === 'undefined') {
+            console.error('SweetAlert2 not loaded');
+            return Promise.resolve({ isConfirmed: false });
+        }
 
-        if (html) {
-            Swal.fire({
+        if (text) {
+            return Swal.fire({
                 icon: 'info',
                 title,
-                html,
+                text,
                 ...options
             });
         } else {
             const Toast = this.getToast();
-            Toast?.fire({
-                icon: "info",
-                title,
-                ...options
-            });
+            if (Toast) {
+                Toast.fire({
+                    icon: "info",
+                    title,
+                    ...options
+                });
+            }
+            return Promise.resolve({ isConfirmed: false });
         }
     },
 
