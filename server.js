@@ -427,26 +427,6 @@ app.get('/games/:gameName', async (req, res) => {
     }
 });
 
-app.get('/terms', async (req, res) => {
-    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
-    await res.render('index.html', {
-        meta_description: 'Read the VAPR Terms of Service to understand the rules and conditions for using our platform.',
-        meta_author: 'VAPR',
-        meta_image: config.meta.default.image,
-        meta_url: baseUrl + req.path
-    });
-});
-
-app.get('/privacy', async (req, res) => {
-    const baseUrl = (config.server?.baseUrl) || config.meta.default.url;
-    await res.render('index.html', {
-        meta_description: 'Learn how VAPR collects, uses, and protects your data in our Privacy Policy.',
-        meta_author: 'VAPR',
-        meta_image: config.meta.default.image,
-        meta_url: baseUrl + req.path
-    });
-});
-
 app.get('/like/:id', authMiddleware, async (req, res) => {
     if (!config.validation.postId.test(req.params.id)) {
         return res.status(400).json({ error: config.messages.errors.invalidPostId });
@@ -1024,7 +1004,7 @@ app.get('/sitemap.xml', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-const side_apps = ['creators','partners','library','store'];
+const side_apps = ['creators','partners','terms','downloads','privacy','store'];
 for (let i = 0; i < side_apps.length; i++) {
     const current_app = side_apps[i];
 

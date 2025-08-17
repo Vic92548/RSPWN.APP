@@ -26,8 +26,10 @@ const OUTPUT_FILE = 'output.txt';
 const DASHBOARD_FRONTENDS = {
     partners: path.join(DASHBOARDS_BASE, 'partners'),
     store: path.join(DASHBOARDS_BASE, 'store'),
-    library: path.join(DASHBOARDS_BASE, 'library'),
-    creators: path.join(DASHBOARDS_BASE, 'creators')
+    creators: path.join(DASHBOARDS_BASE, 'creators'),
+    downloads: path.join(DASHBOARDS_BASE, 'downloads'),
+    terms: path.join(DASHBOARDS_BASE, 'terms'),
+    privacy: path.join(DASHBOARDS_BASE, 'privacy')
 };
 
 // File extensions by category
@@ -230,7 +232,7 @@ async function main() {
         const frontendTypeChoice = await question(
             'Step 1: Which frontend would you like to include?\n' +
             '  1) Regular frontend (src directory)\n' +
-            '  2) Dashboard frontends (partners, store, library, creators)\n' +
+            '  2) Dashboard frontends (partners, store, creators, downloads, terms, privacy)\n' +
             '  3) Both regular and dashboard frontends\n' +
             '  4) No frontend\n' +
             '\nEnter your choice (1-4): '

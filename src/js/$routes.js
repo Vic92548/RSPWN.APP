@@ -121,24 +121,6 @@ router.register('/new-post', async () => {
     await cardManager.show('add-post-card');
 });
 
-router.register('/terms', () => {
-    try {
-        hidePost();
-        cardManager.show('terms-card');
-    } catch (err) {
-        console.error('Error opening Terms of Service:', err);
-    }
-});
-
-router.register('/privacy', () => {
-    try {
-        hidePost();
-        cardManager.show('privacy-card');
-    } catch (err) {
-        console.error('Error opening Privacy Policy:', err);
-    }
-});
-
 router.register('/downloads', async () => {
 
     if (!isRunningInTauri()) {

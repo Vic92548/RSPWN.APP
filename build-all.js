@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Configuration for all dashboards
-const DASHBOARDS = ['partners', 'store', 'creators'];
+const DASHBOARDS = ['partners', 'store', 'creators', 'downloads', 'terms', 'privacy'];
 
 async function runBuild(name, command, cwd = __dirname) {
     console.log(`\n🔨 Building ${name}...`);
@@ -147,7 +147,7 @@ Options:
   --help              Show this help message
 
 Dashboard names:
-  partners, store, creators
+  partners, store, creators, downloads, terms, privacy
 
 Examples:
   node build-all.js                    # Build everything

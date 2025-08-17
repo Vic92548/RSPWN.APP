@@ -1,58 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
+import { useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-    Gamepad2,
-    TrendingUp,
-    Users,
-    BarChart3,
-    Key,
-    Zap,
-    Shield,
-    Globe,
-    ArrowRight,
-    CheckCircle2
-} from "lucide-react"
-import apiClient from "@/lib/api-client"
+import { Shield } from "lucide-react"
 
 export default function LandingPage() {
-    const [stats, setStats] = useState({
-        users: 0,
-        games: 0,
-        posts: 0
-    });
-
     useEffect(() => {
-        loadStats();
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
     }, []);
-
-    const loadStats = async () => {
-        try {
-            const [userCount, gamesData] = await Promise.all([
-                apiClient.getUserCount(),
-                apiClient.getAllGames()
-            ]);
-
-            setStats({
-                users: userCount.count,
-                games: gamesData.games.length,
-                posts: Math.floor(gamesData.games.length * 12.5) // Estimate based on average posts per game
-            });
-        } catch (error) {
-            console.error('Failed to load stats:', error);
-        }
-    };
-
-    const formatNumber = (num: number) => {
-        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-        return num.toString();
-    };
-
-    const handleGetStarted = () => {
-        apiClient.login();
-    };
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-b from-background to-background/95">
@@ -61,262 +15,172 @@ export default function LandingPage() {
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <Gamepad2 className="h-8 w-8 text-primary" />
-                            <span className="text-2xl font-bold">VAPR Partners</span>
+                            <Shield className="h-8 w-8 text-primary" />
+                            <span className="text-2xl font-bold">VAPR Privacy Policy</span>
                         </div>
-                        <Button onClick={handleGetStarted} className="bg-primary hover:bg-primary/90">
-                            Sign In with Discord
-                        </Button>
+                        <a
+                            href="https://vapr.club"
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            Back to VAPR
+                        </a>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section */}
+            {/* Privacy Policy Content */}
             <section className="w-full">
-                <div className="container mx-auto px-4 py-20 text-center">
-                    <Badge className="mb-4 bg-muted text-foreground border-border" variant="secondary">
-                        🎮 Game Developer Platform
-                    </Badge>
-                    <h1 className="text-5xl font-bold tracking-tight mb-6">
-                        Grow Your Game on <span className="text-primary">VAPR</span>
-                    </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-                        Join the next generation gaming community platform. Share your games,
-                        connect with players, and build a thriving community around your creations.
-                    </p>
-                    <div className="flex gap-4 justify-center">
-                        <Button size="lg" onClick={handleGetStarted} className="gap-2 bg-primary hover:bg-primary/90">
-                            Get Started <ArrowRight className="h-4 w-4" />
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-border hover:bg-accent">
-                            Learn More
-                        </Button>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-primary">{formatNumber(stats.users)}</div>
-                            <div className="text-muted-foreground">Active Gamers</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-primary">{formatNumber(stats.games)}</div>
-                            <div className="text-muted-foreground">Games Published</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-primary">{formatNumber(stats.posts)}</div>
-                            <div className="text-muted-foreground">Community Posts</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="w-full bg-background/50">
-                <div className="container mx-auto px-4 py-20">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold mb-4">Everything You Need to Succeed</h2>
-                        <p className="text-muted-foreground max-w-2xl mx-auto">
-                            VAPR provides powerful tools and features designed specifically for game developers
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <TrendingUp className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Analytics Dashboard</CardTitle>
-                                <CardDescription>
-                                    Track your game's performance with detailed analytics and insights
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Real-time view tracking
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Player engagement metrics
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Conversion analytics
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <Users className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Community Building</CardTitle>
-                                <CardDescription>
-                                    Connect directly with your player base and grow your community
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Direct player feedback
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Community posts & updates
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Follower notifications
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <Key className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Key Management</CardTitle>
-                                <CardDescription>
-                                    Generate and manage game keys for distribution and promotions
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Bulk key generation
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Usage tracking
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        CSV export
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <Zap className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Version Control</CardTitle>
-                                <CardDescription>
-                                    Manage game updates and notify players of new versions
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Automatic update notifications
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Changelog management
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Version history
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <BarChart3 className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Creator Program</CardTitle>
-                                <CardDescription>
-                                    Partner with content creators to expand your game's reach
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Creator partnerships
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Revenue sharing
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Performance tracking
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card border-border hover:border-accent transition-colors">
-                            <CardHeader>
-                                <Globe className="h-10 w-10 text-primary mb-2" />
-                                <CardTitle>Global Reach</CardTitle>
-                                <CardDescription>
-                                    Reach players worldwide with VAPR's growing community
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        International exposure
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Multi-language support
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                                        Global payment options
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="w-full">
-                <div className="container mx-auto px-4 py-20">
-                    <Card className="bg-secondary border-border">
-                        <CardContent className="text-center py-12">
-                            <Shield className="h-12 w-12 mx-auto mb-4 text-primary" />
-                            <h3 className="text-3xl font-bold mb-4">Ready to Launch Your Game?</h3>
-                            <p className="text-lg mb-8 text-muted-foreground max-w-2xl mx-auto">
-                                Join VAPR today and start building your gaming community.
-                                It's free to get started!
+                <div className="container mx-auto px-4 py-12 max-w-4xl">
+                    <Card className="bg-card border-border">
+                        <CardHeader className="text-center">
+                            <CardTitle className="text-3xl">Privacy Policy</CardTitle>
+                            <CardDescription className="text-lg">
+                                Your privacy matters to us
+                            </CardDescription>
+                            <p className="text-sm text-muted-foreground mt-2">
+                                <strong>Last updated:</strong> August 9, 2025
                             </p>
-                            <Button
-                                size="lg"
-                                onClick={handleGetStarted}
-                                className="gap-2 bg-primary hover:bg-primary/90"
-                            >
-                                Sign Up Now <ArrowRight className="h-4 w-4" />
-                            </Button>
+                        </CardHeader>
+                        <CardContent className="space-y-8">
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">1.</span> Overview
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    This Privacy Policy explains how VAPR ("we", "us") collects, uses, and protects your information when you use our Service.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">2.</span> Information We Collect
+                                </h3>
+                                <ul className="space-y-2 text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>Account information provided via authentication (e.g., Discord)</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>Content you create or upload (posts, reactions)</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>Usage data and analytics (e.g., device, pages visited)</span>
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">3.</span> How We Use Information
+                                </h3>
+                                <ul className="space-y-2 text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>To provide and improve the Service</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>To personalize content and features</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>To maintain security and prevent abuse</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-primary mt-1">•</span>
+                                        <span>To communicate updates and important notices</span>
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">4.</span> Cookies and Tracking
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    We use cookies and similar technologies for authentication, preferences, and analytics. You can control cookies through your browser settings.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">5.</span> Data Sharing
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    We may share data with trusted third-party providers (e.g., analytics, payments) to operate the Service. We do not sell personal information.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">6.</span> Data Security
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    We use reasonable safeguards to protect your information. No method of transmission or storage is completely secure.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">7.</span> Your Rights
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Depending on your location, you may have rights to access, correct, or delete your information, or object to certain processing.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">8.</span> International Transfers
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Your information may be processed in countries other than your own. We take steps to ensure appropriate protections are in place.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">9.</span> Changes to this Policy
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    We may update this Privacy Policy from time to time. Continued use of the Service after changes constitutes acceptance.
+                                </p>
+                            </section>
+
+                            <section className="space-y-4">
+                                <h3 className="text-xl font-semibold flex items-center gap-2">
+                                    <span className="text-primary">10.</span> Contact
+                                </h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    If you have questions or requests regarding this policy, contact us at{' '}
+                                    <a
+                                        href="mailto:support@vapr.club"
+                                        className="text-primary hover:underline"
+                                    >
+                                        support@vapr.club
+                                    </a>.
+                                </p>
+                            </section>
                         </CardContent>
                     </Card>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="w-full border-t border-border bg-background/50">
+            <footer className="w-full border-t border-border bg-background/50 mt-12">
                 <div className="container mx-auto px-4 py-8">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                            <Gamepad2 className="h-6 w-6 text-primary" />
-                            <span className="font-semibold">VAPR Partners</span>
+                            <Shield className="h-6 w-6 text-primary" />
+                            <span className="font-semibold">VAPR</span>
                         </div>
                         <div className="flex space-x-6 text-sm text-muted-foreground">
-                            <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
-                            <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+                            <a href="https://vapr.club" className="hover:text-foreground transition-colors">Home</a>
+                            <a href="https://vapr.club/terms" className="hover:text-foreground transition-colors">Terms</a>
                             <a href="https://discord.gg/vapr" className="hover:text-foreground transition-colors">Discord</a>
-                            <a href="mailto:partners@vapr.club" className="hover:text-foreground transition-colors">Contact</a>
+                            <a href="mailto:support@vapr.club" className="hover:text-foreground transition-colors">Contact</a>
                         </div>
                     </div>
                     <div className="text-center text-sm text-muted-foreground mt-4">
