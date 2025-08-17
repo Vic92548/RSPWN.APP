@@ -559,7 +559,6 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                     <Tabs defaultValue="about">
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="about">About</TabsTrigger>
-                            <TabsTrigger value="requirements">System Requirements</TabsTrigger>
                             <TabsTrigger value="reviews">
                                 Reviews {reviewStats && reviewStats.totalReviews > 0 && `(${reviewStats.totalReviews})`}
                             </TabsTrigger>
@@ -582,50 +581,8 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                                             </div>
                                         </div>
                                     )}
-
-                                    {game.features && game.features.length > 0 && (
-                                        <div>
-                                            <h4 className="font-semibold mb-2">Features</h4>
-                                            <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                                                {game.features.map((feature: string, index: number) => (
-                                                    <li key={index}>{feature}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-
-                                    <div className="flex flex-wrap gap-2">
-                                        {game.tags?.map((tag: string) => (
-                                            <Badge key={tag} variant="secondary">{tag}</Badge>
-                                        ))}
-                                    </div>
                                 </CardContent>
                             </Card>
-                        </TabsContent>
-
-                        <TabsContent value="requirements" className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-lg">Minimum Requirements</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                            <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-                                                {game.systemRequirements?.minimum}
-                                            </pre>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-lg">Recommended Requirements</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                            <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">
-                                                {game.systemRequirements?.recommended}
-                                            </pre>
-                                    </CardContent>
-                                </Card>
-                            </div>
                         </TabsContent>
 
                         <TabsContent value="reviews" className="space-y-4">
