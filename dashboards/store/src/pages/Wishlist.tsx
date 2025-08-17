@@ -79,12 +79,22 @@ export default function Wishlist() {
                         {games.map((game) => (
                             <Card key={game.id} className="overflow-hidden hover:ring-2 hover:ring-primary transition-all">
                                 <Link to={`/game/${game.id}`}>
-                                    <div className="relative bg-background overflow-hidden">
+                                    <div className="relative bg-background overflow-hidden" style={{ aspectRatio: '3/4' }}>
                                         <img
                                             src={game.coverImage || '/default-game-cover.png'}
                                             alt={game.title}
-                                            className="absolute inset-0 w-full h-full object-contain"
+                                            className="w-full h-full object-contain"
                                         />
+                                        {game.onSale && game.discount && (
+                                            <Badge className="absolute top-2 right-2" variant="destructive">
+                                                -{game.discount}%
+                                            </Badge>
+                                        )}
+                                        {game.isEarlyAccess && (
+                                            <Badge className="absolute top-2 left-2 bg-blue-600 text-white border-blue-600">
+                                                Early Access
+                                            </Badge>
+                                        )}
                                     </div>
                                 </Link>
                                 <CardContent className="p-4">

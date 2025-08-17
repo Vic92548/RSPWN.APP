@@ -123,14 +123,18 @@ function createExpressRequest(req) {
     };
 }
 
-app.get('/', async (req, res) => {
-    await res.render('index.html', {
-        meta_description: config.meta.default.description,
-        meta_author: config.meta.default.author,
-        meta_image: config.meta.default.image,
-        meta_url: config.meta.default.url
+const home_urls = ['/','/library','/new-post'];
+
+for (let i = 0; i < home_urls.length; i++) {
+    app.get(home_urls[i], async (req, res) => {
+        await res.render('index.html', {
+            meta_description: config.meta.default.description,
+            meta_author: config.meta.default.author,
+            meta_image: config.meta.default.image,
+            meta_url: config.meta.default.url
+        });
     });
-});
+}
 
 app.get('/checkout/success', async (req, res) => {
     await res.render('index.html', {

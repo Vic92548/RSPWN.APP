@@ -128,11 +128,11 @@ export default function StorePage({ isAuthenticated }: StorePageProps) {
                         <Link to={`/game/${filteredGames[0].id}`}>
                             <Card className="overflow-hidden hover:ring-2 hover:ring-primary transition-all mb-8">
                                 <div className="grid md:grid-cols-2 gap-0">
-                                    <div className="aspect-video md:aspect-auto md:h-full relative bg-background">
+                                    <div className="aspect-video md:aspect-auto md:h-full relative bg-background overflow-hidden">
                                         <img
                                             src={filteredGames[0].coverImage || '/default-game-cover.png'}
                                             alt={filteredGames[0].title}
-                                            className="absolute inset-0 w-full h-full object-contain"
+                                            className="w-full h-full object-contain"
                                         />
                                     </div>
                                     <div className="p-8 flex flex-col justify-center">

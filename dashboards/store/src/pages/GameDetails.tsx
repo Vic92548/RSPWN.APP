@@ -638,11 +638,11 @@ export default function GameDetails({ isAuthenticated }: GameDetailsProps) {
                 <div className="space-y-4">
                     <Card>
                         <CardContent className="pt-6">
-                            <div className="aspect-[3/4] relative bg-background rounded-lg overflow-hidden mb-4">
+                            <div className="aspect-video md:aspect-auto md:h-full relative bg-background overflow-hidden mb-4">
                                 <img
                                     src={game.coverImage || '/default-game-cover.png'}
                                     alt={game.title}
-                                    className="absolute inset-0 w-full h-full object-contain"
+                                    className="w-full h-full object-contain"
                                 />
                             </div>
 
