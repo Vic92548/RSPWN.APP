@@ -94,29 +94,9 @@
   }
 }
 
-.glass-hover-light:hover {
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: $shadow-hover;
-}
-
 .glass-hover-scale:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: $shadow-xl;
-}
-
-.glass-rounded { border-radius: $radius-sm; }
-.glass-rounded-lg { border-radius: $radius-md; }
-.glass-rounded-xl { border-radius: $radius-lg; }
-
-.glass-progress-track {
-  background: $glass-bg-tertiary;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.glass-progress-fill {
-  background: rgba(255, 255, 255, 0.4);
-  transition: width 0.5s ease-out;
 }
 
 .glass-badge {
@@ -128,19 +108,11 @@
   color: $text-primary;
 }
 
-.glass-shimmer {
-  @include shimmer-effect;
-}
-
 .glass-scrollbar {
   @include scrollbar-style;
 }
 
-.glass-text { color: $text-primary; }
 .glass-text-muted { color: $text-secondary; }
-
-.glass-border-top { border-top: 1px solid $glass-border-light; }
-.glass-border-bottom { border-bottom: 1px solid $glass-border-light; }
 
 .glass-section-bg {
   background: $glass-bg-light;
@@ -158,24 +130,6 @@
     transform: rotate(90deg);
     box-shadow: $shadow-sm;
   }
-}
-
-.glass-stat-mini {
-  @include glass-effect();
-  border-radius: 14px;
-  transition: $transition-cubic;
-}
-
-@keyframes glass-slide-up {
-  from { transform: translateY(100vh); }
-  to { transform: translateY(0); }
-}
-
-.glass-focus:focus-visible {
-  outline: none;
-  box-shadow:
-          0 0 0 2px rgba(255, 255, 255, 0.2),
-          0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .section-header {

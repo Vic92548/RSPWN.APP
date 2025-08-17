@@ -211,17 +211,6 @@
   margin-bottom: 20px;
 }
 
-.close_bt {
-  background-color: #1b2838;
-  box-shadow: 0 0 5px #1b2838;
-  margin-top: 15px;
-
-  &:hover {
-    background-color: #0d8bf0;
-    box-shadow: 0 0 10px #0d8bf0;
-  }
-}
-
 @include responsive(tablet) {
   #background_images_container {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

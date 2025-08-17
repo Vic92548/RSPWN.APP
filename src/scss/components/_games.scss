@@ -1,8 +1,7 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-.library-actions,
-.management-actions {
+.library-actions {
   padding-top: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid $glass-border-light;
@@ -785,17 +784,6 @@
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-.game-link {
-  text-decoration: none;
-  color: inherit;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
   }
 }
 

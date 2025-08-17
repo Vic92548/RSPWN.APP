@@ -207,13 +207,6 @@
   font-weight: 700;
 }
 
-.click-indicator {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 400;
-  margin-left: 4px;
-}
-
 #post_time {
   font-size: 12px;
   color: $text-weak;
@@ -525,44 +518,6 @@
     width: 100%;
     height: 40vh;
     border: 0;
-  }
-}
-
-.post-footer {
-  display: none;
-}
-
-#post_link a {
-  display: none;
-}
-
-$platform-colors: (
-        steam: #1b2838,
-        itch: #fa5c5c,
-        discord: #5865F2,
-        reddit: #ff6314,
-        x: #000000,
-        threads: #111,
-        pinterest: #E60023,
-        twitch: #6441a5,
-        youtube: #FF0000,
-        instagram: #5B51D8,
-        epic: #2F2D2E,
-        kick: #00e701,
-        kickstarter: #05ce78,
-        patreon: #F96854,
-        fortnite: #1B90DD,
-        nintendo: #e60012,
-        ubisoft: #0351A1,
-        gumroad: #ff6d7b,
-        garryhost: #222222,
-        hayarobi: #c7a7e8
-);
-
-@each $platform, $color in $platform-colors {
-  #post_#{$platform} {
-    background-color: $color;
-    box-shadow: 0 0 5px $color;
   }
 }
 

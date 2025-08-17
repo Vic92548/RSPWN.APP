@@ -269,53 +269,6 @@
   padding: 20px;
 }
 
-.menu-logout-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 14px;
-  @include flex-center;
-  gap: 10px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    background: rgba(255, 100, 100, 0.1);
-    transform: translateY(-2px);
-    box-shadow:
-            0 8px 20px rgba(255, 100, 100, 0.1),
-            inset 0 0 20px rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 100, 100, 0.2);
-    color: rgba(255, 150, 150, 0.9);
-  }
-
-  &:active {
-    transform: translateY(0);
-    transition: transform 0.1s ease;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.02);
-      transform: none !important;
-      box-shadow: none;
-    }
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow:
-            0 0 0 2px rgba(255, 255, 255, 0.2),
-            0 0 20px rgba(255, 255, 255, 0.1);
-  }
-}
-
 .menu-version {
   text-align: center;
   font-size: 12px;
@@ -352,7 +305,6 @@
 
   .menu-close,
   .user-details-menu,
-  .quick-stats,
   .menu-section-title,
   .menu-item-content,
   .menu-badge,
@@ -471,15 +423,6 @@
 
   .menu-close {
     display: flex;
-  }
-
-  .quick-stats {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .stat-mini {
-    padding: 10px;
   }
 }
 
@@ -653,11 +596,5 @@
 #close_menu {
   @include responsive(desktop) {
     display: none;
-  }
-}
-
-.webOnly {
-  &.menu-section {
-    display: block;
   }
 }
