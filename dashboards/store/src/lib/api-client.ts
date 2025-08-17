@@ -66,6 +66,7 @@ class ApiClient {
     private tebexGamesCache: Game[] | null = null;
     private tebexConfigs: TebexConfig[] = [];
     private vaprGamesCache: Game[] | null = null;
+    private visibleGameTitles: Set<string> = new Set();
 
     private async request<T>(
         endpoint: string,
@@ -131,6 +132,12 @@ class ApiClient {
                 games: Game[];
             }>('/api/games');
             this.vaprGamesCache = response.games;
+
+            // Build a set of visible game titles for quick lookup
+            this.visibleGameTitles.clear();
+            response.games.forEach(game => {
+                this.visibleGameTitles.add(game.title.toLowerCase());
+            });
         }
         return this.vaprGamesCache;
     }
@@ -217,18 +224,22 @@ class ApiClient {
     }
 
     async getAllGames() {
+        // First, get the list of games that the backend says are visible
+        // This populates both vaprGamesCache and visibleGameTitles
+        await this.getVAPRGames();
+
+        // Then get Tebex packages
         const tebexPackages = await this.getTebexPackages();
         const tebexGames = await this.transformTebexGames(tebexPackages);
 
-        const vaprGames = await this.getVAPRGames();
-
+        // SAFETY GUARD: Only show Tebex games that have a matching VAPR game in the visible list
         const visibleTebexGames = tebexGames.filter(tebexGame => {
-            const vaprGame = vaprGames.find(g => g.title.toLowerCase() === tebexGame.title.toLowerCase());
-
-            if (!vaprGame) return true;
-
-            return !vaprGame.isHidden;
+            // Check if this game title exists in our visible games set
+            return this.visibleGameTitles.has(tebexGame.title.toLowerCase());
         });
+
+        // Log for debugging
+        console.log(`Filtered Tebex games: ${tebexGames.length} -> ${visibleTebexGames.length} visible`);
 
         this.tebexGamesCache = visibleTebexGames;
 
@@ -241,6 +252,13 @@ class ApiClient {
         }
 
         const game = this.tebexGamesCache?.find(g => g.id === gameId);
+
+        // Double-check: ensure the game is in our visible list
+        if (game && !this.visibleGameTitles.has(game.title.toLowerCase())) {
+            console.warn(`Game ${game.title} was requested but is not in visible list`);
+            return { success: false, game: null };
+        }
+
         return { success: !!game, game };
     }
 
