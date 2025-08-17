@@ -325,6 +325,104 @@ class ApiClient {
         }>('/api/partner/compliance');
     }
 
+    // Buckets API
+    async createBucket(bucketData: {
+        name: string;
+        description?: string;
+        type?: string;
+        visibility?: 'private' | 'public' | 'unlisted';
+        metadata?: any;
+    }) {
+        return this.request<{
+            success: boolean;
+            bucket: any;
+        }>('/api/buckets', {
+            method: 'POST',
+            body: JSON.stringify(bucketData)
+        });
+    }
+
+    async getUserBuckets(includePublic: boolean = false) {
+        return this.request<{
+            success: boolean;
+            buckets: any[];
+        }>(`/api/buckets?includePublic=${includePublic}`);
+    }
+
+    async getBucket(bucketId: string) {
+        return this.request<{
+            success: boolean;
+            bucket: any;
+        }>(`/api/buckets/${bucketId}`);
+    }
+
+    async updateBucket(bucketId: string, updates: any) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>(`/api/buckets/${bucketId}`, {
+            method: 'PUT',
+            body: JSON.stringify(updates)
+        });
+    }
+
+    async deleteBucket(bucketId: string) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>(`/api/buckets/${bucketId}`, {
+            method: 'DELETE'
+        });
+    }
+
+    async addItemToBucket(bucketId: string, itemData: {
+        itemId: string;
+        itemType: string;
+        notes?: string;
+        metadata?: any;
+    }) {
+        return this.request<{
+            success: boolean;
+            item: any;
+        }>(`/api/buckets/${bucketId}/items`, {
+            method: 'POST',
+            body: JSON.stringify(itemData)
+        });
+    }
+
+    async removeItemFromBucket(bucketId: string, itemId: string) {
+        return this.request<{
+            success: boolean;
+            message: string;
+        }>(`/api/buckets/${bucketId}/items/${itemId}`, {
+            method: 'DELETE'
+        });
+    }
+
+    async getBucketItems(bucketId: string, options?: {
+        limit?: number;
+        offset?: number;
+    }) {
+        const params = new URLSearchParams();
+        if (options?.limit) params.append('limit', options.limit.toString());
+        if (options?.offset) params.append('offset', options.offset.toString());
+
+        return this.request<{
+            success: boolean;
+            items: any[];
+            totalCount: number;
+            hasMore: boolean;
+        }>(`/api/buckets/${bucketId}/items?${params}`);
+    }
+
+    async getPostsForGameManagement(gameId: string) {
+        return this.request<{
+            success: boolean;
+            posts: any[];
+            bucketId: string | null;
+        }>(`/api/games/${gameId}/post-management`);
+    }
+
     async getGameAnalytics(gameId: string, timeRange: number = 30) {
         return this.request<{
             success: boolean;

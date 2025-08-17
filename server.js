@@ -643,6 +643,14 @@ import {
 } from './server_modules/games.js';
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
 import {getAllTebexConfigs, getTebexConfig, removeTebexConfig, setTebexConfig} from "./server_modules/tebex_config.js";
+import {
+    addItemToBucket,
+    createBucket,
+    deleteBucket,
+    getBucket, getBucketItems, getPostsForGameManagement,
+    getUserBuckets, removeItemFromBucket,
+    updateBucket
+} from "./server_modules/buckets.js";
 
 app.get('/api/games', async (req, res) => {
     const authResult = await authenticateRequest(req);
@@ -908,6 +916,71 @@ app.delete('/api/developer/tebex-config', authMiddleware, async (req, res) => {
 
 app.get('/api/tebex-configs', async (req, res) => {
     const response = await getAllTebexConfigs();
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Buckets API
+app.post('/api/buckets', authMiddleware, async (req, res) => {
+    const response = await createBucket(req.userData.id, req.body);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/buckets', authMiddleware, async (req, res) => {
+    const includePublic = req.query.includePublic === 'true';
+    const response = await getUserBuckets(req.userData.id, includePublic);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/buckets/:bucketId', async (req, res) => {
+    const authResult = await authenticateRequest(req);
+    const userId = authResult.isValid ? authResult.userData.id : null;
+    const response = await getBucket(req.params.bucketId, userId);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.put('/api/buckets/:bucketId', authMiddleware, async (req, res) => {
+    const response = await updateBucket(req.params.bucketId, req.userData.id, req.body);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.delete('/api/buckets/:bucketId', authMiddleware, async (req, res) => {
+    const response = await deleteBucket(req.params.bucketId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.post('/api/buckets/:bucketId/items', authMiddleware, async (req, res) => {
+    const response = await addItemToBucket(req.params.bucketId, req.userData.id, req.body);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.delete('/api/buckets/:bucketId/items/:itemId', authMiddleware, async (req, res) => {
+    const response = await removeItemFromBucket(req.params.bucketId, req.params.itemId, req.userData.id);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+app.get('/api/buckets/:bucketId/items', async (req, res) => {
+    const authResult = await authenticateRequest(req);
+    const userId = authResult.isValid ? authResult.userData.id : null;
+    const options = {
+        limit: parseInt(req.query.limit) || 50,
+        offset: parseInt(req.query.offset) || 0
+    };
+    const response = await getBucketItems(req.params.bucketId, userId, options);
+    const data = await response.json();
+    res.status(response.status).json(data);
+});
+
+// Game posts management for partners
+app.get('/api/games/:gameId/post-management', authMiddleware, async (req, res) => {
+    const response = await getPostsForGameManagement(req.params.gameId, req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
 });

@@ -8,6 +8,7 @@ import GameUpdates from './pages/GameUpdates'
 import CreatorCodes from './pages/CreatorCodes'
 import apiClient from './lib/api-client'
 import './App.css'
+import GamePosts from "@/pages/GamePosts.tsx";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -67,6 +68,10 @@ function App() {
                 <Route
                     path="/games/:gameId/updates"
                     element={isAuthenticated ? <GameUpdates /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/games/:gameId/posts"
+                    element={isAuthenticated ? <GamePosts /> : <Navigate to="/" />}
                 />
                 <Route
                     path="*"

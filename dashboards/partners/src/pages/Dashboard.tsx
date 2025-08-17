@@ -18,7 +18,7 @@ import {
     EyeOff,
     ShoppingCart,
     Activity,
-    TrendingUp
+    TrendingUp, FileText
 } from "lucide-react"
 
 interface Game {
@@ -341,7 +341,7 @@ export default function Dashboard() {
                                                 </div>
                                             )}
                                         </CardContent>
-                                        <CardFooter className="grid grid-cols-3 gap-2">
+                                        <CardFooter className="grid grid-cols-2 gap-2">
                                             <Link to={`/games/${game.id}/stats`}>
                                                 <Button
                                                     variant="outline"
@@ -370,6 +370,16 @@ export default function Dashboard() {
                                                 >
                                                     <Package className="h-3 w-3" />
                                                     Update
+                                                </Button>
+                                            </Link>
+                                            <Link to={`/games/${game.id}/posts`}>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="gap-1 w-full"
+                                                >
+                                                    <FileText className="h-3 w-3" />
+                                                    Posts
                                                 </Button>
                                             </Link>
                                         </CardFooter>
