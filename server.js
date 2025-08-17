@@ -33,7 +33,13 @@ import {
     clickLink
 } from './server_modules/post.js';
 import { xpTodayHandler } from './server_modules/routes/xp_today.js';
-import { usersCollection, postsCollection, gamesCollection } from './server_modules/database.js';
+import {
+    usersCollection,
+    postsCollection,
+    gamesCollection,
+    bucketsCollection,
+    bucketItemsCollection
+} from './server_modules/database.js';
 import { handleProfilePage } from './server_modules/user_profile.js';
 import { createRenderer } from './server_modules/template_engine.js';
 import {
@@ -983,6 +989,70 @@ app.get('/api/games/:gameId/post-management', authMiddleware, async (req, res) =
     const response = await getPostsForGameManagement(req.params.gameId, req.userData.id);
     const data = await response.json();
     res.status(response.status).json(data);
+});
+
+app.get('/api/games/:gameId/media', async (req, res) => {
+    const gameId = req.params.gameId;
+
+    try {
+        // Get the official posts bucket for this game
+        const officialBucket = await bucketsCollection.findOne({
+            type: 'game_posts',
+            'metadata.gameId': gameId
+        });
+
+        if (!officialBucket) {
+            return res.json({ success: true, posts: [] });
+        }
+
+        // Get all items in the bucket
+        const bucketItems = await bucketItemsCollection
+            .find({ bucketId: officialBucket.id })
+            .sort({ position: 1, addedAt: -1 })
+            .toArray();
+
+        // Get the actual posts
+        const postIds = bucketItems.map(item => item.itemId);
+        const posts = await postsCollection
+            .find({ id: { $in: postIds } })
+            .toArray();
+
+        // Get unique user IDs
+        const userIds = [...new Set(posts.map(p => p.userId))];
+        const users = await usersCollection
+            .find({ id: { $in: userIds } })
+            .toArray();
+
+        // Create a user map for quick lookup
+        const userMap = new Map(users.map(u => [u.id, u]));
+
+        // Map posts to maintain order from bucket with user info
+        const orderedPosts = bucketItems
+            .map(item => {
+                const post = posts.find(p => p.id === item.itemId);
+                if (!post) return null;
+
+                const user = userMap.get(post.userId);
+                return {
+                    id: post.id,
+                    content: post.content,
+                    mediaType: post.mediaType || 'image',
+                    title: post.title,
+                    creator: {
+                        id: user?.id || post.userId,
+                        username: user?.username || 'Unknown',
+                        avatar: user?.avatar || null,
+                        level: user?.level || 0
+                    }
+                };
+            })
+            .filter(Boolean);
+
+        res.json({ success: true, posts: orderedPosts });
+    } catch (error) {
+        console.error('Error fetching game media:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch game media' });
+    }
 });
 
 app.get('/@:username', async (req, res) => {

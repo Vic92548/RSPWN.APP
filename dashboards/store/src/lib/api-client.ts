@@ -516,6 +516,40 @@ class ApiClient {
         return { success: true, reviews };
     }
 
+    async getGameMedia(gameId: string) {
+        // If it's a Tebex game, we need to find the corresponding VAPR game
+        if (gameId.startsWith('tebex-')) {
+            const tebexGame = this.tebexGamesCache?.find(g => g.id === gameId);
+            if (tebexGame) {
+                const vaprGames = await this.getVAPRGames();
+                const vaprGame = vaprGames.find(g =>
+                    g.title.toLowerCase() === tebexGame.title.toLowerCase()
+                );
+                if (vaprGame) {
+                    gameId = vaprGame.id;
+                } else {
+                    return { success: true, posts: [] };
+                }
+            }
+        }
+
+        return this.request<{
+            success: boolean;
+            posts: Array<{
+                id: string;
+                content: string;
+                mediaType: 'image' | 'video';
+                title: string;
+                creator: {
+                    id: string;
+                    username: string;
+                    avatar: string | null;
+                    level: number;
+                };
+            }>;
+        }>(`/api/games/${gameId}/media`);
+    }
+
     async submitReview(gameId: string, rating: number, content: string) {
         const user = await this.getMe();
         const review: GameReview = {
