@@ -36,6 +36,7 @@ interface DownloadInfo {
     download_id: string
     game_id: string
     game_name?: string
+    game_cover?: string
     downloaded: number
     total: number
     percentage: number
@@ -64,18 +65,6 @@ export default function DownloadsPage({ downloads }: DownloadsPageProps) {
         return () => {
             document.head.removeChild(styleSheet)
         }
-    }, [])
-
-    useEffect(() => {
-        const getActiveDownloads = async () => {
-            try {
-                // Request current downloads when component mounts
-            } catch (error) {
-                console.error('Failed to get active downloads:', error)
-            }
-        }
-
-        getActiveDownloads()
     }, [])
 
     const formatBytes = (bytes: number) => {
@@ -262,11 +251,35 @@ export default function DownloadsPage({ downloads }: DownloadsPageProps) {
                             >
                                 <div className="p-4">
                                     <div className="flex items-start gap-4">
-                                        {/* Game Icon Placeholder */}
-                                        <div className="flex-shrink-0">
-                                            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                                                <Gamepad2 className="h-8 w-8 text-muted-foreground/50" />
-                                            </div>
+                                        {/* Game Icon */}
+                                        <div className="flex-shrink-0 relative">
+                                            {download.game_cover ? (
+                                                <>
+                                                    <div className="w-24 h-16 relative">
+                                                        <img
+                                                            src={download.game_cover}
+                                                            alt={download.game_name || 'Game cover'}
+                                                            className="w-full h-full rounded-lg object-contain bg-muted/20"
+                                                            onError={(e) => {
+                                                                // Fallback to default icon if image fails to load
+                                                                const img = e.currentTarget;
+                                                                img.style.display = 'none';
+                                                                const fallback = img.parentElement?.nextElementSibling as HTMLElement;
+                                                                if (fallback) {
+                                                                    fallback.classList.remove('hidden');
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="w-24 h-16 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center hidden">
+                                                        <Gamepad2 className="h-8 w-8 text-muted-foreground/50" />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="w-24 h-16 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                                                    <Gamepad2 className="h-8 w-8 text-muted-foreground/50" />
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Main Content */}
@@ -343,21 +356,30 @@ export default function DownloadsPage({ downloads }: DownloadsPageProps) {
                                                             className="absolute inset-0 h-full bg-gradient-to-r from-blue-600 to-blue-500 transition-all duration-300"
                                                             style={{ width: `${download.percentage || 0}%` }}
                                                         />
-                                                        <div className="absolute inset-0 h-full bg-gradient-to-r from-white/0 via-white/10 to-white/0 animate-shimmer" />
+                                                        {download.status === 'downloading' && (
+                                                            <div className="absolute inset-0 h-full bg-gradient-to-r from-white/0 via-white/10 to-white/0 animate-shimmer" />
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center justify-between text-sm">
                                                         <span className="text-muted-foreground">
                                                             {formatBytes(download.downloaded || 0)} / {formatBytes(download.total || 0)}
                                                         </span>
                                                         <div className="flex items-center gap-4 text-muted-foreground">
-                                                            <span className="flex items-center gap-1">
-                                                                <Zap className="h-3 w-3" />
-                                                                {formatSpeed(download.speed || 0)}
-                                                            </span>
-                                                            <span className="flex items-center gap-1">
-                                                                <Clock className="h-3 w-3" />
-                                                                {formatETA(download.eta || 0)}
-                                                            </span>
+                                                            {download.status === 'downloading' && (
+                                                                <>
+                                                                    <span className="flex items-center gap-1">
+                                                                        <Zap className="h-3 w-3" />
+                                                                        {formatSpeed(download.speed || 0)}
+                                                                    </span>
+                                                                    <span className="flex items-center gap-1">
+                                                                        <Clock className="h-3 w-3" />
+                                                                        {formatETA(download.eta || 0)}
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                            {download.status === 'paused' && (
+                                                                <span className="text-yellow-500">Paused</span>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </>

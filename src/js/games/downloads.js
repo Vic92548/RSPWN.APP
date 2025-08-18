@@ -1,4 +1,4 @@
-async function downloadGame(event, gameId, gameTitle, downloadUrl) {
+async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
     event.stopPropagation();
 
     if (!isRunningInTauri()) {
@@ -21,6 +21,15 @@ async function downloadGame(event, gameId, gameTitle, downloadUrl) {
             downloadId: downloadId,
             gameId: gameId,
             gameName: gameTitle,
+            gameCover: gameCover,
+            downloadUrl: downloadUrl
+        });
+
+        console.log({
+            downloadId: downloadId,
+            gameId: gameId,
+            gameName: gameTitle,
+            gameCover: gameCover,
             downloadUrl: downloadUrl
         });
 
@@ -165,9 +174,10 @@ async function downloadUpdate(gameId, version, downloadUrl) {
             }
         });
 
-        const result = await window.__TAURI__.core.invoke('download_and_install_game', {
+        const result = await window.__TAURI__.core.invoke('start_download', {
             gameId: gameId,
             gameName: game.title,
+            gameCover: game.coverImage,
             downloadUrl: downloadUrl
         });
 

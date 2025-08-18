@@ -81,6 +81,8 @@ impl SdkBridge {
 struct DownloadProgress {
     download_id: String,
     game_id: String,
+    game_name: String,
+    game_cover: Option<String>,
     downloaded: u64,
     total: u64,
     percentage: f32,
@@ -109,6 +111,7 @@ struct DownloadState {
     id: String,
     game_id: String,
     game_name: String,
+    game_cover: Option<String>,
     download_url: String,
     is_paused: Arc<AtomicBool>,
     downloaded_bytes: Arc<Mutex<u64>>,
@@ -175,156 +178,20 @@ fn get_games_directory() -> Result<PathBuf, String> {
 }
 
 #[tauri::command]
-async fn download_and_install_game(
-    window: tauri::Window,
-    game_id: String,
-    game_name: String,
-    download_url: String,
-) -> Result<GameInstallResult, String> {
-    let start_time = std::time::Instant::now();
-
-    let vapr_games_dir = get_games_directory()?;
-    let safe_game_name = game_name.replace(" ", "_").replace(":", "");
-    let game_dir = vapr_games_dir.join(&safe_game_name);
-
-    fs::create_dir_all(&game_dir).map_err(|e| format!("Failed to create directory: {}", e))?;
-
-    let client = reqwest::Client::new();
-    let response = client
-        .get(&download_url)
-        .send()
-        .await
-        .map_err(|e| format!("Failed to start download: {}", e))?;
-
-    let total_size = response
-        .content_length()
-        .ok_or("Failed to get content length")?;
-
-    let mut downloaded: u64 = 0;
-    let mut stream = response.bytes_stream();
-    let mut file_data = Vec::new();
-
-    use futures_util::StreamExt;
-    while let Some(chunk) = stream.next().await {
-        let chunk = chunk.map_err(|e| format!("Download error: {}", e))?;
-        file_data.extend_from_slice(&chunk);
-        downloaded += chunk.len() as u64;
-
-        let elapsed = start_time.elapsed().as_secs_f64();
-        let speed = if elapsed > 0.0 {
-            downloaded as f64 / elapsed / 1024.0 / 1024.0
-        } else {
-            0.0
-        };
-
-        let eta = if speed > 0.0 {
-            ((total_size - downloaded) as f64 / (speed * 1024.0 * 1024.0)) as u64
-        } else {
-            0
-        };
-
-        let progress = DownloadProgress {
-            download_id: format!("legacy-{}", game_id),
-            game_id: game_id.clone(),
-            downloaded,
-            total: total_size,
-            percentage: (downloaded as f32 / total_size as f32) * 100.0,
-            speed,
-            eta,
-        };
-
-        window
-            .emit("download-progress", &progress)
-            .map_err(|e| format!("Failed to emit progress: {}", e))?;
-    }
-
-    window
-        .emit("download-status", serde_json::json!({
-            "download_id": format!("legacy-{}", game_id),
-            "status": "Extracting game files..."
-        }))
-        .map_err(|e| format!("Failed to emit status: {}", e))?;
-
-    let cursor = Cursor::new(file_data);
-    let mut archive = zip::ZipArchive::new(cursor)
-        .map_err(|e| format!("Failed to read zip archive: {}", e))?;
-
-    for i in 0..archive.len() {
-        let mut file = archive
-            .by_index(i)
-            .map_err(|e| format!("Failed to read file from archive: {}", e))?;
-
-        let outpath = match file.enclosed_name() {
-            Some(path) => game_dir.join(path),
-            None => continue,
-        };
-
-        if file.name().ends_with('/') {
-            fs::create_dir_all(&outpath)
-                .map_err(|e| format!("Failed to create directory: {}", e))?;
-        } else {
-            if let Some(p) = outpath.parent() {
-                if !p.exists() {
-                    fs::create_dir_all(p)
-                        .map_err(|e| format!("Failed to create parent directory: {}", e))?;
-                }
-            }
-
-            let mut outfile = fs::File::create(&outpath)
-                .map_err(|e| format!("Failed to create file: {}", e))?;
-
-            std::io::copy(&mut file, &mut outfile)
-                .map_err(|e| format!("Failed to write file: {}", e))?;
-        }
-
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            if let Some(mode) = file.unix_mode() {
-                fs::set_permissions(&outpath, fs::Permissions::from_mode(mode))
-                    .map_err(|e| format!("Failed to set permissions: {}", e))?;
-            }
-        }
-    }
-
-    let executable = find_game_executable(&game_dir)?;
-
-    let game_info = serde_json::json!({
-        "id": game_id,
-        "name": game_name,
-        "install_path": game_dir.to_string_lossy(),
-        "executable": executable.to_string_lossy(),
-        "installed_at": chrono::Utc::now().to_rfc3339(),
-    });
-
-    let game_info_path = game_dir.join("vapr_game_info.json");
-    fs::write(
-        &game_info_path,
-        serde_json::to_string_pretty(&game_info).unwrap(),
-    )
-    .map_err(|e| format!("Failed to save game info: {}", e))?;
-
-    Ok(GameInstallResult {
-        success: true,
-        install_path: Some(game_dir.to_string_lossy().to_string()),
-        executable: Some(executable.to_string_lossy().to_string()),
-        error: None,
-    })
-}
-
-#[tauri::command]
 async fn start_download(
     app_handle: tauri::AppHandle,
     state: State<'_, AppState>,
     download_id: String,
     game_id: String,
     game_name: String,
+    game_cover: Option<String>,
     download_url: String,
 ) -> Result<GameInstallResult, String> {
     let download_state = DownloadState {
         id: download_id.clone(),
         game_id: game_id.clone(),
         game_name: game_name.clone(),
+        game_cover: game_cover.clone(),
         download_url: download_url.clone(),
         is_paused: Arc::new(AtomicBool::new(false)),
         downloaded_bytes: Arc::new(Mutex::new(0)),
@@ -332,17 +199,16 @@ async fn start_download(
         start_time: Arc::new(Mutex::new(Some(std::time::Instant::now()))),
     };
 
-    // Store download state
     {
         let mut downloads = state.downloads.lock().await;
         downloads.insert(download_id.clone(), download_state.clone());
     }
 
-    // Emit initial download status to all windows
     app_handle.emit("download-status", serde_json::json!({
         "download_id": download_state.id.clone(),
         "game_id": download_state.game_id.clone(),
         "game_name": download_state.game_name.clone(),
+        "game_cover": download_state.game_cover.clone(),
         "status": "starting",
         "message": "Starting download..."
     })).unwrap();
@@ -382,6 +248,39 @@ async fn perform_download(app_handle: tauri::AppHandle, download_state: Download
     }
 }
 
+#[tauri::command]
+async fn get_active_downloads(
+    state: State<'_, AppState>,
+) -> Result<Vec<serde_json::Value>, String> {
+    let downloads = state.downloads.lock().await;
+    let active_downloads: Vec<serde_json::Value> = downloads
+        .values()
+        .map(|d| {
+            let downloaded = *d.downloaded_bytes.blocking_lock();
+            let total = *d.total_bytes.blocking_lock();
+            let percentage = if total > 0 {
+                (downloaded as f32 / total as f32) * 100.0
+            } else {
+                0.0
+            };
+
+            serde_json::json!({
+                "download_id": d.id,
+                "game_id": d.game_id,
+                "game_name": d.game_name,
+                "game_cover": d.game_cover,
+                "downloaded": downloaded,
+                "total": total,
+                "percentage": percentage,
+                "status": if d.is_paused.load(Ordering::Relaxed) { "paused" } else { "downloading" },
+                "speed": 0.0,
+                "eta": 0
+            })
+        })
+        .collect();
+
+    Ok(active_downloads)
+}
 // New improved download function that writes directly to disk
 async fn download_file_to_disk(
     app_handle: tauri::AppHandle,
@@ -471,6 +370,8 @@ async fn download_file_to_disk(
             let progress = DownloadProgress {
                 download_id: download_state.id.clone(),
                 game_id: download_state.game_id.clone(),
+                game_name: download_state.game_name.clone(),
+                game_cover: download_state.game_cover.clone(),
                 downloaded,
                 total: total_size,
                 percentage: (downloaded as f32 / total_size as f32) * 100.0,
@@ -490,6 +391,8 @@ async fn download_file_to_disk(
     app_handle.emit("download-progress", &DownloadProgress {
         download_id: download_state.id.clone(),
         game_id: download_state.game_id.clone(),
+        game_name: download_state.game_name.clone(),
+        game_cover: download_state.game_cover.clone(),
         downloaded: total_size,
         total: total_size,
         percentage: 100.0,
@@ -905,7 +808,6 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             check_version_compatibility,
-            download_and_install_game,
             launch_game,
             get_installed_games,
             uninstall_game,
@@ -917,7 +819,8 @@ pub fn run() {
             pause_download,
             resume_download,
             cancel_download,
-            open_downloads_window
+            open_downloads_window,
+            get_active_downloads
         ])
         .setup(|app| {
             // Create app state for downloads

@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import DownloadsPage from './pages/DownloadsPage'
 import { listen } from '@tauri-apps/api/event'
 import './App.css'
+import {invoke} from "@tauri-apps/api/core";
 
 interface DownloadProgress {
+    game_cover: string | undefined;
+    game_name: string | undefined;
     download_id: string
     game_id: string
     downloaded: number
@@ -18,6 +21,7 @@ interface DownloadStatus {
     download_id: string
     game_id: string
     game_name?: string
+    game_cover?: string  // Add these fields
     status: string
     message?: string
 }
@@ -39,6 +43,7 @@ interface DownloadInfo {
     download_id: string
     game_id: string
     game_name?: string
+    game_cover?: string
     downloaded: number
     total: number
     percentage: number
@@ -56,52 +61,60 @@ function App() {
 
     useEffect(() => {
         // Set up event listeners
-        const unlistenProgress = listen<DownloadProgress>('download-progress', (event) => {
+        const unlistenStatus = listen<DownloadStatus>('download-status', (event) => {
+            console.log('=== DOWNLOAD STATUS EVENT ===', event.payload);
+
             setDownloads(prev => {
                 const newMap = new Map(prev)
                 const existing = newMap.get(event.payload.download_id) || {} as DownloadInfo
-                newMap.set(event.payload.download_id, {
+
+                const updatedInfo = {
                     ...existing,
                     download_id: event.payload.download_id,
                     game_id: event.payload.game_id,
+                    game_name: event.payload.game_name || existing.game_name,
+                    game_cover: event.payload.game_cover || existing.game_cover,
+                    statusMessage: event.payload.message,
+                    status: event.payload.status === 'starting' ? 'starting' :
+                        event.payload.status.includes('Extracting') ? 'extracting' :
+                            existing.status || 'starting',
+                    downloaded: existing.downloaded || 0,
+                    total: existing.total || 0,
+                    percentage: existing.percentage || 0,
+                    speed: existing.speed || 0,
+                    eta: existing.eta || 0
+                };
+
+                console.log('=== UPDATED DOWNLOAD INFO ===', updatedInfo);
+                newMap.set(event.payload.download_id, updatedInfo);
+                return newMap
+            })
+        })
+
+        const unlistenProgress = listen<DownloadProgress>('download-progress', (event) => {
+            console.log('=== DOWNLOAD PROGRESS EVENT ===', event.payload);
+
+            setDownloads(prev => {
+                const newMap = new Map(prev)
+                const existing = newMap.get(event.payload.download_id) || {} as DownloadInfo
+
+                const updatedInfo = {
+                    ...existing,
+                    download_id: event.payload.download_id,
+                    game_id: event.payload.game_id,
+                    game_name: event.payload.game_name || existing.game_name,
+                    game_cover: event.payload.game_cover || existing.game_cover,
                     downloaded: event.payload.downloaded,
                     total: event.payload.total,
                     percentage: event.payload.percentage,
                     speed: event.payload.speed,
                     eta: event.payload.eta,
                     status: 'downloading'
-                })
-                return newMap
-            })
-        })
+                };
 
-        const unlistenStatus = listen<DownloadStatus>('download-status', (event) => {
-            setDownloads(prev => {
-                const newMap = new Map(prev)
-                const existing = newMap.get(event.payload.download_id) || {} as DownloadInfo
-
-                // Handle different status types
-                let status: DownloadInfo['status'] = existing.status || 'starting'
-                if (event.payload.status === 'starting') {
-                    status = 'starting'
-                } else if (event.payload.status.includes('Extracting')) {
-                    status = 'extracting'
-                }
-
-                newMap.set(event.payload.download_id, {
-                    ...existing,
-                    download_id: event.payload.download_id,
-                    game_id: event.payload.game_id,
-                    game_name: event.payload.game_name || existing.game_name,
-                    statusMessage: event.payload.message,
-                    status: status,
-                    // Initialize default values if this is the first event
-                    downloaded: existing.downloaded || 0,
-                    total: existing.total || 0,
-                    percentage: existing.percentage || 0,
-                    speed: existing.speed || 0,
-                    eta: existing.eta || 0
-                })
+                console.log('=== UPDATED DOWNLOAD INFO ===', updatedInfo);
+                // @ts-ignore
+                newMap.set(event.payload.download_id, updatedInfo);
                 return newMap
             })
         })
@@ -147,6 +160,21 @@ function App() {
                 return newMap
             })
         })
+
+        const loadActiveDownloads = async () => {
+            try {
+                const activeDownloads = await invoke<any[]>('get_active_downloads');
+                const newMap = new Map<string, DownloadInfo>();
+                activeDownloads.forEach(download => {
+                    newMap.set(download.download_id, download);
+                });
+                setDownloads(newMap);
+            } catch (error) {
+                console.error('Failed to get active downloads:', error);
+            }
+        }
+
+        loadActiveDownloads();
 
         // Cleanup listeners
         return () => {

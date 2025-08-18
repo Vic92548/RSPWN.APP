@@ -40,35 +40,6 @@ class DownloadManager {
         });
     }
 
-    async addDownload(gameData) {
-        const downloadId = `download-${Date.now()}-${gameData.id}`;
-
-        const download = {
-            id: downloadId,
-            gameId: gameData.id,
-            title: gameData.title,
-            coverImage: gameData.coverImage,
-            downloadUrl: gameData.downloadUrl,
-            status: 'queued',
-            progress: 0,
-            downloadedSize: 0,
-            totalSize: 0,
-            speed: 0,
-            eta: 0,
-            startTime: null,
-            endTime: null,
-            error: null
-        };
-
-        this.downloads.set(downloadId, download);
-        this.queue.push(downloadId);
-
-        this.emit('download-added', download);
-        this.processQueue();
-
-        return downloadId;
-    }
-
     async processQueue() {
         while (this.activeDownloads.size < this.maxConcurrentDownloads && this.queue.length > 0) {
             const downloadId = this.queue.shift();
