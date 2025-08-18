@@ -212,15 +212,14 @@ window.submitPost = async function(event) {
         clearInterval(progressInterval);
         progressFill.style.width = '100%';
 
-        if (result.success) {
+        if (result.success || result.id) {  // Check for both success flag and id
             confetti({
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 }
             });
 
-            closeAddPostCard();
-
+            // Clear the form
             DOM.get('title').value = '';
             DOM.get('file').value = '';
             DOM.show('upload-placeholder', 'flex');
@@ -234,6 +233,7 @@ window.submitPost = async function(event) {
 
             notify.success("Post published successfully!");
 
+            // Update XP if user data is returned
             if (window.user && result.user) {
                 const oldUser = {
                     xp: window.user.xp,
@@ -245,9 +245,13 @@ window.submitPost = async function(event) {
                 setXPProgress(oldUser);
             }
 
+            // Close the add post card first
+            closeAddPostCard();
+
+            // Navigate to the new post with a slight delay
             setTimeout(() => {
-                displayPost(result.id);
-            }, 500);
+                router.navigate(`/post/${result.id}`, true);
+            }, 300);
 
         } else {
             throw new Error(result.error || 'Failed to create post');
@@ -255,7 +259,6 @@ window.submitPost = async function(event) {
 
     } catch (error) {
         console.error('Failed to submit post:', error);
-
         notify.error('Upload failed', error.message || 'Failed to create post. Please try again.');
 
     } finally {
