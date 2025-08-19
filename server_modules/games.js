@@ -6,6 +6,7 @@ export async function getAllGames(userId = null) {
         const publicGames = await gamesCollection.find({ isHidden: { $ne: true } }).toArray();
 
         let userOwnedHiddenGames = [];
+        let developerOwnedHiddenGames = [];
 
         if (userId && userId !== 'anonymous') {
             const userGames = await userGamesCollection.find({ userId }).toArray();
@@ -17,9 +18,14 @@ export async function getAllGames(userId = null) {
                     isHidden: true
                 }).toArray();
             }
+
+            developerOwnedHiddenGames = await gamesCollection.find({
+                ownerId: userId,
+                isHidden: true
+            }).toArray();
         }
 
-        const allVisibleGames = [...publicGames, ...userOwnedHiddenGames];
+        const allVisibleGames = [...publicGames, ...userOwnedHiddenGames, ...developerOwnedHiddenGames];
         const uniqueGames = Array.from(new Map(allVisibleGames.map(g => [g.id, g])).values());
 
         const enrichedGames = await Promise.all(uniqueGames.map(async (game) => {
