@@ -45,7 +45,6 @@ async function loadLibraryData() {
         ]);
         gamesData.userGames = response.games || [];
 
-        // map totals
         gamesData.playtimeTotals = {};
         if (totalsResponse && totalsResponse.totals) {
             for (const t of totalsResponse.totals) {

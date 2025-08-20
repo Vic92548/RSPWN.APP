@@ -149,13 +149,6 @@ class API {
         return this.get(`/register-view?postId=${postId}`, false);
     }
 
-    async clickLink(postId) {
-        if (!/^[a-f0-9-]{36}$/.test(postId)) {
-            throw new Error('Invalid post ID format');
-        }
-        return this.get(`/click-link?postId=${postId}`, false);
-    }
-
     async getMyPosts() {
         return this.get('/me/posts');
     }
@@ -205,7 +198,6 @@ class API {
         return this.get(`/api/post/resolve?url=${encodeURIComponent(str)}`, false);
     }
 
-    // Playtime APIs
     async recordPlaytimeSession({ gameId, startedAt, endedAt, durationSeconds, executablePath }) {
         return this.post('/api/playtime/session', { gameId, startedAt, endedAt, durationSeconds, executablePath });
     }

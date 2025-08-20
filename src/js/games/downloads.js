@@ -7,16 +7,13 @@ async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
     }
 
     try {
-        // Find the game in our data
         const game = gamesData.userGames.find(g => g.id === gameId);
         if (!game) {
             throw new Error('Game not found');
         }
 
-        // Generate a unique download ID
         const downloadId = `download-${Date.now()}-${gameId}`;
 
-        // Start the download
         await window.__TAURI__.core.invoke('start_download', {
             downloadId: downloadId,
             gameId: gameId,
@@ -33,16 +30,9 @@ async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
             downloadUrl: downloadUrl
         });
 
-        // Open the downloads window
         await window.__TAURI__.core.invoke('open_downloads_window');
 
-        // Show notification
         notify.success('Download started', `${gameTitle} has been added to your downloads.`);
-
-        // Update library view to show downloading state
-        if (typeof displayLibrary === 'function') {
-            displayLibrary();
-        }
 
     } catch (error) {
         console.error('Error starting download:', error);
@@ -142,72 +132,35 @@ async function launchGame(event, executablePath) {
     }
 }
 
-async function downloadUpdate(gameId, version, downloadUrl) {
+async function downloadUpdate(gameId, version, gameTitle, gameCover, downloadUrl) {
     if (!isRunningInTauri()) {
         notify.desktopAppPrompt(() => downloadDesktopApp());
         return;
     }
 
-    const game = gamesData.userGames.find(g => g.id === gameId);
-    if (!game) return;
-
-    gamesData.updatingGames.set(gameId, true);
-    gamesData.downloadingGames.set(gameId, 0);
-
-    await markUpdateSeen(gameId);
-
-    displayLibrary();
-
     try {
-        const unlisten = await window.__TAURI__.event.listen('download-progress', (event) => {
-            const progress = event.payload;
-            if (progress.game_id === gameId) {
-                gamesData.downloadingGames.set(gameId, progress.percentage);
-                updateGameDownloadProgress(gameId, progress);
-            }
-        });
+        const downloadId = `update-${Date.now()}-${gameId}`;
 
-        const statusUnlisten = await window.__TAURI__.event.listen('download-status', (event) => {
-            const data = event.payload;
-            if (data.game_id === gameId) {
-                updateGameDownloadStatus(gameId, data.status);
-            }
-        });
-
-        const result = await window.__TAURI__.core.invoke('start_download', {
+        await window.__TAURI__.core.invoke('start_download', {
+            downloadId: downloadId,
             gameId: gameId,
-            gameName: game.title,
-            gameCover: game.coverImage,
+            gameName: gameTitle,
+            gameCover: gameCover,
             downloadUrl: downloadUrl
         });
 
-        unlisten();
-        statusUnlisten();
+        await markUpdateSeen(gameId);
 
-        if (result.success) {
-            await markUpdateDownloaded(gameId, version);
+        await window.__TAURI__.core.invoke('open_downloads_window');
 
-            gamesData.updates = gamesData.updates.filter(u => u.gameId !== gameId);
+        notify.success('Update started', `${gameTitle} update has been added to your downloads.`);
 
-            if (gamesData.updates.length === 0) {
-                const updateBadge = DOM.query('.update-badge');
-                if (updateBadge) updateBadge.remove();
-            }
-
-            gamesData.downloadingGames.delete(gameId);
-            gamesData.updatingGames.delete(gameId);
-
-            notify.success(`${game.title} updated to v${version}!`);
-            await loadLibraryData();
-        } else {
-            throw new Error(result.error || 'Update failed');
-        }
-    } catch (error) {
-        console.error('Error updating game:', error);
-        gamesData.downloadingGames.delete(gameId);
-        gamesData.updatingGames.delete(gameId);
+        gamesData.updatingGames.set(gameId, true);
         displayLibrary();
-        notify.error('Update Failed', error.message || 'Failed to update the game. Please try again.');
+
+    } catch (error) {
+        console.error('Error starting update:', error);
+        notify.error('Update Failed', error.message || 'Failed to start update');
     }
 }
 
@@ -227,7 +180,6 @@ function formatTime(seconds) {
     }
 }
 
-// Initialize a single playtime-session listener (Tauri)
 let __vaprPlaytimeUnlisten = null;
 async function initPlaytimeListener() {
     if (!isRunningInTauri() || __vaprPlaytimeUnlisten) return;
@@ -280,12 +232,10 @@ async function initPlaytimeListener() {
     });
 }
 
-// Set up listener on load if running in Tauri
 if (isRunningInTauri()) {
     initPlaytimeListener();
 }
 
-// Expose functions to window for template onclick handlers
 window.downloadGame = downloadGame;
 window.updateGameDownloadProgress = updateGameDownloadProgress;
 window.updateGameDownloadStatus = updateGameDownloadStatus;

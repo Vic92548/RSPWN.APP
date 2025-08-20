@@ -19,17 +19,6 @@ class VAPRTemplateEngine {
         this.hooks.get(key).push(callback);
     }
 
-    off(selector, event, callback) {
-        const key = `${selector}:${event}`;
-        if (this.hooks.has(key)) {
-            const callbacks = this.hooks.get(key);
-            const index = callbacks.indexOf(callback);
-            if (index > -1) {
-                callbacks.splice(index, 1);
-            }
-        }
-    }
-
     emit(element, event) {
         const tagName = element.tagName.toLowerCase();
         const id = element.id;
@@ -280,12 +269,6 @@ class VAPRTemplateEngine {
         return element;
     }
 
-    appendElement(container, tagName, attributes = {}) {
-        const element = this.createElement(tagName, attributes);
-        container.appendChild(element);
-        return element;
-    }
-
     createElements(tagName, dataArray) {
         return dataArray.map(data => this.createElement(tagName, data));
     }
@@ -295,20 +278,11 @@ class VAPRTemplateEngine {
         elements.forEach(el => container.appendChild(el));
         return elements;
     }
-
-    createElementWithContent(tagName, attributes = {}, content = '') {
-        const element = this.createElement(tagName, attributes);
-        if (content) {
-            element.innerHTML = content;
-        }
-        return element;
-    }
 }
 
 window.VAPR = new VAPRTemplateEngine();
 window.VAPR.init();
 
-// Hide Desktop App section when running in Tauri
 VAPR.on('.menu-section', 'mounted', (element) => {
     const title = element.querySelector('.menu-section-title');
     if (title && title.textContent === 'Desktop App' && typeof window.__TAURI__ !== 'undefined') {

@@ -202,11 +202,6 @@ function handleReferral() {
     }
 }
 
-function openTextModal(text) {
-    DOM.setText("text_modal_text", text);
-    DOM.show("text_modal");
-}
-
 function closeTextModal() {
     DOM.hide("text_modal");
 }

@@ -70,31 +70,6 @@ class TebexAPI {
         return { data: allPackages };
     }
 
-    async createBasket(completeUrl, cancelUrl, webstoreToken) {
-        return this.request(`/accounts/${webstoreToken}/baskets`, {
-            method: 'POST',
-            body: JSON.stringify({
-                complete_url: completeUrl,
-                cancel_url: cancelUrl,
-                complete_auto_redirect: true
-            })
-        });
-    }
-
-    async addToBasket(basketIdent, packageId, quantity = 1) {
-        return this.request(`/baskets/${basketIdent}/packages`, {
-            method: 'POST',
-            body: JSON.stringify({
-                package_id: packageId,
-                quantity: quantity
-            })
-        });
-    }
-
-    async getBasket(basketIdent, webstoreToken) {
-        return this.request(`/accounts/${webstoreToken}/baskets/${basketIdent}`);
-    }
-
     async applyCreatorCode(basketIdent, creatorCode, webstoreToken) {
         return this.request(`/accounts/${webstoreToken}/baskets/${basketIdent}/creator-codes`, {
             method: 'POST',

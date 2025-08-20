@@ -88,11 +88,6 @@
   }
 }
 
-.glass-hover-scale:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: $shadow-xl;
-}
-
 .glass-badge {
   padding: 6px 12px;
   @include glass-effect($glass-bg-tertiary);

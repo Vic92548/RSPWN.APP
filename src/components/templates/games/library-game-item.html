@@ -34,7 +34,7 @@
             {{#is-installed}}
             {{#has-update}}
             <div class="game-actions">
-                <button class="game-action-button primary" onclick="window.downloadUpdate('{{game-id}}', '{{latest-version}}', '{{download-url}}')">
+                <button class="game-action-button primary" onclick="window.downloadUpdate('{{game-id}}', '{{latest-version}}', '{{title}}','{{cover-image}}', '{{download-url}}')">
                     <i class="fa-solid fa-arrow-up"></i> Update to v{{latest-version}}
                 </button>
             </div>

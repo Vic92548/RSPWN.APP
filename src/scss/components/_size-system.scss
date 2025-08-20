@@ -13,8 +13,8 @@
   @include container(100%);
 }
 
-.vapr-height-modal {
-  max-height: 90vh;
+.vapr-height-card {
+  max-height: 85vh;
   overflow: hidden;
 }
 
@@ -25,11 +25,7 @@
         'padding-lg': $spacing-lg,
         'padding-xl': $spacing-xl,
         'padding-header': $spacing-md $spacing-lg,
-        'padding-body': $spacing-lg,
-        'margin': $spacing-md,
-        'margin-auto': $spacing-md auto,
-        'margin-top': $spacing-md 0 0 0,
-        'margin-bottom': 0 0 $spacing-md 0
+        'padding-body': $spacing-lg
 ) {
   .vapr-#{$name} {
     @if meta.type-of($value) == 'list' {
@@ -49,15 +45,6 @@
   .vapr-height-card {
     max-height: 90vh;
   }
-
-  .vapr-height-modal {
-    max-height: 95vh;
-  }
-}
-
-.vapr-center {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .vapr-rounded { border-radius: $radius-lg; }
