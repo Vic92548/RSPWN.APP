@@ -31,11 +31,6 @@ function initGameEventListeners() {
     }
 }
 
-async function openGamesShowcase() {
-    hideMenu();
-    router.navigate('/games', true);
-}
-
 async function openMyLibrary() {
     if (!isUserLoggedIn()) {
         openRegisterModal();
@@ -43,10 +38,6 @@ async function openMyLibrary() {
     }
     hideMenu();
     router.navigate('/library', true);
-}
-
-function closeGamesCard() {
-    cardManager.hide('games-card');
 }
 
 function closeLibraryCard() {
@@ -87,8 +78,6 @@ async function redeemKey(event) {
                     showCancelButton: false
                 }
             );
-
-            closeGamesCard();
             openMyLibrary();
             await loadLibraryData();
         }

@@ -69,12 +69,6 @@
   }
 }
 
-.glass-overlay {
-  backdrop-filter: $blur-md;
-  -webkit-backdrop-filter: $blur-md;
-  background: rgba(0, 0, 0, 0.6);
-}
-
 .glass_modal {
   width: 100%;
   height: 100vh;

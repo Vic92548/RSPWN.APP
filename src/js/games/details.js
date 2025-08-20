@@ -306,16 +306,3 @@ async function displayGameDetails(game) {
         DOM.hide(externalSection);
     }
 }
-
-function toggleDisclaimer() {
-    const disclaimerContent = DOM.get('disclaimer-content');
-    const disclaimerToggle = DOM.get('disclaimer-toggle');
-
-    if (disclaimerContent.classList.contains('collapsed')) {
-        disclaimerContent.classList.remove('collapsed');
-        DOM.setHTML(disclaimerToggle, '<i class="fa-solid fa-chevron-up"></i>');
-    } else {
-        disclaimerContent.classList.add('collapsed');
-        DOM.setHTML(disclaimerToggle, '<i class="fa-solid fa-chevron-down"></i>');
-    }
-}

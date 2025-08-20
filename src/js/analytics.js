@@ -21,10 +21,6 @@ async function openAnalytics() {
     router.navigate('/analytics', true);
 }
 
-function closeAnalyticsCard() {
-    cardManager.hide('analytics-card');
-}
-
 function resetAnalyticsUI() {
     const analyticsCard = DOM.get('analytics-card');
     if (analyticsCard) {

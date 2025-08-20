@@ -31,12 +31,6 @@ function updateUsername() {
 
 loadUserData();
 
-function setupSocialLink(id, link){
-    const link_bt = DOM.get(id);
-    link_bt.style.display = "inline-block";
-    link_bt.href = link;
-}
-
 let current_post_id = undefined;
 let current_post = undefined;
 
@@ -66,10 +60,6 @@ function opeNewPostModel() {
 
 function closeAddPostCard() {
     cardManager.hide('add-post-card');
-}
-
-function closeNewPostModel() {
-    closeAddPostCard();
 }
 
 function openRegisterModal() {
