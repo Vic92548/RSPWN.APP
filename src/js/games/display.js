@@ -19,12 +19,26 @@ function displayLibrary() {
 
     VAPR.appendElements(container, 'library-game-item',
         gamesData.userGames.map(game => {
-            const isInstalled = gamesData.installedGames.some(g => g.id === game.id);
+            const installedGame = gamesData.installedGames.find(g => g.id === game.id);
+            const isInstalled = !!installedGame;
             const isDownloading = gamesData.downloadingGames.has(game.id);
             const isUpdating = gamesData.updatingGames.has(game.id);
-            const installedGame = isInstalled ? gamesData.installedGames.find(g => g.id === game.id) : null;
-            const hasUpdate = gamesData.updates.some(u => u.gameId === game.id);
-            const updateInfo = hasUpdate ? gamesData.updates.find(u => u.gameId === game.id) : null;
+
+            // Check for updates using local version
+            let hasUpdate = false;
+            let updateInfo = null;
+
+            if (isInstalled && game.currentVersion) {
+                const installedVersion = installedGame.version || '0.0.0';
+                if (isNewerVersion(game.currentVersion, installedVersion)) {
+                    hasUpdate = true;
+                    updateInfo = {
+                        fromVersion: installedVersion,
+                        toVersion: game.currentVersion
+                    };
+                }
+            }
+
             const totalSeconds = Number(gamesData.playtimeTotals?.[game.id] || 0);
             const totalPlaytime = formatDurationShort(totalSeconds);
 
@@ -39,9 +53,9 @@ function displayLibrary() {
                 isDownloading: isDownloading ? 'true' : '',
                 isUpdating: isUpdating ? 'true' : '',
                 hasUpdate: hasUpdate ? 'true' : '',
-                installedVersion: installedGame?.version || game.installedVersion || '',
-                latestVersion: updateInfo?.toVersion || game.currentVersion || '',
-                ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\','/') }),
+                installedVersion: installedGame?.version || '',
+                latestVersion: game.currentVersion || '',
+                ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\\\','/') }),
                 ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 }),
                 totalPlaytime,
                 totalPlaytimeSeconds: totalSeconds

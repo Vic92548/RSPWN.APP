@@ -45,7 +45,7 @@
                 <button class="game-action-button play" onclick="window.launchGame(event, '{{executable}}')">
                     <i class="fa-solid fa-play"></i> Play
                 </button>
-                <button class="game-action-button icon-only danger" onclick="window.uninstallGame(event, '{{game-id}}', '{{title}}')">
+                <button class="game-action-button icon-only danger" onclick="window.uninstallGame('{{game-id}}', '{{title}}')">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
@@ -54,7 +54,7 @@
             {{/is-installed}}
             {{^is-installed}}
             <div class="game-actions">
-                <button class="game-action-button primary" onclick="window.downloadGame(event, '{{game-id}}', '{{title}}','{{cover-image}}', '{{download-url}}')">
+                <button class="game-action-button primary" onclick="window.downloadGame('{{game-id}}', '{{title}}','{{cover-image}}', '{{download-url}}','{{latest-version}}')">
                     <i class="fa-solid fa-download"></i> <span class="download-button-text">Download</span>
                 </button>
             </div>

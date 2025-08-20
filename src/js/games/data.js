@@ -11,7 +11,6 @@ async function loadGamesData() {
         gamesData.allGames = gamesResponse.games || [];
         gamesData.userGames = userGamesResponse.games || [];
 
-        // map totals to object for quick lookup
         gamesData.playtimeTotals = {};
         if (totalsResponse && totalsResponse.totals) {
             for (const t of totalsResponse.totals) {
@@ -39,12 +38,12 @@ async function loadLibraryData() {
     try {
         DOM.show('library-loading');
 
-        const [response, totalsResponse] = await Promise.all([
-            api.request('/api/my-games'),
-            isUserLoggedIn() ? api.getPlaytimeTotals().catch(() => ({ success: false, totals: [] })) : Promise.resolve({ success: true, totals: [] })
-        ]);
+        // Load user games from server
+        const response = await api.request('/api/my-games');
         gamesData.userGames = response.games || [];
 
+        // Load playtime data
+        const totalsResponse = await api.getPlaytimeTotals().catch(() => ({ success: false, totals: [] }));
         gamesData.playtimeTotals = {};
         if (totalsResponse && totalsResponse.totals) {
             for (const t of totalsResponse.totals) {
@@ -52,10 +51,18 @@ async function loadLibraryData() {
             }
         }
 
+        // Load installed games data if in Tauri
         if (isRunningInTauri()) {
             try {
                 const installedGames = await window.__TAURI__.core.invoke('get_installed_games');
                 gamesData.installedGames = installedGames || [];
+
+                // Clear downloading/updating states
+                gamesData.updatingGames.clear();
+                gamesData.downloadingGames.clear();
+
+                // Check for updates locally
+                await checkAndShowUpdates();
             } catch (error) {
                 console.error('Error loading installed games:', error);
                 gamesData.installedGames = [];

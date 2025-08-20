@@ -113,6 +113,7 @@ struct DownloadState {
     game_name: String,
     game_cover: Option<String>,
     download_url: String,
+    version: Option<String>,
     is_paused: Arc<AtomicBool>,
     downloaded_bytes: Arc<Mutex<u64>>,
     total_bytes: Arc<Mutex<u64>>,
@@ -186,6 +187,7 @@ async fn start_download(
     game_name: String,
     game_cover: Option<String>,
     download_url: String,
+    version: Option<String>,
 ) -> Result<GameInstallResult, String> {
     let download_state = DownloadState {
         id: download_id.clone(),
@@ -193,6 +195,7 @@ async fn start_download(
         game_name: game_name.clone(),
         game_cover: game_cover.clone(),
         download_url: download_url.clone(),
+        version: version.clone(),
         is_paused: Arc::new(AtomicBool::new(false)),
         downloaded_bytes: Arc::new(Mutex::new(0)),
         total_bytes: Arc::new(Mutex::new(0)),
@@ -467,6 +470,7 @@ async fn download_file_to_disk(
         "name": download_state.game_name,
         "install_path": game_dir.to_string_lossy(),
         "executable": executable.to_string_lossy(),
+        "version": download_state.version.clone().unwrap_or_else(|| "1.0.0".to_string()),
         "installed_at": chrono::Utc::now().to_rfc3339(),
     });
 

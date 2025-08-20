@@ -38,6 +38,10 @@ class DownloadManager {
         await window.__TAURI__.event.listen('download-error', (event) => {
             this.handleError(event.payload);
         });
+
+        await window.__TAURI__.event.listen('update-complete', (event) => {
+            this.handleUpdateComplete(event.payload);
+        });
     }
 
     async processQueue() {
@@ -66,7 +70,9 @@ class DownloadManager {
                 downloadId: downloadId,
                 gameId: download.gameId,
                 gameName: download.title,
-                downloadUrl: download.downloadUrl
+                downloadUrl: download.downloadUrl,
+                isUpdate: download.isUpdate,
+                version: download.version
             });
 
             if (!result.success) {
@@ -178,7 +184,6 @@ class DownloadManager {
 
         this.activeDownloads.delete(payload.download_id);
         this.emit('download-completed', download);
-
         this.processQueue();
     }
 
@@ -193,6 +198,28 @@ class DownloadManager {
         this.emit('download-error', download);
 
         this.processQueue();
+    }
+
+    async handleUpdateCompleted(payload) {
+        if (window.gamesData) {
+            window.gamesData.updatingGames.delete(payload.gameId);
+            window.gamesData.updates = window.gamesData.updates.filter(u => u.gameId !== payload.gameId);
+
+            const installedGame = window.gamesData.installedGames.find(g => g.id === payload.gameId);
+            if (installedGame) {
+                installedGame.version = payload.version;
+            }
+        }
+
+        if (window.notify) {
+            window.notify.success(`${payload.gameName} updated to v${payload.version}!`);
+        }
+
+        if (window.cardManager && window.cardManager.currentCard === 'library-card') {
+            if (typeof window.loadLibraryData === 'function') {
+                window.loadLibraryData();
+            }
+        }
     }
 
     on(event, callback) {
@@ -250,6 +277,16 @@ class DownloadManager {
             this.downloads.delete(download.id);
         });
         this.emit('downloads-cleared', completed);
+    }
+
+    addDownload(downloadInfo) {
+        this.downloads.set(downloadInfo.id, downloadInfo);
+        if (this.activeDownloads.size < this.maxConcurrentDownloads) {
+            this.startDownload(downloadInfo.id);
+        } else {
+            downloadInfo.status = 'queued';
+            this.queue.push(downloadInfo.id);
+        }
     }
 }
 

@@ -2,6 +2,16 @@ cardManager.register('library-card', {
     route: '/library',
     onLoad: async () => {
         await loadLibraryData();
+    },
+    onShow: () => {
+        if (isRunningInTauri()) {
+            window.__TAURI__.core.invoke('get_installed_games').then(installedGames => {
+                if (installedGames && JSON.stringify(installedGames) !== JSON.stringify(gamesData.installedGames)) {
+                    gamesData.installedGames = installedGames;
+                    displayLibrary();
+                }
+            }).catch(console.error);
+        }
     }
 });
 

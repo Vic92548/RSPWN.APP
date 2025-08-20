@@ -1,6 +1,4 @@
-async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
-    event.stopPropagation();
-
+async function downloadGame(gameId, gameTitle, gameCover, downloadUrl, version = null) {
     if (!isRunningInTauri()) {
         notify.desktopAppPrompt(() => downloadDesktopApp());
         return;
@@ -12,6 +10,11 @@ async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
             throw new Error('Game not found');
         }
 
+        // If version not provided, try to get it from the game data
+        if (!version) {
+            version = game.currentVersion || game.version || '1.0.0';
+        }
+
         const downloadId = `download-${Date.now()}-${gameId}`;
 
         await window.__TAURI__.core.invoke('start_download', {
@@ -19,7 +22,8 @@ async function downloadGame(event, gameId, gameTitle, gameCover, downloadUrl) {
             gameId: gameId,
             gameName: gameTitle,
             gameCover: gameCover,
-            downloadUrl: downloadUrl
+            downloadUrl: downloadUrl,
+            version: version
         });
 
         console.log({
@@ -86,14 +90,16 @@ function cancelDownload(gameId) {
     displayLibrary();
 }
 
-async function uninstallGame(event, gameId, gameTitle) {
-    event.stopPropagation();
+async function uninstallGame(gameId, gameTitle, confirmed = false) {
 
-    const confirmed = await notify.confirmDanger(
-        'Uninstall Game?',
-        `Are you sure you want to uninstall ${gameTitle}? This will remove all game files from your computer.`,
-        'Yes, uninstall'
-    );
+    if(!confirmed){
+        confirmed = await notify.confirmDanger(
+            'Uninstall Game?',
+            `Are you sure you want to uninstall ${gameTitle}? This will remove all game files from your computer.`,
+            'Yes, uninstall'
+        );
+    }
+
 
     if (confirmed) {
         try {
@@ -138,30 +144,8 @@ async function downloadUpdate(gameId, version, gameTitle, gameCover, downloadUrl
         return;
     }
 
-    try {
-        const downloadId = `update-${Date.now()}-${gameId}`;
-
-        await window.__TAURI__.core.invoke('start_download', {
-            downloadId: downloadId,
-            gameId: gameId,
-            gameName: gameTitle,
-            gameCover: gameCover,
-            downloadUrl: downloadUrl
-        });
-
-        await markUpdateSeen(gameId);
-
-        await window.__TAURI__.core.invoke('open_downloads_window');
-
-        notify.success('Update started', `${gameTitle} update has been added to your downloads.`);
-
-        gamesData.updatingGames.set(gameId, true);
-        displayLibrary();
-
-    } catch (error) {
-        console.error('Error starting update:', error);
-        notify.error('Update Failed', error.message || 'Failed to start update');
-    }
+    await uninstallGame(gameId, gameTitle, true);
+    downloadGame(gameId, gameTitle, gameCover, downloadUrl, version);
 }
 
 function formatTime(seconds) {
