@@ -55,7 +55,7 @@ function displayLibrary() {
                 hasUpdate: hasUpdate ? 'true' : '',
                 installedVersion: installedGame?.version || '',
                 latestVersion: game.currentVersion || '',
-                ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\\\','/') }),
+                ...(installedGame?.executable && { executable: installedGame.executable.replaceAll('\\','/') }),
                 ...(isDownloading && { downloadProgress: gamesData.downloadingGames.get(game.id) || 0 }),
                 totalPlaytime,
                 totalPlaytimeSeconds: totalSeconds

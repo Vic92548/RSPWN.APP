@@ -113,8 +113,7 @@ async function uninstallGame(gameId, gameTitle, confirmed = false) {
     }
 }
 
-async function launchGame(event, executablePath) {
-    event.stopPropagation();
+async function launchGame(executablePath) {
 
     if (!isRunningInTauri()) return;
 

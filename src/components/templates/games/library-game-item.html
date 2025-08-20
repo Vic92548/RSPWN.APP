@@ -42,7 +42,7 @@
             {{^has-update}}
             {{#executable}}
             <div class="game-actions">
-                <button class="game-action-button play" onclick="window.launchGame(event, '{{executable}}')">
+                <button class="game-action-button play" onclick="window.launchGame('{{executable}}')">
                     <i class="fa-solid fa-play"></i> Play
                 </button>
                 <button class="game-action-button icon-only danger" onclick="window.uninstallGame('{{game-id}}', '{{title}}')">
