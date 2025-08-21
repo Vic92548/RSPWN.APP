@@ -132,7 +132,7 @@ export default function TebexOnboardingModal({ isOpen, onComplete, canSkip = fal
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
                                 <Label htmlFor="webstoreToken">
-                                    Tebex Webstore Token <span className="text-destructive">*</span>
+                                    Tebex Public Token <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="webstoreToken"
@@ -144,12 +144,12 @@ export default function TebexOnboardingModal({ isOpen, onComplete, canSkip = fal
                                 <p className="text-sm text-muted-foreground">
                                     Find this in your Tebex dashboard under{' '}
                                     <a
-                                        href="https://creators.tebex.io/settings/webstores"
+                                        href="https://creator.tebex.io/developers/api-keys"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="underline inline-flex items-center gap-1"
                                     >
-                                        Settings → Webstores
+                                        Integrations → API Keys
                                         <ExternalLink className="h-3 w-3" />
                                     </a>
                                 </p>
