@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ChevronRight, Copy, Check } from 'lucide-react';
-import { Header } from '../components/ui/header';
-import { Section } from '../components/ui/section';
-import { Container } from '../components/ui/container';
-import { Card } from '../components/ui/card';
-import { NavItem } from '../components/ui/navItem';
-import { IconButton } from '../components/ui/iconButton';
+import { Header } from '@/components/ui/header';
+import { Section } from '@/components/ui/section';
+import { Container } from '@/components/ui/container';
+import { Card } from '@/components/ui/card';
+import { NavItem } from '@/components/ui/navItem';
+import { IconButton } from '@/components/ui/iconButton';
 
 export default function RSPWNTermsPage() {
     const [activeSection, setActiveSection] = useState('agreement');
