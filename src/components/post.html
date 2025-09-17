@@ -53,36 +53,60 @@
                 <i class="fa-solid fa-eye"></i>
                 <span id="post_views">350</span>
             </div>
+
+            <!-- New Emoji Reaction Button -->
+            <div class="emoji-reaction-overlay">
+                <button id="emoji-trigger" class="emoji-trigger-btn glass-badge" onclick="toggleEmojiDropdown()">
+                    <span class="current-emoji" id="current-emoji">😊</span>
+                </button>
+
+                <!-- Emoji Dropdown -->
+                <div id="emoji-dropdown" class="emoji-dropdown glass-primary" style="display: none;">
+                    <div class="emoji-grid">
+                        <button class="emoji-option" onclick="selectReaction('💩')" data-reaction="💩">
+                            <span class="reaction_icon">💩</span>
+                            <div class="emoji-info">
+                                <span class="emoji-label">Awful</span>
+                                <span class="emoji-count" id="count-💩">0</span>
+                            </div>
+                        </button>
+                        <button class="emoji-option" onclick="selectReaction('👀')" data-reaction="👀">
+                            <span class="reaction_icon">👀</span>
+                            <div class="emoji-info">
+                                <span class="emoji-label">Interesting</span>
+                                <span class="emoji-count" id="count-👀">0</span>
+                            </div>
+                        </button>
+                        <button class="emoji-option" onclick="selectReaction('😂')" data-reaction="😂">
+                            <span class="reaction_icon">😂</span>
+                            <div class="emoji-info">
+                                <span class="emoji-label">Funny</span>
+                                <span class="emoji-count" id="count-😂">0</span>
+                            </div>
+                        </button>
+                        <button class="emoji-option" onclick="selectReaction('💯')" data-reaction="💯">
+                            <span class="reaction_icon">💯</span>
+                            <div class="emoji-info">
+                                <span class="emoji-label">Perfect</span>
+                                <span class="emoji-count" id="count-💯">0</span>
+                            </div>
+                        </button>
+                        <button class="emoji-option remove-reaction" onclick="selectReaction(null)" data-reaction="null">
+                            <span class="reaction_icon">❌</span>
+                            <div class="emoji-info">
+                                <span class="emoji-label">Remove</span>
+                                <span class="emoji-count"></span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <p id="post_content" class="desc vapr-padding" style="display:none;">Lorem ipsum dolor sit amet...</p>
             <img id="post_image" class="normal_image" style="display:none;" alt="image" loading="lazy"/>
             <div id="post_video" style="display:none;">
                 <iframe src="" loading="lazy" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen="true"></iframe>
             </div>
-        </div>
-    </div>
-
-    <div class="reactions-wrapper">
-        <div class="reactions">
-            <button onclick="addReaction('💩')" data-reaction="💩">
-                <span class="reaction_icon">💩</span>
-                <span id="💩">0</span>
-                <span class="reaction-tooltip">Awful</span>
-            </button>
-            <button onclick="addReaction('👀')" data-reaction="👀">
-                <span class="reaction_icon">👀</span>
-                <span id="👀">0</span>
-                <span class="reaction-tooltip">Interesting</span>
-            </button>
-            <button onclick="addReaction('😂')" data-reaction="😂">
-                <span class="reaction_icon">😂</span>
-                <span id="😂">0</span>
-                <span class="reaction-tooltip">Funny</span>
-            </button>
-            <button onclick="addReaction('💯')" data-reaction="💯">
-                <span class="reaction_icon">💯</span>
-                <span id="💯">0</span>
-                <span class="reaction-tooltip">Perfect</span>
-            </button>
         </div>
     </div>
 </article>

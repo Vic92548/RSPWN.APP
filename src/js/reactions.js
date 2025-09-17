@@ -1,14 +1,70 @@
 let user_previous_reaction = null;
 let isProcessingReaction = false;
+let isEmojiDropdownOpen = false;
 
 function initEnhancedReactions() {
-    const reactionButtons = DOM.queryAll('.reactions button');
-
-    reactionButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            createRipple(e, this);
-        });
+    // Add click listener to close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const emojiOverlay = DOM.query('.emoji-reaction-overlay');
+        if (emojiOverlay && !emojiOverlay.contains(e.target) && isEmojiDropdownOpen) {
+            closeEmojiDropdown();
+        }
     });
+
+    // Initialize the emoji trigger button with default emoji
+    updateEmojiTrigger();
+}
+
+function toggleEmojiDropdown() {
+    if (!isUserLoggedIn()) {
+        const emojiTrigger = DOM.get('emoji-trigger');
+        emojiTrigger.style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+            emojiTrigger.style.animation = '';
+            openRegisterModal();
+        }, 500);
+        return;
+    }
+
+    const dropdown = DOM.get('emoji-dropdown');
+    const triggerBtn = DOM.get('emoji-trigger');
+
+    if (isEmojiDropdownOpen) {
+        closeEmojiDropdown();
+    } else {
+        openEmojiDropdown();
+    }
+}
+
+function openEmojiDropdown() {
+    const dropdown = DOM.get('emoji-dropdown');
+    const triggerBtn = DOM.get('emoji-trigger');
+
+    dropdown.style.display = 'block';
+    triggerBtn.classList.add('active');
+    isEmojiDropdownOpen = true;
+
+    // Update reaction counts in dropdown
+    updateDropdownCounts();
+}
+
+function closeEmojiDropdown() {
+    const dropdown = DOM.get('emoji-dropdown');
+    const triggerBtn = DOM.get('emoji-trigger');
+
+    dropdown.style.display = 'none';
+    triggerBtn.classList.remove('active');
+    isEmojiDropdownOpen = false;
+}
+
+function selectReaction(emoji) {
+    if (isProcessingReaction) return;
+
+    // Close dropdown immediately for better UX
+    closeEmojiDropdown();
+
+    // Handle reaction selection
+    addReaction(emoji);
 }
 
 function createRipple(event, button) {
@@ -35,7 +91,9 @@ function createRipple(event, button) {
 }
 
 function incrementEmoji(emoji) {
-    const emoji_count = DOM.get(emoji);
+    const emoji_count = DOM.get(`count-${emoji}`);
+    if (!emoji_count) return;
+
     const currentCount = parseInt(emoji_count.textContent);
     const newCount = currentCount + 1;
 
@@ -50,7 +108,9 @@ function incrementEmoji(emoji) {
 }
 
 function decrementEmoji(emoji) {
-    const emoji_count = DOM.get(emoji);
+    const emoji_count = DOM.get(`count-${emoji}`);
+    if (!emoji_count) return;
+
     const currentCount = parseInt(emoji_count.textContent);
     const newCount = Math.max(0, currentCount - 1);
 
@@ -65,16 +125,53 @@ function decrementEmoji(emoji) {
 }
 
 function resetEmoji(emoji) {
-    const emoji_count = DOM.get(emoji);
-    emoji_count.textContent = "0";
+    const emoji_count = DOM.get(`count-${emoji}`);
+    if (emoji_count) {
+        emoji_count.textContent = "0";
+    }
+}
+
+function updateEmojiTrigger() {
+    const currentEmojiEl = DOM.get('current-emoji');
+    if (!currentEmojiEl) return;
+
+    if (user_previous_reaction) {
+        currentEmojiEl.textContent = user_previous_reaction;
+    } else {
+        currentEmojiEl.textContent = '😊';
+    }
+}
+
+function updateDropdownCounts() {
+    // Update all emoji counts in the dropdown from the current post data
+    const emojis = ['💩', '👀', '😂', '💯'];
+    emojis.forEach(emoji => {
+        const countEl = DOM.get(`count-${emoji}`);
+        if (countEl) {
+            // The count should already be updated from displayReactions
+            // This ensures the dropdown shows current counts
+        }
+    });
+
+    // Update active state for current user's reaction
+    DOM.queryAll('.emoji-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    if (user_previous_reaction) {
+        const activeBtn = DOM.query(`[data-reaction="${user_previous_reaction}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+    }
 }
 
 function addReaction(emoji) {
     if (!isUserLoggedIn()) {
-        const reactionsContainer = DOM.query('.reactions');
-        reactionsContainer.style.animation = 'shake 0.5s ease';
+        const emojiTrigger = DOM.get('emoji-trigger');
+        emojiTrigger.style.animation = 'shake 0.5s ease';
         setTimeout(() => {
-            reactionsContainer.style.animation = '';
+            emojiTrigger.style.animation = '';
             openRegisterModal();
         }, 500);
         return;
@@ -84,41 +181,43 @@ function addReaction(emoji) {
 
     isProcessingReaction = true;
 
-    const currentBtn = DOM.query(`[data-reaction="${emoji}"]`);
-    const wasActive = currentBtn.classList.contains('active');
-
+    // Handle removing previous reaction
     if (user_previous_reaction && user_previous_reaction !== emoji) {
-        const prevBtn = DOM.query(`[data-reaction="${user_previous_reaction}"]`);
-        prevBtn.classList.remove('active');
         decrementEmoji(user_previous_reaction);
     }
 
-    if (!wasActive) {
-        currentBtn.classList.add('active');
-        incrementEmoji(emoji);
-        animateReactionIcon(currentBtn.querySelector('.reaction_icon'));
-        createFloatingReaction(emoji, currentBtn);
-    } else {
-        currentBtn.classList.remove('active');
-        decrementEmoji(emoji);
+    // Handle new reaction
+    let wasRemoving = false;
+    if (emoji === null || (user_previous_reaction === emoji)) {
+        // Remove current reaction
+        if (user_previous_reaction) {
+            decrementEmoji(user_previous_reaction);
+        }
         emoji = null;
+        wasRemoving = true;
+    } else {
+        // Add new reaction
+        incrementEmoji(emoji);
+        createFloatingReaction(emoji);
     }
 
     APIHandler.handle(
         () => api.addReaction(current_post_id, emoji),
         {
             onSuccess: (data) => {
-                console.log('Reaction added:', data);
+                console.log('Reaction updated:', data);
                 user_previous_reaction = emoji;
+                updateEmojiTrigger();
                 isProcessingReaction = false;
             },
             onError: (error) => {
-                console.error('Error adding reaction:', error);
-                if (user_previous_reaction) {
+                console.error('Error updating reaction:', error);
+                // Revert the changes on error
+                if (wasRemoving && user_previous_reaction) {
                     incrementEmoji(user_previous_reaction);
+                } else if (!wasRemoving && emoji) {
                     decrementEmoji(emoji);
                 }
-                currentBtn.classList.toggle('active');
                 isProcessingReaction = false;
             }
         }
@@ -132,8 +231,11 @@ function animateReactionIcon(icon) {
     }, 10);
 }
 
-function createFloatingReaction(emoji, button) {
-    const rect = button.getBoundingClientRect();
+function createFloatingReaction(emoji) {
+    const triggerBtn = DOM.get('emoji-trigger');
+    if (!triggerBtn) return;
+
+    const rect = triggerBtn.getBoundingClientRect();
 
     const floater = DOM.create('div', {
         class: 'floating-reaction',
@@ -153,10 +255,7 @@ function createFloatingReaction(emoji, button) {
 }
 
 function displayReactions() {
-    DOM.queryAll('.reactions button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
+    // Reset all emoji counts
     resetEmoji('💩');
     resetEmoji('👀');
     resetEmoji('😂');
@@ -177,11 +276,14 @@ function displayReactions() {
 
                         if (reaction.userId === window.user?.id) {
                             user_previous_reaction = reaction.emoji;
-                            const btn = DOM.query(`[data-reaction="${reaction.emoji}"]`);
-                            btn.classList.add('active');
                         }
                     }, index * 50);
                 });
+
+                // Update the emoji trigger button after all reactions are loaded
+                setTimeout(() => {
+                    updateEmojiTrigger();
+                }, data.reactions.length * 50 + 100);
             }
         }
     );

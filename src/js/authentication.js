@@ -41,6 +41,9 @@ function loadUserData(){
             updateDeveloperSection();
             const accountSection = DOM.get('account_section');
             if (accountSection) DOM.show(accountSection);
+            if (typeof showAuthRequiredElements === 'function') {
+                showAuthRequiredElements();
+            }
         });
 
         checkAndShowUpdates();
@@ -59,6 +62,9 @@ function loadUserData(){
 
         const accountSection = DOM.get('account_section');
         if (accountSection) DOM.hide(accountSection);
+        if (typeof hideAuthRequiredElements === 'function') {
+            hideAuthRequiredElements();
+        }
     })
 }
 

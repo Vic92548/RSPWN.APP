@@ -2,6 +2,9 @@ function initMenu() {
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
         showMenuUserElements();
+        showAuthRequiredElements();
+    } else {
+        hideAuthRequiredElements();
     }
 
     updateOnlineUsers();
@@ -132,6 +135,20 @@ function showMenuUserElements() {
     if (accountSection) DOM.show(accountSection);
 }
 
+function showAuthRequiredElements() {
+    const authElements = DOM.queryAll('.auth-required');
+    authElements.forEach(element => {
+        DOM.show(element);
+    });
+}
+
+function hideAuthRequiredElements() {
+    const authElements = DOM.queryAll('.auth-required');
+    authElements.forEach(element => {
+        DOM.hide(element);
+    });
+}
+
 async function updateOnlineUsers() {
     try {
         const data = await api.getUserCount();
@@ -206,9 +223,11 @@ function openMenu() {
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
         showMenuUserElements();
+        showAuthRequiredElements();
     } else {
         const accountSection = DOM.get('account_section');
         if (accountSection) DOM.hide(accountSection);
+        hideAuthRequiredElements();
     }
 
     const menuContainer = menu.querySelector('.menu-container');

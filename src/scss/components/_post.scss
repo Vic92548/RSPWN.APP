@@ -426,7 +426,7 @@
 
 .post-content {
   position: relative;
-  max-height: calc(85vh - 320px);
+  max-height: calc(85vh - 250px); // Increased by ~70px (removed emoji bar height)
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -485,7 +485,7 @@
 }
 
 #post_image {
-  height: 40vh;
+  height: 45vh; // Increased from 40vh to use freed space
   max-width: 100%;
   object-fit: contain;
   display: block;
@@ -499,7 +499,7 @@
 
 #post_video {
   position: relative;
-  height: 40vh;
+  height: 45vh; // Increased from 40vh to use freed space
   width: 100%;
   display: flex;
   align-items: center;
@@ -511,86 +511,198 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 40vh;
+    height: 45vh; // Increased from 40vh to use freed space
     border: 0;
   }
 }
 
-.reactions-wrapper {
-  position: relative;
-  border-top: 1px solid $glass-border-light;
-}
-
-.reactions {
-  display: flex;
-  justify-content: space-around;
-  gap: 4px;
-  padding: 8px;
-  background: $glass-bg-secondary;
-  position: relative;
+// New emoji reaction overlay system
+.emoji-reaction-overlay {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 15;
 
   @include responsive(tablet) {
-    gap: 2px;
+    top: 10px;
+    left: 10px;
+  }
+}
+
+.emoji-trigger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: $glass-bg-primary;
+  border: 2px solid $glass-border-light;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 20px;
+
+  &:hover {
+    transform: scale(1.1);
+    background: $glass-bg-secondary;
+    border-color: $primary-color;
+    box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
   }
 
-  button {
-    position: relative;
-    background: transparent;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: $transition-fast;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 60px;
-    color: #fff;
-    font-weight: 600;
+  &.active {
+    background: $glass-bg-secondary;
+    border-color: $primary-color;
+    transform: scale(1.05);
+  }
+
+  .current-emoji {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  @include responsive(tablet) {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+
+    .current-emoji {
+      font-size: 20px;
+    }
+  }
+}
+
+.emoji-dropdown {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  min-width: 220px;
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid $glass-border-light;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  z-index: 20;
+  animation: slideDown 0.2s ease-out;
+
+  @include responsive(tablet) {
+    top: 50px;
+    min-width: 200px;
+  }
+}
+
+.emoji-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.emoji-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: $text-primary;
+
+  &:hover {
+    background: $glass-bg-secondary;
+    transform: translateX(4px);
+  }
+
+  &.active {
+    background: rgba(78, 205, 196, 0.2);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+  }
+
+  &.remove-reaction {
+    border-top: 1px solid $glass-border-light;
+    margin-top: 4px;
+    padding-top: 12px;
 
     &:hover {
-      background: $glass-bg-tertiary;
-      transform: translateY(-2px);
+      background: rgba(231, 76, 60, 0.2);
 
       .reaction_icon {
-        transform: scale(1.2);
+        transform: scale(1.1);
       }
-
-      .reaction-tooltip {
-        opacity: 1;
-      }
-    }
-
-    &.active {
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(1.1);
-
-      .reaction_icon {
-        animation: bounce 0.5s ease;
-      }
-    }
-
-    @include responsive(tablet) {
-      padding: 6px 12px;
-      min-width: 50px;
     }
   }
 
   .reaction_icon {
-    display: block;
-    font-size: 24px;
+    font-size: 20px;
+    min-width: 24px;
+    text-align: center;
     transition: transform 0.2s ease;
+  }
+}
 
-    @include responsive(tablet) {
-      font-size: 20px;
-    }
+.emoji-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+
+  .emoji-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
   }
 
-  span {
-    font-size: 14px;
-    display: block;
-    min-width: 20px;
-    text-align: left;
+  .emoji-count {
+    font-size: 12px;
+    color: $text-secondary;
+    font-weight: 500;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Hide old reactions system
+.reactions-wrapper {
+  display: none;
+}
+
+.reactions {
+  display: none;
+}
+
+// Responsive improvements for emoji system
+@include responsive(mobile) {
+  .emoji-dropdown {
+    min-width: 180px;
+    left: -10px;
+
+    .emoji-option {
+      padding: 6px 8px;
+      gap: 8px;
+
+      .reaction_icon {
+        font-size: 18px;
+      }
+    }
+
+    .emoji-info {
+      .emoji-label {
+        font-size: 13px;
+      }
+
+      .emoji-count {
+        font-size: 11px;
+      }
+    }
   }
 }
 
@@ -697,6 +809,29 @@
   box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
   transition: all 0.3s ease;
   animation: discordPulse 2s ease-in-out infinite;
+
+  @include responsive(tablet) {
+    width: auto !important;
+    max-width: calc(100% - 100px) !important;
+    margin-left: 70px !important;
+    margin-right: 20px !important;
+    margin-top: 20px;
+    font-size: 16px !important;
+    padding: 12px 20px !important;
+    justify-content: center;
+  }
+
+  @include responsive(mobile) {
+    width: auto !important;
+    max-width: calc(100% - 100px) !important;
+    margin-left: 70px !important;
+    margin-right: 20px !important;
+    margin-top: 20px;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    justify-content: center;
+    gap: 6px !important;
+  }
 
   &:hover {
     transform: translateY(-2px) scale(1.05);

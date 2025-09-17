@@ -43,6 +43,16 @@
   }
 }
 
+.menu-logo-text {
+  font-family: 'Audiowide', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: $text-primary;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
 .menu-logo {
   width: 45px;
   height: 45px;
@@ -291,11 +301,43 @@
   .menu-brand {
     justify-content: center;
 
-    div,
+    div:not(.menu-logo-text),
     h2,
     .menu-tagline {
       display: none;
     }
+  }
+
+  .menu-logo-text {
+    font-size: 28px;
+    letter-spacing: 0;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+      content: 'R';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Audiowide', sans-serif;
+      color: $text-primary;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      z-index: 1;
+    }
+
+    // Hide the original text
+    color: transparent;
+    text-shadow: none;
   }
 
   .menu-logo {
@@ -500,10 +542,11 @@
 
 .create-post-btn {
   position: fixed;
-  display: block;
+  display: flex !important;
   top: 20px;
   left: 20px;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -512,7 +555,6 @@
   overflow: hidden;
   font-size: 18px;
   @include glass-effect();
-  line-height: 0;
 
   &:hover {
     background: rgba(255, 255, 255, 0.12) !important;
@@ -522,6 +564,7 @@
 
   i {
     margin: 0;
+    line-height: 1;
   }
 }
 
