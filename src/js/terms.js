@@ -73,10 +73,16 @@ window.addEventListener('popstate', function(event) {
         if (typeof window.openPrivacyPage === 'function') {
             window.openPrivacyPage();
         }
+    } else if (path === '/store') {
+        // Call store page if it exists
+        if (typeof window.openStorePage === 'function') {
+            window.openStorePage();
+        }
     } else {
-        // If we're on any legal page and user hits back, close it
+        // If we're on any page and user hits back, close it
         const termsPage = DOM.get('terms-page');
         const privacyPage = DOM.get('privacy-page');
+        const storePage = DOM.get('store-page');
 
         if (termsPage && termsPage.style.display !== 'none') {
             closeTermsPage();
@@ -84,6 +90,11 @@ window.addEventListener('popstate', function(event) {
         if (privacyPage && privacyPage.style.display !== 'none') {
             if (typeof window.closePrivacyPage === 'function') {
                 window.closePrivacyPage();
+            }
+        }
+        if (storePage && storePage.style.display !== 'none') {
+            if (typeof window.closeStorePage === 'function') {
+                window.closeStorePage();
             }
         }
     }

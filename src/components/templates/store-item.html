@@ -1,0 +1,24 @@
+<template data-vapr="store-item">
+    <div class="store-item" data-category="{{category}}" data-game-id="{{id}}">
+        <div class="store-item-image">
+            <img src="{{image}}" alt="{{title}}" loading="lazy">
+            <div class="store-item-price">{{price}}</div>
+            {{#badge}}<div class="store-item-badge {{badge}}">{{badge}}</div>{{/badge}}
+        </div>
+        <div class="store-item-content">
+            <div class="store-item-meta">
+                <span class="store-item-category">{{category}}</span>
+                <div class="store-item-rating">
+                    <span class="stars">{{stars}}</span>
+                    <span>{{rating}} ({{reviews}})</span>
+                </div>
+            </div>
+            <h3 class="store-item-title">{{title}}</h3>
+            <p class="store-item-description">{{description}}</p>
+            <div class="store-item-actions">
+                <button class="store-btn primary" onclick="purchaseGame('{{id}}')">Buy Now</button>
+                <button class="store-btn secondary" onclick="viewGameDetails('{{id}}')">Details</button>
+            </div>
+        </div>
+    </div>
+</template>

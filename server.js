@@ -123,12 +123,13 @@ function createExpressRequest(req) {
     };
 }
 
-const home_urls = ['/','/library','/new-post','/terms','/privacy'];
+const home_urls = ['/','/library','/new-post','/terms','/privacy','/store'];
 
 for (let i = 0; i < home_urls.length; i++) {
     app.get(home_urls[i], async (req, res) => {
         const isTermsPage = home_urls[i] === '/terms';
         const isPrivacyPage = home_urls[i] === '/privacy';
+        const isStorePage = home_urls[i] === '/store';
 
         let meta_description = config.meta.default.description;
         let meta_url = config.meta.default.url;
@@ -139,6 +140,9 @@ for (let i = 0; i < home_urls.length; i++) {
         } else if (isPrivacyPage) {
             meta_description = 'VAPR Privacy Policy - Learn how we protect and handle your personal information';
             meta_url = config.meta.default.url + '/privacy';
+        } else if (isStorePage) {
+            meta_description = 'VAPR Game Store - Discover and purchase amazing games and digital content';
+            meta_url = config.meta.default.url + '/store';
         }
 
         await res.render('index.html', {
