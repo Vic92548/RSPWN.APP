@@ -5,6 +5,7 @@ function initMenu() {
         showAuthRequiredElements();
     } else {
         hideAuthRequiredElements();
+        showPublicMenuElements();
     }
 
     updateOnlineUsers();
@@ -130,9 +131,13 @@ function updateMenuXPBar() {
 function showMenuUserElements() {
     const userCard = DOM.get('menu_user_info');
     const accountSection = DOM.get('account_section');
+    const publicAuthSection = DOM.get('public_auth_section');
 
     if (userCard) DOM.show(userCard, 'flex');
     if (accountSection) DOM.show(accountSection);
+
+    // Hide public auth section for logged-in users
+    if (publicAuthSection) DOM.hide(publicAuthSection);
 }
 
 function showAuthRequiredElements() {
@@ -146,6 +151,38 @@ function hideAuthRequiredElements() {
     const authElements = DOM.queryAll('.auth-required');
     authElements.forEach(element => {
         DOM.hide(element);
+    });
+}
+
+function showPublicMenuElements() {
+    // Always show public sections for non-logged-in users
+    const publicSections = DOM.queryAll('menu-section:not(.auth-required):not(.developer-section):not([id="account_section"])');
+    publicSections.forEach(section => {
+        DOM.show(section);
+    });
+
+    // Show the public auth section for non-logged-in users
+    const publicAuthSection = DOM.get('public_auth_section');
+    if (publicAuthSection) {
+        DOM.show(publicAuthSection);
+    }
+
+    // Ensure specific public menu items are visible
+    const publicMenuItems = [
+        // Games section - Store is public
+        DOM.query('menu-item[onclick*="store"]'),
+        // About section items
+        DOM.query('menu-item[onclick*="github"]'),
+        DOM.query('menu-item[onclick*="discord"]'),
+        // Legal section items
+        DOM.query('menu-item[onclick*="terms"]'),
+        DOM.query('menu-item[onclick*="privacy"]')
+    ];
+
+    publicMenuItems.forEach(item => {
+        if (item && !item.classList.contains('auth-required')) {
+            DOM.show(item);
+        }
     });
 }
 
@@ -228,6 +265,7 @@ function openMenu() {
         const accountSection = DOM.get('account_section');
         if (accountSection) DOM.hide(accountSection);
         hideAuthRequiredElements();
+        showPublicMenuElements();
     }
 
     const menuContainer = menu.querySelector('.menu-container');

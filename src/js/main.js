@@ -152,15 +152,7 @@ async function checkUserFollowsCreator(creatorId) {
     }
 }
 
-function openMenu() {
-    DOM.show("menu", 'flex');
-}
-
-function hideMenu() {
-    if(window.innerWidth <= 768){
-        DOM.hide("menu");
-    }
-}
+// openMenu() and hideMenu() functions moved to menu.js for better organization
 
 if(window.innerWidth >= 768){
     DOM.show("menu", 'flex');

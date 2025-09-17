@@ -1,19 +1,31 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// RSPWN Store Page - AAA Gaming Store Design
-// Store Page Styling
+// RSPWN Store Page - AAA Gaming Store Design (like legal pages)
+// Store Container Styling
 .store-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
   display: flex;
   flex-direction: column;
-  z-index: 1000;
-  overflow: hidden;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // Ensure menu button is visible on mobile/tablet
+  @include responsive(tablet) {
+    .create-post-btn {
+      display: flex !important;
+      z-index: 10;
+    }
+  }
+
+  @include responsive(mobile) {
+    .create-post-btn {
+      display: flex !important;
+      z-index: 10;
+    }
+  }
 }
 
 .store-header {

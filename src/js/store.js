@@ -1,4 +1,4 @@
-function createStorePageTemplate(content) {
+function createStorePage(content) {
     return `
     <section id="store-page" class="store-container" style="display:none;">
         <button id="store_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
@@ -24,12 +24,12 @@ function openStorePage() {
     let storePage = DOM.get('store-page');
     const feed = DOM.get('feed');
 
-    // If store page doesn't exist, create it using dedicated store template
+    // If store page doesn't exist, create it like legal pages do
     if (!storePage) {
         const storeContent = createStoreContent();
-        const storePageHTML = createStorePageTemplate(storeContent);
+        const storePageHTML = createStorePage(storeContent);
 
-        // Insert the page into the DOM
+        // Insert the page into the main element as a sibling to feed
         const main = document.querySelector('main');
         if (main) {
             main.insertAdjacentHTML('beforeend', storePageHTML);
@@ -38,7 +38,7 @@ function openStorePage() {
     }
 
     if (storePage && feed) {
-        // Hide the feed and show store page instantly
+        // Hide the feed and show store page (like legal pages do)
         feed.style.display = 'none';
         storePage.style.display = 'flex';
 
@@ -68,17 +68,17 @@ function closeStorePage() {
     const feed = DOM.get('feed');
 
     if (storePage && feed) {
-        // Hide the store page and show the feed instantly
+        // Hide the store page and show the feed (like legal pages do)
         storePage.style.display = 'none';
         feed.style.display = 'block';
 
         // Update URL back to home
         if (window.history && window.history.pushState) {
-            window.history.pushState({page: 'home'}, 'VAPR - The Gamer\'s Social Network', '/');
+            window.history.pushState({page: 'home'}, 'RSPWN - The Gamer\'s Social Network', '/');
         }
 
         // Update page title back
-        document.title = 'VAPR';
+        document.title = 'RSPWN';
     }
 }
 
