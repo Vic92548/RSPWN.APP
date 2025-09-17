@@ -1,5 +1,12 @@
+// Legacy function - redirects to new auth page
 function closeRegisterModal() {
-    DOM.hide("register");
+    // If called, redirect to auth page instead
+    openAuthPage();
+}
+
+// Backwards compatibility
+function openRegisterModal() {
+    openAuthPage();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,3 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(userCountEl, { childList: true, characterData: true, subtree: true });
     }
 });
+
+// Export legacy functions for global access
+if (typeof window !== 'undefined') {
+    window.closeRegisterModal = closeRegisterModal;
+    window.openRegisterModal = openRegisterModal;
+}
