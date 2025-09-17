@@ -132,3 +132,86 @@ Frontend JavaScript follows a specific naming convention:
 - Modules are organized by feature (games/, downloads/, utils/)
 - Global initialization handled by `$init.js`
 - Template engine integration via `$_vapr-template-engine.js`
+
+## RSPWN BRAND GUIDELINES FOR AI AGENTS
+
+### BRAND IDENTITY
+- **Name**: RSPWN (always uppercase, represents infinite innovation/respawn)
+- **Mission**: Open-source gaming and AI platforms, community-driven innovation
+- **Values**: Forward-thinking, collaborative, bold, open-source, flexible
+
+### DESIGN INSPIRATION & AESTHETIC
+- **Reference Standards**: Epic Games, Riot Games, Steam, Discord, Unity, Vercel, Linear
+- **Visual Direction**: Clean, modern, minimalist gaming aesthetic with enterprise-level polish
+- **Design Philosophy**: Flat design with perfect typography and spacing, inspired by Epic's clean UI
+- **Target Aesthetic**: Professional gaming platforms that prioritize clarity and usability
+
+### LOGO & TYPOGRAPHY
+- **Primary Logo**: "RSPWN" in Audiowide font, uppercase, tight letter-spacing
+- **Logo Usage**: Use Audiowide ONLY for brand name and major headings
+- **Body Text**: Inter font family for all other content
+- **Minimum logo size**: 16px height
+- **Never distort, add effects, or modify logo proportions**
+
+### COLOR SYSTEM
+**Foundation:**
+- Brand Black: #000000 (backgrounds, depth)
+- Brand White: #FFFFFF (text, highlights)
+
+**Innovation Colors:**
+- Primary Blue: #4A9EFF (innovation, trust, primary actions)
+- Secondary Purple: #8B5CF6 (creativity, premium features)
+
+**Text System:**
+- Primary Text: #FFFFFF (headlines, key content)
+- Secondary Text: #CCCCCC (body text, descriptions)
+- Muted Text: #888888 (labels, captions)
+
+**Gray Scale:**
+- Dark: #0A0A0A
+- Gray: #1A1A1A
+- Gray Light: #2A2A2A
+
+### DESIGN PRINCIPLES
+- **Flat & Clean**: No gradients, shadows only for depth hierarchy (like Epic Games Store)
+- **Sharp Edges**: Clean rectangular shapes with consistent border radius (4-8px)
+- **Solid Colors**: Flat color blocks, no gradients or unnecessary effects
+- **Typography First**: Clear hierarchy through size and weight, not effects
+- **Generous Spacing**: Wide margins and padding for breathing room
+- **Grid-Based**: Strict alignment and consistent spacing units (8px base)
+- **Monochromatic Focus**: Primarily black/white/gray with strategic color accents
+
+### UI/UX STANDARDS
+**Component Design:**
+- **Cards**: Flat backgrounds with subtle borders, clean hover states
+- **Buttons**: Solid colors, clean edges, simple state changes (no gradients)
+- **Navigation**: Minimal with clear active states, inspired by Epic Games launcher
+- **Forms**: Clean inputs with simple borders and clear focus states
+- **Icons**: Consistent stroke width, geometric, minimal
+
+**Visual Effects:**
+- Minimal shadows (only for elevation: 0-2px)
+- Quick transitions (150-200ms)
+- Simple hover states (color change or opacity)
+- Clean focus states with solid borders
+- No gradients, glows, or decorative effects
+
+### DO'S:
+- Create ultra-clean, flat interfaces like Epic Games Store
+- Use solid colors and clear typography hierarchy
+- Implement subtle, functional micro-interactions
+- Reference Epic Games' minimalist approach to UI
+- Maintain consistent spacing using 8px grid system
+- Use Audiowide only for brand name and major headings
+- Keep designs accessible with high contrast
+- Focus on content over decoration
+
+### DON'TS:
+- Never use gradients, glows, or decorative effects
+- Never add unnecessary visual complexity
+- Never use drop shadows except for functional depth
+- Never compromise clarity for visual effects
+- Never stretch, skew, or distort logo
+- Never use Audiowide for body text
+- Never place logo on busy/low-contrast backgrounds
+- Never use colors outside established palette

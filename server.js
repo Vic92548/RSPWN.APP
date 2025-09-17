@@ -123,15 +123,29 @@ function createExpressRequest(req) {
     };
 }
 
-const home_urls = ['/','/library','/new-post'];
+const home_urls = ['/','/library','/new-post','/terms','/privacy'];
 
 for (let i = 0; i < home_urls.length; i++) {
     app.get(home_urls[i], async (req, res) => {
+        const isTermsPage = home_urls[i] === '/terms';
+        const isPrivacyPage = home_urls[i] === '/privacy';
+
+        let meta_description = config.meta.default.description;
+        let meta_url = config.meta.default.url;
+
+        if (isTermsPage) {
+            meta_description = 'VAPR Terms of Service - Read our platform guidelines and user agreement';
+            meta_url = config.meta.default.url + '/terms';
+        } else if (isPrivacyPage) {
+            meta_description = 'VAPR Privacy Policy - Learn how we protect and handle your personal information';
+            meta_url = config.meta.default.url + '/privacy';
+        }
+
         await res.render('index.html', {
-            meta_description: config.meta.default.description,
+            meta_description,
             meta_author: config.meta.default.author,
             meta_image: config.meta.default.image,
-            meta_url: config.meta.default.url
+            meta_url
         });
     });
 }
