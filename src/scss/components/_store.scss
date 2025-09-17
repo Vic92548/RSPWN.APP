@@ -2,10 +2,108 @@
 @use '../mixins' as *;
 
 // RSPWN Store Page - AAA Gaming Store Design
-.legal-container {
-  // Store-specific styling within legal template
+// Store Page Styling
+.store-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+}
 
-  // Featured Carousel Section
+.store-header {
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
+  border-bottom: 1px solid #222222;
+  padding: 20px 0;
+
+  @include responsive(mobile) {
+    padding: 16px 0;
+  }
+}
+
+.store-header-content {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  @include responsive(tablet) {
+    padding: 0 24px;
+  }
+
+  @include responsive(mobile) {
+    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
+  }
+}
+
+
+.store-title-section {
+  flex: 1;
+}
+
+.store-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+  font-family: 'Inter', sans-serif;
+
+  @include responsive(tablet) {
+    font-size: 28px;
+  }
+
+  @include responsive(mobile) {
+    font-size: 24px;
+  }
+}
+
+.store-subtitle {
+  font-size: 16px;
+  color: #CCCCCC;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+
+  @include responsive(mobile) {
+    font-size: 14px;
+  }
+}
+
+.store-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px 0;
+
+  @include responsive(tablet) {
+    padding: 32px 0;
+  }
+
+  @include responsive(mobile) {
+    padding: 24px 0;
+  }
+}
+
+.store-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  @include responsive(tablet) {
+    padding: 0 24px;
+  }
+
+  @include responsive(mobile) {
+    padding: 0 16px;
+  }
+}
+
+// Featured Carousel Section
   .featured-carousel-section {
     margin-bottom: 64px;
     padding: 0;
@@ -25,13 +123,19 @@
     border: 1px solid #222222;
 
     @include responsive(tablet) {
-      height: 300px;
+      height: 350px;
       flex-direction: column;
+      border-radius: 12px;
     }
 
     @include responsive(mobile) {
-      height: 250px;
+      height: auto;
+      min-height: 300px;
       flex-direction: column;
+      border-radius: 8px;
+      margin: 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
     }
   }
 
@@ -43,14 +147,16 @@
     max-height: 400px;
 
     @include responsive(tablet) {
-      flex: none;
-      height: 200px;
-      max-height: 200px;
+      flex: 1;
+      height: 250px;
+      max-height: 250px;
     }
 
     @include responsive(mobile) {
-      height: 150px;
-      max-height: 150px;
+      flex: none;
+      height: 200px;
+      max-height: 200px;
+      order: 1;
     }
   }
 
@@ -246,8 +352,7 @@
   }
 
   .featured-buy-btn,
-  .featured-wishlist-btn,
-  .featured-details-btn {
+  .featured-wishlist-btn {
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 12px;
@@ -315,19 +420,6 @@
     }
   }
 
-  .featured-details-btn {
-    background: transparent;
-    color: #AAAAAA;
-    border: 2px solid #333333;
-
-    &:hover {
-      background: linear-gradient(135deg, #333333 0%, #222222 100%);
-      color: #FFFFFF;
-      border-color: #444444;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-  }
 
 
   .featured-sidebar {
@@ -342,6 +434,17 @@
       border-left: none;
       border-top: 1px solid #222222;
     }
+
+    @include responsive(mobile) {
+      flex: none;
+      border-left: none;
+      border-top: 1px solid #222222;
+      order: 2;
+      min-height: 120px;
+      max-height: 120px;
+      width: 100%;
+      box-sizing: border-box;
+    }
   }
 
   .featured-sidebar-title {
@@ -354,8 +457,8 @@
     border-bottom: 1px solid #222222;
 
     @include responsive(mobile) {
-      padding: 16px;
-      font-size: 16px;
+      padding: 12px 16px 8px 16px;
+      font-size: 14px;
     }
   }
 
@@ -369,6 +472,21 @@
       overflow-x: auto;
       overflow-y: hidden;
       gap: 8px;
+    }
+
+    @include responsive(mobile) {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 6px;
+      padding: 6px 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 
@@ -388,6 +506,15 @@
     @include responsive(tablet) {
       flex: 0 0 200px;
       margin-bottom: 0;
+    }
+
+    @include responsive(mobile) {
+      flex: 0 0 120px;
+      margin-bottom: 0;
+      padding: 8px;
+      border-radius: 8px;
+      min-width: 120px;
+      max-width: 120px;
     }
 
     // Progress background that fills entire item
@@ -453,6 +580,13 @@
     overflow: hidden;
     margin-right: 12px;
 
+    @include responsive(mobile) {
+      width: 40px;
+      height: 28px;
+      margin-right: 8px;
+      border-radius: 4px;
+    }
+
     img {
       width: 100%;
       height: 100%;
@@ -474,6 +608,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+    @include responsive(mobile) {
+      font-size: 12px;
+      margin: 0 0 2px 0;
+    }
   }
 
   .featured-item-price {
@@ -481,6 +620,10 @@
     color: #CCCCCC;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+    @include responsive(mobile) {
+      font-size: 10px;
+    }
   }
 
   // Hide the old progress structure
@@ -498,14 +641,18 @@
 
   .store-search-section {
     margin-bottom: 40px;
-    padding: 32px 0;
+    padding: 32px;
     background: linear-gradient(135deg, rgba(18, 18, 18, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
     border-radius: 12px;
     border: 1px solid #1A1A1A;
 
+    @include responsive(tablet) {
+      padding: 24px;
+    }
+
     @include responsive(mobile) {
       margin-bottom: 24px;
-      padding: 24px 16px;
+      padding: 20px;
     }
   }
 
@@ -519,6 +666,7 @@
     position: relative;
     width: 100%;
     max-width: 500px;
+    box-sizing: border-box;
   }
 
   .search-icon {
@@ -543,6 +691,7 @@
     font-size: 16px;
     font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     width: 100%;
+    box-sizing: border-box;
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 
@@ -568,24 +717,21 @@
       padding-left: 44px;
     }
   }
-}
 
-.legal-container .store-filters {
+.store-filters {
   display: flex;
   gap: 12px;
   margin-bottom: 48px;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 0 20px;
 
   @include responsive(mobile) {
     gap: 8px;
     margin-bottom: 32px;
-    padding: 0 16px;
   }
 }
 
-.legal-container .store-filter-btn {
+.store-filter-btn {
   padding: 14px 24px;
   background: #0F0F0F;
   border: 2px solid #1A1A1A;
@@ -638,27 +784,24 @@
   }
 }
 
-.legal-container .store-grid {
+.store-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
   margin-bottom: 48px;
-  padding: 0 20px;
 
   @include responsive(tablet) {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    padding: 0 16px;
   }
 
   @include responsive(mobile) {
     grid-template-columns: 1fr;
     gap: 16px;
-    padding: 0 16px;
   }
 }
 
-.legal-container .store-item {
+.store-item {
   background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
   border: 2px solid #1A1A1A;
   border-radius: 16px;
@@ -702,7 +845,7 @@
   }
 }
 
-.legal-container .store-item-image {
+.store-item-image {
   width: 100%;
   height: 200px;
   background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
@@ -763,7 +906,7 @@
   }
 }
 
-.legal-container .store-item-content {
+.store-item-content {
   padding: 24px;
   position: relative;
   z-index: 2;
@@ -773,7 +916,7 @@
   }
 }
 
-.legal-container .store-item-title {
+.store-item-title {
   margin: 0 0 12px 0;
   font-size: 20px;
   font-weight: 700;
@@ -786,7 +929,7 @@
   }
 }
 
-.legal-container .store-item-description {
+.store-item-description {
   margin: 0 0 20px 0;
   font-size: 14px;
   color: #AAAAAA;
@@ -802,7 +945,7 @@
   }
 }
 
-.legal-container .store-item-meta {
+.store-item-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -811,7 +954,7 @@
   border-bottom: 1px solid #1A1A1A;
 }
 
-.legal-container .store-item-category {
+.store-item-category {
   font-size: 11px;
   color: #666666;
   text-transform: uppercase;
@@ -820,7 +963,7 @@
   letter-spacing: 0.5px;
 }
 
-.legal-container .store-item-rating {
+.store-item-rating {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -834,7 +977,7 @@
   }
 }
 
-.legal-container .store-item-actions {
+.store-item-actions {
   display: flex;
   gap: 12px;
   transform: translateY(10px);
@@ -842,7 +985,7 @@
   transition: all 0.3s ease;
 }
 
-.legal-container .store-btn {
+.store-btn {
   flex: 1;
   padding: 12px 18px;
   border-radius: 10px;

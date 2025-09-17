@@ -1,18 +1,33 @@
+function createStorePageTemplate(content) {
+    return `
+    <section id="store-page" class="store-container" style="display:none;">
+        <button id="store_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
+
+        <div class="store-header">
+            <div class="store-header-content">
+                <div class="store-title-section">
+                    <h1 class="store-title">Game Store</h1>
+                    <p class="store-subtitle">Discover amazing games and digital content</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="store-body">
+            <div class="store-content">
+                ${content}
+            </div>
+        </div>
+    </section>`;
+}
+
 function openStorePage() {
     let storePage = DOM.get('store-page');
     const feed = DOM.get('feed');
 
-    // If store page doesn't exist, create it using the legal template system
+    // If store page doesn't exist, create it using dedicated store template
     if (!storePage) {
         const storeContent = createStoreContent();
-        const storePageHTML = createLegalPage({
-            pageId: 'store-page',
-            pageTitle: 'Game Store',
-            lastUpdated: 'Discover amazing games and digital content',
-            version: '1.0',
-            closeFunction: 'closeStorePage',
-            content: storeContent
-        });
+        const storePageHTML = createStorePageTemplate(storeContent);
 
         // Insert the page into the DOM
         const main = document.querySelector('main');
@@ -28,7 +43,7 @@ function openStorePage() {
         storePage.style.display = 'flex';
 
         // Scroll to top
-        const storeBody = storePage.querySelector('.legal-body');
+        const storeBody = storePage.querySelector('.store-body');
         if (storeBody) {
             storeBody.scrollTop = 0;
         }
@@ -189,10 +204,6 @@ function createFeaturedMainDisplay(game) {
                     <button class="featured-wishlist-btn" onclick="addToWishlist('${game.id}')">
                         <i class="fa-solid fa-heart"></i>
                         Wishlist
-                    </button>
-                    <button class="featured-details-btn" onclick="viewGameDetails('${game.id}')">
-                        <i class="fa-solid fa-info-circle"></i>
-                        Details
                     </button>
                 </div>
             </div>
@@ -434,10 +445,6 @@ function purchaseGame(gameId) {
     alert(`Purchase functionality for game ${gameId} would be implemented here`);
 }
 
-function viewGameDetails(gameId) {
-    // Mock game details functionality
-    alert(`Game details for ${gameId} would be implemented here`);
-}
 
 function addToWishlist(gameId) {
     // Mock wishlist functionality
@@ -646,7 +653,6 @@ if (typeof window !== 'undefined') {
     window.openStorePage = openStorePage;
     window.closeStorePage = closeStorePage;
     window.purchaseGame = purchaseGame;
-    window.viewGameDetails = viewGameDetails;
     window.addToWishlist = addToWishlist;
     window.selectFeaturedGame = selectFeaturedGame;
 }
