@@ -80,6 +80,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function createStoreContent() {
     return `
+        <div class="featured-carousel-section">
+            ${createFeaturedCarousel()}
+        </div>
+
         <div class="store-search-section">
             <div class="store-search">
                 <div class="search-input-wrapper">
@@ -95,6 +99,122 @@ function createStoreContent() {
 
         <div class="store-grid" id="store-grid">
             ${createStoreGrid()}
+        </div>
+    `;
+}
+
+function createFeaturedCarousel() {
+    const featuredGames = [
+        {
+            id: 'featured-1',
+            title: 'Cyber Warriors 2077',
+            description: 'Experience the ultimate cyberpunk adventure in a dystopian future. Battle through neon-lit streets, hack corporate systems, and uncover dark conspiracies that threaten humanity\'s last hope.',
+            price: '$29.99',
+            originalPrice: '$59.99',
+            discount: '50%',
+            category: 'action',
+            rating: '4.8',
+            reviews: '2.1k',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'featured',
+            tags: ['Action', 'RPG', 'Cyberpunk', 'Open World']
+        },
+        {
+            id: 'featured-2',
+            title: 'Mystic Realms',
+            description: 'Embark on an epic fantasy journey through magical worlds filled with ancient mysteries. Discover powerful artifacts, battle mythical creatures, and shape the destiny of entire realms.',
+            price: '$24.99',
+            originalPrice: '$39.99',
+            discount: '37%',
+            category: 'adventure',
+            rating: '4.6',
+            reviews: '1.8k',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'new',
+            tags: ['Adventure', 'Fantasy', 'Magic', 'Story Rich']
+        },
+        {
+            id: 'featured-3',
+            title: 'Space Colony Alpha',
+            description: 'Build and manage thriving colonies across the galaxy. Master resource management, research cutting-edge technologies, and ensure the survival of humanity among the stars.',
+            price: '$27.99',
+            originalPrice: '$44.99',
+            discount: '38%',
+            category: 'strategy',
+            rating: '4.5',
+            reviews: '780',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'featured',
+            tags: ['Strategy', 'Simulation', 'Space', 'Colony Management']
+        }
+    ];
+
+    return `
+        <div class="featured-carousel">
+            <div class="featured-main" id="featured-main">
+                ${createFeaturedMainDisplay(featuredGames[0])}
+            </div>
+            <div class="featured-sidebar">
+                <h3 class="featured-sidebar-title">Featured Games</h3>
+                <div class="featured-list" id="featured-list">
+                    ${featuredGames.map((game, index) => createFeaturedListItem(game, index)).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createFeaturedMainDisplay(game) {
+    return `
+        <div class="featured-main-bg" style="background-image: url('${game.image}')"></div>
+        <div class="featured-main-overlay"></div>
+        <div class="featured-main-content">
+            <div class="featured-game-info">
+                <h1 class="featured-title">${game.title}</h1>
+                <div class="featured-price-section">
+                    <div class="featured-discount">-${game.discount}</div>
+                    <div class="featured-prices">
+                        <span class="featured-original-price">${game.originalPrice}</span>
+                        <span class="featured-current-price">${game.price}</span>
+                    </div>
+                </div>
+                <div class="featured-actions">
+                    <button class="featured-buy-btn" onclick="purchaseGame('${game.id}')">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        Buy Now
+                    </button>
+                    <button class="featured-wishlist-btn" onclick="addToWishlist('${game.id}')">
+                        <i class="fa-solid fa-heart"></i>
+                        Wishlist
+                    </button>
+                    <button class="featured-details-btn" onclick="viewGameDetails('${game.id}')">
+                        <i class="fa-solid fa-info-circle"></i>
+                        Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createFeaturedListItem(game, index) {
+    return `
+        <div class="featured-list-item ${index === 0 ? 'active' : ''}" data-game-index="${index}" onclick="selectFeaturedGame(${index})">
+            <div class="featured-item-image">
+                <img src="${game.image}" alt="${game.title}" loading="lazy">
+            </div>
+            <div class="featured-item-info">
+                <h4 class="featured-item-title">${game.title}</h4>
+                <div class="featured-item-price">${game.price}</div>
+            </div>
+            <div class="featured-item-progress">
+                <div class="progress-bar" id="progress-${index}">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -233,6 +353,7 @@ function initializeStore() {
     setTimeout(() => {
         initializeStoreFilters();
         initializeStoreSearch();
+        initializeFeaturedCarousel();
     }, 100);
 }
 
@@ -318,6 +439,186 @@ function viewGameDetails(gameId) {
     alert(`Game details for ${gameId} would be implemented here`);
 }
 
+function addToWishlist(gameId) {
+    // Mock wishlist functionality
+    alert(`Added ${gameId} to wishlist`);
+}
+
+// Featured Carousel Variables
+let currentFeaturedIndex = 0;
+let carouselInterval;
+let progressIntervals = [];
+const CAROUSEL_DURATION = 8000; // 8 seconds per game
+
+function initializeFeaturedCarousel() {
+    const featuredGames = getFeaturedGamesData();
+
+    if (featuredGames.length === 0) return;
+
+    // Start the carousel
+    startCarouselTimer();
+
+    // Initialize progress bars
+    startProgressBars();
+}
+
+function getFeaturedGamesData() {
+    // Same data as in createFeaturedCarousel function
+    return [
+        {
+            id: 'featured-1',
+            title: 'Cyber Warriors 2077',
+            description: 'Experience the ultimate cyberpunk adventure in a dystopian future. Battle through neon-lit streets, hack corporate systems, and uncover dark conspiracies that threaten humanity\'s last hope.',
+            price: '$29.99',
+            originalPrice: '$59.99',
+            discount: '50%',
+            category: 'action',
+            rating: '4.8',
+            reviews: '2.1k',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'featured',
+            tags: ['Action', 'RPG', 'Cyberpunk', 'Open World']
+        },
+        {
+            id: 'featured-2',
+            title: 'Mystic Realms',
+            description: 'Embark on an epic fantasy journey through magical worlds filled with ancient mysteries. Discover powerful artifacts, battle mythical creatures, and shape the destiny of entire realms.',
+            price: '$24.99',
+            originalPrice: '$39.99',
+            discount: '37%',
+            category: 'adventure',
+            rating: '4.6',
+            reviews: '1.8k',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'new',
+            tags: ['Adventure', 'Fantasy', 'Magic', 'Story Rich']
+        },
+        {
+            id: 'featured-3',
+            title: 'Space Colony Alpha',
+            description: 'Build and manage thriving colonies across the galaxy. Master resource management, research cutting-edge technologies, and ensure the survival of humanity among the stars.',
+            price: '$27.99',
+            originalPrice: '$44.99',
+            discount: '38%',
+            category: 'strategy',
+            rating: '4.5',
+            reviews: '780',
+            image: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            backgroundImage: 'https://vapr-club.b-cdn.net/posts/0c31c343-a6ab-4e3d-937f-ae6bc757e9df.png',
+            badge: 'featured',
+            tags: ['Strategy', 'Simulation', 'Space', 'Colony Management']
+        }
+    ];
+}
+
+function selectFeaturedGame(index) {
+    const featuredGames = getFeaturedGamesData();
+
+    if (index < 0 || index >= featuredGames.length) return;
+
+    currentFeaturedIndex = index;
+
+    // Update main display
+    updateFeaturedMainDisplay(featuredGames[index]);
+
+    // Update active states
+    updateFeaturedListActive(index);
+
+    // Reset timers
+    resetCarouselTimer();
+    resetProgressBars();
+    startProgressBars();
+}
+
+function updateFeaturedMainDisplay(game) {
+    const mainDisplay = document.getElementById('featured-main');
+    if (mainDisplay) {
+        mainDisplay.innerHTML = createFeaturedMainDisplay(game);
+    }
+}
+
+function updateFeaturedListActive(activeIndex) {
+    const listItems = document.querySelectorAll('.featured-list-item');
+    listItems.forEach((item, index) => {
+        if (index === activeIndex) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+
+function startCarouselTimer() {
+    carouselInterval = setInterval(() => {
+        const featuredGames = getFeaturedGamesData();
+        currentFeaturedIndex = (currentFeaturedIndex + 1) % featuredGames.length;
+        selectFeaturedGame(currentFeaturedIndex);
+    }, CAROUSEL_DURATION);
+}
+
+function resetCarouselTimer() {
+    if (carouselInterval) {
+        clearInterval(carouselInterval);
+    }
+    startCarouselTimer();
+}
+
+function startProgressBars() {
+    const featuredGames = getFeaturedGamesData();
+
+    // Clear existing intervals
+    progressIntervals.forEach(interval => clearInterval(interval));
+    progressIntervals = [];
+
+    // Reset all progress backgrounds
+    featuredGames.forEach((_, index) => {
+        const listItem = document.querySelector(`.featured-list-item[data-game-index="${index}"]`);
+        if (listItem) {
+            listItem.style.setProperty('--progress-width', '0%');
+        }
+    });
+
+    // Start progress for current active item
+    startProgressForItem(currentFeaturedIndex);
+}
+
+function startProgressForItem(index) {
+    const listItem = document.querySelector(`.featured-list-item[data-game-index="${index}"]`);
+    if (!listItem) return;
+
+    let progress = 0;
+    const increment = 100 / (CAROUSEL_DURATION / 50); // Update every 50ms
+
+    const interval = setInterval(() => {
+        progress += increment;
+        const progressWidth = Math.min(progress, 100);
+        listItem.style.setProperty('--progress-width', `${progressWidth}%`);
+
+        if (progress >= 100) {
+            clearInterval(interval);
+        }
+    }, 50);
+
+    progressIntervals.push(interval);
+}
+
+function resetProgressBars() {
+    // Clear all progress intervals
+    progressIntervals.forEach(interval => clearInterval(interval));
+    progressIntervals = [];
+
+    // Reset all progress backgrounds to 0
+    const featuredGames = getFeaturedGamesData();
+    featuredGames.forEach((_, index) => {
+        const listItem = document.querySelector(`.featured-list-item[data-game-index="${index}"]`);
+        if (listItem) {
+            listItem.style.setProperty('--progress-width', '0%');
+        }
+    });
+}
+
 // Template event listeners
 if (typeof window.VAPR !== 'undefined') {
     // Store filter button events
@@ -346,4 +647,6 @@ if (typeof window !== 'undefined') {
     window.closeStorePage = closeStorePage;
     window.purchaseGame = purchaseGame;
     window.viewGameDetails = viewGameDetails;
+    window.addToWishlist = addToWishlist;
+    window.selectFeaturedGame = selectFeaturedGame;
 }

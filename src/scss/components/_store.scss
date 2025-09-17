@@ -5,6 +5,497 @@
 .legal-container {
   // Store-specific styling within legal template
 
+  // Featured Carousel Section
+  .featured-carousel-section {
+    margin-bottom: 64px;
+    padding: 0;
+
+    @include responsive(mobile) {
+      margin-bottom: 40px;
+    }
+  }
+
+  .featured-carousel {
+    display: flex;
+    height: 400px;
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
+    border: 1px solid #222222;
+
+    @include responsive(tablet) {
+      height: 300px;
+      flex-direction: column;
+    }
+
+    @include responsive(mobile) {
+      height: 250px;
+      flex-direction: column;
+    }
+  }
+
+  .featured-main {
+    flex: 3;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    max-height: 400px;
+
+    @include responsive(tablet) {
+      flex: none;
+      height: 200px;
+      max-height: 200px;
+    }
+
+    @include responsive(mobile) {
+      height: 150px;
+      max-height: 150px;
+    }
+  }
+
+  .featured-main-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 0.8s ease;
+  }
+
+  .featured-main-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.9) 100%);
+    z-index: 1;
+  }
+
+  .featured-main-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 24px;
+    box-sizing: border-box;
+
+    @include responsive(tablet) {
+      padding: 20px;
+    }
+
+    @include responsive(mobile) {
+      padding: 16px;
+    }
+  }
+
+  .featured-game-info {
+    flex: 0 0 auto;
+    max-width: 400px;
+  }
+
+  .featured-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &.featured {
+      background: linear-gradient(135deg, #444444 0%, #333333 100%);
+      color: #FFFFFF;
+    }
+
+    &.new {
+      background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
+      color: #FFFFFF;
+    }
+  }
+
+  .featured-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    font-family: 'Inter', sans-serif;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+
+    @include responsive(tablet) {
+      font-size: 24px;
+    }
+
+    @include responsive(mobile) {
+      font-size: 20px;
+    }
+  }
+
+  .featured-description {
+    font-size: 18px;
+    color: #CCCCCC;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+    font-family: 'Inter', sans-serif;
+
+    @include responsive(mobile) {
+      font-size: 16px;
+    }
+  }
+
+  .featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+
+    @include responsive(mobile) {
+      justify-content: center;
+    }
+  }
+
+  .featured-tag {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    font-size: 12px;
+    color: #AAAAAA;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+  }
+
+  .featured-rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    @include responsive(mobile) {
+      justify-content: center;
+    }
+  }
+
+  .featured-stars {
+    color: #FFD700;
+    font-size: 20px;
+  }
+
+  .featured-rating-text {
+    color: #AAAAAA;
+    font-size: 14px;
+  }
+
+  .featured-price-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    @include responsive(mobile) {
+      justify-content: flex-start;
+    }
+  }
+
+  .featured-discount {
+    background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
+    color: #FFFFFF;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .featured-prices {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .featured-original-price {
+    color: #AAAAAA;
+    text-decoration: line-through;
+    font-size: 13px;
+  }
+
+  .featured-current-price {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .featured-actions {
+    display: flex;
+    gap: 8px;
+
+    @include responsive(mobile) {
+      flex-wrap: wrap;
+    }
+  }
+
+  .featured-buy-btn,
+  .featured-wishlist-btn,
+  .featured-details-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    &:hover::before {
+      width: 200px;
+      height: 200px;
+    }
+
+    i {
+      font-size: 11px;
+    }
+  }
+
+  .featured-buy-btn {
+    background: linear-gradient(135deg, #333333 0%, #222222 100%);
+    color: #FFFFFF;
+    border: 2px solid #444444;
+
+    &:hover {
+      background: linear-gradient(135deg, #444444 0%, #333333 100%);
+      border-color: #555555;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .featured-wishlist-btn {
+    background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+    color: #AAAAAA;
+    border: 2px solid #333333;
+
+    &:hover {
+      background: linear-gradient(135deg, #333333 0%, #222222 100%);
+      color: #FFFFFF;
+      border-color: #444444;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .featured-details-btn {
+    background: transparent;
+    color: #AAAAAA;
+    border: 2px solid #333333;
+
+    &:hover {
+      background: linear-gradient(135deg, #333333 0%, #222222 100%);
+      color: #FFFFFF;
+      border-color: #444444;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+
+  .featured-sidebar {
+    flex: 1;
+    background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
+    border-left: 1px solid #222222;
+    display: flex;
+    flex-direction: column;
+
+    @include responsive(tablet) {
+      flex: none;
+      border-left: none;
+      border-top: 1px solid #222222;
+    }
+  }
+
+  .featured-sidebar-title {
+    padding: 24px 24px 16px 24px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    border-bottom: 1px solid #222222;
+
+    @include responsive(mobile) {
+      padding: 16px;
+      font-size: 16px;
+    }
+  }
+
+  .featured-list {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+
+    @include responsive(tablet) {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 8px;
+    }
+  }
+
+  .featured-list-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+
+    @include responsive(tablet) {
+      flex: 0 0 200px;
+      margin-bottom: 0;
+    }
+
+    // Progress background that fills entire item
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--progress-width, 0%);
+      background: linear-gradient(90deg, rgba(51, 51, 51, 0.4) 0%, rgba(85, 85, 85, 0.4) 100%);
+      transition: width 0.1s ease;
+      z-index: 1;
+      border-radius: 12px;
+    }
+
+    // Content overlay
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    &:hover {
+      border-color: #333333;
+      transform: translateX(4px);
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      border-color: #444444;
+      transform: translateX(8px);
+      background: rgba(255, 255, 255, 0.08);
+
+      &::after {
+        opacity: 0.5;
+      }
+    }
+
+    // Ensure content is above the progress background
+    > * {
+      position: relative;
+      z-index: 3;
+    }
+  }
+
+  .featured-item-image {
+    width: 60px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-right: 12px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .featured-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .featured-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .featured-item-price {
+    font-size: 12px;
+    color: #CCCCCC;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  // Hide the old progress structure
+  .featured-item-progress {
+    display: none;
+  }
+
+  .progress-bar {
+    display: none;
+  }
+
+  .progress-fill {
+    display: none;
+  }
+
   .store-search-section {
     margin-bottom: 40px;
     padding: 32px 0;
