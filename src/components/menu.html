@@ -124,7 +124,7 @@
                 <menu-item
                         icon="fa-solid fa-scale-balanced"
                         description="Rules and conditions"
-                        onclick="openTermsPage(); hideMenu();">
+                        onclick="router.navigate('/terms'); hideMenu();">
                     Terms of Service
                 </menu-item>
                 <menu-item
@@ -141,7 +141,7 @@
                         icon-class="discord-auth"
                         description="Create your account"
                         arrow="true"
-                        onclick="openAuthPage(); hideMenu();">
+                        onclick="router.navigate('/join'); hideMenu();">
                     Join with Discord
                 </menu-item>
             </menu-section>

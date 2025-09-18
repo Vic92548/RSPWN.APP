@@ -39,3 +39,28 @@ router.register('/downloads', async () => {
     hidePost();
     await cardManager.show('downloads-card');
 });
+
+router.register('/terms', () => {
+    hidePost();
+    openTermsPage();
+});
+
+router.register('/join', () => {
+    hidePost();
+    openAuthPage();
+});
+
+router.register('/auth', () => {
+    hidePost();
+    openAuthPage();
+});
+
+router.register('/register', () => {
+    hidePost();
+    openAuthPage();
+});
+
+router.register('/login', () => {
+    hidePost();
+    openAuthPage();
+});
