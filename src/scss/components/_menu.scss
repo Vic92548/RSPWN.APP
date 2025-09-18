@@ -548,8 +548,12 @@
     display: none;
   }
 
-  & + .menu-toggle i {
-    transform: rotate(180deg);
+  .menu-toggle {
+    top: 6.665px;
+
+    i {
+      transform: rotate(180deg);
+    }
   }
 }
 
