@@ -92,6 +92,9 @@ The server uses middleware for authentication, rate limiting, and request render
 
 ## Important Development Notes
 
+### Code Style Requirements
+- **NEVER ADD COMMENTS TO CODE**: Do not add any comments to JavaScript, CSS, SCSS, HTML, or any other code files. Write clean, self-documenting code without explanatory comments.
+
 ### CSS/SCSS Best Practices
 - **Always check existing CSS rules when modifying collapsed/hidden states**: The menu system has specific rules for collapsed states that may hide elements with broad selectors (e.g., `div { display: none }`). Always inspect the full CSS context before adding new elements.
 - **Use specific selectors to avoid conflicts**: When adding new elements that should remain visible in collapsed states, use `:not()` selectors or more specific class targeting to override broad hiding rules.
