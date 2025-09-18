@@ -2,7 +2,6 @@
     <div class="store-item" data-category="{{category}}" data-game-id="{{id}}">
         <div class="store-item-image">
             <img src="{{image}}" alt="{{title}}" loading="lazy">
-            <div class="store-item-price">{{price}}</div>
             {{#badge}}<div class="store-item-badge {{badge}}">{{badge}}</div>{{/badge}}
         </div>
         <div class="store-item-content">
@@ -15,8 +14,11 @@
             </div>
             <h3 class="store-item-title">{{title}}</h3>
             <p class="store-item-description">{{description}}</p>
-            <div class="store-item-actions">
-                <button class="store-btn primary" onclick="purchaseGame('{{id}}')">Buy Now</button>
+            <div class="store-item-bottom">
+                <div class="store-item-price">{{price}}</div>
+                <div class="store-item-actions">
+                    <button class="store-btn primary" onclick="purchaseGame('{{id}}')">Buy Now</button>
+                </div>
             </div>
         </div>
     </div>

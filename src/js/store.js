@@ -6,8 +6,14 @@ function createStorePage(content) {
         <div class="store-header">
             <div class="store-header-content">
                 <div class="store-title-section">
-                    <h1 class="store-title">Game Store</h1>
+                    <h1 class="store-title">RSPWN</h1>
                     <p class="store-subtitle">Discover amazing games and digital content</p>
+                </div>
+                <div class="store-header-search">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-search search-icon"></i>
+                        <input type="text" class="store-search-input" placeholder="Search games..." id="store-search-input">
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,15 +103,6 @@ function createStoreContent() {
     return `
         <div class="featured-carousel-section">
             ${createFeaturedCarousel()}
-        </div>
-
-        <div class="store-search-section">
-            <div class="store-search">
-                <div class="search-input-wrapper">
-                    <i class="fa-solid fa-search search-icon"></i>
-                    <input type="text" class="store-search-input" placeholder="Search games..." id="store-search-input">
-                </div>
-            </div>
         </div>
 
         <div class="store-filters" id="store-filters">

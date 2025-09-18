@@ -42,16 +42,22 @@
 .store-header-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 40px;
 
   @include responsive(tablet) {
     padding: 0 24px;
+    gap: 20px;
   }
 
   @include responsive(mobile) {
     padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 }
 
@@ -65,7 +71,9 @@
   font-weight: 700;
   color: #FFFFFF;
   margin: 0 0 8px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Audiowide', 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 
   @include responsive(tablet) {
     font-size: 28px;
@@ -87,10 +95,81 @@
   }
 }
 
+.store-header-search {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 400px;
+
+  @include responsive(tablet) {
+    max-width: 300px;
+  }
+
+  @include responsive(mobile) {
+    max-width: none;
+    width: 100%;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666666;
+    font-size: 16px;
+    pointer-events: none;
+    z-index: 2;
+    transition: color 0.3s ease;
+  }
+
+  .store-search-input {
+    padding: 12px 16px;
+    padding-left: 44px;
+    background: #0A0A0A;
+    border: 2px solid #1A1A1A;
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+
+    &::placeholder {
+      color: #666666;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #333333;
+      background: #121212;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+      + .search-icon,
+      ~ .search-icon {
+        color: #AAAAAA;
+      }
+    }
+
+    @include responsive(mobile) {
+      font-size: 14px;
+      padding: 10px 14px;
+      padding-left: 40px;
+    }
+  }
+}
+
 .store-body {
   flex: 1;
   overflow-y: auto;
   padding: 40px 0;
+  @include scrollbar-style;
 
   @include responsive(tablet) {
     padding: 32px 0;
@@ -651,84 +730,6 @@
     display: none;
   }
 
-  .store-search-section {
-    margin-bottom: 40px;
-    padding: 32px;
-    background: linear-gradient(135deg, rgba(18, 18, 18, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
-    border-radius: 12px;
-    border: 1px solid #1A1A1A;
-
-    @include responsive(tablet) {
-      padding: 24px;
-    }
-
-    @include responsive(mobile) {
-      margin-bottom: 24px;
-      padding: 20px;
-    }
-  }
-
-  .store-search {
-    display: flex;
-    justify-content: center;
-    position: relative;
-  }
-
-  .search-input-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666666;
-    font-size: 16px;
-    pointer-events: none;
-    z-index: 2;
-    transition: color 0.3s ease;
-  }
-
-  .store-search-input {
-    padding: 16px 20px;
-    padding-left: 48px;
-    background: #0A0A0A;
-    border: 2px solid #1A1A1A;
-    border-radius: 12px;
-    color: #FFFFFF;
-    font-size: 16px;
-    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    width: 100%;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-
-    &::placeholder {
-      color: #666666;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #333333;
-      background: #121212;
-      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
-
-      + .search-icon,
-      ~ .search-icon {
-        color: #AAAAAA;
-      }
-    }
-
-    @include responsive(mobile) {
-      font-size: 14px;
-      padding: 14px 16px;
-      padding-left: 44px;
-    }
-  }
 
 .store-filters {
   display: flex;
@@ -849,11 +850,6 @@
     .store-item-image img {
       transform: scale(1.05);
     }
-
-    .store-item-actions {
-      transform: translateY(0);
-      opacity: 1;
-    }
   }
 }
 
@@ -871,22 +867,6 @@
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .store-item-price {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%);
-    color: #FFFFFF;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    z-index: 2;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
 
   .store-item-badge {
     position: absolute;
@@ -925,6 +905,19 @@
 
   @include responsive(mobile) {
     padding: 20px;
+  }
+}
+
+.store-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  @include responsive(mobile) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 }
 
@@ -989,12 +982,23 @@
   }
 }
 
+.store-item-price {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  @include responsive(mobile) {
+    font-size: 16px;
+  }
+}
+
 .store-item-actions {
   display: flex;
   gap: 12px;
-  transform: translateY(10px);
-  opacity: 0.7;
-  transition: all 0.3s ease;
+  flex: 0 0 auto;
 }
 
 .store-btn {
