@@ -2,18 +2,30 @@
 @use '../mixins' as *;
 
 // VAPR Authentication Page - Professional Design
-// Auth Page Styling
+// Auth Page Styling - Match store/legal page pattern
 .auth-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
   display: flex;
   flex-direction: column;
-  z-index: 1000;
-  overflow: hidden;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // Ensure menu button is visible on mobile/tablet
+  @include responsive(tablet) {
+    .create-post-btn {
+      display: flex !important;
+      z-index: 10;
+    }
+  }
+
+  @include responsive(mobile) {
+    .create-post-btn {
+      display: flex !important;
+      z-index: 10;
+    }
+  }
 }
 
 .auth-header {
@@ -100,6 +112,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 40px 0;
+  @include scrollbar-style;
 
   @include responsive(tablet) {
     padding: 32px 0;

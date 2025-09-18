@@ -2,8 +2,6 @@
 function createAuthPageTemplate(content) {
     return `
     <section id="auth-page" class="auth-container" style="display:none;">
-        <button id="auth_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
-
         <div class="auth-header">
             <div class="auth-header-content">
                 <div class="auth-title-section">
@@ -168,12 +166,12 @@ function openAuthPage() {
     let authPage = DOM.get('auth-page');
     const feed = DOM.get('feed');
 
-    // If auth page doesn't exist, create it using dedicated auth template
+    // If auth page doesn't exist, create it like store/legal pages do
     if (!authPage) {
         const authContent = createAuthContent();
         const authPageHTML = createAuthPageTemplate(authContent);
 
-        // Insert the page into the DOM
+        // Insert the page into the main element as a sibling to feed (like store/legal pages)
         const main = document.querySelector('main');
         if (main) {
             main.insertAdjacentHTML('beforeend', authPageHTML);
@@ -182,7 +180,7 @@ function openAuthPage() {
     }
 
     if (authPage && feed) {
-        // Hide the feed and show auth page
+        // Hide the feed and show auth page (like store/legal pages do)
         feed.style.display = 'none';
         authPage.style.display = 'flex';
 
@@ -210,7 +208,7 @@ function closeAuthPage() {
     const feed = DOM.get('feed');
 
     if (authPage && feed) {
-        // Hide the auth page and show the feed
+        // Hide the auth page and show the feed (like store/legal pages do)
         authPage.style.display = 'none';
         feed.style.display = 'block';
 

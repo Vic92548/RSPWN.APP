@@ -123,13 +123,14 @@ function createExpressRequest(req) {
     };
 }
 
-const home_urls = ['/','/library','/new-post','/terms','/privacy','/store'];
+const home_urls = ['/','/library','/new-post','/terms','/privacy','/store','/join'];
 
 for (let i = 0; i < home_urls.length; i++) {
     app.get(home_urls[i], async (req, res) => {
         const isTermsPage = home_urls[i] === '/terms';
         const isPrivacyPage = home_urls[i] === '/privacy';
         const isStorePage = home_urls[i] === '/store';
+        const isJoinPage = home_urls[i] === '/join';
 
         let meta_description = config.meta.default.description;
         let meta_url = config.meta.default.url;
@@ -143,6 +144,9 @@ for (let i = 0; i < home_urls.length; i++) {
         } else if (isStorePage) {
             meta_description = 'VAPR Game Store - Discover and purchase amazing games and digital content';
             meta_url = config.meta.default.url + '/store';
+        } else if (isJoinPage) {
+            meta_description = 'Join RSPWN - The Gamer\'s Social Network. Connect with gamers, share content, and grow your audience.';
+            meta_url = config.meta.default.url + '/join';
         }
 
         await res.render('index.html', {
@@ -1174,6 +1178,7 @@ app.get('/sitemap.xml', async (req, res) => {
             { loc: `${baseUrl}/checkout/success`, changefreq: 'monthly', priority: '0.4', lastmod: now },
             { loc: `${baseUrl}/checkout/cancel`, changefreq: 'monthly', priority: '0.4', lastmod: now },
             { loc: `${baseUrl}/login`, changefreq: 'monthly', priority: '0.3', lastmod: now },
+            { loc: `${baseUrl}/join`, changefreq: 'monthly', priority: '0.5', lastmod: now },
             { loc: `${baseUrl}/terms`, changefreq: 'yearly', priority: '0.2', lastmod: now },
             { loc: `${baseUrl}/privacy`, changefreq: 'yearly', priority: '0.2', lastmod: now },
         ];
