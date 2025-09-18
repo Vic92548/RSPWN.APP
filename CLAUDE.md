@@ -29,7 +29,7 @@ VAPR is a gamified social platform where creators share content through a swipe-
 ### Core Structure
 - **Frontend**: Vanilla JS with custom template engine, Sass styling, glass morphism UI
 - **Backend**: Express.js server with modular design
-- **Database**: MongoDB for data persistence, better-sqlite3 for local caching
+- **Database**: MongoDB for data persistence
 - **Authentication**: Discord OAuth integration
 - **Media Storage**: BunnyCDN for images/videos
 - **Build System**: Custom build process that compiles templates, Sass, and minifies assets

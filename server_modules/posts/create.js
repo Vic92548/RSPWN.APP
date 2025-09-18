@@ -168,11 +168,7 @@ export async function createPost(request, userData) {
                 community: community || null,
                 mediaType: validation.isVideo ? 'video' : 'image',
                 fileExtension: validation.extension
-            },
-                {
-                    waitForReplication: true,
-                    replicationTimeout: 3000 // 3 seconds
-                });
+            });
 
             console.log("Post created successfully!");
 
