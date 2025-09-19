@@ -16,87 +16,86 @@
   }
 }
 
-.add-post-page-header {
+.add-post-header {
+  flex: 0 0 auto;
   background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
   border-bottom: 1px solid #222222;
-  padding: 20px 40px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  padding: 20px 0;
 
-  @include responsive(tablet) {
-    padding: 15px 20px;
+  @include responsive(mobile) {
+    padding: 16px 0;
   }
 }
 
-.add-post-page-header-content {
+.add-post-header-content {
+  display: flex;
+  align-items: center;
   max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+  padding: 0 40px;
 
-.add-post-back-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: $text-muted;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 16px;
+  @include responsive(tablet) {
+    padding: 0 24px;
+  }
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateX(-2px);
+  @include responsive(mobile) {
+    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
+    align-items: flex-start;
   }
 }
 
 .add-post-title-section {
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: $text-primary;
-    letter-spacing: 0.5px;
-
-    @include responsive(tablet) {
-      font-size: 24px;
-    }
-  }
-
-  p {
-    margin: 4px 0 0 0;
-    font-size: 16px;
-    color: $text-secondary;
-    font-weight: 500;
-
-    @include responsive(tablet) {
-      font-size: 14px;
-    }
-  }
+  flex: 1;
 }
 
-.add-post-page-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 40px;
-  @include scrollbar-style;
+.add-post-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+  font-family: 'Audiowide', 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: left;
 
   @include responsive(tablet) {
-    padding: 20px;
+    font-size: 28px;
+  }
+
+  @include responsive(mobile) {
+    font-size: 24px;
   }
 }
 
-.add-post-page-content {
-  max-width: 800px;
-  margin: 0 auto;
+.add-post-subtitle {
+  font-size: 16px;
+  color: #CCCCCC;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+
+  @include responsive(mobile) {
+    font-size: 14px;
+  }
+}
+
+
+.add-post-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+
+  @include responsive(tablet) {
+    padding: 20px 15px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+}
+
+.add-post-content {
+  width: 100%;
+  max-width: 600px;
 }
 
 .add-post-form-container {
@@ -106,14 +105,13 @@
 .add-post-form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
-.post-section {
+.quick-post-section {
   background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
   border: 1px solid #1A1A1A;
-  border-radius: $radius-md;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 30px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -133,116 +131,75 @@
 
   &:hover {
     border-color: #333333;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
     &::before {
       opacity: 1;
     }
   }
 
-  &.submit-section {
-    background: linear-gradient(135deg, rgba(18, 18, 18, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
-    border-color: #222222;
+  @include responsive(tablet) {
+    padding: 25px 20px;
+  }
+}
 
-    &:hover {
-      transform: none;
-      box-shadow: none;
-    }
+.title-input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.quick-title-input {
+  width: 100%;
+  padding: 20px 0;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: $text-primary;
+  font-size: 18px;
+  font-weight: 500;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus {
+    outline: none;
+    border-bottom-color: #5865F2;
   }
 
   @include responsive(tablet) {
-    padding: 20px;
-  }
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: 600;
-  color: $text-primary;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-
-  i {
-    font-size: 18px;
-    color: #5865F2;
-  }
-
-  .optional {
-    color: $text-weak;
-    font-size: 12px;
-    font-weight: 400;
-    text-transform: none;
-    margin-left: auto;
-  }
-}
-
-.input-group {
-  position: relative;
-
-  label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    color: $text-muted;
-  }
-
-  .glass-input {
-    width: 100%;
-    padding: 16px 20px;
-    border-radius: $radius-sm;
-    color: $text-primary;
     font-size: 16px;
-    font-weight: 500;
-    font-family: inherit;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-
-    &::placeholder {
-      color: rgba(255, 255, 255, 0.4);
-    }
-
-    &:focus {
-      outline: none;
-      background: rgba(255, 255, 255, 0.08);
-    }
+    padding: 16px 0;
   }
-}
-
-.required {
-  color: $danger-color;
-  font-size: 13px;
 }
 
 .character-count {
   position: absolute;
-  right: 20px;
-  top: 52px;
-  font-size: 13px;
+  right: 0;
+  bottom: 8px;
+  font-size: 12px;
   color: $text-weak;
-  pointer-events: none;
   font-weight: 500;
 }
 
 .upload-area {
   position: relative;
-  min-height: 280px;
+  min-height: 120px;
   background: rgba(255, 255, 255, 0.02);
   border: 2px dashed rgba(255, 255, 255, 0.1);
-  border-radius: $radius-sm;
+  border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s ease;
+  margin-bottom: 25px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   &.dragging {
@@ -250,69 +207,50 @@
     border-color: rgba(88, 101, 242, 0.3);
     box-shadow: 0 0 20px rgba(88, 101, 242, 0.2);
   }
-
-  @include responsive(tablet) {
-    min-height: 220px;
-  }
 }
 
 .upload-placeholder {
   @include flex-center;
-  flex-direction: column;
-  height: 280px;
+  height: 120px;
   text-align: center;
-  padding: 30px;
+  padding: 20px;
+}
+
+.upload-content {
+  @include flex-center;
+  flex-direction: column;
+  gap: 12px;
 
   .upload-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: $radius-sm;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background: rgba(88, 101, 242, 0.1);
     color: #5865F2;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 24px;
     transition: all 0.3s ease;
-
-    i {
-      font-size: 36px;
-    }
+    font-size: 20px;
   }
 
-  h3 {
-    margin: 0 0 12px 0;
-    font-size: 20px;
-    font-weight: 600;
+  span {
+    font-size: 14px;
+    font-weight: 500;
     color: $text-muted;
   }
+}
 
-  p {
-    margin: 0;
-    font-size: 15px;
-    color: $text-weak;
-  }
-
-  @include responsive(tablet) {
-    height: 220px;
-    padding: 20px;
-
-    .upload-icon {
-      width: 60px;
-      height: 60px;
-
-      i {
-        font-size: 28px;
-      }
-    }
-  }
+.upload-area:hover .upload-content .upload-icon {
+  background: rgba(88, 101, 242, 0.2);
+  transform: scale(1.05);
 }
 
 .upload-preview {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 280px;
+  min-height: 120px;
 
   img, video {
     width: 100%;
@@ -332,103 +270,74 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 8px;
+
+  .change-media-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: $text-primary;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+  }
 }
 
 .upload-preview:hover .preview-overlay {
   opacity: 1;
 }
 
-.game-tag-selector {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.game-tag-button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 24px;
-  font-size: 15px;
-  font-weight: 600;
-
-  i {
-    font-size: 16px;
-  }
-}
-
-.selected-game {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: $radius-sm;
-  transition: all 0.3s ease;
-
-  .selected-game-cover {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    object-fit: cover;
-  }
-
-  .selected-game-title {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 600;
-    color: $text-primary;
-  }
-
-  .remove-game-tag {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-}
-
-.input-hint {
-  margin: 12px 0 0 0;
-  font-size: 13px;
-  color: $text-weak;
-  font-weight: 500;
-}
-
-.submit-actions {
+.quick-actions {
   display: flex;
   gap: 15px;
+  justify-content: flex-end;
 
   @include responsive(tablet) {
-    flex-direction: column;
+    gap: 12px;
   }
 
   .glass-button {
-    flex: 1;
-    padding: 16px 32px;
-    font-size: 15px;
+    padding: 14px 24px;
+    font-size: 14px;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    border-radius: 8px;
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: $text-muted;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
 
     &.primary {
       background: rgba(88, 101, 242, 0.2);
       border-color: rgba(88, 101, 242, 0.3);
       color: #5865F2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
 
       &:hover {
         background: rgba(88, 101, 242, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(88, 101, 242, 0.2);
+        box-shadow: 0 4px 16px rgba(88, 101, 242, 0.2);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
 
     @include responsive(tablet) {
-      width: 100%;
+      padding: 12px 20px;
+      font-size: 14px;
     }
   }
 }
@@ -442,7 +351,7 @@
   backdrop-filter: $blur-md;
   -webkit-backdrop-filter: $blur-md;
   padding: 20px 30px;
-  border-radius: $radius-sm;
+  border-radius: 12px;
   border: 1px solid $glass-border-light;
   min-width: 300px;
   z-index: 1000;
@@ -480,145 +389,42 @@
   font-weight: 500;
 }
 
-// Game tag modal styles (reusing existing styles but adjusting for page context)
-.game-tag-modal-container {
-  width: 100%;
-  max-width: 500px;
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-  border-radius: $radius-md;
-  border: 1px solid $glass-border;
-
-  @include responsive(tablet) {
-    width: calc(100% - 20px);
-    margin: 10px;
-    max-height: 80vh;
-  }
-}
-
-.game-tag-modal-header {
-  padding: 20px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
-
-  .header-content {
-    flex: 1;
-  }
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .header-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(88, 101, 242, 0.1);
-    color: #5865F2;
-  }
-
-  .header-text {
-    h3 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      color: $text-primary;
-    }
-
-    p {
-      margin: 2px 0 0 0;
-      font-size: 13px;
-      color: $text-secondary;
-      font-weight: 500;
-    }
-  }
-}
-
-.game-tag-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.game-tag-search {
-  padding: 20px 25px;
-  border-bottom: 1px solid #222222;
-
-  .glass-input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: $radius-sm;
-    box-sizing: border-box;
-  }
-}
-
-.game-tag-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 15px;
-  @include scrollbar-style;
-}
-
-// Animation for page sections
-@keyframes slideInUp {
+// Enhanced animation for form appearance
+@keyframes quickPostSlideIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(30px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-.add-post-page-container[data-loaded="true"] {
-  .post-section {
-    animation: slideInUp 0.6s ease forwards;
-    opacity: 0;
+.add-post-page-container[data-loaded="true"] .quick-post-section {
+  animation: quickPostSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
-    @for $i from 1 through 4 {
-      &:nth-child(#{$i}) { animation-delay: #{$i * 0.1}s; }
-    }
-  }
+// Focus states for accessibility
+.quick-title-input:focus,
+.upload-area:focus {
+  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
 }
 
 // Responsive adjustments
 @include responsive(tablet) {
   .add-post-page-container {
-    .post-section {
+    .quick-post-section {
       margin-bottom: 20px;
     }
 
-    .section-header {
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
+    .quick-actions {
+      flex-direction: column;
 
-    .input-group .glass-input {
-      padding: 14px 16px;
-      font-size: 16px; // Keep 16px on mobile to prevent zoom
-    }
-
-    .character-count {
-      top: 46px;
-    }
-
-    .submit-actions .glass-button {
-      padding: 14px 24px;
+      .glass-button {
+        width: 100%;
+        justify-content: center;
+      }
     }
   }
 }
