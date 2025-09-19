@@ -1202,7 +1202,7 @@ app.get('/sitemap.xml', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-// Simple dashboard routes - just serve index.html like the home route
+// Routes for portal pages - serve index.html with specific meta data
 app.get('/creators', async (req, res) => {
     await res.render('index.html', {
         meta_description: 'Creator Program - VAPR',
@@ -1214,7 +1214,7 @@ app.get('/creators', async (req, res) => {
 
 app.get('/partners', async (req, res) => {
     await res.render('index.html', {
-        meta_description: 'Partner Dashboard - VAPR',
+        meta_description: 'Partner Portal - VAPR',
         meta_author: config.meta.default.author,
         meta_image: config.meta.default.image,
         meta_url: config.meta.default.url + '/partners'

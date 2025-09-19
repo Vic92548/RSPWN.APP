@@ -164,7 +164,7 @@ const ROUTES = {
     partners: {
         path: '/partners',
         meta: {
-            title: 'Partner Dashboard - VAPR',
+            title: 'Partner Portal - VAPR',
             description: 'Manage your partnership with VAPR',
             requiresAuth: true
         },

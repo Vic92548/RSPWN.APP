@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-VAPR is a gamified social platform where creators share content through a swipe-based interface (Tinder for content). The platform includes user authentication via Discord, content posting with reactions, an XP/leveling system, and multiple specialized dashboards.
+VAPR is a gamified social platform where creators share content through a swipe-based interface (Tinder for content). The platform includes user authentication via Discord, content posting with reactions, and an XP/leveling system.
 
 ## Common Commands
 
@@ -13,11 +13,8 @@ VAPR is a gamified social platform where creators share content through a swipe-
 - `npm run dev` - Run development server with nodemon
 - `npm run build` - Alias for `node build.js`
 - `node build.js` - Build main app (processes HTML templates, compiles Sass, minifies JS/CSS)
-- `node build-all.js` - Build main app + all dashboards
-- `node build-all.js --only-dashboards` - Build only dashboards
-- `node build-all.js --skip-dashboards` - Build only main app
-- `node build-all.js partners store` - Build main app + specific dashboards
-- `node build-all.js --help` - Show detailed build options
+- `node build-all.js` - Legacy build script (equivalent to `node build.js` now that dashboards are removed)
+
 
 ### Scripts
 - `npm run add-game` / `node scripts/add-game.js` - Add new games to the platform
@@ -40,31 +37,26 @@ VAPR is a gamified social platform where creators share content through a swipe-
   - `src/js/` - JavaScript modules (prefixed with `$` for core utilities)
   - `src/scss/` - Sass stylesheets with component-based architecture
 - `server_modules/` - Backend modules organized by feature
-- `dashboards/` - Separate React/Vite applications for different user dashboards
 - `public/` - Generated build output
 
 ### Template System
 The project uses a custom template engine where `[[filename]]` includes content from `src/components/`. The build process processes these includes and generates the final HTML.
 
-### Dashboard Architecture
-Multiple independent React dashboards built with Vite:
-- `partners` - Game developer tools
-- `store` - Game marketplace
-- `creators` - Content creator analytics
-- `downloads` - Download management
-- `terms` - Legal pages
-- `privacy` - Privacy policy
-
-Each dashboard has its own package.json and builds to `public/{dashboard-name}/`.
 
 ### Server Module Organization
+Key modules in `server_modules/`:
 - `auth.js` - Discord OAuth and user authentication
 - `post.js` - Content posting, likes, reactions, following
-- `posts/` - Detailed post-related functionality (feed, interactions, video)
+- `posts/` - Detailed post-related functionality (feed, interactions, video, reactions, create)
 - `rpg.js` - XP system and gamification
 - `games.js` - Game management and integration
-- `routes/` - API endpoint handlers
+- `routes/` - API endpoint handlers (analytics, xp_today)
 - `security.js` - Rate limiting, CORS, security middleware
+- `database.js` - MongoDB connection and operations
+- `unified_router.js` - Centralized routing system
+- `template_engine.js` - Server-side template processing
+- `creators.js` - Creator program functionality
+- `buckets.js` - Content organization features
 
 ### Environment Configuration
 Required environment variables (see README.md for full list):
@@ -77,8 +69,7 @@ Required environment variables (see README.md for full list):
 1. HTML templates are processed with `[[include]]` syntax
 2. Sass files compiled and minified
 3. JavaScript files combined and minified
-4. Dashboard frontends built separately with Vite
-5. All output goes to `public/` directory
+4. All output goes to `public/` directory
 
 ### API Structure
 REST API with endpoints organized by feature:
@@ -111,16 +102,11 @@ The server uses middleware for authentication, rate limiting, and request render
 The server uses a sophisticated routing and middleware system:
 1. **Security Middleware**: Helmet, CORS, rate limiting applied first
 2. **Authentication Middleware**: JWT-based auth with Discord OAuth
-3. **Route Handlers**: Organized by feature (posts, games, creators, auth)
-4. **Database Layer**: MongoDB for persistence, better-sqlite3 for caching
+3. **Route Handlers**: Organized by feature in server_modules/ (posts, games, creators, auth)
+4. **Database Layer**: MongoDB for persistence (see server_modules/database.js)
 5. **CDN Integration**: BunnyCDN for media storage and delivery
+6. **Unified Routing**: Uses server_modules/unified_router.js for centralized route management
 
-### Dashboard Build System
-Each dashboard in `dashboards/` is an independent React + Vite application:
-- Individual package.json with own dependencies
-- Builds to `public/{dashboard-name}/` for production serving
-- Supports both individual builds (`npm run build:partners`) and batch builds
-- Each dashboard can be built independently or as part of the full build process
 
 ### API Endpoint Organization
 - `/api/auth/*` - Authentication and user management

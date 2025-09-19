@@ -84,7 +84,7 @@ function createTermsContent() {
         `)}
 
         ${createLegalSection('2. Description of Service', `
-            <p>VAPR is a gamified social platform where creators share content through a swipe-based interface. The platform includes user authentication via Discord, content posting with reactions, an XP/leveling system, and multiple specialized dashboards.</p>
+            <p>VAPR is a gamified social platform where creators share content through a swipe-based interface. The platform includes user authentication via Discord, content posting with reactions, and an XP/leveling system.</p>
             ${createLegalList([
                 'Social content sharing and discovery',
                 'Gamification features including XP and leveling',
