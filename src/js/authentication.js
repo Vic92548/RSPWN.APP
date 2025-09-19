@@ -27,9 +27,7 @@ function loadUserData(){
         syncBackgroundFromBackend();
 
         DOM.hide("sign_in");
-        if(window.innerWidth <= 768){
-            DOM.show("add_post");
-        }
+        DOM.show("add_post");
 
         DOM.show("xp_bar");
 
@@ -50,9 +48,7 @@ function loadUserData(){
     }).catch(error => {
 
         DOM.show("sign_in");
-        if(window.innerWidth <= 768){
-            DOM.show("add_post");
-        }
+        DOM.hide("add_post");
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
 
