@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   // Ensure menu button is visible on mobile/tablet
   @include responsive(tablet) {

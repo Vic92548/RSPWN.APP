@@ -5,17 +5,18 @@
   width: 100%;
   max-width: 480px;
   height: 100vh;
+  transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), max-width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   * {
     transition-property: background-color, transform, box-shadow, opacity;
-    transition-duration: 0.3s;
-    transition-timing-function: ease;
+    transition-duration: 0.4s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   @include responsive(tablet) {
@@ -309,7 +310,7 @@
   width: 62px;
   max-width: 62px;
   overflow: hidden;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), max-width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 
   .menu-header {
     padding: 3px;
@@ -583,13 +584,13 @@
   }
 
   #feed {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   main {
     width: calc(100% - 400px);
     padding-left: 400px;
-    transition: all 0.3s ease;
+    transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), padding-left 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   main.menu-collapsed{
@@ -659,7 +660,7 @@
   color: #fff;
   border: none;
   cursor: pointer;
-  transition: all 0.4s;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   @include icon-button(38px);
   overflow: hidden;
   font-size: 18px;
@@ -722,7 +723,7 @@
     padding-bottom: 10px;
     font-size: 18px;
     margin-top: 10px;
-    transition: all 0.4s;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     &:hover {
       background: $glass-bg-tertiary;
