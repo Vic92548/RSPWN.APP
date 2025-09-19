@@ -117,9 +117,6 @@ function createAddPostContent() {
                     </div>
 
                     <div class="quick-actions">
-                        <button type="button" class="cancel-btn glass-button" onclick="closeAddPostPage()">
-                            Cancel
-                        </button>
                         <button type="submit" class="submit-btn glass-button primary" id="submit-post-btn" onclick="submitPost(event)">
                             <i class="fa-solid fa-paper-plane"></i>
                             Post

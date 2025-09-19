@@ -160,6 +160,7 @@
   font-family: inherit;
   box-sizing: border-box;
   transition: all 0.3s ease;
+  outline: none;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.4);
@@ -406,7 +407,6 @@
 }
 
 // Focus states for accessibility
-.quick-title-input:focus,
 .upload-area:focus {
   box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
 }
