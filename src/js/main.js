@@ -204,7 +204,11 @@ function copyReferrerId() {
 processJoinQueryParam();
 
 function navigateToMyProfile() {
-    router.navigate(`/@${window.user.username}`, false);
+    if (window.navigation) {
+        window.navigation.goToProfile(window.user.username, false);
+    } else {
+        router.navigate(`/@${window.user.username}`, false);
+    }
 }
 
 window.closeProfileCard = function() {

@@ -3,24 +3,42 @@
 
 // RSPWN Brand-Compliant Legal Page Template - Modern Store Style
 .legal-container {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100vh;
   background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
   display: flex;
   flex-direction: column;
   font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  z-index: 1000;
+  overflow-y: auto;
+
+  // On desktop, keep fixed position but adjust for sidebar menu
+  @media (min-width: 769px) {
+    left: 400px;
+    width: calc(100% - 400px);
+    height: 100vh;
+  }
+
+  // Hide menu button on desktop (show full menu instead)
+  @media (min-width: 769px) {
+    #legal_menu_btn {
+      display: none !important;
+    }
+  }
 
   // Ensure menu button is visible on mobile/tablet
   @include responsive(tablet) {
-    .create-post-btn {
+    #legal_menu_btn {
       display: flex !important;
       z-index: 10;
     }
   }
 
   @include responsive(mobile) {
-    .create-post-btn {
+    #legal_menu_btn {
       display: flex !important;
       z-index: 10;
     }

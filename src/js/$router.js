@@ -1,84 +1,117 @@
+console.log('Router initializing...');
+
 class VAPRRouter {
     constructor() {
-        this.routes = new Map();
         this.currentRoute = null;
         this.params = {};
         this.previousRoute = null;
+        this.initializeRoutes();
     }
 
-    register(pattern, handler) {
-        this.routes.set(pattern, handler);
-        console.log('ROUTE REGISTERED', {pattern, handler});
+    initializeRoutes() {
+        console.log('Initializing unified routes...');
+        if (typeof window.ROUTES !== 'undefined') {
+            for (const [key, route] of Object.entries(window.ROUTES)) {
+                console.log('ROUTE REGISTERED', { key, path: route.path, meta: route.meta });
+            }
+        } else {
+            console.warn('Routes not yet loaded, will initialize when available');
+        }
     }
 
     navigate(path, bIsFrontEndOnly = false) {
-        if(bIsFrontEndOnly){
+        if (bIsFrontEndOnly) {
             history.pushState(null, null, path);
             this.handleRoute();
-        }
-        else{
+        } else {
             loading.show();
             window.location.href = path;
+        }
+    }
+
+    navigateToRoute(routeKey, params = {}, frontendOnly = true) {
+        const path = window.buildPath ? window.buildPath(routeKey, params) : null;
+        if (path) {
+            this.navigate(path, frontendOnly);
+        } else {
+            console.error('Route not found:', routeKey);
         }
     }
 
     handleRoute() {
         console.log('ROUTE');
         const path = window.location.pathname;
+        console.log('Handling route for path:', path);
         this.previousRoute = this.currentRoute;
 
         if (cardManager.currentCard && !cardManager.isNavigating) {
             cardManager.hide(cardManager.currentCard);
         }
 
-        if (path.startsWith('/@')) {
-            this.currentRoute = '/@:username';
-            const handler = this.routes.get('/@:username');
-            if (handler) {
-                handler(this.params);
-                return;
-            }
-        }
+        this.hideAllLegalPages();
 
-        for (const [pattern, handler] of this.routes) {
-            const match = this.matchRoute(pattern, path);
-            if (match) {
-                this.currentRoute = pattern;
-                this.params = match.params;
-                handler(match.params);
+        const routeMatch = window.getRouteByPath ? window.getRouteByPath(path) : null;
+        console.log('Route match result:', routeMatch);
+
+        if (routeMatch) {
+            const { key, route } = routeMatch;
+            const params = window.extractParams ? window.extractParams(route.path, path) : {};
+
+            console.log('Executing route:', key, 'with params:', params);
+            this.currentRoute = key;
+            this.params = params;
+
+            if (route.meta.requiresAuth && !isUserLoggedIn()) {
+                console.log('Route requires auth, opening register modal');
+                openRegisterModal();
                 return;
             }
+
+            if (route.frontend) {
+                console.log('Calling route frontend handler');
+                route.frontend(params);
+            } else {
+                console.log('No frontend handler for route');
+            }
+            return;
+        } else {
+            console.log('No route match found for path:', path);
         }
 
         this.handle404();
     }
 
     matchRoute(pattern, path) {
-        const patternParts = pattern.split('/').filter(Boolean);
-        const pathParts = path.split('/').filter(Boolean);
-
-        if (patternParts.length !== pathParts.length) return null;
-
-        const params = {};
-
-        for (let i = 0; i < patternParts.length; i++) {
-            if (patternParts[i].startsWith(':')) {
-                const paramName = patternParts[i].slice(1);
-                params[paramName] = decodeURIComponent(pathParts[i]);
-            } else if (patternParts[i] !== pathParts[i]) {
-                return null;
-            }
-        }
-
-        return { params };
+        return window.matchRoutePath ? window.matchRoutePath(pattern, path) : null;
     }
 
     handle404() {
         this.currentRoute = '404';
         console.log('No route found for:', window.location.pathname);
-        // Make sure to show the post when no route is found
         showPost();
         displayPost();
+    }
+
+    getCurrentRoute() {
+        return this.currentRoute;
+    }
+
+    getParams() {
+        return this.params;
+    }
+
+    getRouteInfo(routeKey) {
+        return window.ROUTES ? (window.ROUTES[routeKey] || null) : null;
+    }
+
+    hideAllLegalPages() {
+        const legalPages = ['privacy-page', 'terms-page', 'store-page'];
+        legalPages.forEach(pageId => {
+            const page = DOM.get(pageId);
+            if (page && page.style.display !== 'none') {
+                page.style.display = 'none';
+            }
+        });
     }
 }
 

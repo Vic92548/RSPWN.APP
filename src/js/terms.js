@@ -1,6 +1,9 @@
 function openTermsPage() {
+    console.log('openTermsPage function called');
     let termsPage = DOM.get('terms-page');
     const feed = DOM.get('feed');
+    console.log('termsPage element:', termsPage);
+    console.log('feed element:', feed);
 
     // If terms page doesn't exist, create it using the legal template
     if (!termsPage) {
@@ -62,43 +65,6 @@ function closeTermsPage() {
     }
 }
 
-// Handle browser back/forward buttons
-window.addEventListener('popstate', function(event) {
-    const path = window.location.pathname;
-
-    if (path === '/terms') {
-        openTermsPage();
-    } else if (path === '/privacy') {
-        // Call privacy page if it exists
-        if (typeof window.openPrivacyPage === 'function') {
-            window.openPrivacyPage();
-        }
-    } else if (path === '/store') {
-        // Call store page if it exists
-        if (typeof window.openStorePage === 'function') {
-            window.openStorePage();
-        }
-    } else {
-        // If we're on any page and user hits back, close it
-        const termsPage = DOM.get('terms-page');
-        const privacyPage = DOM.get('privacy-page');
-        const storePage = DOM.get('store-page');
-
-        if (termsPage && termsPage.style.display !== 'none') {
-            closeTermsPage();
-        }
-        if (privacyPage && privacyPage.style.display !== 'none') {
-            if (typeof window.closePrivacyPage === 'function') {
-                window.closePrivacyPage();
-            }
-        }
-        if (storePage && storePage.style.display !== 'none') {
-            if (typeof window.closeStorePage === 'function') {
-                window.closeStorePage();
-            }
-        }
-    }
-});
 
 // Handle direct navigation to /terms URL
 document.addEventListener('DOMContentLoaded', function() {

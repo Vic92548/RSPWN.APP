@@ -318,10 +318,10 @@ async function logout() {
             }
 
             window.user = null;
-            window.location.href = '/';
+            router.navigate('/', true);
         } catch (error) {
             console.error('Logout error:', error);
-            window.location.href = '/';
+            router.navigate('/', true);
         }
     }
 }

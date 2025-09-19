@@ -12,6 +12,7 @@ import multer from 'multer';
 import { config } from './server_modules/config.js';
 import { setupSecurityMiddleware, rateLimiters, corsOptions } from './server_modules/security.js';
 import { createRenderMiddleware } from './server_modules/middleware/render.js';
+import { setupUnifiedRoutes } from './server_modules/unified_router.js';
 import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
 import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
@@ -123,44 +124,6 @@ function createExpressRequest(req) {
     };
 }
 
-const home_urls = ['/','/library','/new-post','/create','/terms','/privacy','/store','/join'];
-
-for (let i = 0; i < home_urls.length; i++) {
-    app.get(home_urls[i], async (req, res) => {
-        const isTermsPage = home_urls[i] === '/terms';
-        const isPrivacyPage = home_urls[i] === '/privacy';
-        const isStorePage = home_urls[i] === '/store';
-        const isJoinPage = home_urls[i] === '/join';
-        const isCreatePage = home_urls[i] === '/create';
-
-        let meta_description = config.meta.default.description;
-        let meta_url = config.meta.default.url;
-
-        if (isTermsPage) {
-            meta_description = 'VAPR Terms of Service - Read our platform guidelines and user agreement';
-            meta_url = config.meta.default.url + '/terms';
-        } else if (isPrivacyPage) {
-            meta_description = 'VAPR Privacy Policy - Learn how we protect and handle your personal information';
-            meta_url = config.meta.default.url + '/privacy';
-        } else if (isStorePage) {
-            meta_description = 'VAPR Game Store - Discover and purchase amazing games and digital content';
-            meta_url = config.meta.default.url + '/store';
-        } else if (isJoinPage) {
-            meta_description = 'Join RSPWN - The Gamer\'s Social Network. Connect with gamers, share content, and grow your audience.';
-            meta_url = config.meta.default.url + '/join';
-        } else if (isCreatePage) {
-            meta_description = 'Create New Post - Share your content with the RSPWN community';
-            meta_url = config.meta.default.url + '/create';
-        }
-
-        await res.render('index.html', {
-            meta_description,
-            meta_author: config.meta.default.author,
-            meta_image: config.meta.default.image,
-            meta_url
-        });
-    });
-}
 
 app.get('/checkout/success', async (req, res) => {
     await res.render('index.html', {
@@ -1239,26 +1202,62 @@ app.get('/sitemap.xml', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-const side_apps = ['creators','partners','terms','downloads','privacy','store'];
-for (let i = 0; i < side_apps.length; i++) {
-    const current_app = side_apps[i];
-
-    app.use(`/${current_app}`, serveStatic(join(__dirname, `public/${current_app}`), {
-        maxAge: config.static.maxAge,
-        setHeaders: (res, path) => {
-            res.setHeader('Cache-Control', config.static.cacheControl);
-            res.setHeader('Pragma', config.static.pragma);
-            res.setHeader('Expires', config.static.expires);
-            res.setHeader('Surrogate-Control', config.static.surrogateControl);
-            if (path.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
-        },
-        fallthrough: true
-    }));
-
-    app.get(new RegExp(`^/${current_app}(?:/.*)?$`), (req, res) => {
-        res.sendFile(join(__dirname, `public/${current_app}/index.html`));
+// Simple dashboard routes - just serve index.html like the home route
+app.get('/creators', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Creator Program - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/creators'
     });
-}
+});
+
+app.get('/partners', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Partner Dashboard - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/partners'
+    });
+});
+
+app.get('/terms', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Terms of Service - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/terms'
+    });
+});
+
+app.get('/downloads', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Downloads - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/downloads'
+    });
+});
+
+app.get('/privacy', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Privacy Policy - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/privacy'
+    });
+});
+
+app.get('/store', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Game Store - VAPR',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/store'
+    });
+});
+
+// setupUnifiedRoutes(app, templates); // Not needed - using simple route handlers above
 
 app.use(serveStatic(join(__dirname, 'public'), {
     maxAge: config.static.maxAge,

@@ -19,7 +19,7 @@
                         icon="fa-solid fa-plus"
                         description="Share your content"
                         arrow="true"
-                        onclick="router.navigate('/create'); hideMenu();">
+                        onclick="router.navigate('/create', true); hideMenu();">
                     Create Post
                 </menu-item>
                 <menu-item
@@ -27,7 +27,7 @@
                         icon-class="analytics"
                         description="Track performance"
                         arrow="true"
-                        onclick="router.navigate('/creators')">
+                        onclick="router.navigate('/creators', true); hideMenu();">
                     Analytics
                 </menu-item>
             </menu-section>
@@ -38,7 +38,7 @@
                         icon-class="games"
                         description="Explore available games"
                         arrow="true"
-                        onclick="router.navigate('/store')">
+                        onclick="router.navigate('/store', true); hideMenu();">
                     Store
                 </menu-item>
                 <menu-item
@@ -48,7 +48,7 @@
                         arrow="true"
                         class="auth-required"
                         style="display: none;"
-                        onclick="openMyLibrary()">
+                        onclick="router.navigate('/library', true); hideMenu();">
                     My Library
                 </menu-item>
                 <menu-item
@@ -58,7 +58,7 @@
                         arrow="true"
                         class="auth-required"
                         style="display: none;"
-                        onclick="openDownloadsPage()">
+                        onclick="router.navigate('/downloads', true); hideMenu();">
                     Downloads
                 </menu-item>
             </menu-section>
@@ -69,7 +69,7 @@
                         icon-class="developer"
                         description="Manage your games"
                         arrow="true"
-                        onclick="router.navigate('/partners')">
+                        onclick="router.navigate('/partners', true); hideMenu();">
                     Partners
                 </menu-item>
             </menu-section>
@@ -126,13 +126,13 @@
                 <menu-item
                         icon="fa-solid fa-scale-balanced"
                         description="Rules and conditions"
-                        onclick="router.navigate('/terms'); hideMenu();">
+                        onclick="router.navigate('/terms', true); hideMenu();">
                     Terms of Service
                 </menu-item>
                 <menu-item
                         icon="fa-solid fa-user-shield"
                         description="How we handle data"
-                        onclick="router.navigate('/privacy')">
+                        onclick="router.navigate('/privacy', true); hideMenu();">
                     Privacy Policy
                 </menu-item>
             </menu-section>
@@ -143,7 +143,7 @@
                         icon-class="discord-auth"
                         description="Create your account"
                         arrow="true"
-                        onclick="router.navigate('/join'); hideMenu();">
+                        onclick="router.navigate('/join', true); hideMenu();">
                     Join with Discord
                 </menu-item>
             </menu-section>

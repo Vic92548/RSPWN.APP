@@ -1,10 +1,19 @@
 function openPrivacyPage() {
+    console.log('openPrivacyPage function called');
     let privacyPage = DOM.get('privacy-page');
     const feed = DOM.get('feed');
+    console.log('privacyPage element:', privacyPage);
+    console.log('feed element:', feed);
 
     // If privacy page doesn't exist, create it using the legal template
     if (!privacyPage) {
+        console.log('Creating privacy page...');
+        console.log('createPrivacyContent exists:', typeof createPrivacyContent);
+        console.log('createLegalPage exists:', typeof createLegalPage);
+
         const privacyContent = createPrivacyContent();
+        console.log('Privacy content created, length:', privacyContent.length);
+
         const privacyPageHTML = createLegalPage({
             pageId: 'privacy-page',
             pageTitle: 'Privacy Policy',
@@ -13,12 +22,15 @@ function openPrivacyPage() {
             closeFunction: 'closePrivacyPage',
             content: privacyContent
         });
+        console.log('Privacy page HTML created, length:', privacyPageHTML.length);
 
         // Insert the page into the DOM
         const main = document.querySelector('main');
+        console.log('Main element found:', !!main);
         if (main) {
             main.insertAdjacentHTML('beforeend', privacyPageHTML);
             privacyPage = DOM.get('privacy-page');
+            console.log('Privacy page after insertion:', privacyPage);
         }
     }
 
