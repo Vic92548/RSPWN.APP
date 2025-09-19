@@ -39,27 +39,21 @@ function hidePost() {
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
 }
 
-cardManager.register('add-post-card', {
-    route: '/new-post',
-    onShow: () => {
-        setTimeout(() => {
-            const titleInput = DOM.get('title');
-            if (titleInput) titleInput.focus();
-        }, 500);
-    }
-});
-
+// Legacy function for backwards compatibility
 function opeNewPostModel() {
     if (isUserLoggedIn()) {
         hideMenu();
-        router.navigate('/new-post', true);
+        router.navigate('/create');
     } else {
         openRegisterModal();
     }
 }
 
+// Legacy function for backwards compatibility
 function closeAddPostCard() {
-    cardManager.hide('add-post-card');
+    if (typeof window.closeAddPostPage === 'function') {
+        window.closeAddPostPage();
+    }
 }
 
 function openRegisterModal() {

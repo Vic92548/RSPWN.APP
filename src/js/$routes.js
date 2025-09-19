@@ -23,11 +23,52 @@ router.register('/library', async () => {
 
 router.register('/new-post', async () => {
     hidePost();
+
+    // Wait for user data to be loaded if it's still loading
+    if (!window.user && loading_steps > 0) {
+        // Wait a bit for loadUserData to complete
+        await new Promise(resolve => {
+            const checkAuth = () => {
+                if (window.user || loading_steps === 0) {
+                    resolve();
+                } else {
+                    setTimeout(checkAuth, 100);
+                }
+            };
+            checkAuth();
+        });
+    }
+
     if (!isUserLoggedIn()) {
         openRegisterModal();
         return;
     }
-    await cardManager.show('add-post-card');
+    openAddPostPage();
+});
+
+router.register('/create', async () => {
+    hidePost();
+
+    // Wait for user data to be loaded if it's still loading
+    if (!window.user && loading_steps > 0) {
+        // Wait a bit for loadUserData to complete
+        await new Promise(resolve => {
+            const checkAuth = () => {
+                if (window.user || loading_steps === 0) {
+                    resolve();
+                } else {
+                    setTimeout(checkAuth, 100);
+                }
+            };
+            checkAuth();
+        });
+    }
+
+    if (!isUserLoggedIn()) {
+        openRegisterModal();
+        return;
+    }
+    openAddPostPage();
 });
 
 router.register('/downloads', async () => {

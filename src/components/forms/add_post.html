@@ -1,102 +1,136 @@
-<article class="add-post-card vapr-card vapr-container-full vapr-height-card vapr-rounded glass-primary" id="add-post-card" style="display:none;">
-    <div id="postForm">
-        <div class="vapr-card-header glass-section-bg">
-            <div class="header-content">
-                <h2><i class="fa-solid fa-plus-circle"></i> Create New Post</h2>
-                <p>Share your content with the VAPR community</p>
-            </div>
-            <button type="button" class="glass-close-btn" onclick="closeAddPostCard()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <div class="vapr-card-body vapr-scrollbar">
-            <div class="input-group">
-                <label for="title">
-                    <i class="fa-solid fa-heading"></i> Title
-                    <span class="required">*</span>
-                </label>
-                <input type="text" id="title" name="title" placeholder="Give your post an eye-catching title..." required maxlength="100">
-                <div class="character-count">
-                    <span id="title-count">0</span>/100
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>
-                    <i class="fa-solid fa-photo-film"></i> Media
-                    <span class="required">*</span>
-                </label>
-                <div class="upload-area" onclick="document.getElementById('file').click()">
-                    <div class="upload-placeholder" id="upload-placeholder">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <h3>Drop your media here or click to browse</h3>
-                        <p>Supports: JPG, PNG, GIF, MP4, WEBM • Max 50MB</p>
+<article class="add-post-modal glass_modal" id="add-post-card" style="display:none;">
+    <div class="add-post-container">
+        <div id="postForm">
+            <div class="add-post-header">
+                <div class="header-content">
+                    <div class="header-brand">
+                        <div class="header-icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="header-text">
+                            <h2>Create New Post</h2>
+                            <p>Share your content with the RSPWN community</p>
+                        </div>
                     </div>
-                    <div class="upload-preview" id="upload-preview" style="display:none;">
-                        <img id="preview_img" src="" alt="Preview">
-                        <video id="preview_video" src="" controls></video>
-                        <div class="preview-overlay">
-                            <button type="button" class="change-media-btn" onclick="document.getElementById('file').click()">
-                                <i class="fa-solid fa-camera"></i> Change Media
+                </div>
+                <button type="button" class="glass-close-btn" onclick="closeAddPostCard()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="add-post-nav">
+                <div class="post-section">
+                    <div class="section-header">
+                        <i class="fa-solid fa-heading"></i>
+                        <span>Post Details</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="title">
+                            Title <span class="required">*</span>
+                        </label>
+                        <input type="text" id="title" name="title" placeholder="Give your post an eye-catching title..." required maxlength="100" class="glass-input">
+                        <div class="character-count">
+                            <span id="title-count">0</span>/100
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-section">
+                    <div class="section-header">
+                        <i class="fa-solid fa-photo-film"></i>
+                        <span>Media Content</span>
+                    </div>
+
+                    <div class="upload-area" onclick="document.getElementById('file').click()">
+                        <div class="upload-placeholder" id="upload-placeholder">
+                            <div class="upload-icon">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h3>Drop your media here or click to browse</h3>
+                            <p>Supports: JPG, PNG, GIF, MP4, WEBM • Max 50MB</p>
+                        </div>
+                        <div class="upload-preview" id="upload-preview" style="display:none;">
+                            <img id="preview_img" src="" alt="Preview">
+                            <video id="preview_video" src="" controls></video>
+                            <div class="preview-overlay">
+                                <button type="button" class="change-media-btn glass-button" onclick="document.getElementById('file').click()">
+                                    <i class="fa-solid fa-camera"></i> Change Media
+                                </button>
+                            </div>
+                        </div>
+                        <input type="file" id="file" name="file" hidden accept="image/*,video/*">
+                    </div>
+                </div>
+
+                <div class="post-section">
+                    <div class="section-header">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>Game Tag</span>
+                        <span class="optional">(Optional)</span>
+                    </div>
+
+                    <div class="game-tag-selector">
+                        <button type="button" class="game-tag-button glass-button" id="game-tag-button" onclick="openGameTagModal()">
+                            <i class="fa-solid fa-plus"></i> Select a game
+                        </button>
+                        <div class="selected-game" id="selected-game" style="display:none;">
+                            <img class="selected-game-cover" id="selected-game-cover" src="" alt="">
+                            <span class="selected-game-title" id="selected-game-title"></span>
+                            <button type="button" class="remove-game-tag glass-close-btn" onclick="removeGameTag()">
+                                <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
                     </div>
-                    <input type="file" id="file" name="file" hidden accept="image/*,video/*">
+                    <p class="input-hint">Tag a game from RSPWN to let users discover it</p>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>
-                    <i class="fa-solid fa-gamepad"></i> Tag a Game
-                    <span class="optional">(Optional)</span>
-                </label>
-                <div class="game-tag-selector">
-                    <button type="button" class="game-tag-button" id="game-tag-button" onclick="openGameTagModal()">
-                        <i class="fa-solid fa-plus"></i> Select a game
+            <div class="add-post-footer">
+                <div class="submit-actions">
+                    <button type="button" class="cancel-btn glass-button" onclick="closeAddPostCard()">
+                        <i class="fa-solid fa-xmark"></i> Cancel
                     </button>
-                    <div class="selected-game" id="selected-game" style="display:none;">
-                        <img class="selected-game-cover" id="selected-game-cover" src="" alt="">
-                        <span class="selected-game-title" id="selected-game-title"></span>
-                        <button type="button" class="remove-game-tag" onclick="removeGameTag()">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
+                    <button type="submit" class="submit-btn glass-button primary" id="submit-post-btn" onclick="submitPost(event)">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Publish Post</span>
+                    </button>
                 </div>
-                <p class="input-hint">Tag a game from VAPR to let users discover it</p>
             </div>
 
-            <div class="submit-actions">
-                <button type="button" class="cancel-btn vapr-action-button" onclick="closeAddPostCard()">
-                    <i class="fa-solid fa-xmark"></i> Cancel
-                </button>
-                <button type="submit" class="submit-btn vapr-action-button primary" id="submit-post-btn" onclick="submitPost(event)">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>Publish Post</span>
-                </button>
+            <div class="upload-progress" id="upload-progress" style="display:none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text">Uploading your content...</p>
             </div>
-        </div>
-
-        <div class="upload-progress" id="upload-progress" style="display:none;">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <p class="progress-text">Uploading your content...</p>
         </div>
     </div>
 </article>
 
 <div id="game-tag-modal" class="glass_modal" style="display:none;">
-    <div class="game-tag-modal-content glass-primary vapr-rounded">
+    <div class="game-tag-modal-container">
         <div class="game-tag-modal-header">
-            <h3>Select a Game</h3>
+            <div class="header-content">
+                <div class="header-brand">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div class="header-text">
+                        <h3>Select a Game</h3>
+                        <p>Choose a game to tag with your post</p>
+                    </div>
+                </div>
+            </div>
             <button type="button" class="glass-close-btn" onclick="closeGameTagModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <div class="game-tag-search">
-            <input type="text" id="game-tag-search" placeholder="Search games..." class="glass-input" oninput="searchGamesForTag()">
+        <div class="game-tag-content">
+            <div class="game-tag-search">
+                <input type="text" id="game-tag-search" placeholder="Search games..." class="glass-input" oninput="searchGamesForTag()">
+            </div>
+            <div class="game-tag-list" id="game-tag-list"></div>
         </div>
-        <div class="game-tag-list vapr-scrollbar" id="game-tag-list"></div>
     </div>
 </div>

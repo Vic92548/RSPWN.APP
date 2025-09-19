@@ -346,10 +346,11 @@ window.addEventListener('resize', () => {
     }, 250);
 });
 
+// Legacy function override for backwards compatibility
 const originalOpenNewPostModel = window.opeNewPostModel;
 window.opeNewPostModel = function() {
     hideMenu();
-    originalOpenNewPostModel();
+    router.navigate('/create');
 };
 
 const originalOpenAnalytics = window.openAnalytics;

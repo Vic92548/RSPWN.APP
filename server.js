@@ -123,7 +123,7 @@ function createExpressRequest(req) {
     };
 }
 
-const home_urls = ['/','/library','/new-post','/terms','/privacy','/store','/join'];
+const home_urls = ['/','/library','/new-post','/create','/terms','/privacy','/store','/join'];
 
 for (let i = 0; i < home_urls.length; i++) {
     app.get(home_urls[i], async (req, res) => {
@@ -131,6 +131,7 @@ for (let i = 0; i < home_urls.length; i++) {
         const isPrivacyPage = home_urls[i] === '/privacy';
         const isStorePage = home_urls[i] === '/store';
         const isJoinPage = home_urls[i] === '/join';
+        const isCreatePage = home_urls[i] === '/create';
 
         let meta_description = config.meta.default.description;
         let meta_url = config.meta.default.url;
@@ -147,6 +148,9 @@ for (let i = 0; i < home_urls.length; i++) {
         } else if (isJoinPage) {
             meta_description = 'Join RSPWN - The Gamer\'s Social Network. Connect with gamers, share content, and grow your audience.';
             meta_url = config.meta.default.url + '/join';
+        } else if (isCreatePage) {
+            meta_description = 'Create New Post - Share your content with the RSPWN community';
+            meta_url = config.meta.default.url + '/create';
         }
 
         await res.render('index.html', {
