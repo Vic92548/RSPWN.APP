@@ -734,7 +734,7 @@ button#continue-btn.signup-btn.primary {
 .link-button {
   background: none;
   border: none;
-  color: #4CAF50;
+  color: #4A9EFF;
   text-decoration: none;
   cursor: pointer;
   font-size: inherit;
@@ -753,16 +753,182 @@ button#continue-btn.signup-btn.primary {
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: #4CAF50;
+    background: #4A9EFF;
     transition: width 0.3s ease;
   }
 
   &:hover {
-    color: #66BB6A;
-    background: rgba(76, 175, 80, 0.05);
+    color: #6BB5FF;
+    background: rgba(74, 158, 255, 0.05);
 
     &::after {
       width: 100%;
+    }
+  }
+}
+
+// Signin auth buttons - compact style matching continue button
+.signin-auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6px 12px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
+  border: 2px solid #333333;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px !important;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 8px;
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &:hover {
+    border-color: #4A9EFF;
+    background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+  }
+
+  &.magic-link-method {
+    margin-bottom: 12px;
+  }
+
+  &.otp-method {
+    margin-bottom: 16px;
+  }
+
+  &.verify-btn {
+    background: linear-gradient(145deg, #22C55E 0%, #16A34A 100%);
+    border-color: #22C55E;
+
+    &:hover {
+      background: linear-gradient(145deg, #16A34A 0%, #15803D 100%);
+      border-color: #16A34A;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+    }
+  }
+}
+
+// Social auth grid
+.social-auth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+
+  @include responsive(mobile) {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+.social-auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 8px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
+  border: 2px solid #333333;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px !important;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  i {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    border-color: #4A9EFF;
+    background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(74, 158, 255, 0.2);
+  }
+
+  &.discord {
+    &:hover {
+      border-color: #5865F2;
+      box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2);
+    }
+  }
+
+  &.twitch {
+    &:hover {
+      border-color: #9146FF;
+      box-shadow: 0 4px 12px rgba(145, 70, 255, 0.2);
+    }
+  }
+
+  &.google {
+    &:hover {
+      border-color: #EA4335;
+      box-shadow: 0 4px 12px rgba(234, 67, 53, 0.2);
+    }
+  }
+
+  &.apple {
+    &:hover {
+      border-color: #000000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  &.facebook {
+    &:hover {
+      border-color: #1877F2;
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2);
+    }
+  }
+
+  &.linkedin {
+    &:hover {
+      border-color: #0A66C2;
+      box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
+    }
+  }
+
+  @include responsive(mobile) {
+    font-size: 11px !important;
+    gap: 8px;
+
+    i {
+      font-size: 14px;
     }
   }
 }
