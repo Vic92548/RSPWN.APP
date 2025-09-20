@@ -6,15 +6,21 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import * as stytch from 'stytch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const clientId = process.env.DISCORD_ClientID;
-const clientSecret = process.env.DISCORD_ClientSecret;
+const STYTCH_PROJECT_ID = process.env.STYTCH_PROJECT_ID || 'project-test-79d91f96-5db2-43e9-953e-f575d25ad53b';
+const STYTCH_SECRET = process.env.STYTCH_SECRET || 'secret-test-RcLdSYk1x7PZMATufPzIv-7ZDAQR_midHPY=';
 const BASE_URL = process.env.BASE_URL;
-const redirectUri = `${BASE_URL}/auth/discord/callback`;
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const stytchClient = new stytch.Client({
+    project_id: STYTCH_PROJECT_ID,
+    secret: STYTCH_SECRET,
+    env: stytch.envs.test
+});
 
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be set in production');
@@ -111,111 +117,193 @@ function parseStateFromCookie(cookieHeader) {
     return cookies.oauth_state;
 }
 
-export async function handleOAuthCallback(request) {
+export async function handleStytchCallback(request) {
     const url = new URL(request.url);
-    const code = url.searchParams.get("code");
-    const state = url.searchParams.get("state");
+    const token = url.searchParams.get("token");
+    const token_type = url.searchParams.get("stytch_token_type");
 
-    if (!code) return new Response("Authorization code not found", { status: 400 });
+    if (!token) return new Response("Authentication token not found", { status: 400 });
 
-    const cookieHeader = request.headers.cookie || request.headers.get?.("Cookie");
-    const storedState = parseStateFromCookie(cookieHeader);
+    try {
+        let authResponse;
 
-    if (!state || state !== storedState) {
-        return new Response("Invalid state parameter", { status: 400 });
-    }
+        if (token_type === 'magic_links') {
+            authResponse = await stytchClient.magicLinks.authenticate({
+                token: token
+            });
+        } else if (token_type === 'otps') {
+            authResponse = await stytchClient.otps.authenticate({
+                token: token
+            });
+        } else {
+            return new Response("Invalid token type", { status: 400 });
+        }
 
-    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: "authorization_code",
-            code: code,
-            redirect_uri: redirectUri
-        })
-    });
+        if (authResponse.status_code !== 200) {
+            return new Response("Authentication failed", { status: 401 });
+        }
 
-    if (!tokenResponse.ok) {
-        return new Response("Failed to obtain access token", { status: tokenResponse.status });
-    }
+        const stytchUser = authResponse.user;
+        const email = stytchUser.emails[0]?.email;
+        const userId = stytchUser.user_id;
 
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData.access_token;
-    const userResponse = await fetch("https://discord.com/api/users/@me", {
-        headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    if (!userResponse.ok) {
-        return new Response("Failed to fetch user data", { status: userResponse.status });
-    }
-
-    const userData = await userResponse.json();
-
-    let user = await usersCollection.findOne({ id: userData.id });
-
-    if (!user) {
-        await usersCollection.insertOne({
-            id: userData.id,
-            username: userData.username,
-            email: userData.email,
-            provider: 'discord',
-            avatar: userData.avatar,
-            level: 0,
-            xp: 0,
-            xp_required: 700,
-            createdAt: new Date(),
-            lastLoginAt: new Date()
+        let user = await usersCollection.findOne({
+            $or: [
+                { id: userId },
+                { email: email }
+            ]
         });
 
-        const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
+        if (!user) {
+            const username = email.split('@')[0];
 
-        if (discordJoinWebhook) {
-            sendMessageToDiscordWebhook(
-                discordJoinWebhook,
-                `${userData.username} joined VAPR we are now ${(await usersCollection.countDocuments())} members!`
+            await usersCollection.insertOne({
+                id: userId,
+                username: username,
+                email: email,
+                provider: 'stytch',
+                avatar: null,
+                level: 0,
+                xp: 0,
+                xp_required: 700,
+                createdAt: new Date(),
+                lastLoginAt: new Date()
+            });
+
+            const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
+
+            if (discordJoinWebhook) {
+                sendMessageToDiscordWebhook(
+                    discordJoinWebhook,
+                    `${username} joined RSPWN we are now ${(await usersCollection.countDocuments())} members!`
+                );
+            }
+
+            user = { id: userId, username, email, provider: 'stytch' };
+        } else {
+            await usersCollection.updateOne(
+                { $or: [{ id: userId }, { email: email }] },
+                {
+                    $set: {
+                        id: userId,
+                        email: email,
+                        lastLoginAt: new Date()
+                    }
+                }
             );
         }
-    } else {
-        await usersCollection.updateOne(
-            { id: userData.id },
-            {
-                $set: {
-                    username: userData.username,
-                    email: userData.email,
-                    avatar: userData.avatar,
-                    lastLoginAt: new Date()
-                }
+
+        const jwtToken = generateSecureToken(userId);
+
+        const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'stytch_callback.html'), 'utf8');
+        const htmlContent = htmlTemplate
+            .replace('{{userData}}', JSON.stringify({ id: userId, email, username: user.username }).replace(/"/g, '\\"'));
+
+        return new Response(htmlContent, {
+            status: 200,
+            headers: {
+                "Content-Type": "text/html",
+                "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
+                "Set-Cookie": `jwt=${jwtToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=604800; Path=/`
             }
-        );
+        });
+    } catch (error) {
+        console.error('Stytch authentication error:', error);
+        return new Response("Authentication failed", { status: 500 });
     }
-
-    const jwtToken = generateSecureToken(userData.id);
-
-    const htmlTemplate = await fs.readFile(path.join(__dirname, '..', 'discord_callback.html'), 'utf8');
-    const htmlContent = htmlTemplate
-        .replace('{{userData}}', JSON.stringify(userData).replace(/"/g, '\\"'));
-
-    return new Response(htmlContent, {
-        status: 200,
-        headers: {
-            "Content-Type": "text/html",
-            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
-            "Set-Cookie": `jwt=${jwtToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=604800; Path=/`
-        }
-    });
 }
 
-export function redirectToDiscordLogin() {
-    const state = crypto.randomBytes(32).toString('hex');
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email&state=${state}`;
+export async function sendMagicLink(email) {
+    try {
+        const response = await stytchClient.magicLinks.email.loginOrCreate({
+            email: email,
+            login_magic_link_url: `${BASE_URL}/auth/stytch/callback`,
+            signup_magic_link_url: `${BASE_URL}/auth/stytch/callback`
+        });
 
-    return new Response(null, {
-        status: 302,
-        headers: {
-            'Location': authUrl,
-            'Set-Cookie': `oauth_state=${state}; HttpOnly; Secure; SameSite=Lax; Max-Age=600`
+        if (response.status_code === 200) {
+            return { success: true, message: 'Magic link sent successfully' };
+        } else {
+            return { success: false, message: 'Failed to send magic link' };
         }
-    });
+    } catch (error) {
+        console.error('Error sending magic link:', error);
+        return { success: false, message: 'Failed to send magic link' };
+    }
+}
+
+export async function sendOTP(email) {
+    try {
+        const response = await stytchClient.otps.email.loginOrCreate({
+            email: email
+        });
+
+        if (response.status_code === 200) {
+            return { success: true, message: 'OTP sent successfully' };
+        } else {
+            return { success: false, message: 'Failed to send OTP' };
+        }
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        return { success: false, message: 'Failed to send OTP' };
+    }
+}
+
+export async function verifyOTP(email, code) {
+    try {
+        const response = await stytchClient.otps.authenticate({
+            method_id: email,
+            code: code
+        });
+
+        if (response.status_code === 200) {
+            const stytchUser = response.user;
+            const userId = stytchUser.user_id;
+
+            let user = await usersCollection.findOne({
+                $or: [
+                    { id: userId },
+                    { email: email }
+                ]
+            });
+
+            if (!user) {
+                const username = email.split('@')[0];
+
+                await usersCollection.insertOne({
+                    id: userId,
+                    username: username,
+                    email: email,
+                    provider: 'stytch',
+                    avatar: null,
+                    level: 0,
+                    xp: 0,
+                    xp_required: 700,
+                    createdAt: new Date(),
+                    lastLoginAt: new Date()
+                });
+
+                user = { id: userId, username, email, provider: 'stytch' };
+            } else {
+                await usersCollection.updateOne(
+                    { $or: [{ id: userId }, { email: email }] },
+                    {
+                        $set: {
+                            id: userId,
+                            email: email,
+                            lastLoginAt: new Date()
+                        }
+                    }
+                );
+            }
+
+            const jwtToken = generateSecureToken(userId);
+            return { success: true, token: jwtToken, user };
+        } else {
+            return { success: false, message: 'Invalid OTP' };
+        }
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        return { success: false, message: 'Failed to verify OTP' };
+    }
 }

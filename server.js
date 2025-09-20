@@ -13,7 +13,7 @@ import { config } from './server_modules/config.js';
 import { setupSecurityMiddleware, rateLimiters, corsOptions } from './server_modules/security.js';
 import { createRenderMiddleware } from './server_modules/middleware/render.js';
 import { setupUnifiedRoutes } from './server_modules/unified_router.js';
-import { handleOAuthCallback, redirectToDiscordLogin, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
+import { handleStytchCallback, sendMagicLink, sendOTP, verifyOTP, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
 import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
     createPost,
@@ -143,19 +143,30 @@ app.get('/checkout/cancel', async (req, res) => {
     });
 });
 
-app.get('/login', rateLimiters.auth, async (req, res) => {
-    const response = await redirectToDiscordLogin();
-    const setCookieHeader = response.headers.get('set-cookie');
-
-    if (setCookieHeader) {
-        res.setHeader('Set-Cookie', setCookieHeader);
-    }
-
-    res.redirect(response.headers.get('location'));
+app.get('/', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: config.meta.default.description,
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url
+    });
 });
 
-app.get('/auth/discord/callback', rateLimiters.auth, async (req, res) => {
-    const response = await handleOAuthCallback(createExpressRequest(req));
+app.get('/join', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Join RSPWN - The Gamer\'s Social Network',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/join'
+    });
+});
+
+app.get('/login', (req, res) => {
+    res.redirect('/join');
+});
+
+app.get('/auth/stytch/callback', rateLimiters.auth, async (req, res) => {
+    const response = await handleStytchCallback(createExpressRequest(req));
     const html = await response.text();
     const setCookieHeader = response.headers.get('set-cookie');
 
@@ -164,6 +175,49 @@ app.get('/auth/discord/callback', rateLimiters.auth, async (req, res) => {
     }
 
     res.status(response.status).type('html').send(html);
+});
+
+app.post('/api/auth/magic-link', rateLimiters.auth, async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const result = await sendMagicLink(email);
+    res.json(result);
+});
+
+app.post('/api/auth/otp', rateLimiters.auth, async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const result = await sendOTP(email);
+    res.json(result);
+});
+
+app.post('/api/auth/verify-otp', rateLimiters.auth, async (req, res) => {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+        return res.status(400).json({ success: false, message: 'Email and code are required' });
+    }
+
+    const result = await verifyOTP(email, code);
+
+    if (result.success && result.token) {
+        res.cookie('jwt', result.token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+    }
+
+    res.json(result);
 });
 
 app.post('/logout', (req, res) => {

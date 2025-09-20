@@ -23,7 +23,8 @@
     "multer": "^2.0.2",
     "resend": "^4.7.0",
     "sass": "^1.89.2",
-    "serve-static": "^2.2.0"
+    "serve-static": "^2.2.0",
+    "stytch": "^12.35.0"
   },
   "devDependencies": {
     "npm": "^11.5.1"

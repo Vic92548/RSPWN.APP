@@ -196,17 +196,60 @@
   }
 }
 
-// Discord Login Button
-.discord-login-btn {
-  position: relative;
-  display: inline-block;
+// Authentication Form
+.auth-form {
   max-width: 400px;
-  width: 100%;
   margin: 0 auto 40px;
+  padding: 0;
+
+  @include responsive(mobile) {
+    max-width: 100%;
+    margin-bottom: 32px;
+  }
+}
+
+.email-input {
+  width: 100%;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  font-size: 16px;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #4A9EFF;
+    background: rgba(74, 158, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+  }
+
+  @include responsive(mobile) {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+.magic-link-btn, .otp-btn, .get-started-btn, .verify-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 auto 16px;
   text-decoration: none;
+  border: none;
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.3s ease;
+  cursor: pointer;
+  background: none;
 
   &:hover {
     transform: translateY(-3px);
@@ -221,8 +264,91 @@
   }
 
   @include responsive(mobile) {
-    max-width: 100%;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
+  }
+}
+
+.divider {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  span {
+    background: #0A0A0A;
+    padding: 0 16px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    position: relative;
+  }
+}
+
+.otp-section {
+  margin-top: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.otp-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 18px;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 16px;
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: normal;
+    font-weight: 400;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #4A9EFF;
+    background: rgba(74, 158, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+  }
+}
+
+.auth-status {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+
+  &.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
   }
 }
 
@@ -233,7 +359,6 @@
   justify-content: center;
   gap: 12px;
   padding: 20px 32px;
-  background: linear-gradient(135deg, #5865F2, #7289DA);
   color: white;
   font-size: 18px;
   font-weight: 700;
@@ -254,14 +379,37 @@
   }
 }
 
+.magic-link-btn .btn-content {
+  background: linear-gradient(135deg, #4A9EFF, #6366f1);
+}
+
+.otp-btn .btn-content, .verify-btn .btn-content {
+  background: linear-gradient(135deg, #8B5CF6, #a855f7);
+}
+
+.get-started-btn .btn-content {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
 .btn-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #5865F2, #7289DA);
   filter: blur(30px);
   opacity: 0.5;
   transition: opacity 0.3s ease;
   z-index: 1;
+}
+
+.magic-link-btn .btn-glow {
+  background: linear-gradient(135deg, #4A9EFF, #6366f1);
+}
+
+.otp-btn .btn-glow, .verify-btn .btn-glow {
+  background: linear-gradient(135deg, #8B5CF6, #a855f7);
+}
+
+.get-started-btn .btn-glow {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
 }
 
 // Security Badges

@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "mcp__stytch__createRedirectURL",
+      "mcp__stytch__getConsumerSDKConfig",
+      "mcp__stytch__updateConsumerSDKConfig",
+      "mcp__stytch__createPublicToken",
+      "mcp__stytch__createSecret",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
