@@ -1,8 +1,10 @@
 function createSigninPageTemplate(content) {
     return `
-    <section id="signin-page" class="auth-container signin-page" style="display:none;">
-        <div class="auth-body">
-            <div class="auth-content">
+    <section id="signin-page" class="signin-container" style="display:none;">
+        <button id="signin_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
+
+        <div class="signin-body">
+            <div class="signin-content">
                 ${content}
             </div>
         </div>
@@ -11,59 +13,68 @@ function createSigninPageTemplate(content) {
 
 function createSigninContent() {
     return `
-        <!-- Main Welcome Section -->
-        <div class="auth-welcome-section">
-            <div class="welcome-content">
-                <h2>Welcome Back</h2>
-                <p class="welcome-description">Sign in to your RSPWN account using your email address.</p>
+        <div class="signin-step-container">
+            <div class="signin-step-content">
+                <div class="step-header">
+                    <h2 class="step-title">Sign In</h2>
+                    <p class="step-description">Welcome back! Sign in to your RSPWN account using your email address.</p>
+                </div>
 
-                <div class="auth-form">
-                    <input type="email" id="signin-email" placeholder="Enter your email" class="email-input">
-
-                    <button onclick="signinWithMagicLink()" class="magic-link-btn">
-                        <div class="btn-content">
-                            <i class="fa-solid fa-envelope"></i>
-                            <span>Send Magic Link</span>
+                <div class="signin-form">
+                    <div class="input-group">
+                        <div class="input-container">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <input type="email" id="signin-email" placeholder="Enter your email address" class="signup-input" autocomplete="email">
                         </div>
-                        <div class="btn-glow"></div>
-                    </button>
-
-                    <div class="divider">
-                        <span>or</span>
                     </div>
 
-                    <button onclick="signinWithOTP()" class="otp-btn">
-                        <div class="btn-content">
-                            <i class="fa-solid fa-key"></i>
-                            <span>Send OTP Code</span>
-                        </div>
-                    </button>
-
-                    <div id="signin-otp-section" class="otp-section" style="display: none;">
-                        <input type="text" id="signin-otp-input" placeholder="Enter 6-digit code" class="otp-input" maxlength="6">
-                        <button onclick="verifySigninOTP()" class="verify-btn">
+                    <div class="auth-methods">
+                        <button onclick="signinWithMagicLink()" class="signup-btn primary magic-link-method">
                             <div class="btn-content">
-                                <span>Sign In</span>
+                                <i class="fa-solid fa-link"></i>
+                                <span>Send Magic Link</span>
                             </div>
+                            <div class="btn-ripple"></div>
+                        </button>
+
+                        <div class="method-divider">
+                            <span>or</span>
+                        </div>
+
+                        <button onclick="signinWithOTP()" class="signup-btn secondary otp-method">
+                            <div class="btn-content">
+                                <i class="fa-solid fa-key"></i>
+                                <span>Send OTP Code</span>
+                            </div>
+                            <div class="btn-ripple"></div>
                         </button>
                     </div>
 
-                    <div id="signin-status" class="auth-status"></div>
+                    <div id="signin-otp-section" class="otp-verification" style="display: none;">
+                        <div class="input-group">
+                            <div class="input-container">
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+                                <input type="text" id="signin-otp-input" placeholder="Enter 6-digit code" class="signup-input otp-input" maxlength="6" pattern="[0-9]{6}">
+                            </div>
+                        </div>
+                        <button onclick="verifySigninOTP()" class="signup-btn success">
+                            <div class="btn-content">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                <span>Sign In</span>
+                            </div>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </div>
+
+                    <div id="signin-status" class="status-message"></div>
                 </div>
 
-                <div class="security-badges">
-                    <div class="security-badge">
-                        <i class="fa-solid fa-lock"></i>
-                        <span>Secure Login</span>
-                    </div>
-                    <div class="security-badge">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Passwordless</span>
-                    </div>
-                </div>
-
-                <div class="auth-switch">
-                    <p>Don't have an account? <button onclick="openSignupPage()" class="link-btn">Create one here</button></p>
+                <div class="signin-footer">
+                    <p>Don't have an account? <button onclick="openSignupPage()" class="link-button">Create one here</button></p>
                 </div>
             </div>
         </div>
@@ -225,7 +236,7 @@ function showSigninStatus(message, isError = false) {
     const statusDiv = document.getElementById('signin-status');
     if (statusDiv) {
         statusDiv.textContent = message;
-        statusDiv.className = `auth-status ${isError ? 'error' : 'success'}`;
+        statusDiv.className = `status-message ${isError ? 'error' : 'success'}`;
         statusDiv.style.display = 'block';
         setTimeout(() => {
             statusDiv.style.display = 'none';

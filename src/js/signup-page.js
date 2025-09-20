@@ -1,8 +1,10 @@
 function createSignupPageTemplate(content) {
     return `
-    <section id="signup-page" class="auth-container signup-page" style="display:none;">
-        <div class="auth-body">
-            <div class="auth-content">
+    <section id="signup-page" class="signup-container" style="display:none;">
+        <button id="signup_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
+
+        <div class="signup-body">
+            <div class="signup-content">
                 ${content}
             </div>
         </div>
@@ -12,13 +14,15 @@ function createSignupPageTemplate(content) {
 function createSignupContent() {
     return `
         <!-- Step Indicator -->
-        <div class="signup-steps">
+        <div class="signup-progress-section">
             <div class="step-indicator">
                 <div class="step active" id="step-1-indicator">
                     <div class="step-number">1</div>
                     <span>Choose Username</span>
                 </div>
-                <div class="step-line"></div>
+                <div class="step-line">
+                    <div class="step-line-fill"></div>
+                </div>
                 <div class="step" id="step-2-indicator">
                     <div class="step-number">2</div>
                     <span>Verify Email</span>
@@ -27,77 +31,105 @@ function createSignupContent() {
         </div>
 
         <!-- Step 1: Username Selection -->
-        <div class="auth-welcome-section" id="signup-step-1">
-            <div class="welcome-content">
-                <h2>Create Your Account</h2>
-                <p class="welcome-description">Choose a unique username to represent you in the RSPWN community.</p>
-
-                <div class="auth-form">
-                    <div class="username-input-container">
-                        <input type="text" id="signup-username" placeholder="Choose your username" class="email-input username-input" maxlength="20">
-                        <div class="username-feedback" id="username-feedback"></div>
-                    </div>
-
-                    <button onclick="checkUsernameAndProceed()" class="get-started-btn primary" id="continue-btn" disabled>
-                        <div class="btn-content">
-                            <i class="fa-solid fa-arrow-right"></i>
-                            <span>Continue</span>
-                        </div>
-                        <div class="btn-glow"></div>
-                    </button>
-
-                    <div id="signup-status-step1" class="auth-status"></div>
+        <div class="signup-step-container" id="signup-step-1">
+            <div class="signup-step-content">
+                <div class="step-header">
+                    <h2 class="step-title">Create Your Account</h2>
+                    <p class="step-description">Choose a unique username to represent you in the RSPWN community.</p>
                 </div>
 
-                <div class="auth-switch">
-                    <p>Already have an account? <button onclick="openSigninPage()" class="link-btn">Sign in here</button></p>
+                <div class="signup-form">
+                    <div class="input-group">
+                        <div class="input-container">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" id="signup-username" placeholder="Choose your username" class="signup-input" maxlength="20" autocomplete="username">
+                        </div>
+                        <div class="input-feedback" id="username-feedback"></div>
+                    </div>
+
+                    <button onclick="checkUsernameAndProceed()" class="signup-btn primary" id="continue-btn" disabled>
+                        <div class="btn-content">
+                            <span>Continue</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <div class="btn-ripple"></div>
+                    </button>
+
+                    <div id="signup-status-step1" class="status-message"></div>
+                </div>
+
+                <div class="signup-footer">
+                    <p>Already have an account? <button onclick="openSigninPage()" class="link-button">Sign in here</button></p>
                 </div>
             </div>
         </div>
 
         <!-- Step 2: Email Authentication -->
-        <div class="auth-welcome-section" id="signup-step-2" style="display: none;">
-            <div class="welcome-content">
-                <h2>Verify Your Email</h2>
-                <p class="welcome-description">Great choice! Username <strong id="chosen-username"></strong> is yours. Now let's verify your email address.</p>
+        <div class="signup-step-container" id="signup-step-2" style="display: none;">
+            <div class="signup-step-content">
+                <div class="step-header">
+                    <h2 class="step-title">Verify Your Email</h2>
+                    <p class="step-description">Great choice! Username <strong id="chosen-username" class="highlight-text"></strong> is yours. Now let's verify your email address.</p>
+                </div>
 
-                <div class="auth-form">
-                    <input type="email" id="signup-email" placeholder="Enter your email" class="email-input">
-
-                    <button onclick="signupWithMagicLink()" class="magic-link-btn">
-                        <div class="btn-content">
-                            <i class="fa-solid fa-envelope"></i>
-                            <span>Send Magic Link</span>
+                <div class="signup-form">
+                    <div class="input-group">
+                        <div class="input-container">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <input type="email" id="signup-email" placeholder="Enter your email address" class="signup-input" autocomplete="email">
                         </div>
-                        <div class="btn-glow"></div>
-                    </button>
-
-                    <div class="divider">
-                        <span>or</span>
                     </div>
 
-                    <button onclick="signupWithOTP()" class="otp-btn">
-                        <div class="btn-content">
-                            <i class="fa-solid fa-key"></i>
-                            <span>Send OTP Code</span>
-                        </div>
-                    </button>
-
-                    <div id="signup-otp-section" class="otp-section" style="display: none;">
-                        <input type="text" id="signup-otp-input" placeholder="Enter 6-digit code" class="otp-input" maxlength="6">
-                        <button onclick="verifySignupOTP()" class="verify-btn">
+                    <div class="auth-methods">
+                        <button onclick="signupWithMagicLink()" class="signup-btn primary magic-link-method">
                             <div class="btn-content">
-                                <span>Create Account</span>
+                                <i class="fa-solid fa-link"></i>
+                                <span>Send Magic Link</span>
                             </div>
+                            <div class="btn-ripple"></div>
+                        </button>
+
+                        <div class="method-divider">
+                            <span>or</span>
+                        </div>
+
+                        <button onclick="signupWithOTP()" class="signup-btn secondary otp-method">
+                            <div class="btn-content">
+                                <i class="fa-solid fa-key"></i>
+                                <span>Send OTP Code</span>
+                            </div>
+                            <div class="btn-ripple"></div>
                         </button>
                     </div>
 
-                    <button onclick="goBackToStep1()" class="back-btn">
+                    <div id="signup-otp-section" class="otp-verification" style="display: none;">
+                        <div class="input-group">
+                            <div class="input-container">
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+                                <input type="text" id="signup-otp-input" placeholder="Enter 6-digit code" class="signup-input otp-input" maxlength="6" pattern="[0-9]{6}">
+                            </div>
+                        </div>
+                        <button onclick="verifySignupOTP()" class="signup-btn success">
+                            <div class="btn-content">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Create Account</span>
+                            </div>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </div>
+
+                    <button onclick="goBackToStep1()" class="back-button">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>Back to Username</span>
                     </button>
 
-                    <div id="signup-status" class="auth-status"></div>
+                    <div id="signup-status" class="status-message"></div>
                 </div>
             </div>
         </div>
@@ -401,7 +433,7 @@ function showSignupStatus(message, isError = false) {
     const statusDiv = document.getElementById('signup-status');
     if (statusDiv) {
         statusDiv.textContent = message;
-        statusDiv.className = `auth-status ${isError ? 'error' : 'success'}`;
+        statusDiv.className = `status-message ${isError ? 'error' : 'success'}`;
         statusDiv.style.display = 'block';
         setTimeout(() => {
             statusDiv.style.display = 'none';
