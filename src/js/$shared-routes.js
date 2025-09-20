@@ -226,6 +226,32 @@ const ROUTES = {
         }
     },
 
+    signup: {
+        path: '/signup',
+        meta: {
+            title: 'Sign Up - RSPWN',
+            description: 'Create your RSPWN account',
+            requiresAuth: false
+        },
+        frontend: () => {
+            hidePost();
+            openSignupPage();
+        }
+    },
+
+    signin: {
+        path: '/signin',
+        meta: {
+            title: 'Sign In - RSPWN',
+            description: 'Sign in to your RSPWN account',
+            requiresAuth: false
+        },
+        frontend: () => {
+            hidePost();
+            openSigninPage();
+        }
+    },
+
     games: {
         path: '/games/:gameName',
         meta: {

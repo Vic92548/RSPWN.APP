@@ -1,0 +1,570 @@
+// Professional Auth Enhancements for Signup/Signin
+@use '../variables' as *;
+@use '../mixins' as *;
+
+// 2-Step Signup Process Styling
+.signup-steps {
+    max-width: 400px;
+    margin: 0 auto 40px;
+
+    @include responsive(mobile) {
+        margin-bottom: 32px;
+    }
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    @include responsive(mobile) {
+        gap: 12px;
+    }
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+
+    &.active {
+        opacity: 1;
+
+        .step-number {
+            background: linear-gradient(135deg, #4A9EFF, #6366f1);
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+        }
+
+        span {
+            color: #4A9EFF;
+            font-weight: 600;
+        }
+    }
+
+    &.completed {
+        opacity: 1;
+
+        .step-number {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+
+            &::after {
+                content: '✓';
+                font-size: 14px;
+            }
+        }
+
+        span {
+            color: #22c55e;
+            font-weight: 600;
+        }
+    }
+
+    span {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        transition: all 0.3s ease;
+
+        @include responsive(mobile) {
+            font-size: 12px;
+        }
+    }
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+
+    @include responsive(mobile) {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #4A9EFF, #6366f1);
+        transition: width 0.6s ease;
+    }
+
+    .step.completed ~ & {
+        &::after {
+            width: 100%;
+        }
+    }
+}
+
+// Username input container and feedback
+.username-input-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.username-feedback {
+    margin-top: 8px;
+    min-height: 24px;
+
+    .feedback {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        i {
+            font-size: 14px;
+        }
+
+        &.checking {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        &.success {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        &.error {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+    }
+}
+
+// Continue button (disabled state)
+.get-started-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+
+    &:hover {
+        transform: none !important;
+
+        .btn-glow {
+            opacity: 0.5 !important;
+        }
+    }
+}
+
+// Back button styling
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    i {
+        font-size: 12px;
+    }
+}
+
+// Clean auth pages without header
+.signup-page, .signin-page {
+    .auth-body {
+        padding-top: 60px;
+
+        @include responsive(tablet) {
+            padding-top: 50px;
+        }
+
+        @include responsive(mobile) {
+            padding-top: 80px; // Extra space for mobile menu button
+        }
+    }
+}
+
+// Step animation
+#signup-step-1, #signup-step-2 {
+    animation: stepSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes stepSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+// Improved link button styling for auth switching
+.auth-switch {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+
+    p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        font-size: 16px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .link-btn {
+        background: none;
+        border: none;
+        color: #4A9EFF;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: inherit;
+        font-family: inherit;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #4A9EFF;
+            transition: width 0.3s ease;
+        }
+
+        &:hover {
+            color: #6BB5FF;
+            background: rgba(74, 158, 255, 0.05);
+
+            &::after {
+                width: 100%;
+            }
+        }
+    }
+
+    @include responsive(mobile) {
+        margin-top: 24px;
+        padding-top: 20px;
+
+        p {
+            font-size: 14px;
+        }
+    }
+}
+
+// Enhanced username input styling
+.username-input {
+    position: relative;
+
+    &::after {
+        content: '👤';
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+// Improved auth form layout
+.auth-form {
+    position: relative;
+
+    .email-input {
+        margin-bottom: 16px;
+        position: relative;
+
+        &:focus {
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1),
+                        0 8px 24px rgba(74, 158, 255, 0.15);
+        }
+    }
+}
+
+// Enhanced magic link and OTP buttons with micro-animations
+.magic-link-btn, .otp-btn {
+    margin-bottom: 0;
+
+    &:hover {
+        .btn-content {
+            i {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .btn-content {
+        i {
+            transition: transform 0.3s ease;
+        }
+    }
+}
+
+// Improved security badges spacing and layout
+.security-badges {
+    margin-top: 32px;
+    margin-bottom: 16px;
+
+    @include responsive(mobile) {
+        margin-top: 24px;
+        margin-bottom: 12px;
+    }
+
+    .security-badge {
+        i {
+            color: #4A9EFF;
+        }
+    }
+}
+
+// Enhanced stats section for signin page
+#signin_user_count {
+    animation: countUp 2s ease-out forwards;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Improved responsive design for auth pages
+@include responsive(mobile) {
+    .auth-welcome-section {
+        .welcome-content {
+            h2 {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+
+            .welcome-description {
+                font-size: 15px;
+                margin-bottom: 28px;
+            }
+        }
+    }
+
+    .auth-features-section {
+        .features-grid {
+            gap: 12px;
+        }
+
+        .feature-card {
+            padding: 20px;
+
+            h4 {
+                font-size: 16px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+        }
+    }
+
+    .auth-stats-section {
+        .stats-grid {
+            gap: 12px;
+        }
+
+        .stat-card {
+            padding: 20px 12px;
+
+            .stat-number {
+                font-size: 18px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+        }
+    }
+}
+
+// Page transition animations
+.signup-page, .signin-page {
+    animation: pageSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes pageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Enhanced feature cards with subtle animations
+.auth-features-section .feature-card {
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+    &:nth-child(4) { animation-delay: 0.4s; }
+
+    animation: cardFadeIn 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Enhanced stats cards with stagger animation
+.auth-stats-section .stat-card {
+    animation: statCardSlideIn 0.6s ease-out forwards;
+    opacity: 0;
+
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+    &:nth-child(4) { animation-delay: 0.4s; }
+}
+
+@keyframes statCardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+// Improved footer links with better hover states
+.auth-footer-links {
+    .footer-link {
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        &:hover::before {
+            left: 100%;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+// Enhanced OTP section with better visual hierarchy
+.otp-section {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+        border-radius: 12px;
+        pointer-events: none;
+    }
+
+    .verify-btn {
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        &:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+    }
+}

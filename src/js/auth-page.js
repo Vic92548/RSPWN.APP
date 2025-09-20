@@ -74,6 +74,10 @@ function createAuthContent() {
                         <span>Privacy protected</span>
                     </div>
                 </div>
+
+                <div class="auth-switch">
+                    <p>Prefer separate flows? <button onclick="openSignupPage()" class="link-btn">Sign up</button> or <button onclick="openSigninPage()" class="link-btn">Sign in</button></p>
+                </div>
             </div>
         </div>
 
@@ -239,6 +243,14 @@ function closeAuthPage() {
         // Update page title back
         document.title = 'RSPWN';
     }
+}
+
+function hideAllPages() {
+    const pages = ['feed', 'auth-page', 'signup-page', 'signin-page'];
+    pages.forEach(pageId => {
+        const page = DOM.get(pageId);
+        if (page) page.style.display = 'none';
+    });
 }
 
 function updateAuthUserCount() {
@@ -415,4 +427,6 @@ if (typeof window !== 'undefined') {
     window.openAuthPage = openAuthPage;
     window.closeAuthPage = closeAuthPage;
     window.updateAuthUserCount = updateAuthUserCount;
+    window.hideAllPages = hideAllPages;
+    window.isValidEmail = isValidEmail;
 }

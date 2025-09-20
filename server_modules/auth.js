@@ -121,6 +121,8 @@ export async function handleStytchCallback(request) {
     const url = new URL(request.url);
     const token = url.searchParams.get("token");
     const token_type = url.searchParams.get("stytch_token_type");
+    const isSignup = url.searchParams.get("signup") === "true";
+    const username = url.searchParams.get("username");
 
     if (!token) return new Response("Authentication token not found", { status: 400 });
 
@@ -155,11 +157,21 @@ export async function handleStytchCallback(request) {
         });
 
         if (!user) {
-            const username = email.split('@')[0];
+            let finalUsername;
+
+            if (isSignup && username) {
+                const existingUsername = await usersCollection.findOne({ username: username });
+                if (existingUsername) {
+                    return new Response("Username already taken", { status: 400 });
+                }
+                finalUsername = username;
+            } else {
+                finalUsername = email.split('@')[0];
+            }
 
             await usersCollection.insertOne({
                 id: userId,
-                username: username,
+                username: finalUsername,
                 email: email,
                 provider: 'stytch',
                 avatar: null,
@@ -173,13 +185,14 @@ export async function handleStytchCallback(request) {
             const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
 
             if (discordJoinWebhook) {
+                const { sendMessageToDiscordWebhook } = await import('./discord.js');
                 sendMessageToDiscordWebhook(
                     discordJoinWebhook,
-                    `${username} joined RSPWN we are now ${(await usersCollection.countDocuments())} members!`
+                    `${finalUsername} joined RSPWN we are now ${(await usersCollection.countDocuments())} members!`
                 );
             }
 
-            user = { id: userId, username, email, provider: 'stytch' };
+            user = { id: userId, username: finalUsername, email, provider: 'stytch' };
         } else {
             await usersCollection.updateOne(
                 { $or: [{ id: userId }, { email: email }] },
@@ -232,6 +245,38 @@ export async function sendMagicLink(email) {
     }
 }
 
+export async function sendSignupMagicLink(email, username) {
+    try {
+        const existingUser = await usersCollection.findOne({
+            $or: [{ email: email }, { username: username }]
+        });
+
+        if (existingUser) {
+            if (existingUser.email === email) {
+                return { success: false, message: 'An account with this email already exists' };
+            }
+            if (existingUser.username === username) {
+                return { success: false, message: 'This username is already taken' };
+            }
+        }
+
+        const response = await stytchClient.magicLinks.email.loginOrCreate({
+            email: email,
+            login_magic_link_url: `${BASE_URL}/auth/stytch/callback?signup=true&username=${encodeURIComponent(username)}`,
+            signup_magic_link_url: `${BASE_URL}/auth/stytch/callback?signup=true&username=${encodeURIComponent(username)}`
+        });
+
+        if (response.status_code === 200) {
+            return { success: true, message: 'Magic link sent successfully' };
+        } else {
+            return { success: false, message: 'Failed to send magic link' };
+        }
+    } catch (error) {
+        console.error('Error sending signup magic link:', error);
+        return { success: false, message: 'Failed to send magic link' };
+    }
+}
+
 export async function sendOTP(email) {
     try {
         const response = await stytchClient.otps.email.loginOrCreate({
@@ -245,6 +290,36 @@ export async function sendOTP(email) {
         }
     } catch (error) {
         console.error('Error sending OTP:', error);
+        return { success: false, message: 'Failed to send OTP' };
+    }
+}
+
+export async function sendSignupOTP(email, username) {
+    try {
+        const existingUser = await usersCollection.findOne({
+            $or: [{ email: email }, { username: username }]
+        });
+
+        if (existingUser) {
+            if (existingUser.email === email) {
+                return { success: false, message: 'An account with this email already exists' };
+            }
+            if (existingUser.username === username) {
+                return { success: false, message: 'This username is already taken' };
+            }
+        }
+
+        const response = await stytchClient.otps.email.loginOrCreate({
+            email: email
+        });
+
+        if (response.status_code === 200) {
+            return { success: true, message: 'OTP sent successfully', username: username };
+        } else {
+            return { success: false, message: 'Failed to send OTP' };
+        }
+    } catch (error) {
+        console.error('Error sending signup OTP:', error);
         return { success: false, message: 'Failed to send OTP' };
     }
 }
@@ -304,6 +379,90 @@ export async function verifyOTP(email, code) {
         }
     } catch (error) {
         console.error('Error verifying OTP:', error);
+        return { success: false, message: 'Failed to verify OTP' };
+    }
+}
+
+export async function checkUsernameAvailability(username) {
+    try {
+        if (!username || username.length < 3) {
+            return { success: false, message: 'Username must be at least 3 characters long' };
+        }
+
+        if (username.length > 20) {
+            return { success: false, message: 'Username must be 20 characters or less' };
+        }
+
+        if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+            return { success: false, message: 'Username can only contain letters, numbers, underscores, and hyphens' };
+        }
+
+        const existingUser = await usersCollection.findOne({ username: username });
+
+        if (existingUser) {
+            return { success: false, message: 'This username is already taken' };
+        }
+
+        return { success: true, message: 'Username is available!' };
+    } catch (error) {
+        console.error('Error checking username availability:', error);
+        return { success: false, message: 'Failed to check username availability' };
+    }
+}
+
+export async function verifySignupOTP(email, code, username) {
+    try {
+        const existingUser = await usersCollection.findOne({
+            $or: [{ email: email }, { username: username }]
+        });
+
+        if (existingUser) {
+            if (existingUser.email === email) {
+                return { success: false, message: 'An account with this email already exists' };
+            }
+            if (existingUser.username === username) {
+                return { success: false, message: 'This username is already taken' };
+            }
+        }
+
+        const response = await stytchClient.otps.authenticate({
+            method_id: email,
+            code: code
+        });
+
+        if (response.status_code === 200) {
+            const stytchUser = response.user;
+            const userId = stytchUser.user_id;
+
+            await usersCollection.insertOne({
+                id: userId,
+                username: username,
+                email: email,
+                provider: 'stytch',
+                avatar: null,
+                level: 0,
+                xp: 0,
+                xp_required: 700,
+                createdAt: new Date(),
+                lastLoginAt: new Date()
+            });
+
+            const discordJoinWebhook = process.env.DISCORD_JOIN_WEBHOOK_URL;
+            if (discordJoinWebhook) {
+                const { sendMessageToDiscordWebhook } = await import('./discord.js');
+                sendMessageToDiscordWebhook(
+                    discordJoinWebhook,
+                    `${username} joined RSPWN we are now ${(await usersCollection.countDocuments())} members!`
+                );
+            }
+
+            const jwtToken = generateSecureToken(userId);
+            return { success: true, token: jwtToken, user: { id: userId, username, email, provider: 'stytch' } };
+        } else {
+            return { success: false, message: 'Invalid OTP' };
+        }
+    } catch (error) {
+        console.error('Error verifying signup OTP:', error);
         return { success: false, message: 'Failed to verify OTP' };
     }
 }

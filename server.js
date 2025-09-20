@@ -13,7 +13,7 @@ import { config } from './server_modules/config.js';
 import { setupSecurityMiddleware, rateLimiters, corsOptions } from './server_modules/security.js';
 import { createRenderMiddleware } from './server_modules/middleware/render.js';
 import { setupUnifiedRoutes } from './server_modules/unified_router.js';
-import { handleStytchCallback, sendMagicLink, sendOTP, verifyOTP, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
+import { handleStytchCallback, sendMagicLink, sendOTP, verifyOTP, sendSignupMagicLink, sendSignupOTP, verifySignupOTP, checkUsernameAvailability, authenticateRequest, updateBackgroundId } from './server_modules/auth.js';
 import { getVideoIdByPostId } from './server_modules/posts/video.js';
 import {
     createPost,
@@ -161,8 +161,26 @@ app.get('/join', async (req, res) => {
     });
 });
 
+app.get('/signup', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Sign up for RSPWN - The Gamer\'s Social Network',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/signup'
+    });
+});
+
+app.get('/signin', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Sign in to RSPWN - The Gamer\'s Social Network',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/signin'
+    });
+});
+
 app.get('/login', (req, res) => {
-    res.redirect('/join');
+    res.redirect('/signin');
 });
 
 app.get('/auth/stytch/callback', rateLimiters.auth, async (req, res) => {
@@ -217,6 +235,60 @@ app.post('/api/auth/verify-otp', rateLimiters.auth, async (req, res) => {
         });
     }
 
+    res.json(result);
+});
+
+app.post('/api/auth/signup/magic-link', rateLimiters.auth, async (req, res) => {
+    const { email, username } = req.body;
+
+    if (!email || !username) {
+        return res.status(400).json({ success: false, message: 'Email and username are required' });
+    }
+
+    const result = await sendSignupMagicLink(email, username);
+    res.json(result);
+});
+
+app.post('/api/auth/signup/otp', rateLimiters.auth, async (req, res) => {
+    const { email, username } = req.body;
+
+    if (!email || !username) {
+        return res.status(400).json({ success: false, message: 'Email and username are required' });
+    }
+
+    const result = await sendSignupOTP(email, username);
+    res.json(result);
+});
+
+app.post('/api/auth/signup/verify-otp', rateLimiters.auth, async (req, res) => {
+    const { email, code, username } = req.body;
+
+    if (!email || !code || !username) {
+        return res.status(400).json({ success: false, message: 'Email, code, and username are required' });
+    }
+
+    const result = await verifySignupOTP(email, code, username);
+
+    if (result.success && result.token) {
+        res.cookie('jwt', result.token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+    }
+
+    res.json(result);
+});
+
+app.post('/api/auth/check-username', rateLimiters.auth, async (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: 'Username is required' });
+    }
+
+    const result = await checkUsernameAvailability(username);
     res.json(result);
 });
 
