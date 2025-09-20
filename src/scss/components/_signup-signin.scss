@@ -7,7 +7,7 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  background: transparent; // Allow body background to show through
   display: flex;
   flex-direction: column;
   font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -139,11 +139,13 @@
   justify-content: center;
   gap: 16px;
   padding: 16px 24px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(145deg, #0A0A0A 0%, #1A1A1A 100%);
+  border: 1px solid #333333;
   border-radius: 8px;
   max-width: 300px;
   margin: 0 auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   @include responsive(mobile) {
     gap: 12px;
@@ -615,6 +617,33 @@ button#continue-btn.signup-btn.primary {
   }
 }
 
+// Magic Link and OTP buttons on signup page - consistent 13px font size
+.signup-btn.magic-link-method,
+.signup-btn.otp-method {
+  padding: 6px 12px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+
+  .btn-content {
+    gap: 6px !important;
+
+    span {
+      font-size: 13px !important;
+    }
+
+    i {
+      font-size: 14px !important;
+    }
+  }
+
+  .btn-ripple {
+    display: none !important;
+  }
+}
+
 // Authentication Methods Layout
 .auth-methods {
   display: flex;
@@ -767,7 +796,7 @@ button#continue-btn.signup-btn.primary {
   }
 }
 
-// Signin auth buttons - compact style matching continue button
+// Signin auth buttons - consistent 13px font size
 .signin-auth-btn {
   display: flex;
   align-items: center;
@@ -781,7 +810,7 @@ button#continue-btn.signup-btn.primary {
   border: 2px solid #333333;
   border-radius: 6px;
   font-family: 'Inter', sans-serif;
-  font-size: 11px !important;
+  font-size: 13px !important;
   font-weight: 600;
   color: #FFFFFF;
   cursor: pointer;
@@ -792,6 +821,14 @@ button#continue-btn.signup-btn.primary {
     display: flex;
     align-items: center;
     gap: 6px;
+
+    span {
+      font-size: 13px !important;
+    }
+
+    i {
+      font-size: 14px !important;
+    }
   }
 
   &:hover {
@@ -852,14 +889,14 @@ button#continue-btn.signup-btn.primary {
   border: 2px solid #333333;
   border-radius: 6px;
   font-family: 'Inter', sans-serif;
-  font-size: 10px !important;
+  font-size: 13px !important;
   font-weight: 600;
   color: #FFFFFF;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   i {
-    font-size: 12px;
+    font-size: 14px;
     flex-shrink: 0;
   }
 
@@ -867,6 +904,7 @@ button#continue-btn.signup-btn.primary {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 13px !important;
   }
 
   &:hover {
@@ -924,8 +962,12 @@ button#continue-btn.signup-btn.primary {
   }
 
   @include responsive(mobile) {
-    font-size: 11px !important;
+    font-size: 13px !important;
     gap: 8px;
+
+    span {
+      font-size: 13px !important;
+    }
 
     i {
       font-size: 14px;
@@ -993,7 +1035,7 @@ button#continue-btn.signup-btn.primary {
   position: relative;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  background: transparent; // Allow body background to show through
   display: flex;
   flex-direction: column;
   font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

@@ -38,13 +38,6 @@ function createSigninContent() {
                             </div>
                         </button>
 
-                        <button onclick="signinWithOTP()" class="signin-auth-btn otp-method">
-                            <div class="btn-content">
-                                <i class="fa-solid fa-key"></i>
-                                <span>Send OTP Code</span>
-                            </div>
-                        </button>
-
                         <div class="method-divider">
                             <span>or continue with</span>
                         </div>
@@ -134,11 +127,39 @@ function openSigninPage() {
             signinBody.scrollTop = 0;
         }
 
+        // Apply saved background image
+        applyUserBackground();
+
         if (window.history && window.history.pushState) {
             window.history.pushState({page: 'signin'}, 'Sign In - RSPWN', '/signin');
         }
 
         document.title = 'Sign In - RSPWN';
+    }
+}
+
+function applyUserBackground() {
+    const backgroundUrl = localStorage.getItem('background_url');
+    const backgroundId = localStorage.getItem('background_id');
+
+    if (backgroundUrl) {
+        document.body.style.backgroundImage = 'url(' + backgroundUrl + ')';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+    } else if (backgroundId) {
+        // If we have ID but no URL, try to load from the post
+        if (typeof equipBackground === 'function') {
+            equipBackground(backgroundId, false);
+        }
+    } else {
+        // Apply default background if none is set
+        if (typeof setDefaultBackground === 'function') {
+            setDefaultBackground();
+        } else {
+            // Fallback to a dark gradient
+            document.body.style.backgroundImage = 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)';
+        }
     }
 }
 
