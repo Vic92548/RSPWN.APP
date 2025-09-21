@@ -1,0 +1,341 @@
+{
+  "menuSections": [
+    {
+      "category": "Create & Share",
+      "visibility": {
+        "requireAuth": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Create Post",
+          "subtitle": "Share your content",
+          "icon": "fa-solid fa-plus",
+          "iconClass": "",
+          "action": "router.navigate('/create', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        },
+        {
+          "title": "Analytics",
+          "subtitle": "Track performance",
+          "icon": "fa-solid fa-chart-line",
+          "iconClass": "analytics",
+          "action": "router.navigate('/creators', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Games",
+      "visibility": {
+        "requireAuth": false,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Store",
+          "subtitle": "Explore available games",
+          "icon": "fa-solid fa-gamepad",
+          "iconClass": "games",
+          "action": "router.navigate('/store', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        },
+        {
+          "title": "My Library",
+          "subtitle": "Your owned games",
+          "icon": "fa-solid fa-bookmark",
+          "iconClass": "library",
+          "action": "router.navigate('/library', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        },
+        {
+          "title": "Downloads",
+          "subtitle": "Manage your downloads",
+          "icon": "fa-solid fa-download",
+          "iconClass": "downloads",
+          "action": "router.navigate('/downloads', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Developer",
+      "visibility": {
+        "requireAuth": true,
+        "requireDeveloper": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Partners",
+          "subtitle": "Manage your games",
+          "icon": "fa-solid fa-code",
+          "iconClass": "developer",
+          "action": "router.navigate('/partners', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "requireDeveloper": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Community",
+      "visibility": {
+        "requireAuth": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Invite Friends",
+          "subtitle": "Grow your network",
+          "icon": "fa-solid fa-user-plus",
+          "iconClass": "invite",
+          "action": "copyReferrerId()",
+          "arrow": false,
+          "badge": "+650 XP",
+          "badgeClass": "glass-badge",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "About",
+      "visibility": {
+        "requireAuth": false,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Open Source",
+          "subtitle": "View on GitHub",
+          "icon": "fa-brands fa-github",
+          "iconClass": "github",
+          "action": "window.open('https://github.com/Vic92548/VAPR', '_blank');",
+          "arrow": false,
+          "badge": "<i class=\"fa-solid fa-star\"></i> ...",
+          "badgeClass": "stars glass-badge",
+          "badgeId": "github_stars",
+          "specialType": "github",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        },
+        {
+          "title": "Join Discord",
+          "subtitle": "Chat with community",
+          "icon": "fa-brands fa-discord",
+          "iconClass": "discord",
+          "action": "window.open('https://discord.gg/vtsnj3zphd', '_blank');",
+          "arrow": false,
+          "badge": "<i class=\"fa-solid fa-users\"></i> ...",
+          "badgeClass": "members glass-badge",
+          "badgeId": "discord_members",
+          "specialType": "discord",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Desktop App",
+      "visibility": {
+        "requireAuth": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": true,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Download",
+          "subtitle": "Get the native app",
+          "icon": "fa-solid fa-download",
+          "iconClass": "download",
+          "action": "downloadDesktopApp()",
+          "arrow": false,
+          "badge": "<i class=\"fa-brands fa-windows\"></i> Windows",
+          "badgeClass": "glass-badge",
+          "elementId": "desktop-download-item",
+          "visibility": {
+            "requireAuth": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": true,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Legal",
+      "visibility": {
+        "requireAuth": false,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "items": [
+        {
+          "title": "Terms of Service",
+          "subtitle": "Rules and conditions",
+          "icon": "fa-solid fa-scale-balanced",
+          "iconClass": "",
+          "action": "router.navigate('/terms', true); hideMenu();",
+          "arrow": false,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        },
+        {
+          "title": "Privacy Policy",
+          "subtitle": "How we handle data",
+          "icon": "fa-solid fa-user-shield",
+          "iconClass": "",
+          "action": "router.navigate('/privacy', true); hideMenu();",
+          "arrow": false,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Join RSPWN",
+      "visibility": {
+        "requireAuth": false,
+        "showOnlyWhenLoggedOut": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "sectionId": "public_auth_section",
+      "items": [
+        {
+          "title": "Join with Discord",
+          "subtitle": "Create your account",
+          "icon": "fa-brands fa-discord",
+          "iconClass": "discord-auth",
+          "action": "router.navigate('/join', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "specialType": "discord",
+          "visibility": {
+            "requireAuth": false,
+            "showOnlyWhenLoggedOut": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    },
+    {
+      "category": "Account",
+      "visibility": {
+        "requireAuth": true,
+        "showOnlyWhenLoggedIn": true,
+        "hideOnMobile": false,
+        "hideOnDesktop": false,
+        "hideOnWeb": false
+      },
+      "sectionId": "account_section",
+      "items": [
+        {
+          "title": "Logout",
+          "subtitle": "Sign out of RSPWN",
+          "icon": "fa-solid fa-right-from-bracket",
+          "iconClass": "",
+          "action": "logout()",
+          "arrow": false,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": true,
+            "showOnlyWhenLoggedIn": true,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false
+          }
+        }
+      ]
+    }
+  ]
+}

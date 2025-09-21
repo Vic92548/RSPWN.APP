@@ -14,11 +14,9 @@ function showInitialPost() {
 }
 
 function isUserLoggedIn(){
-    if(window.user){
-        return true;
-    }else{
-        return false;
-    }
+    const result = window.user ? true : false;
+    console.log('isUserLoggedIn() called:', result, 'window.user:', window.user);
+    return result;
 }
 
 function updateUsername() {
@@ -29,6 +27,7 @@ function updateUsername() {
     }
 }
 
+console.log("🚀 Starting authentication flow");
 loadUserData();
 
 let current_post_id = undefined;
@@ -215,4 +214,18 @@ window.closeProfileCard = function() {
     cardManager.hide('profile-card');
 };
 
-router.handleRoute();
+console.log('🎯 main.js - delaying router until auth completes');
+
+// Wait for authentication to complete before handling initial route
+function waitForAuthThenRoute() {
+    if (window.loading_steps <= 0) {
+        console.log('🎯 Auth completed, now handling route - window.user:', window.user);
+        router.handleRoute();
+    } else {
+        console.log('🎯 Auth still loading, waiting 100ms... loading_steps:', window.loading_steps);
+        setTimeout(waitForAuthThenRoute, 100);
+    }
+}
+
+// Start waiting for auth completion
+waitForAuthThenRoute();

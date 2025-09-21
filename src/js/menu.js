@@ -1,4 +1,8 @@
 function initMenu() {
+    if (window.menuManager) {
+        window.menuManager.updateMenu();
+    }
+
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
         showMenuUserElements();
@@ -9,7 +13,6 @@ function initMenu() {
     }
 
     updateOnlineUsers();
-    addMenuAnimations();
 
     if (window.innerWidth >= 769) {
         initMenuCollapseState();
@@ -48,6 +51,11 @@ function toggleMenuCollapse() {
 }
 
 function updateMenuTooltips(isCollapsed) {
+    if (window.menuManager) {
+        window.menuManager.updateMenuTooltips(isCollapsed);
+        return;
+    }
+
     const menuItems = DOM.queryAll('.menu-item');
 
     menuItems.forEach(item => {
@@ -200,6 +208,11 @@ async function updateOnlineUsers() {
 }
 
 function addMenuAnimations() {
+    if (window.menuManager) {
+        window.menuManager.addMenuAnimations();
+        return;
+    }
+
     const menuItems = DOM.queryAll('.menu-item');
 
     menuItems.forEach((item, index) => {
@@ -256,6 +269,10 @@ function openMenu() {
     if (!menu) return;
 
     DOM.show(menu, 'flex');
+
+    if (window.menuManager) {
+        window.menuManager.updateMenu();
+    }
 
     if (isUserLoggedIn()) {
         updateMenuUserInfo();
@@ -383,6 +400,9 @@ if (typeof document !== 'undefined') {
         originalLoadUserData();
         setTimeout(() => {
             initMenu();
+            if (window.menuManager) {
+                window.menuManager.updateMenu();
+            }
             if (window.user && window.VAPR) {
                 insertVAPRUserInfo();
             }

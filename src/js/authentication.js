@@ -1,12 +1,18 @@
 function loadUserData(){
+    console.log('🔄 loadUserData() started');
     DOM.hide("sign_in");
     DOM.hide("add_post");
 
     api.getMe().then(function(data){
+        console.log('✅ api.getMe() success, setting window.user:', data);
         window.user = data;
 
         if (window.updateSDKUserInfo) {
             window.updateSDKUserInfo();
+        }
+
+        if (window.menuManager) {
+            window.menuManager.updateMenu();
         }
 
         updateUsername();
@@ -46,11 +52,16 @@ function loadUserData(){
 
         checkAndShowUpdates();
     }).catch(error => {
+        console.log('❌ api.getMe() failed, user not logged in:', error);
 
         DOM.show("sign_in");
         DOM.hide("add_post");
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
+
+        if (window.menuManager) {
+            window.menuManager.updateMenu();
+        }
 
         try {
             if (typeof updateApplyUIForAuth === 'function') updateApplyUIForAuth();

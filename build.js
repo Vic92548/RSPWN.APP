@@ -170,6 +170,15 @@ async function main() {
     const combinedCSS = await combineAndMinifyCSS('./src/css/', './src/scss/');
     console.log('✓ CSS processed\n');
 
+    // Copy menu configuration
+    console.log('Copying menu configuration...');
+    try {
+        await fs.copyFile('./src/js/menu-config.json', './public/menu-config.json');
+        console.log('✓ Menu configuration copied\n');
+    } catch (error) {
+        console.log('⚠ Menu configuration not found, skipping...\n');
+    }
+
     console.log('Build completed successfully!');
 }
 

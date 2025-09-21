@@ -56,6 +56,11 @@ function openAddPostPage() {
         // Update page title
         document.title = 'Create New Post - RSPWN';
 
+        // Apply user's background image if they have one
+        if (window.user && window.user.backgroundId) {
+            equipBackground(window.user.backgroundId, false);
+        }
+
         // Initialize character counter
         setupCharacterCounter();
     }

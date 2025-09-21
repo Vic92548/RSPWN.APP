@@ -179,6 +179,60 @@ app.get('/signin', async (req, res) => {
     });
 });
 
+app.get('/create', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Create a new post on RSPWN - Share your content with the gaming community',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/create'
+    });
+});
+
+app.get('/store', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'RSPWN Game Store - Discover and purchase amazing games and digital content',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/store'
+    });
+});
+
+app.get('/library', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Your personal game library on RSPWN',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/library'
+    });
+});
+
+app.get('/downloads', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'Manage your game downloads on RSPWN',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/downloads'
+    });
+});
+
+app.get('/terms', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'RSPWN Terms of Service - Read our platform guidelines and user agreement',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/terms'
+    });
+});
+
+app.get('/privacy', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'RSPWN Privacy Policy - Learn how we protect and handle your personal information',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/privacy'
+    });
+});
+
 app.get('/login', (req, res) => {
     res.redirect('/signin');
 });

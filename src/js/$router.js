@@ -5,6 +5,7 @@ class VAPRRouter {
         this.currentRoute = null;
         this.params = {};
         this.previousRoute = null;
+        this.authRetryCount = 0;
         this.initializeRoutes();
     }
 
@@ -39,9 +40,10 @@ class VAPRRouter {
     }
 
     handleRoute() {
-        console.log('ROUTE');
+        console.log('📍 ROUTE handleRoute() called');
         const path = window.location.pathname;
-        console.log('Handling route for path:', path);
+        console.log('📍 Handling route for path:', path);
+        console.log('📍 Current auth state - window.user:', window.user, 'loading_steps:', window.loading_steps);
         this.previousRoute = this.currentRoute;
 
         if (cardManager.currentCard && !cardManager.isNavigating) {
@@ -60,9 +62,25 @@ class VAPRRouter {
             console.log('Executing route:', key, 'with params:', params);
             this.currentRoute = key;
             this.params = params;
+            this.authRetryCount = 0; // Reset retry counter on successful route
 
             if (route.meta.requiresAuth && !isUserLoggedIn()) {
-                console.log('Route requires auth, opening register modal');
+                console.log('Route requires auth but user not logged in');
+                console.log('window.user:', window.user);
+                console.log('isUserLoggedIn():', isUserLoggedIn());
+                console.log('loading_steps:', window.loading_steps);
+
+                // Wait a bit for user data to load if it's still loading
+                if ((window.loading_steps > 0 || (localStorage.getItem('userData') && !window.user)) && this.authRetryCount < 5) {
+                    this.authRetryCount++;
+                    console.log('Auth not ready, retrying route in 500ms (attempt:', this.authRetryCount, ')');
+                    setTimeout(() => {
+                        this.handleRoute();
+                    }, 500);
+                    return;
+                }
+
+                console.log('Opening register modal');
                 openRegisterModal();
                 return;
             }
@@ -115,6 +133,7 @@ class VAPRRouter {
     }
 }
 
+console.log('🔧 Creating router, current auth state - window.user:', window.user, 'loading_steps:', window.loading_steps);
 window.router = new VAPRRouter();
 
 window.addEventListener('popstate', () => {
