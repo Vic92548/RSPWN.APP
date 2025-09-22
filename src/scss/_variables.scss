@@ -138,3 +138,111 @@ $width-huge: 300px;
 $width-massive: 320px;
 $width-giant: 400px;
 $width-max: 1200px;
+
+// Border widths
+$border-width-thin: 1px;
+$border-width-medium: 2px;
+$border-width-thick: 3px;
+$border-width-heavy: 4px;
+
+// Border styles
+$border-style-solid: solid;
+$border-style-dashed: dashed;
+$border-style-dotted: dotted;
+$border-style-none: none;
+
+// Common border combinations
+$border-thin: $border-width-thin $border-style-solid;
+$border-medium: $border-width-medium $border-style-solid;
+$border-thick: $border-width-thick $border-style-solid;
+$border-heavy: $border-width-heavy $border-style-solid;
+
+// Transparent borders for consistent spacing
+$border-transparent-thin: $border-width-thin $border-style-solid transparent;
+$border-transparent-medium: $border-width-medium $border-style-solid transparent;
+
+// Shadow system
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.1);
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 2px 8px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.2);
+$shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.25);
+$shadow-2xl: 0 16px 48px rgba(0, 0, 0, 0.3);
+$shadow-3xl: 0 24px 64px rgba(0, 0, 0, 0.35);
+
+// Store-specific shadows
+$shadow-input: 0 2px 12px rgba(0, 0, 0, 0.3);
+$shadow-input-focus: 0 4px 20px rgba(0, 0, 0, 0.5);
+$shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+$shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.6);
+$shadow-featured: 0 16px 64px rgba(0, 0, 0, 0.6);
+$shadow-button: 0 2px 8px rgba(0, 0, 0, 0.3);
+$shadow-button-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
+$shadow-filter: 0 4px 20px rgba(0, 0, 0, 0.5);
+$shadow-sidebar: 0 8px 24px rgba(0, 0, 0, 0.5);
+$shadow-overlay: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+// Inner shadows
+$shadow-inner-sm: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+$shadow-inner-md: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+$shadow-inner-lg: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+
+// Transition durations
+$duration-fast: 0.15s;
+$duration-normal: 0.3s;
+$duration-slow: 0.5s;
+$duration-slower: 0.8s;
+
+// Transition easing functions
+$ease-linear: linear;
+$ease-in: ease-in;
+$ease-out: ease-out;
+$ease-in-out: ease-in-out;
+$ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-bounce: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+// Common transition combinations
+$transition-fast: all $duration-fast $ease-in-out;
+$transition-normal: all $duration-normal $ease-in-out;
+$transition-slow: all $duration-slow $ease-in-out;
+$transition-smooth: all $duration-normal $ease-smooth;
+$transition-bounce: all $duration-normal $ease-bounce;
+
+// Specific transition types
+$transition-color: color $duration-normal $ease-in-out;
+$transition-opacity: opacity $duration-normal $ease-in-out;
+$transition-transform: transform $duration-normal $ease-smooth;
+$transition-width: width $duration-fast $ease-in-out;
+$transition-height: height $duration-fast $ease-in-out;
+$transition-left: left $duration-slow $ease-in-out;
+
+// Z-index scale
+$z-index-behind: -1;
+$z-index-base: 0;
+$z-index-content: 1;
+$z-index-overlay: 2;
+$z-index-dropdown: 10;
+$z-index-sticky: 100;
+$z-index-fixed: 500;
+$z-index-modal: 1000;
+$z-index-popover: 1100;
+$z-index-tooltip: 1200;
+$z-index-toast: 1300;
+
+// Opacity values
+$opacity-disabled: 0.5;
+$opacity-muted: 0.6;
+$opacity-secondary: 0.8;
+$opacity-overlay: 0.9;
+$opacity-transparent: 0;
+$opacity-opaque: 1;
+
+// Common rgba values for overlays and effects
+$overlay-subtle: rgba(255, 255, 255, 0.03);
+$overlay-faint: rgba(255, 255, 255, 0.05);
+$overlay-soft: rgba(255, 255, 255, 0.08);
+$overlay-light: rgba(255, 255, 255, 0.1);
+$overlay-medium: rgba(255, 255, 255, 0.2);
+$overlay-dark: rgba(0, 0, 0, 0.1);
+$overlay-darker: rgba(0, 0, 0, 0.2);
+$overlay-darkest: rgba(0, 0, 0, 0.8);

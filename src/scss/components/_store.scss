@@ -5,26 +5,25 @@
 // Store Container Styling
 .store-container {
   position: relative;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
-  display: flex;
-  flex-direction: column;
+  @include full-width;
+  @include full-viewport;
+  @include bg-gradient($bg-primary, $bg-secondary);
+  @include flex-column;
   font-family: $font-primary;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  @include transition(all, 0.4s, cubic-bezier(0.25, 0.46, 0.45, 0.94));
 
   // Ensure menu button is visible on mobile/tablet
   @include responsive(tablet) {
     .create-post-btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 
   @include responsive(mobile) {
     .create-post-btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 }
@@ -32,7 +31,7 @@
 .store-header {
   flex: 0 0 auto;
   background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
-  border-bottom: 1px solid $border-primary;
+  border-bottom: $border-thin $border-primary;
   padding: $spacing-xxl 0;
 
   @include responsive(mobile) {
@@ -41,9 +40,7 @@
 }
 
 .store-header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex-between;
   gap: 24px;
   max-width: $width-max;
   margin: 0 auto;
@@ -68,32 +65,12 @@
 }
 
 .store-title {
-  font-size: $font-giant;
-  font-weight: 700;
-  color: $text-primary;
+  @include page-title;
   margin: 0 0 8px 0;
-  font-family: $font-brand;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-
-  @include responsive(tablet) {
-    font-size: $font-massive;
-  }
-
-  @include responsive(mobile) {
-    font-size: $font-huge;
-  }
 }
 
 .store-subtitle {
-  font-size: $font-large;
-  color: $text-secondary;
-  margin: 0;
-  font-family: $font-primary;
-
-  @include responsive(mobile) {
-    font-size: $font-xl;
-  }
+  @include section-subtitle;
 }
 
 .store-header-search {
@@ -112,35 +89,33 @@
 
   .search-input-wrapper {
     position: relative;
-    width: 100%;
+    @include full-width;
     box-sizing: border-box;
   }
 
   .search-icon {
-    position: absolute;
+    @include absolute-center-y;
     left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
     color: $text-faint;
     font-size: $font-large;
     pointer-events: none;
-    z-index: 2;
-    transition: color 0.3s ease;
+    z-index: $z-index-overlay;
+    @include transition(color);
   }
 
   .store-search-input {
     padding: 12px 16px;
     padding-left: 44px;
     background: $bg-primary;
-    border: 2px solid $bg-secondary;
+    border: $border-medium $bg-secondary;
     border-radius: 10px;
     color: $text-primary;
     font-size: $font-xl;
     font-family: $font-primary;
-    width: 100%;
+    @include full-width;
     box-sizing: border-box;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    transition: $transition-normal;
+    box-shadow: $shadow-input;
 
     &::placeholder {
       color: $text-faint;
@@ -150,7 +125,7 @@
       outline: none;
       border-color: $border-secondary;
       background: $bg-tertiary;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: $shadow-input-focus;
 
       + .search-icon,
       ~ .search-icon {
@@ -211,8 +186,8 @@
     background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
-    border: 1px solid $border-primary;
+    box-shadow: $shadow-featured;
+    border: $border-thin $border-primary;
 
     @include responsive(tablet) {
       height: 350px;
@@ -226,7 +201,7 @@
       flex-direction: column;
       border-radius: 8px;
       margin: 0;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: $shadow-sidebar;
       overflow: hidden;
     }
   }
@@ -253,34 +228,20 @@
   }
 
   .featured-main-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: all 0.8s ease;
+    @include absolute-cover;
+    @include bg-cover;
+    @include transition(all, 0.8s);
   }
 
   .featured-main-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.9) 100%);
-    z-index: 1;
+    @include absolute-cover;
+    @include bg-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+    z-index: $z-index-content;
   }
 
   .featured-main-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
+    @include absolute-cover;
+    z-index: $z-index-overlay;
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
@@ -310,7 +271,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: $border-thin $overlay-medium;
 
     &.featured {
       background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
@@ -354,8 +315,7 @@
   }
 
   .featured-tags {
-    display: flex;
-    flex-wrap: wrap;
+    @include flex-wrap;
     gap: 8px;
     margin-bottom: 24px;
 
@@ -366,8 +326,8 @@
 
   .featured-tag {
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: $overlay-light;
+    border: $border-thin $overlay-medium;
     border-radius: 6px;
     font-size: 12px;
     color: $text-muted;
@@ -376,7 +336,7 @@
   }
 
   .featured-rating {
-    display: flex;
+    @include flex-row;
     align-items: center;
     gap: 12px;
     margin-bottom: 24px;
@@ -397,7 +357,7 @@
   }
 
   .featured-price-section {
-    display: flex;
+    @include flex-row;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
@@ -417,7 +377,7 @@
   }
 
   .featured-prices {
-    display: flex;
+    @include flex-row;
     align-items: center;
     gap: 8px;
   }
@@ -435,7 +395,7 @@
   }
 
   .featured-actions {
-    display: flex;
+    @include flex-row;
     gap: 8px;
 
     @include responsive(mobile) {
@@ -451,7 +411,7 @@
     font-weight: 500;
     font-family: $font-primary;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: $transition-smooth;
     text-decoration: none;
     border: none;
     text-transform: uppercase;
@@ -464,20 +424,15 @@
 
     &::before {
       content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s ease, height 0.3s ease;
+      @include absolute-center;
+      @include size(0);
+      background: $overlay-light;
+      @include border-radius(50%);
+      @include transition(width 0.3s ease, height 0.3s ease);
     }
 
     &:hover::before {
-      width: 200px;
-      height: 200px;
+      @include size(200px);
     }
 
     i {
@@ -494,21 +449,21 @@
       background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
       border-color: #555555;
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: $shadow-overlay;
     }
   }
 
   .featured-wishlist-btn {
     background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
     color: $text-muted;
-    border: 2px solid $border-secondary;
+    border: $border-medium $border-secondary;
 
     &:hover {
       background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
       color: $text-primary;
       border-color: $border-tertiary;
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: $shadow-overlay;
     }
   }
 
@@ -517,20 +472,20 @@
   .featured-sidebar {
     flex: 1;
     background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
-    border-left: 1px solid $border-primary;
+    border-left: $border-thin $border-primary;
     display: flex;
     flex-direction: column;
 
     @include responsive(tablet) {
       flex: none;
       border-left: none;
-      border-top: 1px solid $border-primary;
+      border-top: $border-thin $border-primary;
     }
 
     @include responsive(mobile) {
       flex: none;
       border-left: none;
-      border-top: 1px solid $border-primary;
+      border-top: $border-thin $border-primary;
       order: 2;
       min-height: 120px;
       max-height: 120px;
@@ -546,7 +501,7 @@
     font-weight: 700;
     color: $text-primary;
     font-family: $font-primary;
-    border-bottom: 1px solid $border-primary;
+    border-bottom: $border-thin $border-primary;
 
     @include responsive(mobile) {
       padding: 12px 16px 8px 16px;
@@ -587,13 +542,13 @@
     align-items: center;
     padding: 16px;
     margin-bottom: 8px;
-    border: 1px solid transparent;
+    border: $border-transparent-thin;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: $transition-normal;
     position: relative;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.03);
+    background: $overlay-subtle;
 
     @include responsive(tablet) {
       flex: 0 0 200px;
@@ -618,8 +573,8 @@
       bottom: 0;
       width: var(--progress-width, 0%);
       background: linear-gradient(90deg, rgba(51, 51, 51, 0.4) 0%, rgba(85, 85, 85, 0.4) 100%);
-      transition: width 0.1s ease;
-      z-index: 1;
+      transition: $transition-width;
+      z-index: $z-index-content;
       border-radius: 12px;
     }
 
@@ -633,15 +588,15 @@
       bottom: 0;
       background: rgba(0, 0, 0, 0.2);
       opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 2;
+      transition: $transition-opacity;
+      z-index: $z-index-overlay;
       border-radius: 12px;
       pointer-events: none;
     }
 
     &:hover {
       border-color: $border-secondary;
-      transform: translateX(4px);
+      @include translate(4px, 0);
 
       &::after {
         opacity: 1;
@@ -650,8 +605,8 @@
 
     &.active {
       border-color: $border-tertiary;
-      transform: translateX(8px);
-      background: rgba(255, 255, 255, 0.08);
+      @include translate(8px, 0);
+      background: $overlay-soft;
 
       &::after {
         opacity: 0.5;
@@ -680,8 +635,7 @@
     }
 
     img {
-      width: 100%;
-      height: 100%;
+      @include full-size;
       object-fit: cover;
     }
   }
@@ -755,12 +709,12 @@
   font-weight: 600;
   font-family: $font-primary;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: $transition-normal;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: $shadow-button;
 
   &::before {
     content: '';
@@ -770,7 +724,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    transition: left 0.5s ease;
+    transition: $transition-left;
   }
 
   &:hover {
@@ -778,7 +732,7 @@
     border-color: #333333;
     color: $text-primary;
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: $shadow-button-hover;
 
     &::before {
       left: 100%;
@@ -789,7 +743,7 @@
     background: $border-primary;
     border-color: #444444;
     color: $text-primary;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: $shadow-input-focus;
   }
 
   @include responsive(mobile) {
@@ -799,20 +753,7 @@
 }
 
 .store-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin-bottom: 48px;
-
-  @include responsive(tablet) {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-  }
-
-  @include responsive(mobile) {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
+  @include responsive-grid;
 }
 
 .store-item {
@@ -820,10 +761,10 @@
   border: 2px solid #1A1A1A;
   border-radius: 16px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all $duration-normal $ease-smooth;
   cursor: pointer;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: $shadow-card;
 
   &::before {
     content: '';
@@ -834,15 +775,15 @@
     bottom: 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: $transition-opacity;
     pointer-events: none;
-    z-index: 1;
+    z-index: $z-index-content;
   }
 
   &:hover {
-    border-color: #333333;
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    border-color: $border-secondary;
+    @include transform(translateY(-8px) scale(1.02));
+    @include shadow-xl;
 
     &::before {
       opacity: 1;
@@ -855,36 +796,34 @@
 }
 
 .store-item-image {
-  width: 100%;
+  @include full-width;
   height: 200px;
   background: linear-gradient(145deg, $bg-secondary 0%, $bg-quaternary 100%);
   position: relative;
   overflow: hidden;
 
   img {
-    width: 100%;
-    height: 100%;
+    @include full-size;
     object-fit: cover;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    @include transition(transform, 0.4s, cubic-bezier(0.4, 0, 0.2, 1));
   }
 
 
   .store-item-badge {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    @include absolute-corners($top: 16px, $left: 16px);
+    @include bg-gradient($border-secondary, $border-primary);
     color: $text-primary;
-    padding: 6px 12px;
-    border-radius: 8px;
+    @include padding-x(12px);
+    @include padding-y(6px);
+    @include border-radius(8px);
     font-size: 11px;
     font-weight: 700;
     font-family: $font-primary;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: $border-thin $overlay-light;
+    z-index: $z-index-overlay;
+    @include shadow-sm;
 
     &.featured {
       background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
@@ -902,7 +841,7 @@
 .store-item-content {
   padding: 24px;
   position: relative;
-  z-index: 2;
+  z-index: $z-index-overlay;
 
   @include responsive(mobile) {
     padding: 20px;
@@ -957,7 +896,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid $bg-secondary;
+  border-bottom: $border-thin $bg-secondary;
 }
 
 .store-item-category {
@@ -1010,7 +949,7 @@
   font-weight: 600;
   font-family: $font-primary;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: $transition-smooth;
   text-align: center;
   text-decoration: none;
   border: none;
@@ -1021,46 +960,41 @@
 
   &::before {
     content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease;
+    @include absolute-center;
+    @include size(0);
+    background: $overlay-light;
+    @include border-radius(50%);
+    @include transition(width 0.3s ease, height 0.3s ease);
   }
 
   &:hover::before {
-    width: 300px;
-    height: 300px;
+    @include size(300px);
   }
 
   &.primary {
     background: linear-gradient(135deg, $bg-card 0%, $bg-secondary 100%);
     color: $text-primary;
-    border: 2px solid $border-secondary;
+    border: $border-medium $border-secondary;
 
     &:hover {
       background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
       border-color: $border-tertiary;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      @include translate(0, -2px);
+      @include shadow-lg;
     }
   }
 
   &.secondary {
     background: linear-gradient(135deg, #0F0F0F 0%, #0A0A0A 100%);
     color: $text-muted;
-    border: 2px solid $bg-secondary;
+    border: $border-medium $bg-secondary;
 
     &:hover {
       background: linear-gradient(135deg, $bg-secondary 0%, $bg-quaternary 100%);
       color: $text-primary;
       border-color: $border-secondary;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      @include translate(0, -2px);
+      @include shadow-lg;
     }
   }
 
