@@ -44,8 +44,97 @@ $mobile: 480px;
 $tablet: 768px;
 $desktop: 1024px;
 
-$spacing-xs: 10px;
-$spacing-sm: 15px;
-$spacing-md: 20px;
-$spacing-lg: 25px;
-$spacing-xl: 30px;
+// Foundation colors (RSPWN Brand Guidelines)
+$black: #000000;          // Backgrounds, depth
+$white: #FFFFFF;          // Text, highlights
+$dark: #0A0A0A;           // Secondary backgrounds
+$gray: #1A1A1A;           // Container backgrounds
+$gray-light: #2A2A2A;     // Card backgrounds
+
+// Innovation colors (RSPWN Brand Guidelines)
+$primary-blue: #4A9EFF;   // Innovation, trust, primary actions
+$primary-dark: #2D7BD8;   // Hover states, depth
+$secondary-purple: #8B5CF6; // Creativity, premium features, secondary actions
+
+// Background colors (mapped to brand colors)
+$bg-primary: $black;
+$bg-secondary: $dark;
+$bg-tertiary: $gray;
+$bg-quaternary: $gray-light;
+$bg-card: $gray-light;
+
+// Border colors (derived from brand palette)
+$border-primary: #222222;    // Slightly lighter than gray
+$border-secondary: #333333;  // Medium gray border
+$border-tertiary: #444444;   // Light gray border
+$border-quaternary: #555555; // Lightest gray border
+
+// Text colors (mapped to brand colors)
+$text-primary: $white;
+$text-secondary: rgba($white, 0.8);  // #CCCCCC
+$text-muted: rgba($white, 0.67);     // #AAAAAA
+$text-faint: rgba($white, 0.4);      // #666666
+
+// Accent colors (using brand innovation colors)
+$accent-primary: $primary-blue;
+$accent-primary-dark: $primary-dark;
+$accent-secondary: $secondary-purple;
+
+// Typography
+$font-primary: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-brand: 'Audiowide', 'Inter', sans-serif;
+
+// Font sizes
+$font-xs: 10px;
+$font-sm: 11px;
+$font-md: 12px;
+$font-lg: 13px;
+$font-xl: 14px;
+$font-xxl: 15px;
+$font-large: 16px;
+$font-xlarge: 18px;
+$font-xxlarge: 20px;
+$font-huge: 24px;
+$font-massive: 28px;
+$font-giant: 32px;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 6px;
+$spacing-md: 8px;
+$spacing-lg: 12px;
+$spacing-xl: 16px;
+$spacing-xxl: 20px;
+$spacing-xxxl: 24px;
+$spacing-huge: 32px;
+$spacing-massive: 40px;
+$spacing-giant: 48px;
+$spacing-enormous: 64px;
+
+// Legacy spacing (keeping for backward compatibility)
+$spacing-xs-legacy: 10px;
+$spacing-sm-legacy: 15px;
+$spacing-md-legacy: 20px;
+$spacing-lg-legacy: 25px;
+$spacing-xl-legacy: 30px;
+
+// Height values
+$height-sm: 28px;
+$height-md: 40px;
+$height-lg: 120px;
+$height-xl: 200px;
+$height-xxl: 250px;
+$height-huge: 300px;
+$height-massive: 350px;
+$height-giant: 400px;
+
+// Width values
+$width-sm: 40px;
+$width-md: 60px;
+$width-lg: 120px;
+$width-xl: 200px;
+$width-xxl: 280px;
+$width-huge: 300px;
+$width-massive: 320px;
+$width-giant: 400px;
+$width-max: 1200px;

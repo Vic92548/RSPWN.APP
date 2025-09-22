@@ -7,10 +7,10 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   // Ensure menu button is visible on mobile/tablet
@@ -31,12 +31,12 @@
 
 .store-header {
   flex: 0 0 auto;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
-  padding: 20px 0;
+  background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
+  border-bottom: 1px solid $border-primary;
+  padding: $spacing-xxl 0;
 
   @include responsive(mobile) {
-    padding: 16px 0;
+    padding: $spacing-xl 0;
   }
 }
 
@@ -45,12 +45,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  max-width: 1200px;
+  max-width: $width-max;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 $spacing-massive;
 
   @include responsive(tablet) {
-    padding: 0 24px;
+    padding: 0 $spacing-xxxl;
     gap: 20px;
   }
 
@@ -68,31 +68,31 @@
 }
 
 .store-title {
-  font-size: 32px;
+  font-size: $font-giant;
   font-weight: 700;
-  color: #FFFFFF;
+  color: $text-primary;
   margin: 0 0 8px 0;
-  font-family: 'Audiowide', 'Inter', sans-serif;
+  font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 2px;
 
   @include responsive(tablet) {
-    font-size: 28px;
+    font-size: $font-massive;
   }
 
   @include responsive(mobile) {
-    font-size: 24px;
+    font-size: $font-huge;
   }
 }
 
 .store-subtitle {
-  font-size: 16px;
-  color: #CCCCCC;
+  font-size: $font-large;
+  color: $text-secondary;
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: $font-primary;
 
   @include responsive(mobile) {
-    font-size: 14px;
+    font-size: $font-xl;
   }
 }
 
@@ -121,8 +121,8 @@
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666666;
-    font-size: 16px;
+    color: $text-faint;
+    font-size: $font-large;
     pointer-events: none;
     z-index: 2;
     transition: color 0.3s ease;
@@ -131,35 +131,35 @@
   .store-search-input {
     padding: 12px 16px;
     padding-left: 44px;
-    background: #0A0A0A;
-    border: 2px solid #1A1A1A;
+    background: $bg-primary;
+    border: 2px solid $bg-secondary;
     border-radius: 10px;
-    color: #FFFFFF;
-    font-size: 14px;
-    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: $text-primary;
+    font-size: $font-xl;
+    font-family: $font-primary;
     width: 100%;
     box-sizing: border-box;
     transition: all 0.3s ease;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 
     &::placeholder {
-      color: #666666;
+      color: $text-faint;
     }
 
     &:focus {
       outline: none;
-      border-color: #333333;
-      background: #121212;
+      border-color: $border-secondary;
+      background: $bg-tertiary;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 
       + .search-icon,
       ~ .search-icon {
-        color: #AAAAAA;
+        color: $text-muted;
       }
     }
 
     @include responsive(mobile) {
-      font-size: 14px;
+      font-size: $font-xl;
       padding: 10px 14px;
       padding-left: 40px;
     }
@@ -182,12 +182,12 @@
 }
 
 .store-content {
-  max-width: 1200px;
+  max-width: $width-max;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 $spacing-massive;
 
   @include responsive(tablet) {
-    padding: 0 24px;
+    padding: 0 $spacing-xxxl;
   }
 
   @include responsive(mobile) {
@@ -208,11 +208,11 @@
   .featured-carousel {
     display: flex;
     height: 400px;
-    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+    background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
-    border: 1px solid #222222;
+    border: 1px solid $border-primary;
 
     @include responsive(tablet) {
       height: 350px;
@@ -313,27 +313,27 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 
     &.featured {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      color: $text-primary;
     }
 
     &.new {
-      background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, $accent-primary 0%, $accent-primary-dark 100%);
+      color: $text-primary;
     }
   }
 
   .featured-title {
-    font-size: 28px;
+    font-size: $font-massive;
     font-weight: 700;
-    color: #FFFFFF;
+    color: $text-primary;
     margin: 0 0 12px 0;
     line-height: 1.2;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-primary;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 
     @include responsive(tablet) {
-      font-size: 24px;
+      font-size: $font-huge;
     }
 
     @include responsive(mobile) {
@@ -343,13 +343,13 @@
 
   .featured-description {
     font-size: 18px;
-    color: #CCCCCC;
+    color: $text-secondary;
     line-height: 1.6;
     margin: 0 0 24px 0;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-primary;
 
     @include responsive(mobile) {
-      font-size: 16px;
+      font-size: $font-large;
     }
   }
 
@@ -370,7 +370,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     font-size: 12px;
-    color: #AAAAAA;
+    color: $text-muted;
     font-weight: 500;
     backdrop-filter: blur(10px);
   }
@@ -387,13 +387,13 @@
   }
 
   .featured-stars {
-    color: #FFD700;
+    color: $accent-secondary;
     font-size: 20px;
   }
 
   .featured-rating-text {
-    color: #AAAAAA;
-    font-size: 14px;
+    color: $text-muted;
+    font-size: $font-xl;
   }
 
   .featured-price-section {
@@ -409,7 +409,7 @@
 
   .featured-discount {
     background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
-    color: #FFFFFF;
+    color: $text-primary;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -423,13 +423,13 @@
   }
 
   .featured-original-price {
-    color: #AAAAAA;
+    color: $text-muted;
     text-decoration: line-through;
     font-size: 13px;
   }
 
   .featured-current-price {
-    color: #FFFFFF;
+    color: $text-primary;
     font-size: 18px;
     font-weight: 700;
   }
@@ -449,7 +449,7 @@
     border-radius: 6px;
     font-size: 12px;
     font-weight: 500;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-primary;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
@@ -486,12 +486,12 @@
   }
 
   .featured-buy-btn {
-    background: linear-gradient(135deg, #333333 0%, #222222 100%);
-    color: #FFFFFF;
+    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    color: $text-primary;
     border: 2px solid #444444;
 
     &:hover {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
+      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
       border-color: #555555;
       transform: translateY(-2px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -500,13 +500,13 @@
 
   .featured-wishlist-btn {
     background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
-    color: #AAAAAA;
-    border: 2px solid #333333;
+    color: $text-muted;
+    border: 2px solid $border-secondary;
 
     &:hover {
-      background: linear-gradient(135deg, #333333 0%, #222222 100%);
-      color: #FFFFFF;
-      border-color: #444444;
+      background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+      color: $text-primary;
+      border-color: $border-tertiary;
       transform: translateY(-2px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
@@ -516,21 +516,21 @@
 
   .featured-sidebar {
     flex: 1;
-    background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-    border-left: 1px solid #222222;
+    background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
+    border-left: 1px solid $border-primary;
     display: flex;
     flex-direction: column;
 
     @include responsive(tablet) {
       flex: none;
       border-left: none;
-      border-top: 1px solid #222222;
+      border-top: 1px solid $border-primary;
     }
 
     @include responsive(mobile) {
       flex: none;
       border-left: none;
-      border-top: 1px solid #222222;
+      border-top: 1px solid $border-primary;
       order: 2;
       min-height: 120px;
       max-height: 120px;
@@ -544,13 +544,13 @@
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #FFFFFF;
-    font-family: 'Inter', sans-serif;
-    border-bottom: 1px solid #222222;
+    color: $text-primary;
+    font-family: $font-primary;
+    border-bottom: 1px solid $border-primary;
 
     @include responsive(mobile) {
       padding: 12px 16px 8px 16px;
-      font-size: 14px;
+      font-size: $font-xl;
     }
   }
 
@@ -640,7 +640,7 @@
     }
 
     &:hover {
-      border-color: #333333;
+      border-color: $border-secondary;
       transform: translateX(4px);
 
       &::after {
@@ -649,7 +649,7 @@
     }
 
     &.active {
-      border-color: #444444;
+      border-color: $border-tertiary;
       transform: translateX(8px);
       background: rgba(255, 255, 255, 0.08);
 
@@ -692,9 +692,9 @@
   }
 
   .featured-item-title {
-    font-size: 14px;
+    font-size: $font-xl;
     font-weight: 600;
-    color: #FFFFFF;
+    color: $text-primary;
     margin: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
@@ -709,7 +709,7 @@
 
   .featured-item-price {
     font-size: 12px;
-    color: #CCCCCC;
+    color: $text-secondary;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 
@@ -747,13 +747,13 @@
 
 .store-filter-btn {
   padding: 14px 24px;
-  background: #0F0F0F;
+  background: $bg-quaternary;
   border: 2px solid #1A1A1A;
   border-radius: 10px;
-  color: #AAAAAA;
+  color: $text-muted;
   font-size: 15px;
   font-weight: 600;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -774,9 +774,9 @@
   }
 
   &:hover {
-    background: #1A1A1A;
+    background: $bg-secondary;
     border-color: #333333;
-    color: #FFFFFF;
+    color: $text-primary;
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 
@@ -786,9 +786,9 @@
   }
 
   &.active {
-    background: #222222;
+    background: $border-primary;
     border-color: #444444;
-    color: #FFFFFF;
+    color: $text-primary;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 
@@ -816,7 +816,7 @@
 }
 
 .store-item {
-  background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
+  background: linear-gradient(145deg, $bg-quaternary 0%, $bg-primary 100%);
   border: 2px solid #1A1A1A;
   border-radius: 16px;
   overflow: hidden;
@@ -857,7 +857,7 @@
 .store-item-image {
   width: 100%;
   height: 200px;
-  background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
+  background: linear-gradient(145deg, $bg-secondary 0%, $bg-quaternary 100%);
   position: relative;
   overflow: hidden;
 
@@ -873,13 +873,13 @@
     position: absolute;
     top: 16px;
     left: 16px;
-    background: linear-gradient(135deg, #333333 0%, #222222 100%);
-    color: #FFFFFF;
+    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    color: $text-primary;
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 11px;
     font-weight: 700;
-    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: $font-primary;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -887,13 +887,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
     &.featured {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      color: $text-primary;
       border-color: rgba(255, 255, 255, 0.2);
     }
 
     &.new {
-      background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
+      background: linear-gradient(135deg, $accent-primary 0%, $accent-primary-dark 100%);
       border-color: rgba(76, 175, 80, 0.3);
     }
   }
@@ -926,9 +926,9 @@
   margin: 0 0 12px 0;
   font-size: 20px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: $text-primary;
   line-height: 1.3;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
 
   @include responsive(mobile) {
     font-size: 18px;
@@ -938,9 +938,9 @@
 .store-item-description {
   margin: 0 0 20px 0;
   font-size: 14px;
-  color: #AAAAAA;
+  color: $text-muted;
   line-height: 1.5;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -957,7 +957,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #1A1A1A;
+  border-bottom: 1px solid $bg-secondary;
 }
 
 .store-item-category {
@@ -965,7 +965,7 @@
   color: #666666;
   text-transform: uppercase;
   font-weight: 600;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
   letter-spacing: 0.5px;
 }
 
@@ -974,12 +974,12 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #AAAAAA;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: $text-muted;
+  font-family: $font-primary;
 
   .stars {
-    color: #FFD700;
-    font-size: 14px;
+    color: $accent-secondary;
+    font-size: $font-xl;
   }
 }
 
@@ -988,11 +988,11 @@
   align-items: center;
   font-size: 18px;
   font-weight: 700;
-  color: #FFFFFF;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: $text-primary;
+  font-family: $font-primary;
 
   @include responsive(mobile) {
-    font-size: 16px;
+    font-size: $font-large;
   }
 }
 
@@ -1008,7 +1008,7 @@
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: $font-primary;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
@@ -1038,13 +1038,13 @@
   }
 
   &.primary {
-    background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 100%);
-    color: #FFFFFF;
-    border: 2px solid #333333;
+    background: linear-gradient(135deg, $bg-card 0%, $bg-secondary 100%);
+    color: $text-primary;
+    border: 2px solid $border-secondary;
 
     &:hover {
-      background: linear-gradient(135deg, #333333 0%, #222222 100%);
-      border-color: #444444;
+      background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+      border-color: $border-tertiary;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
@@ -1052,13 +1052,13 @@
 
   &.secondary {
     background: linear-gradient(135deg, #0F0F0F 0%, #0A0A0A 100%);
-    color: #AAAAAA;
-    border: 2px solid #1A1A1A;
+    color: $text-muted;
+    border: 2px solid $bg-secondary;
 
     &:hover {
-      background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
-      color: #FFFFFF;
-      border-color: #333333;
+      background: linear-gradient(135deg, $bg-secondary 0%, $bg-quaternary 100%);
+      color: $text-primary;
+      border-color: $border-secondary;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
