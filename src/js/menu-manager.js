@@ -160,6 +160,11 @@ class MenuManager {
     }
 
     initializeSpecialButtons() {
+        if (this.specialButtonsInitialized) {
+            return;
+        }
+        this.specialButtonsInitialized = true;
+
         setTimeout(() => {
             console.log('Initializing special buttons...');
 
@@ -167,14 +172,20 @@ class MenuManager {
             console.log('GitHub stars element:', githubStars);
             if (githubStars && window.updateGitHubStars) {
                 console.log('Updating GitHub stars...');
-                window.updateGitHubStars(githubStars);
+                const badgeElement = githubStars.querySelector('.menu-badge');
+                if (badgeElement) {
+                    window.updateGitHubStars(badgeElement);
+                }
             }
 
             const discordMembers = document.getElementById('discord_members');
             console.log('Discord members element:', discordMembers);
             if (discordMembers && window.updateDiscordMembers) {
                 console.log('Updating Discord members...');
-                window.updateDiscordMembers(discordMembers);
+                const badgeElement = discordMembers.querySelector('.menu-badge');
+                if (badgeElement) {
+                    window.updateDiscordMembers(badgeElement);
+                }
             }
         }, 100);
     }

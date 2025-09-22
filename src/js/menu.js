@@ -1,4 +1,11 @@
+let menuInitialized = false;
+
 function initMenu() {
+    if (menuInitialized) {
+        return;
+    }
+    menuInitialized = true;
+
     if (window.menuManager) {
         window.menuManager.updateMenu();
     }

@@ -1,5 +1,6 @@
 let feed_posts = [];
-let loading_steps = 2;
+let loading_steps = 1;
+window.loading_steps = loading_steps;
 let post_seen = 0;
 let creators = {};
 
@@ -13,11 +14,29 @@ function showInitialPost() {
     }
 }
 
+let userLoginStatusCache = null;
+let userLoginStatusCacheTime = 0;
+const USER_LOGIN_CACHE_DURATION = 1000;
+
 function isUserLoggedIn(){
+    const now = Date.now();
+
+    if (userLoginStatusCache !== null && (now - userLoginStatusCacheTime) < USER_LOGIN_CACHE_DURATION) {
+        return userLoginStatusCache;
+    }
+
     const result = window.user ? true : false;
+    userLoginStatusCache = result;
+    userLoginStatusCacheTime = now;
+
     console.log('isUserLoggedIn() called:', result, 'window.user:', window.user);
     return result;
 }
+
+window.invalidateUserLoginCache = function() {
+    userLoginStatusCache = null;
+    userLoginStatusCacheTime = 0;
+};
 
 function updateUsername() {
     const level_elements = document.getElementsByClassName("username");
@@ -216,10 +235,17 @@ window.closeProfileCard = function() {
 
 console.log('🎯 main.js - delaying router until auth completes');
 
+let authRouteHandled = false;
+
 // Wait for authentication to complete before handling initial route
 function waitForAuthThenRoute() {
+    if (authRouteHandled) {
+        return;
+    }
+
     if (window.loading_steps <= 0) {
         console.log('🎯 Auth completed, now handling route - window.user:', window.user);
+        authRouteHandled = true;
         router.handleRoute();
     } else {
         console.log('🎯 Auth still loading, waiting 100ms... loading_steps:', window.loading_steps);

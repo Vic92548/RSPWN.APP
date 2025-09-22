@@ -1,9 +1,28 @@
+let githubStarsCache = null;
+let githubStarsFetching = false;
+const processedGithubElements = new WeakSet();
+
 async function updateGitHubStars(element) {
     if (!element) {
         console.warn('GitHub stars element not found');
         return;
     }
 
+    if (processedGithubElements.has(element)) {
+        return;
+    }
+    processedGithubElements.add(element);
+
+    if (githubStarsCache !== null) {
+        element.innerHTML = `<i class="fa-solid fa-star"></i> ${githubStarsCache}`;
+        return;
+    }
+
+    if (githubStarsFetching) {
+        return;
+    }
+
+    githubStarsFetching = true;
     console.log('Fetching GitHub stars for element:', element);
 
     try {
@@ -12,14 +31,20 @@ async function updateGitHubStars(element) {
 
         const data = await response.json();
         const stars = data.stargazers_count;
+        githubStarsCache = stars;
 
         console.log('GitHub stars count:', stars);
-        element.innerHTML = `<i class="fa-solid fa-star"></i> ${stars}`;
+
+        document.querySelectorAll('#github_stars .menu-badge, .menu-badge.stars').forEach(el => {
+            el.innerHTML = `<i class="fa-solid fa-star"></i> ${stars}`;
+        });
     } catch (error) {
         console.error('Failed to fetch GitHub stars:', error);
-        if (element) {
-            element.innerHTML = '<i class="fa-solid fa-star"></i> N/A';
-        }
+        document.querySelectorAll('#github_stars .menu-badge, .menu-badge.stars').forEach(el => {
+            el.innerHTML = '<i class="fa-solid fa-star"></i> N/A';
+        });
+    } finally {
+        githubStarsFetching = false;
     }
 }
 

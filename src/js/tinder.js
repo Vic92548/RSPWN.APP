@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         startTime = new Date().getTime();
         post.style.transition = 'none';
         post.style.animation = 'none';
-    });
+    }, { passive: true });
 
     post.addEventListener('touchmove', (e) => {
         currentX = e.touches[0].clientX;
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let changeX = currentX - startX;
         let changeY = currentY - startY;
         post.style.transform = `translate(${changeX}px, ${changeY}px) rotate(${changeX * 0.1}deg)`;
-    });
+    }, { passive: true });
 
     post.addEventListener('touchend', (e) => {
         let changeX = currentX - startX;

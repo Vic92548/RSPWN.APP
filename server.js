@@ -821,7 +821,6 @@ import {
     getGameDownloadUrl, downloadKeysAsCSV, getDeveloperGames, getGameAnalytics, updateGame
 } from './server_modules/games.js';
 import { recordPlaytimeSession, getUserPlaytimeTotals } from './server_modules/playtime.js';
-import {getAllTebexConfigs, getTebexConfig, removeTebexConfig, setTebexConfig} from "./server_modules/tebex_config.js";
 import {
     addItemToBucket,
     createBucket,
@@ -1091,29 +1090,6 @@ app.get('/api/creators/:creatorId/popular-with-followers', authMiddleware, async
     res.status(response.status).json(data);
 });
 
-app.post('/api/developer/tebex-config', authMiddleware, async (req, res) => {
-    const response = await setTebexConfig(req.userData.id, req.body);
-    const data = await response.json();
-    res.status(response.status).json(data);
-});
-
-app.get('/api/developer/tebex-config', authMiddleware, async (req, res) => {
-    const response = await getTebexConfig(req.userData.id);
-    const data = await response.json();
-    res.status(response.status).json(data);
-});
-
-app.delete('/api/developer/tebex-config', authMiddleware, async (req, res) => {
-    const response = await removeTebexConfig(req.userData.id);
-    const data = await response.json();
-    res.status(response.status).json(data);
-});
-
-app.get('/api/tebex-configs', async (req, res) => {
-    const response = await getAllTebexConfigs();
-    const data = await response.json();
-    res.status(response.status).json(data);
-});
 
 // Buckets API
 app.post('/api/buckets', authMiddleware, async (req, res) => {

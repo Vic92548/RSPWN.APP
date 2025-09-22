@@ -7,6 +7,10 @@ function loadUserData(){
         console.log('✅ api.getMe() success, setting window.user:', data);
         window.user = data;
 
+        if (window.invalidateUserLoginCache) {
+            window.invalidateUserLoginCache();
+        }
+
         if (window.updateSDKUserInfo) {
             window.updateSDKUserInfo();
         }
@@ -38,6 +42,7 @@ function loadUserData(){
         DOM.show("xp_bar");
 
         loading_steps--;
+        window.loading_steps = loading_steps;
 
         handleReferral();
 
@@ -54,10 +59,15 @@ function loadUserData(){
     }).catch(error => {
         console.log('❌ api.getMe() failed, user not logged in:', error);
 
+        if (window.invalidateUserLoginCache) {
+            window.invalidateUserLoginCache();
+        }
+
         DOM.show("sign_in");
         DOM.hide("add_post");
         DOM.get("add_post").onclick = openRegisterModal;
         loading_steps--;
+        window.loading_steps = loading_steps;
 
         if (window.menuManager) {
             window.menuManager.updateMenu();

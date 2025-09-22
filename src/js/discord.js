@@ -1,9 +1,28 @@
+let discordMembersCache = null;
+let discordMembersFetching = false;
+const processedDiscordElements = new WeakSet();
+
 async function updateDiscordMembers(element) {
     if (!element) {
         console.warn('Discord members element not found');
         return;
     }
 
+    if (processedDiscordElements.has(element)) {
+        return;
+    }
+    processedDiscordElements.add(element);
+
+    if (discordMembersCache !== null) {
+        element.innerHTML = `<i class="fa-solid fa-users"></i> ${discordMembersCache.toLocaleString()}`;
+        return;
+    }
+
+    if (discordMembersFetching) {
+        return;
+    }
+
+    discordMembersFetching = true;
     console.log('Fetching Discord members for element:', element);
 
     try {
@@ -12,14 +31,20 @@ async function updateDiscordMembers(element) {
 
         const data = await response.json();
         const memberCount = data.presence_count || 0;
+        discordMembersCache = memberCount;
 
         console.log('Discord member count:', memberCount);
-        element.innerHTML = `<i class="fa-solid fa-users"></i> ${memberCount.toLocaleString()}`;
+
+        document.querySelectorAll('#discord_members .menu-badge, .menu-badge.members').forEach(el => {
+            el.innerHTML = `<i class="fa-solid fa-users"></i> ${memberCount.toLocaleString()}`;
+        });
     } catch (error) {
         console.error('Failed to fetch Discord member count:', error);
-        if (element) {
-            element.innerHTML = '<i class="fa-solid fa-users"></i> N/A';
-        }
+        document.querySelectorAll('#discord_members .menu-badge, .menu-badge.members').forEach(el => {
+            el.innerHTML = '<i class="fa-solid fa-users"></i> N/A';
+        });
+    } finally {
+        discordMembersFetching = false;
     }
 }
 
