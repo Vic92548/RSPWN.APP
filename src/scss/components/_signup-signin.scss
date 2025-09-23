@@ -605,12 +605,12 @@ button#continue-btn.auth-btn.primary {
 
   &:active { transform: translateY(0); box-shadow: 0 2px 6px rgba($accent-primary, 0.2); }
 
-  &.discord:hover { border-color: #5865F2; box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2); }
-  &.twitch:hover { border-color: #9146FF; box-shadow: 0 4px 12px rgba(145, 70, 255, 0.2); }
-  &.google:hover { border-color: #EA4335; box-shadow: 0 4px 12px rgba(234, 67, 53, 0.2); }
-  &.apple:hover { border-color: $black; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
-  &.facebook:hover { border-color: #1877F2; box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2); }
-  &.linkedin:hover { border-color: #0A66C2; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); }
+  &.discord:hover { border-color: $social-discord; box-shadow: 0 4px 12px rgba($social-discord, 0.2); }
+  &.twitch:hover { border-color: $social-twitch; box-shadow: 0 4px 12px rgba($social-twitch, 0.2); }
+  &.google:hover { border-color: $social-google; box-shadow: 0 4px 12px rgba($social-google, 0.2); }
+  &.apple:hover { border-color: $social-apple; box-shadow: 0 4px 12px rgba($social-apple, 0.3); }
+  &.facebook:hover { border-color: $social-facebook; box-shadow: 0 4px 12px rgba($social-facebook, 0.2); }
+  &.linkedin:hover { border-color: $social-linkedin; box-shadow: 0 4px 12px rgba($social-linkedin, 0.2); }
 
   @include responsive(mobile) { font-size: $font-lg !important; gap: $spacing-md; span { font-size: $font-lg !important; } i { font-size: $font-xl; } }
 }
