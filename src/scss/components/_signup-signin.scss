@@ -1,20 +1,17 @@
-// Unified Auth Forms - Professional Design
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// Unified Auth Container
 .auth-container {
   position: relative;
   width: 100%;
   height: 100vh;
-  background: transparent; // Allow body background to show through
+  background: transparent;
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: pageSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  font-family: $font-primary;
+  transition: $transition-bounce;
+  animation: pageSlideIn 0.6s $ease-bounce forwards;
 
-  // Hide menu button on desktop, show only on mobile/tablet
   .create-post-btn {
     display: none !important;
   }
@@ -22,27 +19,26 @@
   @include responsive(tablet) {
     .create-post-btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 
   @include responsive(mobile) {
     .create-post-btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 }
 
-// Unified Auth Header
 .auth-header {
   flex: 0 0 auto;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
-  padding: 20px 0;
+  background: linear-gradient(135deg, $bg-secondary 0%, $bg-primary 100%);
+  border-bottom: $border-thin $border-primary;
+  padding: $spacing-xxl 0;
 
   @include responsive(mobile) {
-    padding: 16px 0;
+    padding: $spacing-xl 0;
   }
 }
 
@@ -50,16 +46,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 1200px;
+  max-width: $width-max;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 $spacing-massive;
 
   @include responsive(tablet) {
-    padding: 0 24px;
+    padding: 0 $spacing-xxxl;
   }
 
   @include responsive(mobile) {
-    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
+    padding: 0 $spacing-xl 0 60px;
   }
 }
 
@@ -68,59 +64,59 @@
 }
 
 .auth-title {
-  font-size: 32px;
+  font-size: $font-giant;
   font-weight: 700;
-  color: #FFFFFF;
-  margin: 0 0 8px 0;
-  font-family: 'Audiowide', 'Inter', sans-serif;
+  color: $text-primary;
+  margin: 0 0 $spacing-md 0;
+  font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 2px;
 
   @include responsive(tablet) {
-    font-size: 28px;
+    font-size: $font-massive;
   }
 
   @include responsive(mobile) {
-    font-size: 24px;
+    font-size: $font-huge;
   }
 }
 
 .auth-subtitle {
-  font-size: 16px;
-  color: #CCCCCC;
+  font-size: $font-large;
+  color: $text-secondary;
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: $font-primary;
 
   @include responsive(mobile) {
-    font-size: 14px;
+    font-size: $font-xl;
   }
 }
 
 .auth-body {
   flex: 1;
   overflow-y: auto;
-  padding: 60px 0 40px 0; // Less padding since no menu on desktop
+  padding: 60px 0 $spacing-massive 0;
   @include scrollbar-style;
 
   @include responsive(tablet) {
-    padding: 70px 0 32px 0; // Menu appears on tablet
+    padding: 70px 0 $spacing-huge 0;
   }
 
   @include responsive(mobile) {
-    padding: 100px 0 24px 0; // Extra space for mobile menu button
+    padding: 100px 0 $spacing-xxxl 0;
   }
 }
 
 .auth-content {
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 $spacing-massive;
 
   @include responsive(tablet) {
-    padding: 0 24px;
+    padding: 0 $spacing-xxxl;
   }
 
   @include responsive(mobile) {
-    padding: 0 16px;
+    padding: 0 $spacing-xl;
   }
 
   &.signup-content {
@@ -132,13 +128,12 @@
   }
 }
 
-// Progress Indicator Section - Minimal Design
 .signup-progress-section {
-  margin-bottom: 32px;
+  margin-bottom: $spacing-huge;
   padding: 0;
 
   @include responsive(mobile) {
-    margin-bottom: 24px;
+    margin-bottom: $spacing-xxxl;
   }
 }
 
@@ -146,20 +141,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 16px 24px;
-  background: linear-gradient(145deg, #0A0A0A 0%, #1A1A1A 100%);
-  border: 1px solid #333333;
-  border-radius: 8px;
-  max-width: 300px;
+  gap: $spacing-xl;
+  padding: $spacing-xl $spacing-xxxl;
+  background: linear-gradient(145deg, $bg-primary 0%, $bg-tertiary 100%);
+  border: $border-thin $border-secondary;
+  border-radius: $spacing-md;
+  max-width: $width-huge;
   margin: 0 auto;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: $blur-sm;
+  box-shadow: $shadow-card;
 
   @include responsive(mobile) {
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 6px;
+    gap: $spacing-lg;
+    padding: $spacing-lg $spacing-xl;
+    border-radius: $spacing-sm;
     max-width: 250px;
   }
 }
@@ -168,87 +163,87 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  opacity: 0.6;
-  transition: all 0.3s ease;
+  gap: $spacing-sm;
+  opacity: $opacity-muted;
+  transition: $transition-smooth;
 
   &.active {
-    opacity: 1;
+    opacity: $opacity-opaque;
 
     .step-number {
-      background: #333333;
-      color: #FFFFFF;
-      border-color: #555555;
+      background: $border-secondary;
+      color: $text-primary;
+      border-color: $border-quaternary;
     }
 
     span {
-      color: #FFFFFF;
+      color: $text-primary;
       font-weight: 600;
     }
   }
 
   &.completed {
-    opacity: 1;
+    opacity: $opacity-opaque;
 
     .step-number {
-      background: #4CAF50;
-      color: #FFFFFF;
-      border-color: #4CAF50;
+      background: $success-color;
+      color: $text-primary;
+      border-color: $success-color;
 
       &::after {
         content: '✓';
-        font-size: 10px;
+        font-size: $font-xs;
         font-weight: 900;
       }
     }
 
     span {
-      color: #4CAF50;
+      color: $success-color;
       font-weight: 600;
     }
   }
 
   span {
-    font-size: 12px;
-    color: #888888;
-    font-family: 'Inter', sans-serif;
+    font-size: $font-md;
+    color: $text-faint;
+    font-family: $font-primary;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    transition: $transition-smooth;
 
     @include responsive(mobile) {
-      font-size: 10px;
+      font-size: $font-xs;
     }
   }
 }
 
 .step-number {
-  width: 24px;
-  height: 24px;
+  width: $spacing-xxxl;
+  height: $spacing-xxxl;
   border-radius: 50%;
-  background: #1A1A1A;
-  border: 1px solid #333333;
+  background: $bg-tertiary;
+  border: $border-thin $border-secondary;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: $font-md;
   font-weight: 600;
-  color: #666666;
-  transition: all 0.3s ease;
-  font-family: 'Inter', sans-serif;
+  color: $text-faint;
+  transition: $transition-smooth;
+  font-family: $font-primary;
 
   @include responsive(mobile) {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
+    width: $spacing-xxl;
+    height: $spacing-xxl;
+    font-size: $font-xs;
   }
 }
 
 .step-line {
   flex: 1;
   height: 2px;
-  background: #1A1A1A;
+  background: $bg-tertiary;
   border-radius: 1px;
   position: relative;
   overflow: hidden;
@@ -260,7 +255,7 @@
     left: 0;
     height: 100%;
     width: 0;
-    background: #4CAF50;
+    background: $success-color;
     border-radius: 1px;
     transition: width 0.4s ease;
   }
@@ -275,17 +270,16 @@
   }
 }
 
-// Unified Step Container
 .auth-step-container {
-  background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
-  border: 2px solid #1A1A1A;
-  border-radius: 16px;
-  padding: 48px;
-  margin-bottom: 32px;
-  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(145deg, $bg-secondary 0%, $bg-primary 100%);
+  border: $border-medium $bg-tertiary;
+  border-radius: $spacing-xl;
+  padding: $spacing-giant;
+  margin-bottom: $spacing-huge;
+  box-shadow: $shadow-featured;
   position: relative;
   overflow: hidden;
-  animation: stepSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: stepSlideIn 0.5s $ease-bounce forwards;
 
   &::before {
     content: '';
@@ -294,87 +288,86 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
+    background: linear-gradient(135deg, $overlay-faint 0%, transparent 50%, $overlay-subtle 100%);
     pointer-events: none;
   }
 
   @include responsive(tablet) {
-    padding: 40px;
-    border-radius: 12px;
+    padding: $spacing-massive;
+    border-radius: $spacing-lg;
   }
 
   @include responsive(mobile) {
-    padding: 32px 24px;
-    border-radius: 12px;
-    margin-bottom: 24px;
+    padding: $spacing-huge $spacing-xxxl;
+    border-radius: $spacing-lg;
+    margin-bottom: $spacing-xxxl;
   }
 }
 
 .auth-step-content {
   position: relative;
-  z-index: 2;
+  z-index: $z-index-content;
 }
 
 .step-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: $spacing-massive;
 
   @include responsive(mobile) {
-    margin-bottom: 32px;
+    margin-bottom: $spacing-huge;
   }
 }
 
 .step-title {
-  font-size: 20px;
+  font-size: $font-xxlarge;
   font-weight: 400;
-  color: #FFFFFF;
-  margin: 0 0 12px 0;
-  font-family: 'Audiowide', 'Inter', sans-serif;
+  color: $text-primary;
+  margin: 0 0 $spacing-lg 0;
+  font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 1px;
   line-height: 1.3;
 
   @include responsive(tablet) {
-    font-size: 18px;
+    font-size: $font-xlarge;
   }
 
   @include responsive(mobile) {
-    font-size: 16px;
-    margin-bottom: 10px;
+    font-size: $font-large;
+    margin-bottom: $spacing-md;
   }
 }
 
 .step-description {
-  font-size: 14px;
-  color: #AAAAAA;
+  font-size: $font-xl;
+  color: $text-muted;
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: $font-primary;
   line-height: 1.4;
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
 
   @include responsive(mobile) {
-    font-size: 13px;
+    font-size: $font-lg;
   }
 }
 
 .highlight-text {
-  color: #4CAF50;
+  color: $success-color;
   font-weight: 700;
 }
 
-// Unified Form Components
 .auth-form {
   max-width: 400px;
   margin: 0 auto;
 }
 
 .input-group {
-  margin-bottom: 24px;
+  margin-bottom: $spacing-xxxl;
 
   @include responsive(mobile) {
-    margin-bottom: 20px;
+    margin-bottom: $spacing-xxl;
   }
 }
 
@@ -386,115 +379,114 @@
 
 .input-icon {
   position: absolute;
-  left: 10px;
-  z-index: 2;
-  color: #666666;
-  font-size: 12px;
-  transition: color 0.3s ease;
+  left: $spacing-md;
+  z-index: $z-index-content;
+  color: $text-faint;
+  font-size: $font-md;
+  transition: $transition-color;
 }
 
 .auth-input {
   width: 100%;
-  padding: 10px 10px 10px 32px;
-  background: linear-gradient(145deg, #0A0A0A 0%, #0F0F0F 100%);
-  border: 1px solid #1A1A1A;
-  border-radius: 6px;
-  color: #FFFFFF;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
+  padding: $spacing-md $spacing-md $spacing-md $spacing-huge;
+  background: linear-gradient(145deg, $bg-primary 0%, $bg-secondary 100%);
+  border: $border-thin $bg-tertiary;
+  border-radius: $spacing-sm;
+  color: $text-primary;
+  font-size: $font-lg;
+  font-family: $font-primary;
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: $transition-smooth;
+  box-shadow: $shadow-input;
   box-sizing: border-box;
 
   &::placeholder {
-    color: #666666;
+    color: $text-faint;
     font-weight: 400;
   }
 
   &:focus {
     outline: none;
-    border-color: #333333;
-    background: linear-gradient(145deg, #121212 0%, #0F0F0F 100%);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-color: $border-secondary;
+    background: linear-gradient(145deg, $bg-secondary 0%, $bg-secondary 100%);
+    box-shadow: $shadow-input-focus;
     transform: translateY(-1px);
 
     ~ .input-icon {
-      color: #AAAAAA;
+      color: $text-muted;
     }
   }
 
   &.otp-input {
     text-align: center;
-    font-size: 16px;
+    font-size: $font-large;
     font-weight: 700;
     letter-spacing: 3px;
-    padding-left: 12px;
+    padding-left: $spacing-lg;
 
     ~ .input-icon {
       left: 50%;
       transform: translateX(-50%);
-      opacity: 0.5;
+      opacity: $opacity-disabled;
     }
   }
 
   @include responsive(mobile) {
-    padding: 8px 8px 8px 28px;
-    font-size: 12px;
+    padding: $spacing-md $spacing-md $spacing-md $spacing-massive;
+    font-size: $font-md;
   }
 }
 
 .input-feedback {
-  margin-top: 12px;
-  min-height: 28px;
+  margin-top: $spacing-lg;
+  min-height: $spacing-massive;
 
   .feedback {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    font-family: 'Inter', sans-serif;
+    gap: $spacing-md;
+    font-size: $font-md;
+    font-family: $font-primary;
     font-weight: 600;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $spacing-sm;
+    transition: $transition-smooth;
+    border: $border-medium transparent;
 
     i {
-      font-size: 11px;
+      font-size: $font-sm;
       flex-shrink: 0;
     }
 
     &.checking {
-      color: #f59e0b;
-      background: linear-gradient(145deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
-      border-color: rgba(245, 158, 11, 0.2);
+      color: $warning-color;
+      background: linear-gradient(145deg, rgba($warning-color, 0.1) 0%, rgba($warning-color, 0.05) 100%);
+      border-color: rgba($warning-color, 0.2);
     }
 
     &.success {
-      color: #4CAF50;
-      background: linear-gradient(145deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
-      border-color: rgba(76, 175, 80, 0.2);
+      color: $success-color;
+      background: linear-gradient(145deg, rgba($success-color, 0.1) 0%, rgba($success-color, 0.05) 100%);
+      border-color: rgba($success-color, 0.2);
     }
 
     &.error {
-      color: #f44336;
-      background: linear-gradient(145deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%);
-      border-color: rgba(244, 67, 54, 0.2);
+      color: $danger-color;
+      background: linear-gradient(145deg, rgba($danger-color, 0.1) 0%, rgba($danger-color, 0.05) 100%);
+      border-color: rgba($danger-color, 0.2);
     }
   }
 }
 
-// Professional Button Components
 .auth-btn {
   width: 100%;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 13px;
+  padding: $spacing-md $font-xl;
+  border-radius: $spacing-sm;
+  font-size: $font-lg;
   font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-family: $font-primary;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: $transition-smooth;
   text-align: center;
   text-decoration: none;
   border: none;
@@ -505,15 +497,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  gap: $spacing-sm;
+  box-shadow: $shadow-button;
 
   .btn-content {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: $spacing-sm;
     position: relative;
-    z-index: 2;
+    z-index: $z-index-content;
   }
 
   .btn-ripple {
@@ -522,7 +514,7 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255, 255, 255, 0.1);
+    background: $overlay-light;
     border-radius: 50%;
     transform: translate(-50%, -50%);
     transition: width 0.3s ease, height 0.3s ease;
@@ -534,13 +526,13 @@
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: $opacity-disabled;
     cursor: not-allowed;
     transform: none !important;
 
     &:hover {
       transform: none !important;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: $shadow-button-hover;
 
       .btn-ripple {
         width: 0;
@@ -550,70 +542,69 @@
   }
 
   &.primary {
-    background: linear-gradient(135deg, #333333 0%, #222222 100%);
-    color: #FFFFFF;
-    border: 2px solid #444444;
+    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    color: $text-primary;
+    border: $border-medium $border-tertiary;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
-      border-color: #555555;
+      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      border-color: $border-quaternary;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: $shadow-button-hover;
     }
   }
 
   &.secondary {
-    background: linear-gradient(135deg, #0F0F0F 0%, #0A0A0A 100%);
-    color: #AAAAAA;
-    border: 2px solid #1A1A1A;
+    background: linear-gradient(135deg, $bg-secondary 0%, $bg-primary 100%);
+    color: $text-muted;
+    border: $border-medium $bg-tertiary;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
-      color: #FFFFFF;
-      border-color: #333333;
+      background: linear-gradient(135deg, $bg-tertiary 0%, $bg-secondary 100%);
+      color: $text-primary;
+      border-color: $border-secondary;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: $shadow-button-hover;
     }
   }
 
   &.success {
     background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
-    color: #FFFFFF;
-    border: 2px solid #4CAF50;
+    color: $text-primary;
+    border: $border-medium $success-color;
 
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #3D6A3D 0%, #2A5A2A 100%);
       border-color: #66BB6A;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
+      box-shadow: 0 4px 16px rgba($success-color, 0.2);
     }
   }
 
   @include responsive(mobile) {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: $spacing-md $spacing-lg;
+    font-size: $font-md;
   }
 }
 
-// Continue button - force override everything
 button#continue-btn.auth-btn.primary {
-  padding: 6px 12px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  border-radius: 4px !important;
-  font-size: 11px !important;
+  padding: $spacing-sm $spacing-lg !important;
+  height: $spacing-huge !important;
+  min-height: $spacing-huge !important;
+  max-height: $spacing-huge !important;
+  border-radius: $spacing-xs !important;
+  font-size: $font-sm !important;
   font-weight: 500 !important;
   text-transform: none !important;
   letter-spacing: 0.2px !important;
 
   .btn-content {
-    gap: 4px !important;
-    height: 20px !important;
+    gap: $spacing-xs !important;
+    height: $spacing-xxl !important;
     line-height: 1 !important;
 
     span {
-      font-size: 11px !important;
+      font-size: $font-sm !important;
       line-height: 1 !important;
     }
 
@@ -627,25 +618,24 @@ button#continue-btn.auth-btn.primary {
   }
 }
 
-// Magic Link and OTP buttons - consistent 13px font size
 .auth-btn.magic-link-method,
 .auth-btn.otp-method {
-  padding: 6px 12px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  font-size: 13px !important;
+  padding: $spacing-sm $spacing-lg !important;
+  height: $spacing-huge !important;
+  min-height: $spacing-huge !important;
+  max-height: $spacing-huge !important;
+  font-size: $font-lg !important;
   font-weight: 600 !important;
 
   .btn-content {
-    gap: 6px !important;
+    gap: $spacing-sm !important;
 
     span {
-      font-size: 13px !important;
+      font-size: $font-lg !important;
     }
 
     i {
-      font-size: 14px !important;
+      font-size: $font-xl !important;
     }
   }
 
@@ -654,23 +644,22 @@ button#continue-btn.auth-btn.primary {
   }
 }
 
-// Authentication Methods Layout
 .auth-methods {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-xxxl;
 
   @include responsive(mobile) {
-    gap: 14px;
-    margin-bottom: 20px;
+    gap: $font-xl;
+    margin-bottom: $spacing-xxl;
   }
 }
 
 .method-divider {
   text-align: center;
   position: relative;
-  margin: 8px 0;
+  margin: $spacing-md 0;
 
   &::before {
     content: '';
@@ -679,93 +668,90 @@ button#continue-btn.auth-btn.primary {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, #1A1A1A 20%, #1A1A1A 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, $bg-tertiary 20%, $bg-tertiary 80%, transparent 100%);
   }
 
   span {
-    background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
-    color: #666666;
-    padding: 0 16px;
-    font-size: 14px;
+    background: linear-gradient(145deg, $bg-secondary 0%, $bg-primary 100%);
+    color: $text-faint;
+    padding: 0 $spacing-xl;
+    font-size: $font-xl;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
-    z-index: 1;
+    z-index: $z-index-base;
   }
 }
 
-// OTP Verification Section
 .otp-verification {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 2px solid #1A1A1A;
-  border-radius: 12px;
-  padding: 24px;
-  margin: 24px 0;
+  background: linear-gradient(145deg, $overlay-faint 0%, $overlay-subtle 100%);
+  border: $border-medium $bg-tertiary;
+  border-radius: $spacing-lg;
+  padding: $spacing-xxxl;
+  margin: $spacing-xxxl 0;
 
   @include responsive(mobile) {
-    padding: 20px;
-    margin: 20px 0;
+    padding: $spacing-xxl;
+    margin: $spacing-xxl 0;
   }
 }
 
-// Back Button
 .back-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  background: linear-gradient(145deg, #0A0A0A 0%, #0F0F0F 100%);
-  border: 1px solid #1A1A1A;
-  color: #AAAAAA;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
+  gap: $spacing-sm;
+  background: linear-gradient(145deg, $bg-primary 0%, $bg-secondary 100%);
+  border: $border-thin $bg-tertiary;
+  color: $text-muted;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $spacing-sm;
+  font-size: $font-lg;
+  font-family: $font-primary;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-top: 16px;
+  transition: $transition-smooth;
+  margin-top: $spacing-xl;
   text-transform: none;
   letter-spacing: 0.2px;
 
   &:hover {
-    background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
-    border-color: #333333;
-    color: #FFFFFF;
+    background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+    border-color: $border-secondary;
+    color: $text-primary;
     transform: translateY(-1px);
   }
 
   i {
-    font-size: 12px;
+    font-size: $font-md;
   }
 
   @include responsive(mobile) {
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-md;
   }
 }
 
-// Unified Footer and Links
 .auth-footer {
   text-align: center;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #1A1A1A;
+  margin-top: $spacing-huge;
+  padding-top: $spacing-xxxl;
+  border-top: $border-thin $bg-tertiary;
 
   p {
-    color: #AAAAAA;
+    color: $text-muted;
     margin: 0;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
+    font-size: $font-lg;
+    font-family: $font-primary;
   }
 
   @include responsive(mobile) {
-    margin-top: 20px;
-    padding-top: 16px;
+    margin-top: $spacing-xxl;
+    padding-top: $spacing-xl;
 
     p {
-      font-size: 12px;
+      font-size: $font-md;
     }
   }
 }
@@ -773,15 +759,15 @@ button#continue-btn.auth-btn.primary {
 .link-button {
   background: none;
   border: none;
-  color: #4A9EFF;
+  color: $accent-primary;
   text-decoration: none;
   cursor: pointer;
   font-size: inherit;
   font-family: inherit;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $spacing-sm;
+  transition: $transition-smooth;
   position: relative;
 
   &::after {
@@ -792,13 +778,13 @@ button#continue-btn.auth-btn.primary {
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: #4A9EFF;
+    background: $accent-primary;
     transition: width 0.3s ease;
   }
 
   &:hover {
     color: #6BB5FF;
-    background: rgba(74, 158, 255, 0.05);
+    background: rgba($accent-primary, 0.05);
 
     &::after {
       width: 100%;
@@ -806,59 +792,58 @@ button#continue-btn.auth-btn.primary {
   }
 }
 
-// Auth buttons - consistent 13px font size
 .auth-btn.signin-style {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 6px 12px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
-  border: 2px solid #333333;
-  border-radius: 6px;
-  font-family: 'Inter', sans-serif;
-  font-size: 13px !important;
+  padding: $spacing-sm $spacing-lg !important;
+  height: $spacing-huge !important;
+  min-height: $spacing-huge !important;
+  max-height: $spacing-huge !important;
+  background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+  border: $border-medium $border-secondary;
+  border-radius: $spacing-sm;
+  font-family: $font-primary;
+  font-size: $font-lg !important;
   font-weight: 600;
-  color: #FFFFFF;
+  color: $text-primary;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 8px;
+  transition: all 0.25s $ease-smooth;
+  margin-bottom: $spacing-md;
 
   .btn-content {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: $spacing-sm;
 
     span {
-      font-size: 13px !important;
+      font-size: $font-lg !important;
     }
 
     i {
-      font-size: 14px !important;
+      font-size: $font-xl !important;
     }
   }
 
   &:hover {
-    border-color: #4A9EFF;
+    border-color: $accent-primary;
     background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.2);
+    box-shadow: 0 6px 20px rgba($accent-primary, 0.2);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+    box-shadow: 0 2px 8px rgba($accent-primary, 0.3);
   }
 
   &.magic-link-method {
-    margin-bottom: 12px;
+    margin-bottom: $spacing-lg;
   }
 
   &.otp-method {
-    margin-bottom: 16px;
+    margin-bottom: $spacing-xl;
   }
 
   &.verify-btn {
@@ -873,16 +858,15 @@ button#continue-btn.auth-btn.primary {
   }
 }
 
-// Social auth grid
 .social-auth-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-top: 16px;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
 
   @include responsive(mobile) {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: $spacing-sm;
   }
 }
 
@@ -890,23 +874,23 @@ button#continue-btn.auth-btn.primary {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 6px 8px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  background: linear-gradient(145deg, #1A1A1A 0%, #0F0F0F 100%);
-  border: 2px solid #333333;
-  border-radius: 6px;
-  font-family: 'Inter', sans-serif;
-  font-size: 13px !important;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md !important;
+  height: $spacing-huge !important;
+  min-height: $spacing-huge !important;
+  max-height: $spacing-huge !important;
+  background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+  border: $border-medium $border-secondary;
+  border-radius: $spacing-sm;
+  font-family: $font-primary;
+  font-size: $font-lg !important;
   font-weight: 600;
-  color: #FFFFFF;
+  color: $text-primary;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s $ease-smooth;
 
   i {
-    font-size: 14px;
+    font-size: $font-xl;
     flex-shrink: 0;
   }
 
@@ -914,19 +898,19 @@ button#continue-btn.auth-btn.primary {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 13px !important;
+    font-size: $font-lg !important;
   }
 
   &:hover {
-    border-color: #4A9EFF;
+    border-color: $accent-primary;
     background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
+    box-shadow: 0 4px 12px rgba($accent-primary, 0.15);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(74, 158, 255, 0.2);
+    box-shadow: 0 2px 6px rgba($accent-primary, 0.2);
   }
 
   &.discord {
@@ -952,7 +936,7 @@ button#continue-btn.auth-btn.primary {
 
   &.apple {
     &:hover {
-      border-color: #000000;
+      border-color: $black;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
   }
@@ -972,48 +956,46 @@ button#continue-btn.auth-btn.primary {
   }
 
   @include responsive(mobile) {
-    font-size: 13px !important;
-    gap: 8px;
+    font-size: $font-lg !important;
+    gap: $spacing-md;
 
     span {
-      font-size: 13px !important;
+      font-size: $font-lg !important;
     }
 
     i {
-      font-size: 14px;
+      font-size: $font-xl;
     }
   }
 }
 
-// Status Messages
 .status-message {
-  margin-top: 12px;
-  min-height: 18px;
+  margin-top: $spacing-lg;
+  min-height: $font-xlarge;
   text-align: center;
-  font-size: 12px;
-  font-family: 'Inter', sans-serif;
+  font-size: $font-md;
+  font-family: $font-primary;
 
   &.success {
-    color: #4CAF50;
+    color: $success-color;
     font-weight: 600;
   }
 
   &.error {
-    color: #f44336;
+    color: $danger-color;
     font-weight: 600;
   }
 
   @include responsive(mobile) {
-    margin-top: 10px;
-    font-size: 11px;
+    margin-top: $spacing-md;
+    font-size: $font-sm;
   }
 }
 
-// Professional Animations
 @keyframes pageSlideIn {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY($spacing-massive);
   }
   to {
     opacity: 1;
@@ -1024,7 +1006,7 @@ button#continue-btn.auth-btn.primary {
 @keyframes stepSlideIn {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX($spacing-xl);
   }
   to {
     opacity: 1;
