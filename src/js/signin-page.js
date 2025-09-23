@@ -1,10 +1,10 @@
 function createSigninPageTemplate(content) {
     return `
-    <section id="signin-page" class="signin-container" style="display:none;">
+    <section id="signin-page" class="auth-container" style="display:none;">
         <button id="signin_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
 
-        <div class="signin-body">
-            <div class="signin-content">
+        <div class="auth-body">
+            <div class="auth-content signin-content">
                 ${content}
             </div>
         </div>
@@ -13,25 +13,25 @@ function createSigninPageTemplate(content) {
 
 function createSigninContent() {
     return `
-        <div class="signin-step-container">
-            <div class="signin-step-content">
+        <div class="auth-step-container">
+            <div class="auth-step-content">
                 <div class="step-header">
                     <h2 class="step-title">Sign In</h2>
                     <p class="step-description">Welcome back! Sign in to your RSPWN account using your email address.</p>
                 </div>
 
-                <div class="signin-form">
+                <div class="auth-form">
                     <div class="input-group">
                         <div class="input-container">
                             <div class="input-icon">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
-                            <input type="email" id="signin-email" placeholder="Enter your email address" class="signup-input" autocomplete="email">
+                            <input type="email" id="signin-email" placeholder="Enter your email address" class="auth-input" autocomplete="email">
                         </div>
                     </div>
 
                     <div class="auth-methods">
-                        <button onclick="signinWithMagicLink()" class="signin-auth-btn magic-link-method">
+                        <button onclick="signinWithMagicLink()" class="auth-btn signin-style magic-link-method">
                             <div class="btn-content">
                                 <i class="fa-solid fa-link"></i>
                                 <span>Send Magic Link</span>
@@ -81,10 +81,10 @@ function createSigninContent() {
                                 <div class="input-icon">
                                     <i class="fa-solid fa-lock"></i>
                                 </div>
-                                <input type="text" id="signin-otp-input" placeholder="Enter 6-digit code" class="signup-input otp-input" maxlength="6" pattern="[0-9]{6}">
+                                <input type="text" id="signin-otp-input" placeholder="Enter 6-digit code" class="auth-input otp-input" maxlength="6" pattern="[0-9]{6}">
                             </div>
                         </div>
-                        <button onclick="verifySigninOTP()" class="signin-auth-btn verify-btn">
+                        <button onclick="verifySigninOTP()" class="auth-btn signin-style verify-btn">
                             <div class="btn-content">
                                 <i class="fa-solid fa-right-to-bracket"></i>
                                 <span>Sign In</span>
@@ -95,7 +95,7 @@ function createSigninContent() {
                     <div id="signin-status" class="status-message"></div>
                 </div>
 
-                <div class="signin-footer">
+                <div class="auth-footer">
                     <p>Don't have an account? <button onclick="openSignupPage()" class="link-button">Create one here</button></p>
                 </div>
             </div>

@@ -2,9 +2,8 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// Unified Auth Container - Shared by Signup & Signin
-.signup-container,
-.signin-container {
+// Unified Auth Container
+.auth-container {
   position: relative;
   width: 100%;
   height: 100vh;
@@ -35,9 +34,8 @@
   }
 }
 
-// Unified Auth Headers
-.signup-header,
-.signin-header {
+// Unified Auth Header
+.auth-header {
   flex: 0 0 auto;
   background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
   border-bottom: 1px solid #222222;
@@ -48,8 +46,7 @@
   }
 }
 
-.signup-header-content,
-.signin-header-content {
+.auth-header-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,13 +63,11 @@
   }
 }
 
-.signup-title-section,
-.signin-title-section {
+.auth-title-section {
   text-align: center;
 }
 
-.signup-title,
-.signin-title {
+.auth-title {
   font-size: 32px;
   font-weight: 700;
   color: #FFFFFF;
@@ -90,8 +85,7 @@
   }
 }
 
-.signup-subtitle,
-.signin-subtitle {
+.auth-subtitle {
   font-size: 16px;
   color: #CCCCCC;
   margin: 0;
@@ -102,8 +96,7 @@
   }
 }
 
-.signup-body,
-.signin-body {
+.auth-body {
   flex: 1;
   overflow-y: auto;
   padding: 60px 0 40px 0; // Less padding since no menu on desktop
@@ -118,8 +111,7 @@
   }
 }
 
-.signup-content {
-  max-width: 600px;
+.auth-content {
   margin: 0 auto;
   padding: 0 40px;
 
@@ -130,19 +122,13 @@
   @include responsive(mobile) {
     padding: 0 16px;
   }
-}
 
-.signin-content {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 0 40px;
-
-  @include responsive(tablet) {
-    padding: 0 24px;
+  &.signup-content {
+    max-width: 600px;
   }
 
-  @include responsive(mobile) {
-    padding: 0 16px;
+  &.signin-content {
+    max-width: 500px;
   }
 }
 
@@ -289,9 +275,8 @@
   }
 }
 
-// Unified Step Containers
-.signup-step-container,
-.signin-step-container {
+// Unified Step Container
+.auth-step-container {
   background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
   border: 2px solid #1A1A1A;
   border-radius: 16px;
@@ -325,8 +310,7 @@
   }
 }
 
-.signup-step-content,
-.signin-step-content {
+.auth-step-content {
   position: relative;
   z-index: 2;
 }
@@ -381,8 +365,7 @@
 }
 
 // Unified Form Components
-.signup-form,
-.signin-form {
+.auth-form {
   max-width: 400px;
   margin: 0 auto;
 }
@@ -410,7 +393,7 @@
   transition: color 0.3s ease;
 }
 
-.signup-input {
+.auth-input {
   width: 100%;
   padding: 10px 10px 10px 32px;
   background: linear-gradient(145deg, #0A0A0A 0%, #0F0F0F 100%);
@@ -503,7 +486,7 @@
 }
 
 // Professional Button Components
-.signup-btn {
+.auth-btn {
   width: 100%;
   padding: 10px 14px;
   border-radius: 6px;
@@ -613,7 +596,7 @@
 }
 
 // Continue button - force override everything
-button#continue-btn.signup-btn.primary {
+button#continue-btn.auth-btn.primary {
   padding: 6px 12px !important;
   height: 32px !important;
   min-height: 32px !important;
@@ -644,9 +627,9 @@ button#continue-btn.signup-btn.primary {
   }
 }
 
-// Magic Link and OTP buttons on signup page - consistent 13px font size
-.signup-btn.magic-link-method,
-.signup-btn.otp-method {
+// Magic Link and OTP buttons - consistent 13px font size
+.auth-btn.magic-link-method,
+.auth-btn.otp-method {
   padding: 6px 12px !important;
   height: 32px !important;
   min-height: 32px !important;
@@ -764,8 +747,7 @@ button#continue-btn.signup-btn.primary {
 }
 
 // Unified Footer and Links
-.signup-footer,
-.signin-footer {
+.auth-footer {
   text-align: center;
   margin-top: 32px;
   padding-top: 24px;
@@ -824,8 +806,8 @@ button#continue-btn.signup-btn.primary {
   }
 }
 
-// Signin auth buttons - consistent 13px font size
-.signin-auth-btn {
+// Auth buttons - consistent 13px font size
+.auth-btn.signin-style {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -9,7 +9,8 @@
       "mcp__stytch__createSecret",
       "Bash(npm install:*)",
       "Bash(cp:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

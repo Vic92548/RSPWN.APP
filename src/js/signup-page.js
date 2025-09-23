@@ -1,10 +1,10 @@
 function createSignupPageTemplate(content) {
     return `
-    <section id="signup-page" class="signup-container" style="display:none;">
+    <section id="signup-page" class="auth-container" style="display:none;">
         <button id="signup_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
 
-        <div class="signup-body">
-            <div class="signup-content">
+        <div class="auth-body">
+            <div class="auth-content signup-content">
                 ${content}
             </div>
         </div>
@@ -31,25 +31,25 @@ function createSignupContent() {
         </div>
 
         <!-- Step 1: Username Selection -->
-        <div class="signup-step-container" id="signup-step-1">
-            <div class="signup-step-content">
+        <div class="auth-step-container" id="signup-step-1">
+            <div class="auth-step-content">
                 <div class="step-header">
                     <h2 class="step-title">Create Your Account</h2>
                     <p class="step-description">Choose a unique username to represent you in the RSPWN community.</p>
                 </div>
 
-                <div class="signup-form">
+                <div class="auth-form">
                     <div class="input-group">
                         <div class="input-container">
                             <div class="input-icon">
                                 <i class="fa-solid fa-user"></i>
                             </div>
-                            <input type="text" id="signup-username" placeholder="Choose your username" class="signup-input" maxlength="20" autocomplete="username">
+                            <input type="text" id="signup-username" placeholder="Choose your username" class="auth-input" maxlength="20" autocomplete="username">
                         </div>
                         <div class="input-feedback" id="username-feedback"></div>
                     </div>
 
-                    <button onclick="checkUsernameAndProceed()" class="signup-btn primary" id="continue-btn" disabled>
+                    <button onclick="checkUsernameAndProceed()" class="auth-btn primary" id="continue-btn" disabled>
                         <div class="btn-content">
                             <span>Continue</span>
                             <i class="fa-solid fa-arrow-right"></i>
@@ -60,32 +60,32 @@ function createSignupContent() {
                     <div id="signup-status-step1" class="status-message"></div>
                 </div>
 
-                <div class="signup-footer">
+                <div class="auth-footer">
                     <p>Already have an account? <button onclick="openSigninPage()" class="link-button">Sign in here</button></p>
                 </div>
             </div>
         </div>
 
         <!-- Step 2: Email Authentication -->
-        <div class="signup-step-container" id="signup-step-2" style="display: none;">
-            <div class="signup-step-content">
+        <div class="auth-step-container" id="signup-step-2" style="display: none;">
+            <div class="auth-step-content">
                 <div class="step-header">
                     <h2 class="step-title">Verify Your Email</h2>
                     <p class="step-description">Great choice! Username <strong id="chosen-username" class="highlight-text"></strong> is yours. Now let's verify your email address.</p>
                 </div>
 
-                <div class="signup-form">
+                <div class="auth-form">
                     <div class="input-group">
                         <div class="input-container">
                             <div class="input-icon">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
-                            <input type="email" id="signup-email" placeholder="Enter your email address" class="signup-input" autocomplete="email">
+                            <input type="email" id="signup-email" placeholder="Enter your email address" class="auth-input" autocomplete="email">
                         </div>
                     </div>
 
                     <div class="auth-methods">
-                        <button onclick="signupWithMagicLink()" class="signup-btn primary magic-link-method">
+                        <button onclick="signupWithMagicLink()" class="auth-btn primary magic-link-method">
                             <div class="btn-content">
                                 <i class="fa-solid fa-link"></i>
                                 <span>Send Magic Link</span>
@@ -100,10 +100,10 @@ function createSignupContent() {
                                 <div class="input-icon">
                                     <i class="fa-solid fa-lock"></i>
                                 </div>
-                                <input type="text" id="signup-otp-input" placeholder="Enter 6-digit code" class="signup-input otp-input" maxlength="6" pattern="[0-9]{6}">
+                                <input type="text" id="signup-otp-input" placeholder="Enter 6-digit code" class="auth-input otp-input" maxlength="6" pattern="[0-9]{6}">
                             </div>
                         </div>
-                        <button onclick="verifySignupOTP()" class="signup-btn success">
+                        <button onclick="verifySignupOTP()" class="auth-btn success">
                             <div class="btn-content">
                                 <i class="fa-solid fa-check"></i>
                                 <span>Create Account</span>
