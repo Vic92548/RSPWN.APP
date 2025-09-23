@@ -4,26 +4,53 @@
 // RSPWN Store Page - AAA Gaming Store Design (like legal pages)
 // Store Container Styling
 .store-container {
-  position: relative;
-  @include full-width;
-  @include full-viewport;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   @include bg-gradient($bg-primary, $bg-secondary);
   @include flex-column;
   font-family: $font-primary;
-  @include transition(all, 0.4s, cubic-bezier(0.25, 0.46, 0.45, 0.94));
+  z-index: 1000;
+  overflow-y: auto;
+  @include transition(left, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
+  @include transition(width, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
+
+  // On desktop, keep fixed position but adjust for sidebar menu
+  @media (min-width: 769px) {
+    left: 400px;
+    width: calc(100% - 400px);
+    height: 100vh;
+  }
+
+  // Adjust for collapsed menu state
+  @media (min-width: 769px) {
+    main.menu-collapsed & {
+      left: 62px;
+      width: calc(100% - 62px);
+    }
+  }
+
+  // Hide menu button on desktop (show full menu instead)
+  @media (min-width: 769px) {
+    #store_menu_btn {
+      display: none !important;
+    }
+  }
 
   // Ensure menu button is visible on mobile/tablet
   @include responsive(tablet) {
-    .create-post-btn {
+    #store_menu_btn {
       display: flex !important;
-      z-index: $z-index-dropdown;
+      z-index: 10;
     }
   }
 
   @include responsive(mobile) {
-    .create-post-btn {
+    #store_menu_btn {
       display: flex !important;
-      z-index: $z-index-dropdown;
+      z-index: 10;
     }
   }
 }
@@ -65,8 +92,8 @@
 }
 
 .store-title {
-  @include page-title;
   margin: 0 0 8px 0;
+  @include page-title;
 }
 
 .store-subtitle {
