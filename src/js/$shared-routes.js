@@ -174,57 +174,6 @@ const ROUTES = {
         }
     },
 
-    join: {
-        path: '/join',
-        meta: {
-            title: 'Join RSPWN',
-            description: 'Join RSPWN - The Gamer\'s Social Network. Connect with gamers, share content, and grow your audience.',
-            requiresAuth: false
-        },
-        frontend: () => {
-            hidePost();
-            openAuthPage();
-        }
-    },
-
-    auth: {
-        path: '/auth',
-        meta: {
-            title: 'Login - VAPR',
-            description: 'Login to your VAPR account',
-            requiresAuth: false
-        },
-        frontend: () => {
-            hidePost();
-            openAuthPage();
-        }
-    },
-
-    register: {
-        path: '/register',
-        meta: {
-            title: 'Register - VAPR',
-            description: 'Create your VAPR account',
-            requiresAuth: false
-        },
-        frontend: () => {
-            hidePost();
-            openAuthPage();
-        }
-    },
-
-    login: {
-        path: '/login',
-        meta: {
-            title: 'Login - VAPR',
-            description: 'Login to your VAPR account',
-            requiresAuth: false
-        },
-        frontend: () => {
-            hidePost();
-            openAuthPage();
-        }
-    },
 
     signup: {
         path: '/signup',

@@ -1,12 +1,12 @@
-// Legacy function - redirects to new auth page
+// Legacy function - redirects to signup page
 function closeRegisterModal() {
-    // If called, redirect to auth page instead
-    openAuthPage();
+    // If called, redirect to signup page instead
+    openSignupPage();
 }
 
 // Backwards compatibility
 function openRegisterModal() {
-    openAuthPage();
+    openSignupPage();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
