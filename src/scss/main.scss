@@ -3,7 +3,6 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 @use 'base/base';
-@use 'components/glass-system';
 @use 'components/size-system';
 @use 'components/vapr-card';
 @use 'components/feed';
@@ -12,7 +11,6 @@
 @use 'components/customization';
 @use 'components/add-post';
 @use 'components/add-post-page';
-@use 'components/desktop-download';
 @use 'components/errors';
 @use 'components/games';
 @use 'components/menu';

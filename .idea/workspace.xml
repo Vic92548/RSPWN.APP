@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9fdf49d-a7bd-46f9-abcd-01932399e592" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/public/script.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/script.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/style.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/style.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/js/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scss/components/_store.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/scss/components/_store.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scss/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/scss/_variables.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +88,7 @@
       <workItem from="1757996594459" duration="4234000" />
       <workItem from="1758010307147" duration="1908000" />
       <workItem from="1758101587635" duration="129000" />
+      <workItem from="1758615143690" duration="136000" />
     </task>
     <servers />
   </component>

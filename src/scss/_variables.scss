@@ -33,17 +33,6 @@ $blur-sm: blur(10px);
 $blur-md: blur(20px);
 $blur-lg: blur(40px);
 
-$primary-color: #4ecdc4;
-$secondary-color: #44a3aa;
-$danger-color: #e74c3c;
-$success-color: #2ecc71;
-$warning-color: #f39c12;
-$info-color: #3498db;
-
-$mobile: 480px;
-$tablet: 768px;
-$desktop: 1024px;
-
 // Foundation colors (RSPWN Brand Guidelines)
 $black: #000000;          // Backgrounds, depth
 $white: #FFFFFF;          // Text, highlights
@@ -55,6 +44,19 @@ $gray-light: #2A2A2A;     // Card backgrounds
 $primary-blue: #4A9EFF;   // Innovation, trust, primary actions
 $primary-dark: #2D7BD8;   // Hover states, depth
 $secondary-purple: #8B5CF6; // Creativity, premium features, secondary actions
+
+$primary-color: $primary-blue;
+$secondary-color: $secondary-purple;
+$danger-color: #e74c3c;
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$info-color: $primary-dark;
+
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
+
 
 // Background colors (mapped to brand colors)
 $bg-primary: $black;

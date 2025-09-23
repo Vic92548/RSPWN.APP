@@ -8,7 +8,8 @@
       "mcp__stytch__createPublicToken",
       "mcp__stytch__createSecret",
       "Bash(npm install:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
