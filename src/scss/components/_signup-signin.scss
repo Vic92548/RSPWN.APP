@@ -1,6 +1,62 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
+@mixin auth-gradient($primary: $bg-secondary, $secondary: $bg-primary) {
+  background: linear-gradient(145deg, $primary 0%, $secondary 100%);
+}
+
+@mixin auth-input-base {
+  width: 100%;
+  background: linear-gradient(145deg, $bg-primary 0%, $bg-secondary 100%);
+  border: $border-thin $bg-tertiary;
+  border-radius: $spacing-sm;
+  color: $text-primary;
+  font: 500 $font-lg $font-primary;
+  transition: $transition-smooth;
+  box-shadow: $shadow-input;
+  box-sizing: border-box;
+
+  &::placeholder { color: $text-faint; font-weight: 400; }
+  &:focus {
+    outline: none;
+    border-color: $border-secondary;
+    background: linear-gradient(145deg, $bg-secondary 0%, $bg-secondary 100%);
+    box-shadow: $shadow-input-focus;
+    transform: translateY(-1px);
+    ~ .input-icon { color: $text-muted; }
+  }
+}
+
+@mixin auth-btn-base {
+  @include flex-center;
+  width: 100%;
+  border-radius: $spacing-sm;
+  font: 600 $font-lg $font-primary;
+  cursor: pointer;
+  transition: $transition-smooth;
+  text-decoration: none;
+  border: none;
+  letter-spacing: 0.2px;
+  position: relative;
+  overflow: hidden;
+  gap: $spacing-sm;
+  box-shadow: $shadow-button;
+
+  .btn-content {
+    @include flex-center;
+    gap: $spacing-sm;
+    position: relative;
+    z-index: $z-index-content;
+  }
+
+  &:disabled {
+    opacity: $opacity-disabled;
+    cursor: not-allowed;
+    transform: none !important;
+    &:hover { transform: none !important; box-shadow: $shadow-button-hover; }
+  }
+}
+
 .auth-container {
   position: relative;
   width: 100%;
@@ -14,82 +70,45 @@
 
   .create-post-btn {
     display: none !important;
-  }
-
-  @include responsive(tablet) {
-    .create-post-btn {
-      display: flex !important;
-      z-index: $z-index-dropdown;
-    }
-  }
-
-  @include responsive(mobile) {
-    .create-post-btn {
-      display: flex !important;
-      z-index: $z-index-dropdown;
-    }
+    @include responsive(tablet) { display: flex !important; z-index: $z-index-dropdown; }
+    @include responsive(mobile) { display: flex !important; z-index: $z-index-dropdown; }
   }
 }
 
 .auth-header {
   flex: 0 0 auto;
-  background: linear-gradient(135deg, $bg-secondary 0%, $bg-primary 100%);
+  @include auth-gradient;
   border-bottom: $border-thin $border-primary;
   padding: $spacing-xxl 0;
-
-  @include responsive(mobile) {
-    padding: $spacing-xl 0;
-  }
+  @include responsive(mobile) { padding: $spacing-xl 0; }
 }
 
 .auth-header-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   max-width: $width-max;
   margin: 0 auto;
   padding: 0 $spacing-massive;
-
-  @include responsive(tablet) {
-    padding: 0 $spacing-xxxl;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 $spacing-xl 0 60px;
-  }
+  @include responsive(tablet) { padding: 0 $spacing-xxxl; }
+  @include responsive(mobile) { padding: 0 $spacing-xl 0 60px; }
 }
 
-.auth-title-section {
-  text-align: center;
-}
+.auth-title-section { text-align: center; }
 
 .auth-title {
-  font-size: $font-giant;
-  font-weight: 700;
+  font: 700 $font-giant $font-brand;
   color: $text-primary;
   margin: 0 0 $spacing-md 0;
-  font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 2px;
-
-  @include responsive(tablet) {
-    font-size: $font-massive;
-  }
-
-  @include responsive(mobile) {
-    font-size: $font-huge;
-  }
+  @include responsive(tablet) { font-size: $font-massive; }
+  @include responsive(mobile) { font-size: $font-huge; }
 }
 
 .auth-subtitle {
-  font-size: $font-large;
+  font: normal $font-large $font-primary;
   color: $text-secondary;
   margin: 0;
-  font-family: $font-primary;
-
-  @include responsive(mobile) {
-    font-size: $font-xl;
-  }
+  @include responsive(mobile) { font-size: $font-xl; }
 }
 
 .auth-body {
@@ -97,60 +116,36 @@
   overflow-y: auto;
   padding: 60px 0 $spacing-massive 0;
   @include scrollbar-style;
-
-  @include responsive(tablet) {
-    padding: 70px 0 $spacing-huge 0;
-  }
-
-  @include responsive(mobile) {
-    padding: 100px 0 $spacing-xxxl 0;
-  }
+  @include responsive(tablet) { padding: 70px 0 $spacing-huge 0; }
+  @include responsive(mobile) { padding: 100px 0 $spacing-xxxl 0; }
 }
 
 .auth-content {
   margin: 0 auto;
   padding: 0 $spacing-massive;
+  @include responsive(tablet) { padding: 0 $spacing-xxxl; }
+  @include responsive(mobile) { padding: 0 $spacing-xl; }
 
-  @include responsive(tablet) {
-    padding: 0 $spacing-xxxl;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 $spacing-xl;
-  }
-
-  &.signup-content {
-    max-width: 600px;
-  }
-
-  &.signin-content {
-    max-width: 500px;
-  }
+  &.signup-content { max-width: 600px; }
+  &.signin-content { max-width: 500px; }
 }
 
 .signup-progress-section {
   margin-bottom: $spacing-huge;
-  padding: 0;
-
-  @include responsive(mobile) {
-    margin-bottom: $spacing-xxxl;
-  }
+  @include responsive(mobile) { margin-bottom: $spacing-xxxl; }
 }
 
 .step-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: $spacing-xl;
   padding: $spacing-xl $spacing-xxxl;
-  background: linear-gradient(145deg, $bg-primary 0%, $bg-tertiary 100%);
+  @include auth-gradient($bg-primary, $bg-tertiary);
   border: $border-thin $border-secondary;
   border-radius: $spacing-md;
   max-width: $width-huge;
   margin: 0 auto;
   backdrop-filter: $blur-sm;
   box-shadow: $shadow-card;
-
   @include responsive(mobile) {
     gap: $spacing-lg;
     padding: $spacing-lg $spacing-xl;
@@ -160,84 +155,50 @@
 }
 
 .step {
-  display: flex;
+  @include flex-center;
   flex-direction: column;
-  align-items: center;
   gap: $spacing-sm;
   opacity: $opacity-muted;
   transition: $transition-smooth;
 
   &.active {
     opacity: $opacity-opaque;
-
-    .step-number {
-      background: $border-secondary;
-      color: $text-primary;
-      border-color: $border-quaternary;
-    }
-
-    span {
-      color: $text-primary;
-      font-weight: 600;
-    }
+    .step-number { background: $border-secondary; color: $text-primary; border-color: $border-quaternary; }
+    span { color: $text-primary; font-weight: 600; }
   }
 
   &.completed {
     opacity: $opacity-opaque;
-
     .step-number {
       background: $success-color;
       color: $text-primary;
       border-color: $success-color;
-
-      &::after {
-        content: '✓';
-        font-size: $font-xs;
-        font-weight: 900;
-      }
+      &::after { content: '✓'; font: 900 $font-xs $font-primary; }
     }
-
-    span {
-      color: $success-color;
-      font-weight: 600;
-    }
+    span { color: $success-color; font-weight: 600; }
   }
 
   span {
-    font-size: $font-md;
+    font: 500 $font-md $font-primary;
     color: $text-faint;
-    font-family: $font-primary;
-    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     transition: $transition-smooth;
-
-    @include responsive(mobile) {
-      font-size: $font-xs;
-    }
+    @include responsive(mobile) { font-size: $font-xs; }
   }
 }
 
 .step-number {
+  @include flex-center;
   width: $spacing-xxxl;
   height: $spacing-xxxl;
   border-radius: 50%;
   background: $bg-tertiary;
   border: $border-thin $border-secondary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: $font-md;
-  font-weight: 600;
+  font: 600 $font-md $font-primary;
   color: $text-faint;
   transition: $transition-smooth;
-  font-family: $font-primary;
-
-  @include responsive(mobile) {
-    width: $spacing-xxl;
-    height: $spacing-xxl;
-    font-size: $font-xs;
-  }
+  @include responsive(mobile) { width: $spacing-xxl; height: $spacing-xxl; font-size: $font-xs; }
 }
 
 .step-line {
@@ -248,30 +209,21 @@
   position: relative;
   overflow: hidden;
   max-width: 60px;
+  @include responsive(mobile) { height: 1px; max-width: 40px; }
 
   .step-line-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    @include absolute-fill;
     width: 0;
     background: $success-color;
     border-radius: 1px;
     transition: width 0.4s ease;
   }
 
-  .step.completed ~ & .step-line-fill {
-    width: 100%;
-  }
-
-  @include responsive(mobile) {
-    height: 1px;
-    max-width: 40px;
-  }
+  .step.completed ~ & .step-line-fill { width: 100%; }
 }
 
 .auth-step-container {
-  background: linear-gradient(145deg, $bg-secondary 0%, $bg-primary 100%);
+  @include auth-gradient;
   border: $border-medium $bg-tertiary;
   border-radius: $spacing-xl;
   padding: $spacing-giant;
@@ -283,99 +235,52 @@
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     background: linear-gradient(135deg, $overlay-faint 0%, transparent 50%, $overlay-subtle 100%);
     pointer-events: none;
   }
 
-  @include responsive(tablet) {
-    padding: $spacing-massive;
-    border-radius: $spacing-lg;
-  }
-
-  @include responsive(mobile) {
-    padding: $spacing-huge $spacing-xxxl;
-    border-radius: $spacing-lg;
-    margin-bottom: $spacing-xxxl;
-  }
+  @include responsive(tablet) { padding: $spacing-massive; border-radius: $spacing-lg; }
+  @include responsive(mobile) { padding: $spacing-huge $spacing-xxxl; border-radius: $spacing-lg; margin-bottom: $spacing-xxxl; }
 }
 
-.auth-step-content {
-  position: relative;
-  z-index: $z-index-content;
-}
+.auth-step-content { position: relative; z-index: $z-index-content; }
 
 .step-header {
   text-align: center;
   margin-bottom: $spacing-massive;
-
-  @include responsive(mobile) {
-    margin-bottom: $spacing-huge;
-  }
+  @include responsive(mobile) { margin-bottom: $spacing-huge; }
 }
 
 .step-title {
-  font-size: $font-xxlarge;
-  font-weight: 400;
+  font: 400 $font-xxlarge $font-brand;
   color: $text-primary;
   margin: 0 0 $spacing-lg 0;
-  font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 1px;
   line-height: 1.3;
-
-  @include responsive(tablet) {
-    font-size: $font-xlarge;
-  }
-
-  @include responsive(mobile) {
-    font-size: $font-large;
-    margin-bottom: $spacing-md;
-  }
+  @include responsive(tablet) { font-size: $font-xlarge; }
+  @include responsive(mobile) { font-size: $font-large; margin-bottom: $spacing-md; }
 }
 
 .step-description {
-  font-size: $font-xl;
-  color: $text-muted;
-  margin: 0;
-  font-family: $font-primary;
+  font: normal $font-xl $font-primary;
   line-height: 1.4;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @include responsive(mobile) {
-    font-size: $font-lg;
-  }
-}
-
-.highlight-text {
-  color: $success-color;
-  font-weight: 700;
-}
-
-.auth-form {
-  max-width: 400px;
+  color: $text-muted;
   margin: 0 auto;
+  max-width: 400px;
+  @include responsive(mobile) { font-size: $font-lg; }
 }
+
+.highlight-text { color: $success-color; font-weight: 700; }
+.auth-form { max-width: 400px; margin: 0 auto; }
 
 .input-group {
   margin-bottom: $spacing-xxxl;
-
-  @include responsive(mobile) {
-    margin-bottom: $spacing-xxl;
-  }
+  @include responsive(mobile) { margin-bottom: $spacing-xxl; }
 }
 
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+.input-container { position: relative; @include flex-center; }
 
 .input-icon {
   position: absolute;
@@ -387,54 +292,18 @@
 }
 
 .auth-input {
-  width: 100%;
+  @include auth-input-base;
   padding: $spacing-md $spacing-md $spacing-md $spacing-huge;
-  background: linear-gradient(145deg, $bg-primary 0%, $bg-secondary 100%);
-  border: $border-thin $bg-tertiary;
-  border-radius: $spacing-sm;
-  color: $text-primary;
-  font-size: $font-lg;
-  font-family: $font-primary;
-  font-weight: 500;
-  transition: $transition-smooth;
-  box-shadow: $shadow-input;
-  box-sizing: border-box;
-
-  &::placeholder {
-    color: $text-faint;
-    font-weight: 400;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: $border-secondary;
-    background: linear-gradient(145deg, $bg-secondary 0%, $bg-secondary 100%);
-    box-shadow: $shadow-input-focus;
-    transform: translateY(-1px);
-
-    ~ .input-icon {
-      color: $text-muted;
-    }
-  }
 
   &.otp-input {
     text-align: center;
-    font-size: $font-large;
-    font-weight: 700;
+    font: 700 $font-large $font-primary;
     letter-spacing: 3px;
     padding-left: $spacing-lg;
-
-    ~ .input-icon {
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: $opacity-disabled;
-    }
+    ~ .input-icon { left: 50%; transform: translateX(-50%); opacity: $opacity-disabled; }
   }
 
-  @include responsive(mobile) {
-    padding: $spacing-md $spacing-md $spacing-md $spacing-massive;
-    font-size: $font-md;
-  }
+  @include responsive(mobile) { padding: $spacing-md $spacing-md $spacing-md $spacing-massive; font-size: $font-md; }
 }
 
 .input-feedback {
@@ -442,71 +311,25 @@
   min-height: $spacing-massive;
 
   .feedback {
-    display: flex;
-    align-items: center;
+    @include flex-center;
     gap: $spacing-md;
-    font-size: $font-md;
-    font-family: $font-primary;
-    font-weight: 600;
+    font: 600 $font-md $font-primary;
     padding: $spacing-md $spacing-lg;
     border-radius: $spacing-sm;
     transition: $transition-smooth;
     border: $border-medium transparent;
 
-    i {
-      font-size: $font-sm;
-      flex-shrink: 0;
-    }
+    i { font-size: $font-sm; flex-shrink: 0; }
 
-    &.checking {
-      color: $warning-color;
-      background: linear-gradient(145deg, rgba($warning-color, 0.1) 0%, rgba($warning-color, 0.05) 100%);
-      border-color: rgba($warning-color, 0.2);
-    }
-
-    &.success {
-      color: $success-color;
-      background: linear-gradient(145deg, rgba($success-color, 0.1) 0%, rgba($success-color, 0.05) 100%);
-      border-color: rgba($success-color, 0.2);
-    }
-
-    &.error {
-      color: $danger-color;
-      background: linear-gradient(145deg, rgba($danger-color, 0.1) 0%, rgba($danger-color, 0.05) 100%);
-      border-color: rgba($danger-color, 0.2);
-    }
+    &.checking { color: $warning-color; @include auth-gradient(rgba($warning-color, 0.1), rgba($warning-color, 0.05)); border-color: rgba($warning-color, 0.2); }
+    &.success { color: $success-color; @include auth-gradient(rgba($success-color, 0.1), rgba($success-color, 0.05)); border-color: rgba($success-color, 0.2); }
+    &.error { color: $danger-color; @include auth-gradient(rgba($danger-color, 0.1), rgba($danger-color, 0.05)); border-color: rgba($danger-color, 0.2); }
   }
 }
 
 .auth-btn {
-  width: 100%;
+  @include auth-btn-base;
   padding: $spacing-md $font-xl;
-  border-radius: $spacing-sm;
-  font-size: $font-lg;
-  font-weight: 600;
-  font-family: $font-primary;
-  cursor: pointer;
-  transition: $transition-smooth;
-  text-align: center;
-  text-decoration: none;
-  border: none;
-  text-transform: none;
-  letter-spacing: 0.2px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-sm;
-  box-shadow: $shadow-button;
-
-  .btn-content {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    position: relative;
-    z-index: $z-index-content;
-  }
 
   .btn-ripple {
     position: absolute;
@@ -520,34 +343,14 @@
     transition: width 0.3s ease, height 0.3s ease;
   }
 
-  &:hover .btn-ripple {
-    width: 300px;
-    height: 300px;
-  }
-
-  &:disabled {
-    opacity: $opacity-disabled;
-    cursor: not-allowed;
-    transform: none !important;
-
-    &:hover {
-      transform: none !important;
-      box-shadow: $shadow-button-hover;
-
-      .btn-ripple {
-        width: 0;
-        height: 0;
-      }
-    }
-  }
+  &:hover .btn-ripple { width: 300px; height: 300px; }
 
   &.primary {
-    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    @include auth-gradient($border-secondary, $border-primary);
     color: $text-primary;
     border: $border-medium $border-tertiary;
-
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      @include auth-gradient($border-tertiary, $border-secondary);
       border-color: $border-quaternary;
       transform: translateY(-1px);
       box-shadow: $shadow-button-hover;
@@ -555,12 +358,11 @@
   }
 
   &.secondary {
-    background: linear-gradient(135deg, $bg-secondary 0%, $bg-primary 100%);
+    @include auth-gradient;
     color: $text-muted;
     border: $border-medium $bg-tertiary;
-
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $bg-tertiary 0%, $bg-secondary 100%);
+      @include auth-gradient($bg-tertiary, $bg-secondary);
       color: $text-primary;
       border-color: $border-secondary;
       transform: translateY(-1px);
@@ -569,22 +371,18 @@
   }
 
   &.success {
-    background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
+    @include auth-gradient(#2D5A2D, #1A4A1A);
     color: $text-primary;
     border: $border-medium $success-color;
-
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #3D6A3D 0%, #2A5A2A 100%);
+      @include auth-gradient(#3D6A3D, #2A5A2A);
       border-color: #66BB6A;
       transform: translateY(-1px);
       box-shadow: 0 4px 16px rgba($success-color, 0.2);
     }
   }
 
-  @include responsive(mobile) {
-    padding: $spacing-md $spacing-lg;
-    font-size: $font-md;
-  }
+  @include responsive(mobile) { padding: $spacing-md $spacing-lg; font-size: $font-md; }
 }
 
 button#continue-btn.auth-btn.primary {
@@ -593,29 +391,17 @@ button#continue-btn.auth-btn.primary {
   min-height: $spacing-huge !important;
   max-height: $spacing-huge !important;
   border-radius: $spacing-xs !important;
-  font-size: $font-sm !important;
-  font-weight: 500 !important;
-  text-transform: none !important;
+  font: 500 $font-sm $font-primary !important;
   letter-spacing: 0.2px !important;
 
   .btn-content {
     gap: $spacing-xs !important;
     height: $spacing-xxl !important;
     line-height: 1 !important;
-
-    span {
-      font-size: $font-sm !important;
-      line-height: 1 !important;
-    }
-
-    i {
-      font-size: 9px !important;
-    }
+    span { font: normal $font-sm $font-primary !important; line-height: 1 !important; }
+    i { font-size: 9px !important; }
   }
-
-  .btn-ripple {
-    display: none !important;
-  }
+  .btn-ripple { display: none !important; }
 }
 
 .auth-btn.magic-link-method,
@@ -624,24 +410,14 @@ button#continue-btn.auth-btn.primary {
   height: $spacing-huge !important;
   min-height: $spacing-huge !important;
   max-height: $spacing-huge !important;
-  font-size: $font-lg !important;
-  font-weight: 600 !important;
+  font: 600 $font-lg $font-primary !important;
 
   .btn-content {
     gap: $spacing-sm !important;
-
-    span {
-      font-size: $font-lg !important;
-    }
-
-    i {
-      font-size: $font-xl !important;
-    }
+    span { font-size: $font-lg !important; }
+    i { font-size: $font-xl !important; }
   }
-
-  .btn-ripple {
-    display: none !important;
-  }
+  .btn-ripple { display: none !important; }
 }
 
 .auth-methods {
@@ -649,11 +425,7 @@ button#continue-btn.auth-btn.primary {
   flex-direction: column;
   gap: $spacing-xl;
   margin-bottom: $spacing-xxxl;
-
-  @include responsive(mobile) {
-    gap: $font-xl;
-    margin-bottom: $spacing-xxl;
-  }
+  @include responsive(mobile) { gap: $font-xl; margin-bottom: $spacing-xxl; }
 }
 
 .method-divider {
@@ -672,11 +444,10 @@ button#continue-btn.auth-btn.primary {
   }
 
   span {
-    background: linear-gradient(145deg, $bg-secondary 0%, $bg-primary 100%);
+    @include auth-gradient;
     color: $text-faint;
     padding: 0 $spacing-xl;
-    font-size: $font-xl;
-    font-weight: 600;
+    font: 600 $font-xl $font-primary;
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
@@ -685,52 +456,37 @@ button#continue-btn.auth-btn.primary {
 }
 
 .otp-verification {
-  background: linear-gradient(145deg, $overlay-faint 0%, $overlay-subtle 100%);
+  @include auth-gradient($overlay-faint, $overlay-subtle);
   border: $border-medium $bg-tertiary;
   border-radius: $spacing-lg;
   padding: $spacing-xxxl;
   margin: $spacing-xxxl 0;
-
-  @include responsive(mobile) {
-    padding: $spacing-xxl;
-    margin: $spacing-xxl 0;
-  }
+  @include responsive(mobile) { padding: $spacing-xxl; margin: $spacing-xxl 0; }
 }
 
 .back-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: $spacing-sm;
-  background: linear-gradient(145deg, $bg-primary 0%, $bg-secondary 100%);
+  @include auth-gradient;
   border: $border-thin $bg-tertiary;
   color: $text-muted;
   padding: $spacing-md $spacing-lg;
   border-radius: $spacing-sm;
-  font-size: $font-lg;
-  font-family: $font-primary;
-  font-weight: 500;
+  font: 500 $font-lg $font-primary;
   cursor: pointer;
   transition: $transition-smooth;
   margin-top: $spacing-xl;
-  text-transform: none;
   letter-spacing: 0.2px;
 
   &:hover {
-    background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+    @include auth-gradient($bg-tertiary, $bg-secondary);
     border-color: $border-secondary;
     color: $text-primary;
     transform: translateY(-1px);
   }
 
-  i {
-    font-size: $font-md;
-  }
-
-  @include responsive(mobile) {
-    padding: $spacing-sm $spacing-md;
-    font-size: $font-md;
-  }
+  i { font-size: $font-md; }
+  @include responsive(mobile) { padding: $spacing-sm $spacing-md; font-size: $font-md; }
 }
 
 .auth-footer {
@@ -739,32 +495,16 @@ button#continue-btn.auth-btn.primary {
   padding-top: $spacing-xxxl;
   border-top: $border-thin $bg-tertiary;
 
-  p {
-    color: $text-muted;
-    margin: 0;
-    font-size: $font-lg;
-    font-family: $font-primary;
-  }
-
-  @include responsive(mobile) {
-    margin-top: $spacing-xxl;
-    padding-top: $spacing-xl;
-
-    p {
-      font-size: $font-md;
-    }
-  }
+  p { color: $text-muted; margin: 0; font: normal $font-lg $font-primary; }
+  @include responsive(mobile) { margin-top: $spacing-xxl; padding-top: $spacing-xl; p { font-size: $font-md; } }
 }
 
 .link-button {
   background: none;
   border: none;
   color: $accent-primary;
-  text-decoration: none;
   cursor: pointer;
-  font-size: inherit;
-  font-family: inherit;
-  font-weight: 600;
+  font: 600 inherit inherit;
   padding: $spacing-xs $spacing-md;
   border-radius: $spacing-sm;
   transition: $transition-smooth;
@@ -785,76 +525,48 @@ button#continue-btn.auth-btn.primary {
   &:hover {
     color: #6BB5FF;
     background: rgba($accent-primary, 0.05);
-
-    &::after {
-      width: 100%;
-    }
+    &::after { width: 100%; }
   }
 }
 
 .auth-btn.signin-style {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   width: 100%;
   padding: $spacing-sm $spacing-lg !important;
   height: $spacing-huge !important;
   min-height: $spacing-huge !important;
   max-height: $spacing-huge !important;
-  background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+  @include auth-gradient($bg-tertiary, $bg-secondary);
   border: $border-medium $border-secondary;
   border-radius: $spacing-sm;
-  font-family: $font-primary;
-  font-size: $font-lg !important;
-  font-weight: 600;
+  font: 600 $font-lg $font-primary !important;
   color: $text-primary;
   cursor: pointer;
   transition: all 0.25s $ease-smooth;
   margin-bottom: $spacing-md;
 
   .btn-content {
-    display: flex;
-    align-items: center;
+    @include flex-center;
     gap: $spacing-sm;
-
-    span {
-      font-size: $font-lg !important;
-    }
-
-    i {
-      font-size: $font-xl !important;
-    }
+    span { font-size: $font-lg !important; }
+    i { font-size: $font-xl !important; }
   }
 
   &:hover {
     border-color: $accent-primary;
-    background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
+    @include auth-gradient(#2A2A2A, #1F1F1F);
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba($accent-primary, 0.2);
   }
 
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba($accent-primary, 0.3);
-  }
-
-  &.magic-link-method {
-    margin-bottom: $spacing-lg;
-  }
-
-  &.otp-method {
-    margin-bottom: $spacing-xl;
-  }
+  &:active { transform: translateY(0); box-shadow: 0 2px 8px rgba($accent-primary, 0.3); }
+  &.magic-link-method { margin-bottom: $spacing-lg; }
+  &.otp-method { margin-bottom: $spacing-xl; }
 
   &.verify-btn {
-    background: linear-gradient(145deg, #22C55E 0%, #16A34A 100%);
+    @include auth-gradient(#22C55E, #16A34A);
     border-color: #22C55E;
-
-    &:hover {
-      background: linear-gradient(145deg, #16A34A 0%, #15803D 100%);
-      border-color: #16A34A;
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
-    }
+    &:hover { @include auth-gradient(#16A34A, #15803D); border-color: #16A34A; box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3); }
   }
 }
 
@@ -863,153 +575,63 @@ button#continue-btn.auth-btn.primary {
   grid-template-columns: repeat(2, 1fr);
   gap: $spacing-md;
   margin-top: $spacing-xl;
-
-  @include responsive(mobile) {
-    grid-template-columns: 1fr;
-    gap: $spacing-sm;
-  }
+  @include responsive(mobile) { grid-template-columns: 1fr; gap: $spacing-sm; }
 }
 
 .social-auth-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: $spacing-sm;
   padding: $spacing-sm $spacing-md !important;
   height: $spacing-huge !important;
   min-height: $spacing-huge !important;
   max-height: $spacing-huge !important;
-  background: linear-gradient(145deg, $bg-tertiary 0%, $bg-secondary 100%);
+  @include auth-gradient($bg-tertiary, $bg-secondary);
   border: $border-medium $border-secondary;
   border-radius: $spacing-sm;
-  font-family: $font-primary;
-  font-size: $font-lg !important;
-  font-weight: 600;
+  font: 600 $font-lg $font-primary !important;
   color: $text-primary;
   cursor: pointer;
   transition: all 0.25s $ease-smooth;
 
-  i {
-    font-size: $font-xl;
-    flex-shrink: 0;
-  }
-
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: $font-lg !important;
-  }
+  i { font-size: $font-xl; flex-shrink: 0; }
+  span { @include text-truncate; font-size: $font-lg !important; }
 
   &:hover {
     border-color: $accent-primary;
-    background: linear-gradient(145deg, #2A2A2A 0%, #1F1F1F 100%);
+    @include auth-gradient(#2A2A2A, #1F1F1F);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba($accent-primary, 0.15);
   }
 
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba($accent-primary, 0.2);
-  }
+  &:active { transform: translateY(0); box-shadow: 0 2px 6px rgba($accent-primary, 0.2); }
 
-  &.discord {
-    &:hover {
-      border-color: #5865F2;
-      box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2);
-    }
-  }
+  &.discord:hover { border-color: #5865F2; box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2); }
+  &.twitch:hover { border-color: #9146FF; box-shadow: 0 4px 12px rgba(145, 70, 255, 0.2); }
+  &.google:hover { border-color: #EA4335; box-shadow: 0 4px 12px rgba(234, 67, 53, 0.2); }
+  &.apple:hover { border-color: $black; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+  &.facebook:hover { border-color: #1877F2; box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2); }
+  &.linkedin:hover { border-color: #0A66C2; box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2); }
 
-  &.twitch {
-    &:hover {
-      border-color: #9146FF;
-      box-shadow: 0 4px 12px rgba(145, 70, 255, 0.2);
-    }
-  }
-
-  &.google {
-    &:hover {
-      border-color: #EA4335;
-      box-shadow: 0 4px 12px rgba(234, 67, 53, 0.2);
-    }
-  }
-
-  &.apple {
-    &:hover {
-      border-color: $black;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  &.facebook {
-    &:hover {
-      border-color: #1877F2;
-      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2);
-    }
-  }
-
-  &.linkedin {
-    &:hover {
-      border-color: #0A66C2;
-      box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
-    }
-  }
-
-  @include responsive(mobile) {
-    font-size: $font-lg !important;
-    gap: $spacing-md;
-
-    span {
-      font-size: $font-lg !important;
-    }
-
-    i {
-      font-size: $font-xl;
-    }
-  }
+  @include responsive(mobile) { font-size: $font-lg !important; gap: $spacing-md; span { font-size: $font-lg !important; } i { font-size: $font-xl; } }
 }
 
 .status-message {
   margin-top: $spacing-lg;
   min-height: $font-xlarge;
   text-align: center;
-  font-size: $font-md;
-  font-family: $font-primary;
+  font: normal $font-md $font-primary;
 
-  &.success {
-    color: $success-color;
-    font-weight: 600;
-  }
-
-  &.error {
-    color: $danger-color;
-    font-weight: 600;
-  }
-
-  @include responsive(mobile) {
-    margin-top: $spacing-md;
-    font-size: $font-sm;
-  }
+  &.success { color: $success-color; font-weight: 600; }
+  &.error { color: $danger-color; font-weight: 600; }
+  @include responsive(mobile) { margin-top: $spacing-md; font-size: $font-sm; }
 }
 
 @keyframes pageSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY($spacing-massive);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY($spacing-massive); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes stepSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX($spacing-xl);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX($spacing-xl); }
+  to { opacity: 1; transform: translateX(0); }
 }
