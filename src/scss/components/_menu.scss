@@ -69,18 +69,65 @@
   font-weight: 500;
 }
 
+// RSPWN Store Design - Clean Menu Toggle Button (Epic Games inspired)
 .menu-toggle {
   position: absolute;
   top: 20px;
   right: 0;
-  @include icon-button(40px);
-  border-radius: 12px 0 0 12px;
+  width: 40px;
+  height: 40px;
+  background: $bg-tertiary; // Clean flat background
+  border: 1px solid $border-secondary;
+  border-radius: 4px 0 0 4px; // Sharp edges, minimal radius
   display: none;
+  align-items: center;
+  justify-content: center;
+  color: $text-primary;
+  cursor: pointer;
   font-size: 16px;
+  transition: $transition-fast;
   z-index: 10;
+
+  // Clean hover state - no effects, just color change
+  &:hover {
+    background: $bg-quaternary;
+    border-color: $border-tertiary;
+    color: $white;
+  }
+
+  // Clean active/pressed state
+  &:active {
+    background: $bg-secondary;
+    border-color: $border-primary;
+  }
+
+  // Icon styling
+  i {
+    transition: transform $duration-fast $ease-in-out;
+  }
 
   @include responsive(desktop) {
     display: flex;
+  }
+}
+
+// Clean glass button replacement - flat Epic Games style
+.glass-button {
+  background: $bg-tertiary;
+  border: 1px solid $border-secondary;
+  border-radius: 4px;
+  color: $text-primary;
+  transition: $transition-fast;
+
+  &:hover {
+    background: $bg-quaternary;
+    border-color: $border-tertiary;
+    color: $white;
+  }
+
+  &:active {
+    background: $bg-secondary;
+    border-color: $border-primary;
   }
 }
 
@@ -675,6 +722,19 @@
   i {
     margin: 0;
     line-height: 1;
+  }
+}
+
+// Glass button styling (used with .glass_bt class)
+.glass_bt {
+  @include glass-effect();
+  color: $text-primary;
+  border-radius: 8px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: $shadow-md !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
   }
 }
 

@@ -1,9 +1,10 @@
-// Professional Signup/Signin - Store Quality Design
+// Unified Auth Forms - Professional Design
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// Signup Container - Store Quality Layout
-.signup-container {
+// Unified Auth Container - Shared by Signup & Signin
+.signup-container,
+.signin-container {
   position: relative;
   width: 100%;
   height: 100vh;
@@ -12,6 +13,7 @@
   flex-direction: column;
   font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: pageSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 
   // Hide menu button on desktop, show only on mobile/tablet
   .create-post-btn {
@@ -33,7 +35,9 @@
   }
 }
 
-.signup-header {
+// Unified Auth Headers
+.signup-header,
+.signin-header {
   flex: 0 0 auto;
   background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
   border-bottom: 1px solid #222222;
@@ -44,7 +48,8 @@
   }
 }
 
-.signup-header-content {
+.signup-header-content,
+.signin-header-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,11 +66,13 @@
   }
 }
 
-.signup-title-section {
+.signup-title-section,
+.signin-title-section {
   text-align: center;
 }
 
-.signup-title {
+.signup-title,
+.signin-title {
   font-size: 32px;
   font-weight: 700;
   color: #FFFFFF;
@@ -83,7 +90,8 @@
   }
 }
 
-.signup-subtitle {
+.signup-subtitle,
+.signin-subtitle {
   font-size: 16px;
   color: #CCCCCC;
   margin: 0;
@@ -94,7 +102,8 @@
   }
 }
 
-.signup-body {
+.signup-body,
+.signin-body {
   flex: 1;
   overflow-y: auto;
   padding: 60px 0 40px 0; // Less padding since no menu on desktop
@@ -111,6 +120,20 @@
 
 .signup-content {
   max-width: 600px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  @include responsive(tablet) {
+    padding: 0 24px;
+  }
+
+  @include responsive(mobile) {
+    padding: 0 16px;
+  }
+}
+
+.signin-content {
+  max-width: 500px;
   margin: 0 auto;
   padding: 0 40px;
 
@@ -266,8 +289,9 @@
   }
 }
 
-// Step Container - Professional Layout
-.signup-step-container {
+// Unified Step Containers
+.signup-step-container,
+.signin-step-container {
   background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
   border: 2px solid #1A1A1A;
   border-radius: 16px;
@@ -276,6 +300,7 @@
   box-shadow: 0 16px 64px rgba(0, 0, 0, 0.6);
   position: relative;
   overflow: hidden;
+  animation: stepSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 
   &::before {
     content: '';
@@ -300,7 +325,8 @@
   }
 }
 
-.signup-step-content {
+.signup-step-content,
+.signin-step-content {
   position: relative;
   z-index: 2;
 }
@@ -354,8 +380,9 @@
   font-weight: 700;
 }
 
-// Form Components
-.signup-form {
+// Unified Form Components
+.signup-form,
+.signin-form {
   max-width: 400px;
   margin: 0 auto;
 }
@@ -736,8 +763,9 @@ button#continue-btn.signup-btn.primary {
   }
 }
 
-// Footer and Links
-.signup-footer {
+// Unified Footer and Links
+.signup-footer,
+.signin-footer {
   text-align: center;
   margin-top: 32px;
   padding-top: 24px;
@@ -1000,14 +1028,6 @@ button#continue-btn.signup-btn.primary {
 }
 
 // Professional Animations
-.signup-container {
-  animation: pageSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-.signup-step-container {
-  animation: stepSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
 @keyframes pageSlideIn {
   from {
     opacity: 0;
@@ -1028,143 +1048,4 @@ button#continue-btn.signup-btn.primary {
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-// Signin Container - Same Professional Design
-.signin-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background: transparent; // Allow body background to show through
-  display: flex;
-  flex-direction: column;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: pageSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-
-  // Hide menu button on desktop, show only on mobile/tablet
-  .create-post-btn {
-    display: none !important;
-  }
-
-  @include responsive(tablet) {
-    .create-post-btn {
-      display: flex !important;
-      z-index: 10;
-    }
-  }
-
-  @include responsive(mobile) {
-    .create-post-btn {
-      display: flex !important;
-      z-index: 10;
-    }
-  }
-}
-
-.signin-header {
-  flex: 0 0 auto;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
-  padding: 20px 0;
-
-  @include responsive(mobile) {
-    padding: 16px 0;
-  }
-}
-
-.signin-header-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
-
-  @include responsive(tablet) {
-    padding: 0 24px;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
-  }
-}
-
-.signin-title-section {
-  text-align: center;
-}
-
-.signin-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin: 0 0 8px 0;
-  font-family: 'Audiowide', 'Inter', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-
-  @include responsive(tablet) {
-    font-size: 28px;
-  }
-
-  @include responsive(mobile) {
-    font-size: 24px;
-  }
-}
-
-.signin-subtitle {
-  font-size: 16px;
-  color: #CCCCCC;
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-
-  @include responsive(mobile) {
-    font-size: 14px;
-  }
-}
-
-.signin-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 60px 0 40px 0; // Less padding since no menu on desktop
-  @include scrollbar-style;
-
-  @include responsive(tablet) {
-    padding: 70px 0 32px 0; // Menu appears on tablet
-  }
-
-  @include responsive(mobile) {
-    padding: 100px 0 24px 0; // Extra space for mobile menu button
-  }
-}
-
-.signin-content {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 0 40px;
-
-  @include responsive(tablet) {
-    padding: 0 24px;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 16px;
-  }
-}
-
-// Signin-specific components that reuse signup styles
-.signin-step-container {
-  @extend .signup-step-container;
-}
-
-.signin-step-content {
-  @extend .signup-step-content;
-}
-
-.signin-form {
-  @extend .signup-form;
-}
-
-.signin-footer {
-  @extend .signup-footer;
 }
