@@ -59,8 +59,8 @@
       align-items: center;
       justify-content: center;
       font-size: $font-xxlarge;
-      background: rgba($social-discord, 0.1);
-      color: $social-discord;
+      background: rgba($primary-blue, 0.1);
+      color: $primary-blue;
     }
   }
 
@@ -159,7 +159,7 @@
   i {
     & {
       font-size: $spacing-xl;
-      color: $social-discord;
+      color: $primary-blue;
     }
   }
 
@@ -253,11 +253,11 @@
   }
 
   &.dragging {
-    @include shadow(0 0 20px rgba($social-discord, 0.2));
+    @include shadow(0 0 20px rgba($primary-blue, 0.2));
 
     & {
-      background: rgba($social-discord, 0.1);
-      border-color: rgba($social-discord, 0.3);
+      background: rgba($primary-blue, 0.1);
+      border-color: rgba($primary-blue, 0.3);
     }
   }
 
@@ -286,8 +286,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba($social-discord, 0.1);
-      color: $social-discord;
+      background: rgba($primary-blue, 0.1);
+      color: $primary-blue;
       margin-bottom: $spacing-xl;
     }
 
@@ -484,17 +484,17 @@
 
     &.primary {
       & {
-        background: rgba($social-discord, 0.2);
-        border-color: rgba($social-discord, 0.3);
-        color: $social-discord;
+        background: rgba($primary-blue, 0.2);
+        border-color: rgba($primary-blue, 0.3);
+        color: $primary-blue;
       }
 
       &:hover {
         @include translate(0, -2px);
-        @include shadow(0 8px 24px rgba($social-discord, 0.2));
+        @include shadow(0 8px 24px rgba($primary-blue, 0.2));
 
         & {
-          background: rgba($social-discord, 0.3);
+          background: rgba($primary-blue, 0.3);
         }
       }
     }
@@ -531,9 +531,9 @@
 
 .progress-fill {
   @include full-height;
-  @include bg-gradient($social-discord, #7289DA, 90deg);
+  @include bg-gradient($primary-blue, #7289DA, 90deg);
   @include transition(width, $duration-normal);
-  @include shadow(0 0 10px rgba($social-discord, 0.4));
+  @include shadow(0 0 10px rgba($primary-blue, 0.4));
 
   & {
     width: 0%;
@@ -605,8 +605,8 @@
       align-items: center;
       justify-content: center;
       font-size: $font-xlarge;
-      background: rgba($social-discord, 0.1);
-      color: $social-discord;
+      background: rgba($primary-blue, 0.1);
+      color: $primary-blue;
     }
   }
 

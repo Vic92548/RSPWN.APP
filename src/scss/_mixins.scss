@@ -944,8 +944,10 @@
 
 // Interaction utilities
 @mixin clickable {
-  cursor: pointer;
-  user-select: none;
+  & {
+    cursor: pointer;
+    user-select: none;
+  }
 }
 
 @mixin not-clickable {
