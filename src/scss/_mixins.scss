@@ -62,8 +62,10 @@
 }
 
 @mixin scrollbar-style {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  & {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -161,16 +163,22 @@
 
 // Container and layout mixins
 @mixin container-layout($max-width: $width-max, $padding: $spacing-massive) {
-  max-width: $max-width;
-  margin: 0 auto;
-  padding: 0 $padding;
+  & {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 0 $padding;
+  }
 
   @include responsive(tablet) {
-    padding: 0 $spacing-xxxl;
+    & {
+      padding: 0 $spacing-xxxl;
+    }
   }
 
   @include responsive(mobile) {
-    padding: 0 $spacing-xl;
+    & {
+      padding: 0 $spacing-xl;
+    }
   }
 }
 
@@ -528,111 +536,151 @@
 
 // Flexbox utilities
 @mixin flex-column {
-  display: flex;
-  flex-direction: column;
+  & {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 @mixin flex-row {
-  display: flex;
-  flex-direction: row;
+  & {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 @mixin flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  & {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 @mixin flex-around {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  & {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 
 @mixin flex-evenly {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+  & {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 }
 
 @mixin flex-column-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  & {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @mixin flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
+  & {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 @mixin flex-nowrap {
-  display: flex;
-  flex-wrap: nowrap;
+  & {
+    display: flex;
+    flex-wrap: nowrap;
+  }
 }
 
 @mixin flex-grow($grow: 1) {
-  flex-grow: $grow;
+  & {
+    flex-grow: $grow;
+  }
 }
 
 @mixin flex-shrink($shrink: 1) {
-  flex-shrink: $shrink;
+  & {
+    flex-shrink: $shrink;
+  }
 }
 
 // Grid utilities
 @mixin grid-center {
-  display: grid;
-  place-items: center;
+  & {
+    display: grid;
+    place-items: center;
+  }
 }
 
 @mixin grid-auto-fit($min-width: 250px, $gap: $spacing-xl) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
-  gap: $gap;
+  & {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+    gap: $gap;
+  }
 }
 
 @mixin grid-auto-fill($min-width: 250px, $gap: $spacing-xl) {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
-  gap: $gap;
+  & {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
+    gap: $gap;
+  }
 }
 
 @mixin grid-columns($columns, $gap: $spacing-xl) {
-  display: grid;
-  grid-template-columns: repeat($columns, 1fr);
-  gap: $gap;
+  & {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    gap: $gap;
+  }
 }
 
 @mixin grid-equal($columns: 2, $gap: $spacing-xl) {
-  display: grid;
-  grid-template-columns: repeat($columns, 1fr);
-  gap: $gap;
+  & {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    gap: $gap;
+  }
 }
 
 // Sizing utilities
 @mixin size($width, $height: $width) {
-  width: $width;
-  height: $height;
+  & {
+    width: $width;
+    height: $height;
+  }
 }
 
 @mixin min-size($min-width, $min-height: $min-width) {
-  min-width: $min-width;
-  min-height: $min-height;
+  & {
+    min-width: $min-width;
+    min-height: $min-height;
+  }
 }
 
 @mixin max-size($max-width, $max-height: $max-width) {
-  max-width: $max-width;
-  max-height: $max-height;
+  & {
+    max-width: $max-width;
+    max-height: $max-height;
+  }
 }
 
 @mixin full-size {
-  width: 100%;
-  height: 100%;
+  & {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 @mixin full-width {
-  width: 100%;
+  & {
+    width: 100%;
+  }
 }
 
 @mixin full-height {
@@ -670,13 +718,17 @@
 }
 
 @mixin padding-x($padding) {
-  padding-left: $padding;
-  padding-right: $padding;
+  & {
+    padding-left: $padding;
+    padding-right: $padding;
+  }
 }
 
 @mixin padding-y($padding) {
-  padding-top: $padding;
-  padding-bottom: $padding;
+  & {
+    padding-top: $padding;
+    padding-bottom: $padding;
+  }
 }
 
 @mixin margin-x($margin) {
@@ -690,8 +742,10 @@
 }
 
 @mixin no-spacing {
-  margin: 0;
-  padding: 0;
+  & {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 @mixin reset-spacing {
@@ -722,11 +776,15 @@
 }
 
 @mixin transparent {
-  opacity: 0;
+  & {
+    opacity: 0;
+  }
 }
 
 @mixin opaque {
-  opacity: 1;
+  & {
+    opacity: 1;
+  }
 }
 
 @mixin grayscale($amount: 100%) {
@@ -751,7 +809,9 @@
 
 // Border utilities
 @mixin border-radius($radius: $radius-md) {
-  border-radius: $radius;
+  & {
+    border-radius: $radius;
+  }
 }
 
 @mixin border-top-radius($radius: $radius-md) {
@@ -779,52 +839,76 @@
 }
 
 @mixin border-all($width: 1px, $style: solid, $color: $border-primary) {
-  border: $width $style $color;
+  & {
+    border: $width $style $color;
+  }
 }
 
 @mixin border-top($width: 1px, $style: solid, $color: $border-primary) {
-  border-top: $width $style $color;
+  & {
+    border-top: $width $style $color;
+  }
 }
 
 @mixin border-bottom($width: 1px, $style: solid, $color: $border-primary) {
-  border-bottom: $width $style $color;
+  & {
+    border-bottom: $width $style $color;
+  }
 }
 
 @mixin border-left($width: 1px, $style: solid, $color: $border-primary) {
-  border-left: $width $style $color;
+  & {
+    border-left: $width $style $color;
+  }
 }
 
 @mixin border-right($width: 1px, $style: solid, $color: $border-primary) {
-  border-right: $width $style $color;
+  & {
+    border-right: $width $style $color;
+  }
 }
 
 // Shadow utilities
 @mixin shadow($shadow: 0 2px 8px rgba(0, 0, 0, 0.1)) {
-  box-shadow: $shadow;
+  & {
+    box-shadow: $shadow;
+  }
 }
 
 @mixin shadow-sm {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  & {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 }
 
 @mixin shadow-md {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  & {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 }
 
 @mixin shadow-lg {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  & {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
 }
 
 @mixin shadow-xl {
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  & {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  }
 }
 
 @mixin shadow-inner {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  & {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 }
 
 @mixin no-shadow {
-  box-shadow: none;
+  & {
+    box-shadow: none;
+  }
 }
 
 @mixin text-shadow($shadow: 0 1px 2px rgba(0, 0, 0, 0.1)) {
@@ -845,7 +929,9 @@
 }
 
 @mixin bg-gradient($from, $to, $direction: 135deg) {
-  background: linear-gradient($direction, $from 0%, $to 100%);
+  & {
+    background: linear-gradient($direction, $from 0%, $to 100%);
+  }
 }
 
 @mixin bg-brand-gradient {
@@ -883,7 +969,9 @@
 
 // Overflow utilities
 @mixin overflow-hidden {
-  overflow: hidden;
+  & {
+    overflow: hidden;
+  }
 }
 
 @mixin overflow-auto {
@@ -907,7 +995,9 @@
 }
 
 @mixin overflow-y-auto {
-  overflow-y: auto;
+  & {
+    overflow-y: auto;
+  }
 }
 
 // Animation utilities
@@ -916,7 +1006,9 @@
 }
 
 @mixin transition($properties: all, $duration: 0.3s, $timing: ease, $delay: 0s) {
-  transition: $properties $duration $timing $delay;
+  & {
+    transition: $properties $duration $timing $delay;
+  }
 }
 
 @mixin transition-fast($properties: all) {
@@ -936,7 +1028,9 @@
 }
 
 @mixin scale($scale: 1.1) {
-  transform: scale($scale);
+  & {
+    transform: scale($scale);
+  }
 }
 
 @mixin rotate($angle: 45deg) {

@@ -9,11 +9,11 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  @include bg-gradient($bg-primary, $bg-secondary);
-  @include flex-column;
   font-family: $font-primary;
   z-index: 1000;
   overflow-y: auto;
+  @include bg-gradient($bg-primary, $bg-secondary);
+  @include flex-column;
   @include transition(left, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
   @include transition(width, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
 
@@ -67,11 +67,11 @@
 }
 
 .store-header-content {
-  @include flex-between;
   gap: 24px;
   max-width: $width-max;
   margin: 0 auto;
   padding: 0 $spacing-massive;
+  @include flex-between;
 
   @include responsive(tablet) {
     padding: 0 $spacing-xxxl;
@@ -116,8 +116,8 @@
 
   .search-input-wrapper {
     position: relative;
-    @include full-width;
     box-sizing: border-box;
+    @include full-width;
   }
 
   .search-icon {
@@ -139,10 +139,10 @@
     color: $text-primary;
     font-size: $font-xl;
     font-family: $font-primary;
-    @include full-width;
     box-sizing: border-box;
     transition: $transition-normal;
     box-shadow: $shadow-input;
+    @include full-width;
 
     &::placeholder {
       color: $text-faint;
@@ -261,9 +261,9 @@
   }
 
   .featured-main-overlay {
+    z-index: $z-index-content;
     @include absolute-cover;
     @include bg-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
-    z-index: $z-index-content;
   }
 
   .featured-main-content {
@@ -342,9 +342,9 @@
   }
 
   .featured-tags {
-    @include flex-wrap;
     gap: 8px;
     margin-bottom: 24px;
+    @include flex-wrap;
 
     @include responsive(mobile) {
       justify-content: center;
@@ -363,10 +363,10 @@
   }
 
   .featured-rating {
-    @include flex-row;
     align-items: center;
     gap: 12px;
     margin-bottom: 24px;
+    @include flex-row;
 
     @include responsive(mobile) {
       justify-content: center;
@@ -384,10 +384,10 @@
   }
 
   .featured-price-section {
-    @include flex-row;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
+    @include flex-row;
 
     @include responsive(mobile) {
       justify-content: flex-start;
@@ -404,9 +404,9 @@
   }
 
   .featured-prices {
-    @include flex-row;
     align-items: center;
     gap: 8px;
+    @include flex-row;
   }
 
   .featured-original-price {
@@ -422,8 +422,8 @@
   }
 
   .featured-actions {
-    @include flex-row;
     gap: 8px;
+    @include flex-row;
 
     @include responsive(mobile) {
       flex-wrap: wrap;
@@ -451,9 +451,9 @@
 
     &::before {
       content: '';
+      background: $overlay-light;
       @include absolute-center;
       @include size(0);
-      background: $overlay-light;
       @include border-radius(50%);
       @include transition(width 0.3s ease, height 0.3s ease);
     }
@@ -662,8 +662,8 @@
     }
 
     img {
-      @include full-size;
       object-fit: cover;
+      @include full-size;
     }
   }
 
@@ -823,26 +823,21 @@
 }
 
 .store-item-image {
-  @include full-width;
   height: 200px;
   background: linear-gradient(145deg, $bg-secondary 0%, $bg-quaternary 100%);
   position: relative;
   overflow: hidden;
+  @include full-width;
 
   img {
-    @include full-size;
     object-fit: cover;
+    @include full-size;
     @include transition(transform, 0.4s, cubic-bezier(0.4, 0, 0.2, 1));
   }
 
 
   .store-item-badge {
-    @include absolute-corners($top: 16px, $left: 16px);
-    @include bg-gradient($border-secondary, $border-primary);
     color: $text-primary;
-    @include padding-x(12px);
-    @include padding-y(6px);
-    @include border-radius(8px);
     font-size: 11px;
     font-weight: 700;
     font-family: $font-primary;
@@ -850,6 +845,11 @@
     letter-spacing: 0.5px;
     border: $border-thin $overlay-light;
     z-index: $z-index-overlay;
+    @include absolute-corners($top: 16px, $left: 16px);
+    @include bg-gradient($border-secondary, $border-primary);
+    @include padding-x(12px);
+    @include padding-y(6px);
+    @include border-radius(8px);
     @include shadow-sm;
 
     &.featured {
@@ -987,9 +987,9 @@
 
   &::before {
     content: '';
+    background: $overlay-light;
     @include absolute-center;
     @include size(0);
-    background: $overlay-light;
     @include border-radius(50%);
     @include transition(width 0.3s ease, height 0.3s ease);
   }

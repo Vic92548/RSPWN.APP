@@ -1,20 +1,14 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// RSPWN Brand-Compliant Legal Page Template - Modern Store Style
 .legal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-  display: flex;
-  flex-direction: column;
-  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  z-index: 1000;
-  overflow-y: auto;
-  transition: left 0.5s cubic-bezier(0.23, 1, 0.32, 1), width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  font-family: $font-primary;
+  z-index: $z-index-modal;
+  transition: $transition-left, $transition-width;
+  @include fixed-cover;
+  @include flex-column;
+  @include overflow-y-auto;
+  @include bg-gradient($dark, $gray);
 
   // On desktop, keep fixed position but adjust for sidebar menu
   @media (min-width: 769px) {
@@ -34,7 +28,7 @@
   // Hide menu button on desktop (show full menu instead)
   @media (min-width: 769px) {
     #legal_menu_btn {
-      display: none !important;
+      @include hide;
     }
   }
 
@@ -42,142 +36,131 @@
   @include responsive(tablet) {
     #legal_menu_btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 
   @include responsive(mobile) {
     #legal_menu_btn {
       display: flex !important;
-      z-index: 10;
+      z-index: $z-index-dropdown;
     }
   }
 }
 
 .legal-header {
-  flex: 0 0 auto;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
-  padding: 20px 0;
+  @include page-header;
+  @include bg-gradient(#121212, $dark);
+  @include border-bottom(1px, solid, $border-primary);
 
   @include responsive(mobile) {
-    padding: 16px 0;
+    padding: $spacing-xl 0;
   }
 }
 
 .legal-header-content {
-  display: flex;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
+  @include flex-between;
+  @include container-layout($width-max, $spacing-massive);
 
   @include responsive(tablet) {
-    padding: 0 24px;
+    padding: 0 $spacing-xxxl;
   }
 
   @include responsive(mobile) {
-    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
+    padding: 0 $spacing-xl 0 60px;
   }
 }
 
 .legal-back-btn {
-  display: none;
+  @include hide;
 }
 
 .legal-title-section {
-  flex: 1;
+  @include flex-grow;
 }
 
 .legal-title {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  color: #FFFFFF;
   line-height: 1.2;
-  font-family: 'Inter', sans-serif;
+  @include page-title($font-giant);
+  @include no-spacing;
 
   @include responsive(tablet) {
-    font-size: 28px;
+    & {
+      font-size: $font-massive;
+    }
   }
 
   @include responsive(mobile) {
-    font-size: 24px;
+    & {
+      font-size: $font-huge;
+    }
   }
 }
 
 .legal-subtitle {
-  margin: 8px 0 0 0;
-  font-size: 16px;
-  font-weight: 400;
-  color: #CCCCCC;
-  font-family: 'Inter', sans-serif;
+  margin: $spacing-md 0 0 0;
+  @include section-subtitle($font-large, $text-secondary);
 
   @include responsive(mobile) {
-    font-size: 14px;
+    & {
+      font-size: $font-xl;
+    }
   }
 }
 
 .legal-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 40px 0;
+  padding: $spacing-massive 0;
+  @include flex-grow;
+  @include overflow-y-auto;
   @include scrollbar-style;
 
   @include responsive(tablet) {
-    padding: 32px 0;
+    & {
+      padding: $spacing-huge 0;
+    }
   }
 
   @include responsive(mobile) {
-    padding: 24px 0;
+    & {
+      padding: $spacing-xxxl 0;
+    }
   }
 }
 
 .legal-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
-
-  @include responsive(tablet) {
-    padding: 0 24px;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 16px;
-  }
+  @include container-layout;
 }
 
-// RSPWN modern legal content sections
 .legal-section {
-  background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
-  border: 1px solid #1A1A1A;
-  border-radius: 16px;
-  padding: 32px;
-  margin-bottom: 32px;
-  transition: all 0.3s ease;
+  padding: $spacing-huge;
+  margin-bottom: $spacing-huge;
+  transition: $transition-normal;
   position: relative;
-  overflow: hidden;
+  cursor: pointer;
+  box-shadow: $shadow-card;
+  @include bg-gradient(#0F0F0F, $dark);
+  @include border-all(1px, solid, $gray);
+  @include border-radius($radius-xl);
+  @include overflow-hidden;
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: $transition-opacity;
     pointer-events: none;
+    z-index: 1;
+    @include absolute-cover;
+    @include bg-gradient($overlay-subtle, transparent);
+    @include transparent;
   }
 
   &:hover {
-    border-color: #333333;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border-color: $border-secondary;
+    box-shadow: $shadow-card-hover;
+    @include hover-lift(-8px);
+    @include scale(1.02);
 
     &::before {
-      opacity: 1;
+      @include opaque;
     }
   }
 
@@ -186,154 +169,159 @@
   }
 
   @include responsive(mobile) {
-    padding: 24px;
-    margin-bottom: 24px;
+    & {
+      padding: $spacing-xxxl;
+      margin-bottom: $spacing-xxxl;
+    }
   }
 }
 
 .legal-section .section-header {
-  margin: 0 0 24px 0;
-  font-size: 24px;
+  margin-bottom: $spacing-xxxl;
+  font-size: $font-huge;
   font-weight: 600;
-  color: #FFFFFF;
-  font-family: 'Inter', sans-serif;
+  color: $text-primary;
+  font-family: $font-primary;
+  @include no-spacing;
 
   @include responsive(tablet) {
-    font-size: 20px;
-    margin-bottom: 20px;
+    & {
+      font-size: $font-xxlarge;
+      margin-bottom: $spacing-xxl;
+    }
   }
 
   @include responsive(mobile) {
-    font-size: 18px;
-    margin-bottom: 16px;
+    & {
+      font-size: $font-xlarge;
+      margin-bottom: $spacing-xl;
+    }
   }
 }
 
 .legal-section p {
-  color: #CCCCCC;
+  color: $text-secondary;
   line-height: 1.6;
-  margin: 0 0 16px 0;
-  font-size: 16px;
+  margin: 0 0 $spacing-xl 0;
+  font-size: $font-large;
 
   @include responsive(mobile) {
-    font-size: 14px;
-    line-height: 1.5;
+    & {
+      font-size: $font-xl;
+      line-height: 1.5;
+    }
   }
 }
 
 .legal-list {
   list-style: none;
-  padding: 0;
-  margin: 24px 0 32px 0;
+  margin: $spacing-xxxl 0 $spacing-huge 0;
+  @include no-spacing;
 
   li {
     position: relative;
-    padding: 8px 0 8px 24px;
-    color: #CCCCCC;
+    padding: $spacing-md 0 $spacing-md $spacing-xxxl;
+    color: $text-secondary;
     line-height: 1.6;
-    font-size: 15px;
+    font-size: $font-xxl;
 
     &::before {
       content: '';
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 4px;
-      background: #888888;
-      border-radius: 50%;
+      left: $spacing-md;
+      background: $text-muted;
+      @include absolute-center-y;
+      @include circle(4px);
     }
 
     @include responsive(mobile) {
-      font-size: 14px;
-      padding: 6px 0 6px 20px;
+      & {
+        font-size: $font-xl;
+        padding: $spacing-sm 0 $spacing-sm $spacing-xxl;
+      }
     }
   }
 }
 
-// RSPWN modern footer
 .legal-footer {
-  background: linear-gradient(135deg, rgba(18, 18, 18, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
-  border-top: 1px solid #222222;
   margin-top: auto;
   position: relative;
+  @include bg-gradient(rgba(18, 18, 18, 0.8), rgba($dark, 0.9));
+  @include border-top(1px, solid, $border-primary);
 }
 
 .legal-footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 40px 32px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  padding: $spacing-massive $spacing-massive $spacing-huge;
+  @include container-layout;
+  @include grid-equal(2, $spacing-massive);
 
   @include responsive(tablet) {
-    padding: 32px 24px 24px;
-    grid-template-columns: 1fr;
-    gap: 32px;
+    & {
+      padding: $spacing-huge $spacing-xxxl $spacing-xxxl;
+    }
+    @include grid-equal(1, $spacing-huge);
   }
 
   @include responsive(mobile) {
-    padding: 24px 16px 24px;
-    gap: 24px;
+    & {
+      padding: $spacing-xxxl $spacing-xl $spacing-xxxl;
+      gap: $spacing-xxxl;
+    }
   }
 }
 
 .legal-contact,
 .legal-nav {
   h3 {
-    margin: 0 0 16px 0;
-    font-size: 16px;
+    margin: 0 0 $spacing-xl 0;
+    font-size: $font-large;
     font-weight: 600;
-    color: #FFFFFF;
-    font-family: 'Inter', 'Poppins', sans-serif;
+    color: $text-primary;
+    font-family: $font-primary;
   }
 
   p {
-    margin: 0 0 16px 0;
-    font-size: 14px;
-    color: #CCCCCC;
+    margin: 0 0 $spacing-xl 0;
+    font-size: $font-xl;
+    color: $text-secondary;
     line-height: 1.6;
   }
 }
 
 .legal-contact-links,
 .legal-nav-links {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: $spacing-md;
+  @include flex-column;
 }
 
 .legal-contact-btn,
 .legal-nav-link {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.8);
+  gap: $spacing-lg;
+  padding: $spacing-xl $spacing-xxl;
+  background: $overlay-faint;
+  color: $text-muted;
   text-decoration: none;
-  font-size: 14px;
+  font-size: $font-xl;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
+  font-family: $font-primary;
+  transition: $transition-normal;
+  @include border-all(1px, solid, $overlay-light);
+  @include border-radius($radius-sm);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #FFFFFF;
-    transform: translateY(-2px);
+    background: $overlay-soft;
+    border-color: $overlay-medium;
+    color: $text-primary;
+    @include hover-lift;
   }
 
   i {
-    font-size: 16px;
-    color: #5865F2;
+    font-size: $font-large;
+    color: $social-discord;
     width: 18px;
     text-align: center;
-    transition: color 0.3s ease;
+    transition: $transition-color;
   }
 
   &:hover i {
@@ -341,60 +329,62 @@
   }
 
   @include responsive(mobile) {
-    padding: 12px 16px;
-    font-size: 13px;
+    & {
+      padding: $spacing-lg $spacing-xl;
+      font-size: $font-lg;
+    }
   }
 }
 
 .legal-copyright {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px 40px 32px;
-  border-top: 1px solid #222222;
+  padding: $spacing-xxxl $spacing-massive $spacing-huge;
+  @include container-layout;
+  @include border-top(1px, solid, $border-primary);
 
   p {
-    margin: 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: $font-xl;
+    color: $text-weak;
     text-align: center;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-primary;
+    @include no-spacing;
   }
 
   @include responsive(tablet) {
-    padding: 20px 24px 24px;
+    & {
+      padding: $spacing-xxl $spacing-xxxl $spacing-xxxl;
+    }
   }
 
   @include responsive(mobile) {
-    padding: 16px 16px 24px;
+    & {
+      padding: $spacing-xl $spacing-xl $spacing-xxxl;
+    }
 
     p {
-      font-size: 12px;
+      font-size: $font-md;
       line-height: 1.4;
     }
   }
 }
 
-// Modern mobile enhancements - cards work well on mobile
-
-// Print styles for professional documents
-@media print {
+@include print-only {
   .legal-container {
-    background: white !important;
-    color: black !important;
+    background: $white !important;
+    color: $black !important;
     height: auto !important;
   }
 
   .legal-header {
-    background: white !important;
-    border-bottom: 2px solid black !important;
+    background: $white !important;
+    border-bottom: 2px solid $black !important;
   }
 
   .legal-back-btn {
-    display: none !important;
+    @include hide;
   }
 
   .legal-title {
-    color: black !important;
+    color: $black !important;
   }
 
   .legal-subtitle {
@@ -403,23 +393,23 @@
 
   .legal-section p,
   .legal-list li {
-    color: black !important;
+    color: $black !important;
   }
 
   .legal-section .section-header {
-    color: black !important;
-    border-bottom: 1px solid black !important;
+    color: $black !important;
+    border-bottom: 1px solid $black !important;
   }
 
   .legal-footer {
-    background: white !important;
-    border-top: 2px solid black !important;
+    background: $white !important;
+    border-top: 2px solid $black !important;
   }
 
   .legal-contact-btn,
   .legal-nav-link {
-    border: 1px solid black !important;
-    background: white !important;
-    color: black !important;
+    border: 1px solid $black !important;
+    background: $white !important;
+    color: $black !important;
   }
 }

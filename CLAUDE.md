@@ -91,6 +91,8 @@ The server uses middleware for authentication, rate limiting, and request render
 - **Always check existing CSS rules when modifying collapsed/hidden states**: The menu system has specific rules for collapsed states that may hide elements with broad selectors (e.g., `div { display: none }`). Always inspect the full CSS context before adding new elements.
 - **Use specific selectors to avoid conflicts**: When adding new elements that should remain visible in collapsed states, use `:not()` selectors or more specific class targeting to override broad hiding rules.
 - **Test responsive and interactive states**: Always test collapsed menus, mobile views, and interactive states after making changes to ensure new elements don't get unintentionally hidden.
+- **ALWAYS run `node build.js` after SCSS changes**: After making any changes to SCSS files, ALWAYS run `node build.js` to verify that everything compiles successfully and there are no syntax errors or undefined variables/mixins.
+- **ALWAYS FIX SASS WARNINGS**: If any Sass deprecation warnings appear during compilation, fix them immediately. Wrap CSS declarations in `& {}` blocks when they appear after nested rules like `@media` queries to resolve mixed-decls warnings.
 
 ### Template Engine Considerations
 - The `[[template]]` inclusion system processes templates at build time, so changes require running `node build.js`
