@@ -345,9 +345,12 @@
 
 @mixin button-primary {
   @include button-base;
-  background: linear-gradient(135deg, $bg-card 0%, $bg-secondary 100%);
-  color: $text-primary;
-  border: 2px solid $border-secondary;
+
+  & {
+    background: linear-gradient(135deg, $bg-card 0%, $bg-secondary 100%);
+    color: $text-primary;
+    border: 2px solid $border-secondary;
+  }
 
   &:hover {
     background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
@@ -359,9 +362,12 @@
 
 @mixin button-secondary {
   @include button-base;
-  background: linear-gradient(135deg, $bg-quaternary 0%, $bg-primary 100%);
-  color: $text-muted;
-  border: 2px solid $bg-secondary;
+
+  & {
+    background: linear-gradient(135deg, $bg-quaternary 0%, $bg-primary 100%);
+    color: $text-muted;
+    border: 2px solid $bg-secondary;
+  }
 
   &:hover {
     background: linear-gradient(135deg, $bg-secondary 0%, $bg-quaternary 100%);

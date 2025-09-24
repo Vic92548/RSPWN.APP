@@ -958,55 +958,12 @@
 }
 
 .store-btn {
-  flex: 1;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  transition: $transition-smooth;
-  text-align: center;
-
-  &::before {
-    content: '';
-    background: $overlay-light;
-    @include absolute-center;
-    @include size(0);
-    @include border-radius(50%);
-    @include transition(width 0.3s ease, height 0.3s ease);
-  }
-
-  &:hover::before {
-    @include size(300px);
-  }
-
   &.primary {
-    background: linear-gradient(135deg, $bg-card 0%, $bg-secondary 100%);
-    color: $text-primary;
-    border: $border-medium $border-secondary;
-
-    &:hover {
-      background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
-      border-color: $border-tertiary;
-      @include translate(0, -2px);
-      @include shadow-lg;
-    }
+    @include button-primary;
   }
 
   &.secondary {
-    background: linear-gradient(135deg, #0F0F0F 0%, #0A0A0A 100%);
-    color: $text-muted;
-    border: $border-medium $bg-secondary;
-
-    &:hover {
-      background: linear-gradient(135deg, $bg-secondary 0%, $bg-quaternary 100%);
-      color: $text-primary;
-      border-color: $border-secondary;
-      @include translate(0, -2px);
-      @include shadow-lg;
-    }
+    @include button-secondary;
   }
 
-  @include responsive(mobile) {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
 }
