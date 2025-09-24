@@ -10,38 +10,36 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: linear-gradient(135deg, $dark 0%, $gray 100%);
+  transition: $transition-bounce;
 
   * {
-    transition-property: background-color, transform, box-shadow, opacity;
-    transition-duration: 0.4s;
-    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: $transition-bounce;
   }
 
   @include responsive(tablet) {
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
+    width: calc(100% - $spacing-xxl) !important;
+    margin: $spacing-xs !important;
   }
 }
 
 .menu-header {
-  padding: 20px 25px;
+  padding: $spacing-xxl $spacing-lg-legacy;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border-bottom: 1px solid #222222;
+  background: linear-gradient(135deg, $bg-tertiary 0%, $dark 100%);
+  border-bottom: $border-thin $border-primary;
 }
 
 .menu-brand {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: $spacing-sm-legacy;
 
   h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: $font-huge;
     font-weight: 900;
     letter-spacing: 1px;
   }
@@ -49,59 +47,56 @@
 
 .menu-logo-text {
   font-family: 'Audiowide', sans-serif;
-  font-size: 32px;
+  font-size: $font-giant;
   font-weight: 400;
   letter-spacing: 2px;
   color: $text-primary;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+  text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
+  transition: $transition-fast;
 }
 
 .menu-logo {
   width: 45px;
   height: 45px;
-  border-radius: 12px;
+  border-radius: $radius-sm;
 }
 
 .menu-tagline {
   margin: 0;
-  font-size: 12px;
+  font-size: $font-md;
   font-weight: 500;
 }
 
 // RSPWN Store Design - Clean Menu Toggle Button (Epic Games inspired)
 .menu-toggle {
   position: absolute;
-  top: 20px;
+  top: $spacing-xxl;
   right: 0;
-  width: 40px;
-  height: 40px;
-  background: $bg-tertiary; // Clean flat background
-  border: 1px solid $border-secondary;
-  border-radius: 4px 0 0 4px; // Sharp edges, minimal radius
+  width: $width-sm;
+  height: $width-sm;
+  background: $bg-tertiary;
+  border: $border-thin $border-secondary;
+  border-radius: 4px 0 0 4px;
   display: none;
   align-items: center;
   justify-content: center;
   color: $text-primary;
   cursor: pointer;
-  font-size: 16px;
+  font-size: $font-large;
   transition: $transition-fast;
-  z-index: 10;
+  z-index: $z-index-dropdown;
 
-  // Clean hover state - no effects, just color change
   &:hover {
     background: $bg-quaternary;
     border-color: $border-tertiary;
     color: $white;
   }
 
-  // Clean active/pressed state
   &:active {
     background: $bg-secondary;
     border-color: $border-primary;
   }
 
-  // Icon styling
   i {
     transition: transform $duration-fast $ease-in-out;
   }
@@ -111,10 +106,9 @@
   }
 }
 
-// Clean glass button replacement - flat Epic Games style
 .glass-button {
   background: $bg-tertiary;
-  border: 1px solid $border-secondary;
+  border: $border-thin $border-secondary;
   border-radius: 4px;
   color: $text-primary;
   transition: $transition-fast;
@@ -134,17 +128,17 @@
 .menu-nav {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: $spacing-xxl;
   @include scrollbar-style;
 }
 
 .menu-section {
-  background: linear-gradient(145deg, #0F0F0F 0%, #0A0A0A 100%);
-  border: 1px solid #1A1A1A;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  background: linear-gradient(145deg, $bg-secondary 0%, $dark 100%);
+  border: $border-thin $gray;
+  border-radius: $radius-md;
+  padding: $spacing-xxl;
+  margin-bottom: $spacing-xxl;
+  transition: $transition-fast;
   position: relative;
   overflow: hidden;
 
@@ -155,16 +149,16 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
+    background: linear-gradient(135deg, $overlay-subtle 0%, transparent 50%, $overlay-subtle 100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: $transition-opacity;
     pointer-events: none;
   }
 
   &:hover {
-    border-color: #333333;
+    border-color: $border-secondary;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: $shadow-xl;
 
     &::before {
       opacity: 1;
@@ -177,12 +171,12 @@
 }
 
 .menu-section-title {
-  font-size: 12px;
+  font-size: $font-md;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin: 0 0 16px 0;
+  margin: 0 0 $spacing-xl 0;
   font-weight: 600;
-  color: #FFFFFF;
+  color: $white;
   font-family: 'Inter', sans-serif;
 }
 
@@ -195,16 +189,16 @@
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
+  gap: $spacing-sm-legacy;
+  padding: $spacing-lg $spacing-xl;
+  margin-bottom: $spacing-md;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  background: $overlay-subtle;
+  border: $border-thin $overlay-soft;
+  border-radius: $radius-sm;
+  transition: $transition-fast;
 
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -212,8 +206,8 @@
     transform: translateY(-1px);
 
     .menu-item-icon {
-      color: #7289DA;
-      background: rgba(88, 101, 242, 0.1);
+      color: $social-discord;
+      background: rgba($social-discord, 0.1);
     }
 
     .menu-item-arrow {
@@ -223,17 +217,15 @@
 
   &:active {
     transform: translateY(0) scale(0.98);
-    transition: transform 0.1s ease;
+    transition: transform $duration-fast ease;
   }
 
   &:last-child {
     margin-bottom: 0;
   }
 
-  // Remove special styling for first child - all items should look consistent
-
   &.disabled {
-    opacity: 0.5;
+    opacity: $opacity-disabled;
     cursor: not-allowed;
     transform: none !important;
 
@@ -247,8 +239,8 @@
   &:focus-visible {
     outline: none;
     box-shadow:
-            0 0 0 2px rgba(255, 255, 255, 0.2),
-            0 0 20px rgba(255, 255, 255, 0.1);
+            0 0 0 2px $overlay-medium,
+            0 0 $spacing-xxl $overlay-light;
   }
 }
 
@@ -256,16 +248,15 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: $font-xlarge;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: $transition-fast;
   position: relative;
-  background: rgba(88, 101, 242, 0.05);
-  color: #5865F2;
+  background: rgba($social-discord, 0.05);
+  color: $social-discord;
 
-  // All icons use consistent styling now - brand blue theme
 }
 
 @keyframes downloadPulse {
@@ -279,83 +270,86 @@
 
 .menu-item-title {
   display: block;
-  font-size: 14px;
+  font-size: $font-xl;
   font-weight: 600;
   margin-bottom: 2px;
 }
 
 .menu-item-desc {
   display: block;
-  font-size: 12px;
+  font-size: $font-md;
 }
 
 .menu-badge {
-  font-size: 11px;
+  font-size: $font-sm;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-  @include glass-effect($glass-bg-tertiary);
+  transition: $transition-fast;
+  background: $overlay-light;
+  border: $border-thin $overlay-medium;
+  border-radius: 4px;
+  padding: 4px 8px;
 
   &.new {
-    background: $glass-bg-tertiary;
-    border-color: rgba(231, 76, 60, 0.3);
+    background: $overlay-light;
+    border-color: rgba($danger-color, 0.3);
     color: rgba(255, 150, 150, 0.9);
     animation: pulse-glow 2s infinite;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
+    box-shadow: 0 0 $spacing-sm-legacy rgba($danger-color, 0.2);
   }
 
   &.stars {
-    background: $glass-bg-tertiary;
-    border-color: rgba(241, 196, 15, 0.3);
+    background: $overlay-light;
+    border-color: rgba($warning-color, 0.3);
     color: rgba(255, 220, 100, 0.9);
     display: flex;
     align-items: center;
     gap: 4px;
-    box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
+    box-shadow: 0 0 $spacing-sm-legacy rgba($warning-color, 0.2);
   }
 }
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.15);
+    box-shadow: 0 0 $spacing-xxl rgba($danger-color, 0.15);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 30px rgba(231, 76, 60, 0.25);
+    box-shadow: 0 0 $spacing-xl-legacy rgba($danger-color, 0.25);
     transform: scale(1.05);
   }
 }
 
 .menu-item-arrow {
-  font-size: 12px;
-  transition: transform 0.3s ease;
+  font-size: $font-md;
+  transition: transform $transition-fast;
 }
 
 .menu-footer {
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(18, 18, 18, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
-  border-top: 1px solid #222222;
+  padding: $spacing-xxl;
+  background: linear-gradient(135deg, rgba($bg-tertiary, 0.8) 0%, rgba($dark, 0.9) 100%);
+  border-top: $border-thin $border-primary;
 }
 
 .menu-version {
   text-align: center;
-  font-size: 12px;
+  font-size: $font-md;
   color: rgba(255, 255, 255, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: $spacing-md;
   font-family: 'Inter', sans-serif;
 
   .dot {
     font-size: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    color: $text-faint;
   }
 }
 
 .menu-container.collapsed {
-  width: 62px;
-  max-width: 62px;
+  width: $spacing-enormous - 2px;
+  max-width: $spacing-enormous - 2px;
   overflow: hidden;
   transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), max-width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -380,7 +374,7 @@
   }
 
   .menu-logo-text {
-    font-size: 18px;
+    font-size: $font-xlarge;
     letter-spacing: 0;
     width: 42px;
     height: 42px;
@@ -402,7 +396,7 @@
       justify-content: center;
       font-family: 'Audiowide', sans-serif;
       color: $text-primary;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
       z-index: 1;
     }
 
@@ -454,9 +448,9 @@
   }
 
   .user-info-card {
-    padding: 15px 10px;
+    padding: $spacing-sm-legacy $spacing-xs-legacy;
     flex-direction: column;
-    gap: 10px;
+    gap: $spacing-xs-legacy;
   }
 
   .user-avatar-large {
@@ -494,16 +488,16 @@
     background: none;
     border: none;
     border-radius: 4px;
-    width: 42px;
-    max-width: 42px;
-    height: 42px;
+    width: $width-sm + 2px;
+    max-width: $width-sm + 2px;
+    height: $width-sm + 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: $overlay-light;
       border: none;
       transform: none;
     }
@@ -516,16 +510,16 @@
       transform: translateY(-50%);
       margin-left: 10px;
       background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 8px;
+      color: $white;
+      padding: $spacing-md $spacing-lg;
+      border-radius: $spacing-md;
       white-space: nowrap;
-      font-size: 14px;
+      font-size: $font-xl;
       font-weight: 600;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
-      z-index: 100;
+      transition: $transition-opacity;
+      z-index: $z-index-tooltip;
     }
 
     &::before {
@@ -538,8 +532,8 @@
       border: 5px solid transparent;
       border-right-color: rgba(0, 0, 0, 0.9);
       opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 100;
+      transition: $transition-opacity;
+      z-index: $z-index-tooltip;
     }
 
     &:hover::after,
@@ -551,9 +545,9 @@
   .menu-item-icon {
     width: 42px;
     height: 42px;
-    font-size: 18px;
+    font-size: $font-xlarge;
     border-radius: 4px;
-    background: rgba(88, 101, 242, 0.1);
+    background: rgba($social-discord, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -583,11 +577,11 @@
   }
 
   .menu-logout-btn {
-    padding: 12px;
+    padding: $spacing-lg;
     font-size: 0;
 
     i {
-      font-size: 16px;
+      font-size: $font-large;
       margin: 0;
     }
   }
@@ -614,10 +608,10 @@
     width: 100%;
     max-width: 100%;
     border-right: none;
-    border-radius: 20px 20px 0 0;
+    border-radius: $spacing-xxl $spacing-xxl 0 0;
     height: 90vh;
     margin-top: 10vh;
-    box-shadow: 0 -5px 20px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -5px $spacing-xxl $overlay-light;
   }
 
   .menu-close {
@@ -631,18 +625,18 @@
   }
 
   #feed {
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: $transition-bounce;
   }
 
   main {
-    width: calc(100% - 400px);
-    padding-left: 400px;
+    width: calc(100% - $width-giant);
+    padding-left: $width-giant;
     transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), padding-left 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   main.menu-collapsed{
-    padding-left: 48px;
-    width: calc(100% - 48px);
+    padding-left: $spacing-giant;
+    width: calc(100% - $spacing-giant);
   }
 
   #menu.glass_modal {
@@ -650,8 +644,8 @@
     position: fixed;
     left: 0;
     top: 0;
-    width: 400px;
-    max-width: 400px;
+    width: $width-giant;
+    max-width: $width-giant;
     height: 100vh;
     backdrop-filter: none;
     background: transparent;
@@ -667,9 +661,9 @@
     height: 100vh;
     transform: translateX(0) !important;
     opacity: 1 !important;
-    transition: width 0.3s ease;
+    transition: width $transition-fast;
     border-radius: 0;
-    border-right: 1px solid $glass-border;
+    border-right: $border-thin rgba(255, 255, 255, 0.18);
   }
 
   #add_post.create-post-btn {
@@ -687,7 +681,7 @@
 
   h1.title {
     left: 340px !important;
-    right: 20px;
+    right: $spacing-xxl;
     width: auto;
     max-width: none;
   }
@@ -700,18 +694,21 @@
 .create-post-btn {
   position: fixed;
   display: flex !important;
-  top: 20px;
-  left: 20px;
+  top: $spacing-xxl;
+  left: $spacing-xxl;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: $white;
   border: none;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: $transition-bounce;
   @include icon-button(38px);
   overflow: hidden;
-  font-size: 18px;
-  @include glass-effect();
+  font-size: $font-xlarge;
+  background: $overlay-light;
+  border: $border-thin $overlay-medium;
+  border-radius: $spacing-md;
+  padding: $spacing-md;
 
   &:hover {
     background: rgba(255, 255, 255, 0.12) !important;
@@ -725,11 +722,11 @@
   }
 }
 
-// Glass button styling (used with .glass_bt class)
 .glass_bt {
-  @include glass-effect();
+  background: $overlay-light;
+  border: $border-thin $overlay-medium;
+  border-radius: $spacing-md;
   color: $text-primary;
-  border-radius: 8px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.12) !important;
@@ -739,7 +736,9 @@
 }
 
 .close_bt {
-  @include glass-effect();
+  background: $overlay-light;
+  border: $border-thin $overlay-medium;
+  border-radius: $spacing-md;
   color: $text-primary !important;
 
   &:hover {
@@ -752,14 +751,14 @@
 
 .discord-link {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: $spacing-xxl;
+  right: $spacing-xxl;
   border-radius: 7px;
-  color: #fff;
+  color: $white;
   text-decoration: none;
   font-weight: 900;
-  font-size: 18px;
-  padding: 10px;
+  font-size: $font-xlarge;
+  padding: $spacing-xs-legacy;
 
   &:hover {
     background: rgba(255, 255, 255, 0.12) !important;
@@ -776,26 +775,27 @@
   li {
     list-style: none;
     text-align: center;
-    @include glass-effect($glass-bg-secondary, $blur-md, $glass-border-light);
+    background: $overlay-faint;
+    border: $border-thin rgba(255, 255, 255, 0.15);
     border-radius: 7px;
     color: $text-primary;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 18px;
-    margin-top: 10px;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding-top: $spacing-xs-legacy;
+    padding-bottom: $spacing-xs-legacy;
+    font-size: $font-xlarge;
+    margin-top: $spacing-xs-legacy;
+    transition: $transition-bounce;
 
     &:hover {
-      background: $glass-bg-tertiary;
+      background: $overlay-light;
       box-shadow: $shadow-md;
-      border-color: $glass-border-heavy;
+      border-color: $overlay-medium;
     }
 
     @include responsive(desktop) {
-      font-size: 14px;
+      font-size: $font-xl;
       text-align: left;
       font-weight: 500;
-      padding: 10px 20px;
+      padding: $spacing-xs-legacy $spacing-xxl;
       cursor: pointer;
     }
   }
@@ -803,7 +803,7 @@
 
 #menu:has(.menu-container.collapsed) li {
   text-align: center;
-  padding: 10px;
+  padding: $spacing-xs-legacy;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
