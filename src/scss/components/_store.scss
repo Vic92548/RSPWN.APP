@@ -17,29 +17,23 @@
   @include transition(left, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
   @include transition(width, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
 
-  // On desktop, keep fixed position but adjust for sidebar menu
+  // Desktop adjustments
   @media (min-width: 769px) {
     left: 400px;
     width: calc(100% - 400px);
     height: 100vh;
-  }
 
-  // Adjust for collapsed menu state
-  @media (min-width: 769px) {
     main.menu-collapsed & {
       left: 62px;
       width: calc(100% - 62px);
     }
-  }
 
-  // Hide menu button on desktop (show full menu instead)
-  @media (min-width: 769px) {
     #store_menu_btn {
       display: none !important;
     }
   }
 
-  // Ensure menu button is visible on mobile/tablet
+  // Mobile/tablet menu button visibility
   @include responsive(tablet) {
     #store_menu_btn {
       display: flex !important;
@@ -217,19 +211,18 @@
     border: $border-thin $border-primary;
 
     @include responsive(tablet) {
-      height: 350px;
       flex-direction: column;
+      height: 350px;
       border-radius: 12px;
     }
 
     @include responsive(mobile) {
+      flex-direction: column;
       height: auto;
       min-height: 300px;
-      flex-direction: column;
       border-radius: 8px;
       margin: 0;
       box-shadow: $shadow-sidebar;
-      overflow: hidden;
     }
   }
 
@@ -471,13 +464,6 @@
     background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
     color: $text-primary;
     border: 2px solid #444444;
-
-    &:hover {
-      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
-      border-color: #555555;
-      transform: translateY(-2px);
-      box-shadow: $shadow-overlay;
-    }
   }
 
   .featured-wishlist-btn {
@@ -486,12 +472,21 @@
     border: $border-medium $border-secondary;
 
     &:hover {
-      background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
       color: $text-primary;
       border-color: $border-tertiary;
-      transform: translateY(-2px);
-      box-shadow: $shadow-overlay;
     }
+  }
+
+  .featured-buy-btn:hover {
+    background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+    border-color: #555555;
+  }
+
+  .featured-buy-btn:hover,
+  .featured-wishlist-btn:hover {
+    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
+    transform: translateY(-2px);
+    box-shadow: $shadow-overlay;
   }
 
 
@@ -699,18 +694,6 @@
     }
   }
 
-  // Hide the old progress structure
-  .featured-item-progress {
-    display: none;
-  }
-
-  .progress-bar {
-    display: none;
-  }
-
-  .progress-fill {
-    display: none;
-  }
 
 
 .store-filters {
@@ -733,14 +716,7 @@
   border-radius: 10px;
   color: $text-muted;
   font-size: 15px;
-  font-weight: 600;
-  font-family: $font-primary;
-  cursor: pointer;
   transition: $transition-normal;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
   box-shadow: $shadow-button;
 
   &::before {
@@ -968,22 +944,26 @@
   flex: 0 0 auto;
 }
 
+.store-btn,
+.store-filter-btn {
+  font-family: $font-primary;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  text-decoration: none;
+}
+
 .store-btn {
   flex: 1;
   padding: 12px 18px;
   border-radius: 10px;
   font-size: 14px;
-  font-weight: 600;
-  font-family: $font-primary;
-  cursor: pointer;
   transition: $transition-smooth;
   text-align: center;
-  text-decoration: none;
-  border: none;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
 
   &::before {
     content: '';
