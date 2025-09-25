@@ -4,18 +4,15 @@
 @use 'mixins' as *;
 @use 'base/base';
 @use 'components/size-system';
-@use 'components/vapr-card';
 @use 'components/feed';
 @use 'components/post';
 @use 'components/character';
 @use 'components/customization';
 @use 'components/add-post-page';
 @use 'components/errors';
-@use 'components/games';
 @use 'components/menu';
 @use 'components/responsive';
 @use 'components/version-modal';
-@use 'components/game-details';
 @use 'components/profile-card';
 @use 'components/game-tag';
 @use 'components/legal';
