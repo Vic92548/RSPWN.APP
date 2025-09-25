@@ -113,7 +113,10 @@
   background: $glass-bg-tertiary;
   border-radius: 10px;
   @include flex-center;
-  flex-shrink: 0;
+
+  & {
+    flex-shrink: 0;
+  }
 
   i {
     font-size: 18px;

@@ -87,8 +87,10 @@
 }
 
 @mixin shimmer-effect {
-  position: relative;
-  overflow: hidden;
+  & {
+    position: relative;
+    overflow: hidden;
+  }
 
   &::before {
     content: '';
@@ -122,11 +124,15 @@
 }
 
 @mixin icon-button($size: 44px) {
-  width: $size;
-  height: $size;
-  @include flex-center;
-  cursor: pointer;
-  transition: $transition-fast;
+  & {
+    width: $size;
+    height: $size;
+    cursor: pointer;
+    transition: $transition-fast;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 // === REUSABLE COMPONENT MIXINS ===
@@ -1170,3 +1176,4 @@
     @content;
   }
 }
+

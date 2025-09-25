@@ -4,7 +4,10 @@
 .error-container {
   min-height: 100vh;
   @include flex-center;
-  padding: 20px;
+
+  & {
+    padding: 20px;
+  }
 }
 
 .error-card {

@@ -8,8 +8,11 @@
   backdrop-filter: $blur-md;
   -webkit-backdrop-filter: $blur-md;
   @include flex-center;
-  z-index: 100000;
-  animation: fadeIn 0.3s ease;
+
+  & {
+    z-index: 100000;
+    animation: fadeIn 0.3s ease;
+  }
 }
 
 @keyframes fadeIn {

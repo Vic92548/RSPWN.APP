@@ -46,11 +46,14 @@
 
 .profile-avatar-large {
   @include icon-button(120px);
-  border-radius: 50%;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+
+  & {
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
 
   img {
     width: 100%;

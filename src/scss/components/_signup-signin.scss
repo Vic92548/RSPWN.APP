@@ -29,18 +29,21 @@
 
 @mixin auth-btn-base {
   @include flex-center;
-  width: 100%;
-  border-radius: $spacing-sm;
-  font: 600 $font-lg $font-primary;
-  cursor: pointer;
-  transition: $transition-smooth;
-  text-decoration: none;
-  border: none;
-  letter-spacing: 0.2px;
-  position: relative;
-  overflow: hidden;
-  gap: $spacing-sm;
-  box-shadow: $shadow-button;
+
+  & {
+    width: 100%;
+    border-radius: $spacing-sm;
+    font: 600 $font-lg $font-primary;
+    cursor: pointer;
+    transition: $transition-smooth;
+    text-decoration: none;
+    border: none;
+    letter-spacing: 0.2px;
+    position: relative;
+    overflow: hidden;
+    gap: $spacing-sm;
+    box-shadow: $shadow-button;
+  }
 
   .btn-content {
     @include flex-center;
@@ -78,16 +81,23 @@
 .auth-header {
   flex: 0 0 auto;
   @include auth-gradient;
-  border-bottom: $border-thin $border-primary;
-  padding: $spacing-xxl 0;
+
+  & {
+    border-bottom: $border-thin $border-primary;
+    padding: $spacing-xxl 0;
+  }
   @include responsive(mobile) { padding: $spacing-xl 0; }
 }
 
 .auth-header-content {
   @include flex-center;
-  max-width: $width-max;
-  margin: 0 auto;
-  padding: 0 $spacing-massive;
+
+  & {
+    max-width: $width-max;
+    margin: 0 auto;
+    padding: 0 $spacing-massive;
+  }
+
   @include responsive(tablet) { padding: 0 $spacing-xxxl; }
   @include responsive(mobile) { padding: 0 $spacing-xl 0 60px; }
 }
@@ -137,15 +147,18 @@
 
 .step-indicator {
   @include flex-center;
-  gap: $spacing-xl;
-  padding: $spacing-xl $spacing-xxxl;
   @include auth-gradient($bg-primary, $bg-tertiary);
-  border: $border-thin $border-secondary;
-  border-radius: $spacing-md;
-  max-width: $width-huge;
-  margin: 0 auto;
-  backdrop-filter: $blur-sm;
-  box-shadow: $shadow-card;
+
+  & {
+    gap: $spacing-xl;
+    padding: $spacing-xl $spacing-xxxl;
+    border: $border-thin $border-secondary;
+    border-radius: $spacing-md;
+    max-width: $width-huge;
+    margin: 0 auto;
+    backdrop-filter: $blur-sm;
+    box-shadow: $shadow-card;
+  }
   @include responsive(mobile) {
     gap: $spacing-lg;
     padding: $spacing-lg $spacing-xl;
@@ -156,10 +169,13 @@
 
 .step {
   @include flex-center;
-  flex-direction: column;
-  gap: $spacing-sm;
-  opacity: $opacity-muted;
-  transition: $transition-smooth;
+
+  & {
+    flex-direction: column;
+    gap: $spacing-sm;
+    opacity: $opacity-muted;
+    transition: $transition-smooth;
+  }
 
   &.active {
     opacity: $opacity-opaque;
@@ -190,14 +206,17 @@
 
 .step-number {
   @include flex-center;
-  width: $spacing-xxxl;
-  height: $spacing-xxxl;
-  border-radius: 50%;
-  background: $bg-tertiary;
-  border: $border-thin $border-secondary;
-  font: 600 $font-md $font-primary;
-  color: $text-faint;
-  transition: $transition-smooth;
+
+  & {
+    width: $spacing-xxxl;
+    height: $spacing-xxxl;
+    border-radius: 50%;
+    background: $bg-tertiary;
+    border: $border-thin $border-secondary;
+    font: 600 $font-md $font-primary;
+    color: $text-faint;
+    transition: $transition-smooth;
+  }
   @include responsive(mobile) { width: $spacing-xxl; height: $spacing-xxl; font-size: $font-xs; }
 }
 
@@ -224,14 +243,20 @@
 
 .auth-step-container {
   @include auth-gradient;
-  border: $border-medium $bg-tertiary;
-  border-radius: $spacing-xl;
-  padding: $spacing-giant;
-  margin-bottom: $spacing-huge;
-  box-shadow: $shadow-featured;
-  position: relative;
-  overflow: hidden;
-  animation: stepSlideIn 0.5s $ease-bounce forwards;
+
+  & {
+    border: $border-medium $bg-tertiary;
+    border-radius: $spacing-xl;
+    padding: $spacing-giant;
+    margin-bottom: $spacing-huge;
+    box-shadow: $shadow-featured;
+  }
+
+  & {
+    position: relative;
+    overflow: hidden;
+    animation: stepSlideIn 0.5s $ease-bounce forwards;
+  }
 
   &::before {
     content: '';
@@ -280,7 +305,10 @@
   @include responsive(mobile) { margin-bottom: $spacing-xxl; }
 }
 
-.input-container { position: relative; @include flex-center; }
+.input-container {
+  position: relative;
+  @include flex-center;
+}
 
 .input-icon {
   position: absolute;
@@ -329,7 +357,10 @@
 
 .auth-btn {
   @include auth-btn-base;
-  padding: $spacing-md $font-xl;
+
+  & {
+    padding: $spacing-md $font-xl;
+  }
 
   .btn-ripple {
     position: absolute;
@@ -347,8 +378,11 @@
 
   &.primary {
     @include auth-gradient($border-secondary, $border-primary);
-    color: $text-primary;
-    border: $border-medium $border-tertiary;
+
+    & {
+      color: $text-primary;
+      border: $border-medium $border-tertiary;
+    }
     &:hover:not(:disabled) {
       @include auth-gradient($border-tertiary, $border-secondary);
       border-color: $border-quaternary;
@@ -359,8 +393,11 @@
 
   &.secondary {
     @include auth-gradient;
-    color: $text-muted;
-    border: $border-medium $bg-tertiary;
+
+    & {
+      color: $text-muted;
+      border: $border-medium $bg-tertiary;
+    }
     &:hover:not(:disabled) {
       @include auth-gradient($bg-tertiary, $bg-secondary);
       color: $text-primary;
@@ -372,8 +409,11 @@
 
   &.success {
     @include auth-gradient(#2D5A2D, #1A4A1A);
-    color: $text-primary;
-    border: $border-medium $success-color;
+
+    & {
+      color: $text-primary;
+      border: $border-medium $success-color;
+    }
     &:hover:not(:disabled) {
       @include auth-gradient(#3D6A3D, #2A5A2A);
       border-color: #66BB6A;
@@ -445,38 +485,50 @@ button#continue-btn.auth-btn.primary {
 
   span {
     @include auth-gradient;
-    color: $text-faint;
-    padding: 0 $spacing-xl;
-    font: 600 $font-xl $font-primary;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    z-index: $z-index-base;
+
+    & {
+      color: $text-faint;
+      padding: 0 $spacing-xl;
+      font: 600 $font-xl $font-primary;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    & {
+      position: relative;
+      z-index: $z-index-base;
+    }
   }
 }
 
 .otp-verification {
   @include auth-gradient($overlay-faint, $overlay-subtle);
-  border: $border-medium $bg-tertiary;
-  border-radius: $spacing-lg;
-  padding: $spacing-xxxl;
-  margin: $spacing-xxxl 0;
+
+  & {
+    border: $border-medium $bg-tertiary;
+    border-radius: $spacing-lg;
+    padding: $spacing-xxxl;
+    margin: $spacing-xxxl 0;
+  }
   @include responsive(mobile) { padding: $spacing-xxl; margin: $spacing-xxl 0; }
 }
 
 .back-button {
   @include flex-center;
-  gap: $spacing-sm;
   @include auth-gradient;
-  border: $border-thin $bg-tertiary;
-  color: $text-muted;
-  padding: $spacing-md $spacing-lg;
-  border-radius: $spacing-sm;
-  font: 500 $font-lg $font-primary;
-  cursor: pointer;
-  transition: $transition-smooth;
-  margin-top: $spacing-xl;
-  letter-spacing: 0.2px;
+
+  & {
+    gap: $spacing-sm;
+    border: $border-thin $bg-tertiary;
+    color: $text-muted;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $spacing-sm;
+    font: 500 $font-lg $font-primary;
+    cursor: pointer;
+    transition: $transition-smooth;
+    margin-top: $spacing-xl;
+    letter-spacing: 0.2px;
+  }
 
   &:hover {
     @include auth-gradient($bg-tertiary, $bg-secondary);
@@ -531,19 +583,22 @@ button#continue-btn.auth-btn.primary {
 
 .auth-btn.signin-style {
   @include flex-center;
-  width: 100%;
-  padding: $spacing-sm $spacing-lg !important;
-  height: $spacing-huge !important;
-  min-height: $spacing-huge !important;
-  max-height: $spacing-huge !important;
   @include auth-gradient($bg-tertiary, $bg-secondary);
-  border: $border-medium $border-secondary;
-  border-radius: $spacing-sm;
-  font: 600 $font-lg $font-primary !important;
-  color: $text-primary;
-  cursor: pointer;
-  transition: all 0.25s $ease-smooth;
-  margin-bottom: $spacing-md;
+
+  & {
+    width: 100%;
+    padding: $spacing-sm $spacing-lg !important;
+    height: $spacing-huge !important;
+    min-height: $spacing-huge !important;
+    max-height: $spacing-huge !important;
+    border: $border-medium $border-secondary;
+    border-radius: $spacing-sm;
+    font: 600 $font-lg $font-primary !important;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.25s $ease-smooth;
+    margin-bottom: $spacing-md;
+  }
 
   .btn-content {
     @include flex-center;
@@ -580,18 +635,21 @@ button#continue-btn.auth-btn.primary {
 
 .social-auth-btn {
   @include flex-center;
-  gap: $spacing-sm;
-  padding: $spacing-sm $spacing-md !important;
-  height: $spacing-huge !important;
-  min-height: $spacing-huge !important;
-  max-height: $spacing-huge !important;
   @include auth-gradient($bg-tertiary, $bg-secondary);
-  border: $border-medium $border-secondary;
-  border-radius: $spacing-sm;
-  font: 600 $font-lg $font-primary !important;
-  color: $text-primary;
-  cursor: pointer;
-  transition: all 0.25s $ease-smooth;
+
+  & {
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md !important;
+    height: $spacing-huge !important;
+    min-height: $spacing-huge !important;
+    max-height: $spacing-huge !important;
+    border: $border-medium $border-secondary;
+    border-radius: $spacing-sm;
+    font: 600 $font-lg $font-primary !important;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.25s $ease-smooth;
+  }
 
   i { font-size: $font-xl; flex-shrink: 0; }
   span { @include text-truncate; font-size: $font-lg !important; }

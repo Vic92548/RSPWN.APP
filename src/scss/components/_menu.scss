@@ -25,11 +25,12 @@
 
 .menu-header {
   padding: $spacing-xxl $spacing-lg-legacy;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, $bg-tertiary 0%, $dark 100%);
-  border-bottom: $border-thin $border-primary;
+  @include flex-between;
+
+  & {
+    background: linear-gradient(135deg, $bg-tertiary 0%, $dark 100%);
+    border-bottom: $border-thin $border-primary;
+  }
 }
 
 .menu-brand {
@@ -78,13 +79,15 @@
   border: $border-thin $border-secondary;
   border-radius: 4px 0 0 4px;
   display: none;
-  align-items: center;
-  justify-content: center;
-  color: $text-primary;
-  cursor: pointer;
-  font-size: $font-large;
-  transition: $transition-fast;
-  z-index: $z-index-dropdown;
+  @include flex-center;
+
+  & {
+    color: $text-primary;
+    cursor: pointer;
+    font-size: $font-large;
+    transition: $transition-fast;
+    z-index: $z-index-dropdown;
+  }
 
   &:hover {
     background: $bg-quaternary;
@@ -144,11 +147,7 @@
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     background: linear-gradient(135deg, $overlay-subtle 0%, transparent 50%, $overlay-subtle 100%);
     opacity: 0;
     transition: $transition-opacity;
@@ -187,18 +186,20 @@
 }
 
 .menu-item {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm-legacy;
-  padding: $spacing-lg $spacing-xl;
-  margin-bottom: $spacing-md;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  background: $overlay-subtle;
-  border: $border-thin $overlay-soft;
-  border-radius: $radius-sm;
-  transition: $transition-fast;
+  @include flex-between;
+
+  & {
+    gap: $spacing-sm-legacy;
+    padding: $spacing-lg $spacing-xl;
+    margin-bottom: $spacing-md;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: $overlay-subtle;
+    border: $border-thin $overlay-soft;
+    border-radius: $radius-sm;
+    transition: $transition-fast;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -245,18 +246,18 @@
 }
 
 .menu-item-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  font-size: $font-xlarge;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: $transition-fast;
-  position: relative;
-  background: rgba($social-discord, 0.05);
-  color: $social-discord;
+  @include flex-center;
 
+  & {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: $font-xlarge;
+    transition: $transition-fast;
+    position: relative;
+    background: rgba($social-discord, 0.05);
+    color: $social-discord;
+  }
 }
 
 @keyframes downloadPulse {
@@ -265,7 +266,7 @@
 }
 
 .menu-item-content {
-  flex: 1;
+  @include flex-grow;
 }
 
 .menu-item-title {
@@ -332,14 +333,15 @@
 }
 
 .menu-version {
-  text-align: center;
-  font-size: $font-md;
-  color: rgba(255, 255, 255, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-md;
-  font-family: 'Inter', sans-serif;
+  @include flex-center;
+
+  & {
+    text-align: center;
+    font-size: $font-md;
+    color: rgba(255, 255, 255, 0.6);
+    gap: $spacing-md;
+    font-family: 'Inter', sans-serif;
+  }
 
   .dot {
     font-size: 8px;
@@ -357,14 +359,15 @@
     padding: 3px;
     width: 62px;
     max-width: 62px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    @include flex-center;
+
+    & {
+      overflow: hidden;
+    }
   }
 
   .menu-brand {
-    justify-content: center;
+    @include flex-center;
 
     div:not(.menu-logo-text),
     h2,
@@ -374,34 +377,34 @@
   }
 
   .menu-logo-text {
-    font-size: $font-xlarge;
-    letter-spacing: 0;
-    width: 42px;
-    height: 42px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
+
+    & {
+      font-size: $font-xlarge;
+      letter-spacing: 0;
+      width: 42px;
+      height: 42px;
+      text-align: center;
+      position: relative;
+    }
 
     &::before {
       content: 'R';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Audiowide', sans-serif;
-      color: $text-primary;
-      text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
-      z-index: 1;
+      @include absolute-fill;
+      @include flex-center;
+
+      & {
+        font-family: 'Audiowide', sans-serif;
+        color: $text-primary;
+        text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
+        z-index: 1;
+      }
     }
 
-    color: transparent;
-    text-shadow: none;
+    & {
+      color: transparent;
+      text-shadow: none;
+    }
   }
 
   .menu-logo {
@@ -420,11 +423,12 @@
     border-radius: 0;
     width: 62px;
     max-width: 62px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    overflow: hidden;
+    @include flex-column-center;
+
+    & {
+      gap: 3px;
+      overflow: hidden;
+    }
 
     &::before {
       display: none;
@@ -449,8 +453,11 @@
 
   .user-info-card {
     padding: $spacing-sm-legacy $spacing-xs-legacy;
-    flex-direction: column;
-    gap: $spacing-xs-legacy;
+    @include flex-column;
+
+    & {
+      gap: $spacing-xs-legacy;
+    }
   }
 
   .user-avatar-large {
@@ -463,10 +470,11 @@
     width: 62px;
     max-width: 62px;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
+    @include flex-column-center;
+
+    & {
+      overflow: hidden;
+    }
   }
 
   .menu-list {
@@ -474,11 +482,12 @@
     max-width: 62px;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    overflow: hidden;
+    @include flex-column-center;
+
+    & {
+      gap: 3px;
+      overflow: hidden;
+    }
   }
 
   .menu-item {
@@ -488,13 +497,14 @@
     background: none;
     border: none;
     border-radius: 4px;
-    width: $width-sm + 2px;
-    max-width: $width-sm + 2px;
-    height: $width-sm + 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    width: 42px;
+    max-width: 42px;
+    height: 42px;
+    @include flex-center;
+
+    & {
+      overflow: hidden;
+    }
 
     &:hover {
       background: $overlay-light;
@@ -548,11 +558,12 @@
     font-size: $font-xlarge;
     border-radius: 4px;
     background: rgba($social-discord, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
+    @include flex-center;
+
+    & {
+      margin: 0;
+      padding: 0;
+    }
 
     i {
       margin: 0;
@@ -560,9 +571,7 @@
       line-height: 1;
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include flex-center;
     }
   }
 
@@ -570,10 +579,11 @@
     padding: 0;
     width: 62px;
     max-width: 62px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    @include flex-center;
+
+    & {
+      overflow: hidden;
+    }
   }
 
   .menu-logout-btn {
@@ -696,19 +706,25 @@
   display: flex !important;
   top: $spacing-xxl;
   left: $spacing-xxl;
-  align-items: center;
-  justify-content: center;
-  color: $white;
-  border: none;
-  cursor: pointer;
-  transition: $transition-bounce;
+  @include flex-center;
+
+  & {
+    color: $white;
+    border: none;
+    cursor: pointer;
+    transition: $transition-bounce;
+  }
+
   @include icon-button(38px);
-  overflow: hidden;
-  font-size: $font-xlarge;
-  background: $overlay-light;
-  border: $border-thin $overlay-medium;
-  border-radius: $spacing-md;
-  padding: $spacing-md;
+
+  & {
+    overflow: hidden;
+    font-size: $font-xlarge;
+    background: $overlay-light;
+    border: $border-thin $overlay-medium;
+    border-radius: $spacing-md;
+    padding: $spacing-md;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.12) !important;

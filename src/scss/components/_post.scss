@@ -3,16 +3,19 @@
 
 .create-post-btn {
   @include icon-button(38px);
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  text-align: center;
-  color: #fff;
-  border: none;
-  font-size: 18px;
-  background-color: #17212b;
-  box-shadow: 0 0 10px #17212b;
-  line-height: 0;
+
+  & {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    text-align: center;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    background-color: #17212b;
+    box-shadow: 0 0 10px #17212b;
+    line-height: 0;
+  }
 
   &:hover {
     background-color: #0d8eff83;
@@ -224,16 +227,19 @@
 
 .user-avatar {
   @include icon-button(44px);
-  border-radius: 50%;
-  background: linear-gradient(135deg, #333333 0%, #222222 100%);
-  font-weight: 700;
-  font-size: 18px;
-  color: #FFFFFF;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border: 2px solid #1A1A1A;
-  transition: all 0.3s ease;
+
+  & {
+    border-radius: 50%;
+    background: linear-gradient(135deg, #333333 0%, #222222 100%);
+    font-weight: 700;
+    font-size: 18px;
+    color: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid #1A1A1A;
+    transition: all 0.3s ease;
+  }
 
   img {
     width: 100%;
@@ -332,7 +338,10 @@
     position: relative;
     overflow: hidden;
     @include flex-center;
-    gap: 6px;
+
+    & {
+      gap: 6px;
+    }
 
     i {
       font-size: 16px;
@@ -876,10 +885,13 @@
   @include absolute-fill;
   background: rgba(0, 0, 0, 0.9);
   @include flex-center;
-  z-index: 10000;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  cursor: zoom-out;
+
+  & {
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: zoom-out;
+  }
 
   &.active {
     opacity: 1;

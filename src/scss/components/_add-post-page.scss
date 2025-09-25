@@ -212,15 +212,21 @@
 
 .upload-placeholder {
   @include flex-center;
-  height: 120px;
-  text-align: center;
-  padding: 20px;
+
+  & {
+    height: 120px;
+    text-align: center;
+    padding: 20px;
+  }
 }
 
 .upload-content {
   @include flex-center;
-  flex-direction: column;
-  gap: 12px;
+
+  & {
+    flex-direction: column;
+    gap: 12px;
+  }
 
   .upload-icon {
     width: 50px;
@@ -268,9 +274,12 @@
   backdrop-filter: $blur-sm;
   -webkit-backdrop-filter: $blur-sm;
   @include flex-center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 8px;
+
+  & {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
+  }
 
   .change-media-btn {
     width: 44px;

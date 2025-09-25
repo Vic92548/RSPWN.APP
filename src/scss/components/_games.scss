@@ -126,11 +126,11 @@
   cursor: pointer;
   border: none;
   @include flex-center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-
   @include shimmer-effect;
+
+  & {
+    gap: 8px;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -191,8 +191,11 @@
 
   &.icon-only {
     @include icon-button(44px);
-    padding: 0;
-    flex: 1;
+
+    & {
+      padding: 0;
+      flex: 1;
+    }
   }
 
   i {
@@ -283,10 +286,13 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   @include flex-center;
-  flex-direction: column;
-  z-index: 20;
-  padding: 20px;
-  box-sizing: border-box;
+
+  & {
+    flex-direction: column;
+    z-index: 20;
+    padding: 20px;
+    box-sizing: border-box;
+  }
 }
 
 .download-progress-container {
@@ -320,8 +326,11 @@
   border: 2px solid rgba(78, 205, 196, 0.3);
   border-radius: 50%;
   @include flex-center;
-  margin: 0 auto 12px;
-  position: relative;
+
+  & {
+    margin: 0 auto 12px;
+    position: relative;
+  }
 
   &::before {
     content: '';
@@ -464,8 +473,11 @@
   font-weight: 600;
   cursor: pointer;
   @include flex-center;
-  gap: 6px;
-  transition: all 0.3s ease;
+
+  & {
+    gap: 6px;
+    transition: all 0.3s ease;
+  }
 
   &:hover {
     background: rgba(231, 76, 60, 0.2);

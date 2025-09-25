@@ -132,8 +132,11 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   @include flex-center;
-  flex-direction: column;
-  z-index: 5;
+
+  & {
+    flex-direction: column;
+    z-index: 5;
+  }
 }
 
 .lock-icon {
