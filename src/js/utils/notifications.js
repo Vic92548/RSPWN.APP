@@ -134,12 +134,12 @@ const NotificationUtils = {
         const notification = DOM.get('xp-notification');
         if (!notification) return;
 
-        notification.style.animation = 'xpNotificationAnimation 1.5s';
         notification.textContent = `+${amount} XP`;
+        notification.classList.add('show');
 
         setTimeout(() => {
-            notification.style.animation = 'none';
-        }, 1500);
+            notification.classList.remove('show');
+        }, 2500);
     },
 
     showActionFeedback(action) {

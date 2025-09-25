@@ -51,7 +51,6 @@ function updateLevel() {
 
 function updateXPDisplay() {
     const username = DOM.query('.xp-username');
-
     if (username) username.textContent = user.username || 'username';
 
     const oldUsername = DOM.query('.username');
