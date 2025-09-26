@@ -177,6 +177,7 @@
           "badge": "<i class=\"fa-solid fa-star\"></i> ...",
           "badgeClass": "stars glass-badge",
           "badgeId": "github_stars",
+          "elementId": "github_stars",
           "specialType": "github",
           "visibility": {
             "requireAuth": false,
@@ -195,6 +196,7 @@
           "badge": "<i class=\"fa-solid fa-users\"></i> ...",
           "badgeClass": "members glass-badge",
           "badgeId": "discord_members",
+          "elementId": "discord_members",
           "specialType": "discord",
           "visibility": {
             "requireAuth": false,
