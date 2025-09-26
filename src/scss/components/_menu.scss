@@ -536,7 +536,6 @@
 
       .menu-item-icon {
         background: $bg-quaternary;
-        border: $border-thin $border-secondary;
         box-shadow: 0 4px 12px rgba($white, 0.1);
         transform: translateY(-2px);
         animation: iconGlow 2s ease-in-out infinite;
@@ -685,7 +684,7 @@
   }
 
   .menu-toggle {
-    top: $spacing-xxl;
+    top: 70px;
     right: 0;
     width: 32px;
     height: 48px;
