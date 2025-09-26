@@ -118,6 +118,10 @@
     border-color: $border-tertiary !important;
     color: $text-primary;
     box-shadow: $shadow-md;
+
+    i {
+      animation: iconBounce 0.4s ease-in-out;
+    }
   }
 
   &:active {
@@ -277,6 +281,19 @@
 @keyframes downloadPulse {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(3px); }
+}
+
+@keyframes iconBounce {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-3deg); }
+  50% { transform: scale(1.1) rotate(3deg); }
+  75% { transform: scale(1.05) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes iconGlow {
+  0%, 100% { box-shadow: 0 2px 8px rgba($white, 0.1); }
+  50% { box-shadow: 0 4px 16px rgba($white, 0.2); }
 }
 
 .menu-item-content {
@@ -515,7 +532,64 @@
     &:hover {
       background: $bg-tertiary;
       border: none;
-      transform: none;
+      transform: scale(1.05);
+
+      .menu-item-icon {
+        background: $bg-quaternary;
+        border: $border-thin $border-secondary;
+        box-shadow: 0 4px 12px rgba($white, 0.1);
+        transform: translateY(-2px);
+        animation: iconGlow 2s ease-in-out infinite;
+
+        i {
+          transform: scale(1.1) rotate(-5deg);
+          color: $white;
+        }
+
+        // Special animations for specific icons
+        i.fa-home {
+          animation: iconBounce 0.6s ease-in-out;
+        }
+
+        i.fa-store {
+          transform: scale(1.15) rotate(0deg);
+        }
+
+        i.fa-gamepad {
+          transform: scale(1.2) rotate(-10deg);
+        }
+
+        i.fa-trophy {
+          animation: iconBounce 0.5s ease-in-out;
+          color: #FFD700;
+        }
+
+        i.fa-chart-line {
+          transform: scale(1.1) translateY(-2px);
+        }
+
+        i.fa-cog {
+          transform: scale(1.1) rotate(180deg);
+          transition: transform 0.5s ease-in-out;
+        }
+
+        i.fa-sign-out-alt {
+          transform: scale(1.1) translateX(3px);
+        }
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+
+      .menu-item-icon {
+        transform: translateY(0);
+        box-shadow: none;
+
+        i {
+          transform: scale(0.95) rotate(0deg);
+        }
+      }
     }
 
     &::after {
@@ -569,6 +643,9 @@
     & {
       margin: 0;
       padding: 0;
+      position: relative;
+      transition: all $transition-fast cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: visible;
     }
 
     i {
@@ -578,6 +655,7 @@
       width: 100%;
       height: 100%;
       @include flex-center;
+      transition: transform $transition-fast cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
@@ -607,21 +685,51 @@
   }
 
   .menu-toggle {
-    top: 10px;
+    top: $spacing-xxl;
     right: 0;
     width: 32px;
     height: 48px;
-    border-radius: 0 4px 4px 0;
-    background: $bg-secondary;
+    border-radius: 0 8px 8px 0;
+    background: $bg-tertiary;
+    border: $border-thin $border-secondary;
     border-left: none;
+    overflow: hidden;
+    position: absolute;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba($white, 0.1) 0%, transparent 70%);
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
     &:hover {
       background: $bg-tertiary;
+
+      &::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      i {
+        animation: iconBounce 0.4s ease-in-out;
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
 
     i {
       transform: rotate(180deg);
       font-size: 14px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
     }
   }
 }
