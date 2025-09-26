@@ -2,6 +2,8 @@ class MenuManager {
     constructor() {
         this.menuConfig = null;
         this.isCollapsed = false;
+        this.hasInitialized = false;
+        this.currentMenuHTML = '';
         this.loadConfig();
     }
 
@@ -139,17 +141,21 @@ class MenuManager {
         return sections;
     }
 
-    updateMenu() {
+    updateMenu(forceUpdate = false) {
         const userContext = this.getUserContext();
         const menuNav = document.querySelector('.menu-nav');
 
         if (!menuNav || !this.menuConfig) return;
 
-        const menuContent = this.renderMenu(userContext);
-        menuNav.innerHTML = menuContent;
+        const newContent = this.renderMenu(userContext);
 
-        this.initializeSpecialButtons();
-        this.addMenuAnimations();
+        if (forceUpdate || this.currentMenuHTML !== newContent) {
+            this.currentMenuHTML = newContent;
+            menuNav.innerHTML = newContent;
+            this.initializeSpecialButtons();
+            this.addMenuAnimations();
+            this.hasInitialized = true;
+        }
     }
 
     getUserContext() {

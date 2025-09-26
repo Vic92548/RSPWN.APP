@@ -6,7 +6,7 @@ function initMenu() {
     }
     menuInitialized = true;
 
-    if (window.menuManager) {
+    if (window.menuManager && !window.menuManager.hasInitialized) {
         window.menuManager.updateMenu();
     }
 
@@ -277,7 +277,7 @@ function openMenu() {
 
     DOM.show(menu, 'flex');
 
-    if (window.menuManager) {
+    if (window.menuManager && !window.menuManager.hasInitialized) {
         window.menuManager.updateMenu();
     }
 
@@ -351,22 +351,32 @@ async function logout() {
 }
 
 let resizeTimeout;
+let previousWidth = window.innerWidth;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-        if (window.innerWidth < 769) {
-            const menuContainer = DOM.query('.menu-container');
-            const mainElement = DOM.query('main');
+        const currentWidth = window.innerWidth;
+        const wasDesktop = previousWidth >= 769;
+        const isDesktop = currentWidth >= 769;
 
-            if (menuContainer) {
-                menuContainer.classList.remove('collapsed');
+        if (wasDesktop !== isDesktop) {
+            if (!isDesktop) {
+                const menuContainer = DOM.query('.menu-container');
+                const mainElement = DOM.query('main');
+
+                if (menuContainer) {
+                    menuContainer.classList.remove('collapsed');
+                }
+                if (mainElement) {
+                    mainElement.classList.remove('menu-collapsed');
+                }
+            } else {
+                initMenuCollapseState();
+                addCollapsedMenuInteractions();
             }
-            if (mainElement) {
-                mainElement.classList.remove('menu-collapsed');
-            }
-        } else {
-            initMenuCollapseState();
         }
+
+        previousWidth = currentWidth;
     }, 250);
 });
 
