@@ -502,6 +502,10 @@
       overflow: hidden;
     }
 
+    &:not([data-show-collapsed="true"]) {
+      display: none;
+    }
+
     &:hover {
       background: $bg-tertiary;
       border: none;

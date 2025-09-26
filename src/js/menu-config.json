@@ -22,7 +22,8 @@
             "requireAuth": true,
             "hideOnMobile": false,
             "hideOnDesktop": false,
-            "hideOnWeb": false
+            "hideOnWeb": false,
+            "showWhenCollapsed": true
           }
         },
         {
@@ -65,7 +66,8 @@
             "requireAuth": false,
             "hideOnMobile": false,
             "hideOnDesktop": false,
-            "hideOnWeb": false
+            "hideOnWeb": false,
+            "showWhenCollapsed": true
           }
         },
         {
@@ -81,7 +83,8 @@
             "requireAuth": true,
             "hideOnMobile": false,
             "hideOnDesktop": false,
-            "hideOnWeb": false
+            "hideOnWeb": false,
+            "showWhenCollapsed": true
           }
         },
         {
@@ -97,7 +100,8 @@
             "requireAuth": true,
             "hideOnMobile": false,
             "hideOnDesktop": false,
-            "hideOnWeb": false
+            "hideOnWeb": false,
+            "showWhenCollapsed": true
           }
         }
       ]

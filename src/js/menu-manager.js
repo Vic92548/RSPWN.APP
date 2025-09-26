@@ -76,6 +76,9 @@ class MenuManager {
         const elementId = item.elementId ? ` id="${item.elementId}"` : '';
         const badgeId = item.badgeId ? ` id="${item.badgeId}"` : '';
 
+        // Add data attribute for collapsed visibility
+        const showWhenCollapsed = item.visibility?.showWhenCollapsed ? ' data-show-collapsed="true"' : '';
+
         let badgeHtml = '';
         if (item.badge) {
             badgeHtml = `<span class="menu-badge${badgeClass}"${badgeId}>${item.badge}</span>`;
@@ -87,7 +90,7 @@ class MenuManager {
         }
 
         return `
-            <li class="menu-item glass-secondary glass-shimmer" onclick="${item.action}"${elementId}>
+            <li class="menu-item glass-secondary glass-shimmer" onclick="${item.action}"${elementId}${showWhenCollapsed}>
                 <div class="menu-item-icon${iconClass}">
                     <i class="${item.icon}"></i>
                 </div>
@@ -208,14 +211,23 @@ class MenuManager {
     updateMenuTooltips(isCollapsed) {
         const menuItems = document.querySelectorAll('.menu-item');
 
+        this.isCollapsed = isCollapsed;
+
         menuItems.forEach(item => {
             if (isCollapsed) {
                 const title = item.querySelector('.menu-item-title');
                 if (title) {
                     item.setAttribute('data-tooltip', title.textContent);
                 }
+
+                // Hide items that shouldn't show when collapsed
+                if (!item.hasAttribute('data-show-collapsed')) {
+                    item.style.display = 'none';
+                }
             } else {
                 item.removeAttribute('data-tooltip');
+                // Show all items when not collapsed
+                item.style.display = '';
             }
         });
     }
