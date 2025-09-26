@@ -1,13 +1,13 @@
 function createAddPostPage(content) {
     return `
-    <section id="add-post-page" class="add-post-page-container" style="display:none;">
+    <section id="add-post-page" class="page-container add-post-page-container" style="display:none;">
         <button id="add_post_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
 
-        <div class="add-post-header">
-            <div class="add-post-header-content">
-                <div class="add-post-title-section">
-                    <h1 class="add-post-title">Create Post</h1>
-                    <p class="add-post-subtitle">Share your content with the RSPWN community</p>
+        <div class="page-header">
+            <div class="page-header-content">
+                <div class="page-header-title-section">
+                    <h1 class="page-header-title">Create Post</h1>
+                    <p class="page-header-subtitle">Share your content with the RSPWN community</p>
                 </div>
             </div>
         </div>

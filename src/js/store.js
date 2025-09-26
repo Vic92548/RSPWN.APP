@@ -1,13 +1,13 @@
 function createStorePage(content) {
     return `
-    <section id="store-page" class="store-container" style="display:none;">
+    <section id="store-page" class="page-container store-container" style="display:none;">
         <button id="store_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
 
-        <div class="store-header">
-            <div class="store-header-content">
-                <div class="store-title-section">
-                    <h1 class="store-title">RSPWN</h1>
-                    <p class="store-subtitle">Discover amazing games and digital content</p>
+        <div class="page-header">
+            <div class="page-header-content">
+                <div class="page-header-title-section">
+                    <h1 class="page-header-title">RSPWN</h1>
+                    <p class="page-header-subtitle">Discover amazing games and digital content</p>
                 </div>
                 <div class="store-header-search">
                     <div class="search-input-wrapper">

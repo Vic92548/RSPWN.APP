@@ -1,3 +1,5 @@
+@use 'sass:list';
+@use 'sass:meta';
 @use 'variables' as *;
 
 @mixin glass-effect($bg: $glass-bg-primary, $blur: $blur-md, $border: $glass-border) {
@@ -138,14 +140,16 @@
 // === REUSABLE COMPONENT MIXINS ===
 
 // Page title and section headers
-@mixin page-title($size: $font-giant, $weight: 700) {
-  font-size: $size;
-  font-weight: $weight;
+@mixin page-title {
+  font-size: $font-giant;
+  font-weight: 700;
   color: $text-primary;
   margin: 0 0 $spacing-md 0;
   font-family: $font-brand;
   text-transform: uppercase;
   letter-spacing: 2px;
+  line-height: 1.2;
+  text-align: left;
 
   @include responsive(tablet) {
     font-size: $font-massive;
@@ -156,18 +160,47 @@
   }
 }
 
-@mixin section-subtitle($size: $font-large, $color: $text-secondary) {
-  font-size: $size;
-  color: $color;
+@mixin section-subtitle {
+  font-size: $font-large;
+  color: $text-secondary;
   margin: 0;
   font-family: $font-primary;
+  text-align: left;
 
   @include responsive(mobile) {
     font-size: $font-xl;
   }
 }
 
+// Page header content wrapper
+@mixin page-header-content {
+  @include flex-between;
+
+  & {
+    gap: 24px;
+    max-width: $width-max;
+    margin: 0 auto;
+    padding: 0 $spacing-massive;
+  }
+
+  @include responsive(tablet) {
+    padding: 0 $spacing-xxxl;
+    gap: 20px;
+  }
+
+  @include responsive(mobile) {
+    padding: 0 16px 0 60px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
 // Container and layout mixins
+@mixin page-title-section {
+  flex: 1;
+}
+
 @mixin container-layout($max-width: $width-max, $padding: $spacing-massive) {
   & {
     max-width: $max-width;
@@ -188,11 +221,17 @@
   }
 }
 
-@mixin page-header($bg: linear-gradient(135deg, #{$bg-tertiary} 0%, #{$bg-primary} 100%)) {
+@mixin page-header {
   flex: 0 0 auto;
-  background: $bg;
-  border-bottom: 1px solid $border-primary;
+  background: $bg-secondary;
+  border-bottom: $border-thin $border-primary;
   padding: $spacing-xxl 0;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  position: relative;
+  isolation: isolate;
+  will-change: auto;
+  contain: layout style paint;
 
   @include responsive(mobile) {
     padding: $spacing-xl 0;

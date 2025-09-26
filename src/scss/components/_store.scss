@@ -1,45 +1,18 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// RSPWN Store Page - AAA Gaming Store Design (like legal pages)
-// Store Container Styling
+// RSPWN Store Page - Additional Store-Specific Styles
+
+// Menu button visibility for store page
 .store-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  font-family: $font-primary;
-  z-index: 100;
-  overflow-y: auto;
-  background: $bg-primary;
-  @include flex-column;
-
-  // Desktop adjustments
+  // Desktop - hide menu button
   @media (min-width: 769px) {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 400px;
-    width: calc(100% - 400px);
-    height: 100vh;
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: left, width;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-
-    main.menu-collapsed & {
-      left: 62px;
-      width: calc(100% - 62px);
-    }
-
     #store_menu_btn {
       display: none !important;
     }
   }
 
-  // Mobile/tablet menu button visibility
+  // Mobile/tablet - show menu button
   @include responsive(tablet) {
     #store_menu_btn {
       display: flex !important;
@@ -53,61 +26,6 @@
       z-index: 10;
     }
   }
-}
-
-.store-header {
-  flex: 0 0 auto;
-  background: $bg-secondary;
-  border-bottom: $border-thin $border-primary;
-  padding: $spacing-xxl 0;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  position: relative;
-  isolation: isolate;
-
-
-  & {
-    will-change: auto;
-    contain: layout style paint;
-  }
-
-  @include responsive(mobile) {
-    padding: $spacing-xl 0;
-  }
-}
-
-.store-header-content {
-  gap: 24px;
-  max-width: $width-max;
-  margin: 0 auto;
-  padding: 0 $spacing-massive;
-  @include flex-between;
-
-  @include responsive(tablet) {
-    padding: 0 $spacing-xxxl;
-    gap: 20px;
-  }
-
-  @include responsive(mobile) {
-    padding: 0 16px 0 60px; // Extra left padding for hamburger menu button
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-}
-
-
-.store-title-section {
-  flex: 1;
-}
-
-.store-title {
-  margin: 0 0 8px 0;
-  @include page-title;
-}
-
-.store-subtitle {
-  @include section-subtitle;
 }
 
 .store-header-search {
