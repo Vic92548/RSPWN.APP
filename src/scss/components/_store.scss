@@ -12,7 +12,7 @@
   font-family: $font-primary;
   z-index: 1000;
   overflow-y: auto;
-  @include bg-gradient($bg-primary, $bg-secondary);
+  background: $bg-primary;
   @include flex-column;
 
   // Desktop adjustments
@@ -57,7 +57,7 @@
 
 .store-header {
   flex: 0 0 auto;
-  background: $bg-tertiary;
+  background: $bg-secondary;
   border-bottom: $border-thin $border-primary;
   padding: $spacing-xxl 0;
   transform: translateZ(0);
@@ -65,14 +65,6 @@
   position: relative;
   isolation: isolate;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
-    z-index: -1;
-    pointer-events: none;
-  }
 
   & {
     will-change: auto;
@@ -238,10 +230,10 @@
   .featured-carousel {
     display: flex;
     height: 400px;
-    background: $bg-primary;
-    border-radius: 16px;
+    background: $bg-secondary;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: $shadow-featured;
+    box-shadow: $shadow-md;
     border: $border-thin $border-primary;
     will-change: auto;
     contain: layout style paint;
@@ -249,15 +241,6 @@
     backface-visibility: hidden;
     position: relative;
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
-      opacity: 1;
-      z-index: 0;
-      pointer-events: none;
-    }
 
     @include responsive(tablet) {
       flex-direction: column;
@@ -309,7 +292,7 @@
   .featured-main-overlay {
     z-index: $z-index-content;
     @include absolute-cover;
-    @include bg-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent 60%);
   }
 
   .featured-main-content {
@@ -347,13 +330,15 @@
     border: $border-thin $overlay-medium;
 
     &.featured {
-      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      background: $bg-tertiary;
       color: $text-primary;
+      border: $border-thin $border-secondary;
     }
 
     &.new {
-      background: linear-gradient(135deg, $accent-primary 0%, $accent-primary-dark 100%);
+      background: $bg-tertiary;
       color: $text-primary;
+      border: $border-thin $border-secondary;
     }
   }
 
@@ -441,10 +426,11 @@
   }
 
   .featured-discount {
-    background: linear-gradient(135deg, #2D5A2D 0%, #1A4A1A 100%);
+    background: $bg-tertiary;
     color: $text-primary;
     padding: 4px 8px;
     border-radius: 4px;
+    border: $border-thin $border-secondary;
     font-size: 12px;
     font-weight: 600;
   }
@@ -495,18 +481,6 @@
     position: relative;
     overflow: hidden;
 
-    &::before {
-      content: '';
-      background: $overlay-light;
-      @include absolute-center;
-      @include size(0);
-      @include border-radius(50%);
-      @include transition(width 0.3s ease, height 0.3s ease);
-    }
-
-    &:hover::before {
-      @include size(200px);
-    }
 
     i {
       font-size: 11px;
@@ -514,39 +488,39 @@
   }
 
   .featured-buy-btn {
-    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
-    color: $text-primary;
-    border: 2px solid #444444;
+    background: $white;
+    color: $black;
+    border: none;
+    font-weight: 700;
   }
 
   .featured-wishlist-btn {
-    background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+    background: transparent;
     color: $text-muted;
     border: $border-medium $border-secondary;
 
     &:hover {
       color: $text-primary;
+      background: $bg-tertiary;
       border-color: $border-tertiary;
     }
   }
 
   .featured-buy-btn:hover {
-    background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
-    border-color: #555555;
+    background: rgba($white, 0.9);
+    transform: translateY(-1px);
+    box-shadow: $shadow-sm;
   }
 
-  .featured-buy-btn:hover,
   .featured-wishlist-btn:hover {
-    background: linear-gradient(135deg, $border-secondary 0%, $border-primary 100%);
-    transform: translateY(-2px);
-    box-shadow: $shadow-overlay;
+    transform: translateY(-1px);
   }
 
 
 
   .featured-sidebar {
     flex: 1;
-    background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
+    background: $bg-secondary;
     border-left: $border-thin $border-primary;
     display: flex;
     flex-direction: column;
@@ -647,7 +621,7 @@
       left: 0;
       bottom: 0;
       width: var(--progress-width, 0%);
-      background: linear-gradient(90deg, rgba(51, 51, 51, 0.4) 0%, rgba(85, 85, 85, 0.4) 100%);
+      background: $overlay-faint;
       transition: $transition-width;
       z-index: $z-index-content;
       border-radius: 12px;
@@ -764,42 +738,27 @@
 
 .store-filter-btn {
   padding: 14px 24px;
-  background: $bg-quaternary;
-  border: 2px solid #1A1A1A;
-  border-radius: 10px;
+  background: transparent;
+  border: $border-medium $border-secondary;
+  border-radius: 8px;
   color: $text-muted;
   font-size: 15px;
-  transition: $transition-normal;
-  box-shadow: $shadow-button;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    transition: $transition-left;
-  }
+  font-weight: 600;
+  transition: $transition-fast;
+  box-shadow: none;
 
   &:hover {
-    background: $bg-secondary;
-    border-color: #333333;
+    background: $bg-tertiary;
+    border-color: $border-tertiary;
     color: $text-primary;
-    transform: translateY(-2px);
-    box-shadow: $shadow-button-hover;
-
-    &::before {
-      left: 100%;
-    }
+    transform: translateY(-1px);
   }
 
   &.active {
-    background: $border-primary;
-    border-color: #444444;
-    color: $text-primary;
-    box-shadow: $shadow-input-focus;
+    background: $white;
+    border-color: $white;
+    color: $black;
+    font-weight: 700;
   }
 
   @include responsive(mobile) {
@@ -818,50 +777,23 @@
 }
 
 .store-item {
-  background: $bg-quaternary;
-  border: 2px solid #1A1A1A;
-  border-radius: 16px;
+  background: $bg-secondary;
+  border: $border-thin $border-primary;
+  border-radius: 8px;
   overflow: hidden;
-  transition: transform $duration-normal $ease-smooth, box-shadow $duration-normal $ease-smooth;
+  transition: $transition-fast;
   cursor: pointer;
   position: relative;
-  box-shadow: $shadow-card;
+  box-shadow: none;
   will-change: transform;
   backface-visibility: hidden;
   isolation: isolate;
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(145deg, $bg-quaternary 0%, $bg-primary 100%);
-    opacity: 1;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
-    opacity: 0;
-    transition: $transition-opacity;
-    pointer-events: none;
-    z-index: $z-index-content;
-  }
 
   &:hover {
     border-color: $border-secondary;
-    @include transform(translateY(-8px) scale(1.02));
-    @include shadow-xl;
-
-    &::before {
-      opacity: 1;
-    }
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
 
     .store-item-image img {
       transform: scale(1.05);
@@ -871,7 +803,7 @@
 
 .store-item-image {
   height: 200px;
-  background: linear-gradient(145deg, $bg-secondary 0%, $bg-quaternary 100%);
+  background: $bg-secondary;
   position: relative;
   overflow: hidden;
   @include full-width;
@@ -893,21 +825,24 @@
     border: $border-thin $overlay-light;
     z-index: $z-index-overlay;
     @include absolute-corners($top: 16px, $left: 16px);
-    @include bg-gradient($border-secondary, $border-primary);
+    background: $bg-tertiary;
+    border: $border-thin $border-secondary;
     @include padding-x(12px);
     @include padding-y(6px);
     @include border-radius(8px);
     @include shadow-sm;
 
     &.featured {
-      background: linear-gradient(135deg, $border-tertiary 0%, $border-secondary 100%);
+      background: $bg-tertiary;
       color: $text-primary;
-      border-color: rgba(255, 255, 255, 0.2);
+      border: $border-thin $border-secondary;
     }
 
     &.new {
-      background: linear-gradient(135deg, $accent-primary 0%, $accent-primary-dark 100%);
-      border-color: rgba(76, 175, 80, 0.3);
+      background: $bg-tertiary;
+      color: $text-primary;
+      border: $border-thin $border-secondary;
+      font-weight: 600;
     }
   }
 }
@@ -975,7 +910,7 @@
 
 .store-item-category {
   font-size: 11px;
-  color: #666666;
+  color: $text-faint;
   text-transform: uppercase;
   font-weight: 600;
   font-family: $font-primary;

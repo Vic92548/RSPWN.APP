@@ -88,6 +88,7 @@ The server uses middleware for authentication, rate limiting, and request render
 - **NEVER RUN THE SERVER**: Do not use commands like `npm start`, `npm run dev`, or any server startup commands. Only use build commands when necessary.
 
 ### CSS/SCSS Best Practices
+- **ALWAYS USE VARIABLE COLORS FROM `src/scss/_variables.scss`**: Never hardcode colors like #000000, #FFFFFF, #1A1A1A, etc. Always use the predefined variables ($bg-primary, $bg-secondary, $text-primary, $border-primary, etc.) from the variables file to maintain consistency and make theme changes easier. The variables file contains the complete color system following RSPWN brand guidelines.
 - **Always check existing CSS rules when modifying collapsed/hidden states**: The menu system has specific rules for collapsed states that may hide elements with broad selectors (e.g., `div { display: none }`). Always inspect the full CSS context before adding new elements.
 - **Use specific selectors to avoid conflicts**: When adding new elements that should remain visible in collapsed states, use `:not()` selectors or more specific class targeting to override broad hiding rules.
 - **Test responsive and interactive states**: Always test collapsed menus, mobile views, and interactive states after making changes to ensure new elements don't get unintentionally hidden.
