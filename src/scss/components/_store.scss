@@ -10,7 +10,7 @@
   width: 100%;
   height: 100vh;
   font-family: $font-primary;
-  z-index: 1000;
+  z-index: 100;
   overflow-y: auto;
   background: $bg-primary;
   @include flex-column;

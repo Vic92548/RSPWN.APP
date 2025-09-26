@@ -458,3 +458,9 @@ function insertVAPRUserInfo() {
 
     container.insertBefore(userInfo, menuNav);
 }
+
+// Expose functions to global window object for onclick handlers
+window.openMenu = openMenu;
+window.hideMenu = hideMenu;
+window.toggleMenuCollapse = toggleMenuCollapse;
+window.logout = logout;

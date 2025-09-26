@@ -1,6 +1,29 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
+// Base modal styles for mobile menu
+.glass_modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($black, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+
+  @include responsive(desktop) {
+    &#menu {
+      backdrop-filter: none;
+      background: transparent;
+      z-index: 999;
+    }
+  }
+}
+
 .menu-container {
   width: 100%;
   max-width: 480px;
@@ -10,8 +33,9 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, $dark 0%, $gray 100%);
+  background: $bg-primary;
   transition: $transition-bounce;
+  z-index: 10000;
 
   * {
     transition: $transition-bounce;
@@ -28,7 +52,7 @@
   @include flex-between;
 
   & {
-    background: linear-gradient(135deg, $bg-tertiary 0%, $dark 100%);
+    background: $bg-secondary;
     border-bottom: $border-thin $border-primary;
   }
 }
@@ -52,7 +76,6 @@
   font-weight: 400;
   letter-spacing: 2px;
   color: $text-primary;
-  text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
   transition: $transition-fast;
 }
 
@@ -75,14 +98,14 @@
   right: 0;
   width: $width-sm;
   height: $width-sm;
-  background: $bg-tertiary;
-  border: $border-thin $border-secondary;
+  background: $white;
+  border: none;
   border-radius: 4px 0 0 4px;
   display: none;
   @include flex-center;
 
   & {
-    color: $text-primary;
+    color: $black;
     cursor: pointer;
     font-size: $font-large;
     transition: $transition-fast;
@@ -90,14 +113,11 @@
   }
 
   &:hover {
-    background: $bg-quaternary;
-    border-color: $border-tertiary;
-    color: $white;
+    background: rgba($white, 0.9);
   }
 
   &:active {
-    background: $bg-secondary;
-    border-color: $border-primary;
+    background: rgba($white, 0.8);
   }
 
   i {
@@ -105,21 +125,21 @@
   }
 
   @include responsive(desktop) {
-    display: flex;
+    display: flex !important;
   }
 }
 
 .glass-button {
-  background: $bg-tertiary;
+  background: transparent;
   border: $border-thin $border-secondary;
   border-radius: 4px;
   color: $text-primary;
   transition: $transition-fast;
 
   &:hover {
-    background: $bg-quaternary;
+    background: $bg-tertiary;
     border-color: $border-tertiary;
-    color: $white;
+    color: $text-primary;
   }
 
   &:active {
@@ -136,32 +156,20 @@
 }
 
 .menu-section {
-  background: linear-gradient(145deg, $bg-secondary 0%, $dark 100%);
-  border: $border-thin $gray;
-  border-radius: $radius-md;
+  background: $bg-secondary;
+  border: $border-thin $border-primary;
+  border-radius: 8px;
   padding: $spacing-xxl;
   margin-bottom: $spacing-xxl;
   transition: $transition-fast;
   position: relative;
   overflow: hidden;
 
-  &::before {
-    content: '';
-    @include absolute-fill;
-    background: linear-gradient(135deg, $overlay-subtle 0%, transparent 50%, $overlay-subtle 100%);
-    opacity: 0;
-    transition: $transition-opacity;
-    pointer-events: none;
-  }
 
   &:hover {
     border-color: $border-secondary;
-    transform: translateY(-2px);
-    box-shadow: $shadow-xl;
-
-    &::before {
-      opacity: 1;
-    }
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
   }
 
   &:last-child {
@@ -195,20 +203,20 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    background: $overlay-subtle;
-    border: $border-thin $overlay-soft;
-    border-radius: $radius-sm;
+    background: transparent;
+    border: $border-thin transparent;
+    border-radius: 8px;
     transition: $transition-fast;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: $bg-tertiary;
+    border-color: $border-secondary;
     transform: translateY(-1px);
 
     .menu-item-icon {
-      color: $social-discord;
-      background: rgba($social-discord, 0.1);
+      color: $text-primary;
+      background: $bg-quaternary;
     }
 
     .menu-item-arrow {
@@ -231,7 +239,7 @@
     transform: none !important;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.02);
+      background: transparent;
       transform: none !important;
       box-shadow: none;
     }
@@ -251,12 +259,12 @@
   & {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: $font-xlarge;
     transition: $transition-fast;
     position: relative;
-    background: rgba($social-discord, 0.05);
-    color: $social-discord;
+    background: $bg-tertiary;
+    color: $text-secondary;
   }
 }
 
@@ -286,40 +294,29 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: $transition-fast;
-  background: $overlay-light;
-  border: $border-thin $overlay-medium;
+  background: $bg-tertiary;
+  border: $border-thin $border-secondary;
   border-radius: 4px;
   padding: 4px 8px;
+  font-weight: 600;
 
   &.new {
-    background: $overlay-light;
-    border-color: rgba($danger-color, 0.3);
-    color: rgba(255, 150, 150, 0.9);
-    animation: pulse-glow 2s infinite;
-    box-shadow: 0 0 $spacing-sm-legacy rgba($danger-color, 0.2);
+    background: $white;
+    border: none;
+    color: $black;
+    font-weight: 700;
   }
 
   &.stars {
-    background: $overlay-light;
-    border-color: rgba($warning-color, 0.3);
-    color: rgba(255, 220, 100, 0.9);
+    background: $bg-quaternary;
+    border-color: $border-secondary;
+    color: $text-primary;
     display: flex;
     align-items: center;
     gap: 4px;
-    box-shadow: 0 0 $spacing-sm-legacy rgba($warning-color, 0.2);
   }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 $spacing-xxl rgba($danger-color, 0.15);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 $spacing-xl-legacy rgba($danger-color, 0.25);
-    transform: scale(1.05);
-  }
-}
 
 .menu-item-arrow {
   font-size: $font-md;
@@ -328,7 +325,7 @@
 
 .menu-footer {
   padding: $spacing-xxl;
-  background: linear-gradient(135deg, rgba($bg-tertiary, 0.8) 0%, rgba($dark, 0.9) 100%);
+  background: $bg-secondary;
   border-top: $border-thin $border-primary;
 }
 
@@ -396,7 +393,6 @@
       & {
         font-family: 'Audiowide', sans-serif;
         color: $text-primary;
-        text-shadow: 0 0 $spacing-xxl rgba(255, 255, 255, 0.3);
         z-index: 1;
       }
     }
@@ -507,7 +503,7 @@
     }
 
     &:hover {
-      background: $overlay-light;
+      background: $bg-tertiary;
       border: none;
       transform: none;
     }
@@ -557,7 +553,7 @@
     height: 42px;
     font-size: $font-xlarge;
     border-radius: 4px;
-    background: rgba($social-discord, 0.1);
+    background: $bg-tertiary;
     @include flex-center;
 
     & {
@@ -609,9 +605,53 @@
   }
 }
 
+@include responsive(mobile) {
+  #menu.glass_modal {
+    display: none;
+    justify-content: center;
+
+    &[style*="display: flex"] {
+      display: flex !important;
+    }
+  }
+
+  .menu-container {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    margin: 0;
+
+    // Ensure badges are visible on mobile
+    .menu-badge {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
+    }
+
+    // Ensure menu items show properly on mobile
+    .menu-item-content {
+      display: block !important;
+    }
+
+    .menu-item-arrow {
+      display: block !important;
+    }
+  }
+
+  .menu-toggle {
+    display: none !important;
+  }
+}
+
 @include responsive(tablet) {
   #menu.glass_modal {
+    display: none;
     justify-content: flex-start;
+
+    &[style*="display: flex"] {
+      display: flex !important;
+    }
   }
 
   .menu-container {
@@ -622,10 +662,55 @@
     height: 90vh;
     margin-top: 10vh;
     box-shadow: 0 -5px $spacing-xxl $overlay-light;
+
+    // Ensure badges are visible on tablet
+    .menu-badge {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
+    }
+
+    // Ensure menu items show properly on tablet
+    .menu-item-content {
+      display: block !important;
+    }
+
+    .menu-item-arrow {
+      display: block !important;
+    }
+  }
+
+  .menu-toggle {
+    display: none !important;
   }
 
   .menu-close {
     display: flex;
+    position: absolute;
+    top: $spacing-xl;
+    right: $spacing-xl;
+    width: 40px;
+    height: 40px;
+    background: $white;
+    border: none;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: $transition-fast;
+
+    &::before {
+      content: '\00D7';  // X symbol
+      font-size: 24px;
+      color: $black;
+      line-height: 1;
+    }
+
+    &:hover {
+      background: rgba($white, 0.9);
+      transform: scale(1.1);
+    }
   }
 }
 
@@ -659,7 +744,7 @@
     height: 100vh;
     backdrop-filter: none;
     background: transparent;
-    z-index: 1;
+    z-index: 999;
     pointer-events: none;
     margin-left: 0;
   }
@@ -696,8 +781,9 @@
     max-width: none;
   }
 
+  .menu-close,
   #menu .menu-close {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -791,20 +877,20 @@
   li {
     list-style: none;
     text-align: center;
-    background: $overlay-faint;
-    border: $border-thin rgba(255, 255, 255, 0.15);
-    border-radius: 7px;
+    background: transparent;
+    border: $border-thin transparent;
+    border-radius: 8px;
     color: $text-primary;
     padding-top: $spacing-xs-legacy;
     padding-bottom: $spacing-xs-legacy;
     font-size: $font-xlarge;
     margin-top: $spacing-xs-legacy;
-    transition: $transition-bounce;
+    transition: $transition-fast;
 
     &:hover {
-      background: $overlay-light;
-      box-shadow: $shadow-md;
-      border-color: $overlay-medium;
+      background: $bg-tertiary;
+      box-shadow: none;
+      border-color: $border-secondary;
     }
 
     @include responsive(desktop) {
