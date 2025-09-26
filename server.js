@@ -233,6 +233,15 @@ app.get('/privacy', async (req, res) => {
     });
 });
 
+app.get('/analytics', async (req, res) => {
+    await res.render('index.html', {
+        meta_description: 'RSPWN Analytics - Track your content performance and audience growth',
+        meta_author: config.meta.default.author,
+        meta_image: config.meta.default.image,
+        meta_url: config.meta.default.url + '/analytics'
+    });
+});
+
 app.get('/login', (req, res) => {
     res.redirect('/signin');
 });

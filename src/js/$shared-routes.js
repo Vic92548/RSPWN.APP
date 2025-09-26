@@ -148,6 +148,32 @@ const ROUTES = {
         }
     },
 
+    analytics: {
+        path: '/analytics',
+        meta: {
+            title: 'Analytics - RSPWN',
+            description: 'Track your content performance and audience growth',
+            requiresAuth: true
+        },
+        frontend: () => {
+            console.log('Analytics route frontend handler called');
+            // Safely hide post
+            try {
+                if (typeof hidePost === 'function') {
+                    hidePost();
+                }
+            } catch (e) {
+                console.warn('Error hiding post:', e);
+            }
+
+            if (typeof openAnalyticsPage === 'function') {
+                openAnalyticsPage();
+            } else {
+                console.error('openAnalyticsPage function not found');
+            }
+        }
+    },
+
     creators: {
         path: '/creators',
         meta: {

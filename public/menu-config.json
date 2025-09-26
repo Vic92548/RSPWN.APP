@@ -31,7 +31,7 @@
           "subtitle": "Track performance",
           "icon": "fa-solid fa-chart-line",
           "iconClass": "analytics",
-          "action": "router.navigate('/creators', true); hideMenu();",
+          "action": "router.navigate('/analytics', true); hideMenu();",
           "arrow": true,
           "badge": null,
           "badgeClass": "",
