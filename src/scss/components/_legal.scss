@@ -5,10 +5,10 @@
   font-family: $font-primary;
   z-index: $z-index-modal;
   transition: $transition-left, $transition-width;
+  background: $bg-primary;
   @include fixed-cover;
   @include flex-column;
   @include overflow-y-auto;
-  @include bg-gradient($dark, $gray);
 
   // On desktop, keep fixed position but adjust for sidebar menu
   @media (min-width: 769px) {
@@ -50,8 +50,11 @@
 
 .legal-header {
   @include page-header;
-  @include bg-gradient(#121212, $dark);
-  @include border-bottom(1px, solid, $border-primary);
+  @include border-bottom($border-thin, solid, $border-primary);
+
+  & {
+    background: $bg-secondary;
+  }
 
   @include responsive(mobile) {
     padding: $spacing-xl 0;
@@ -134,34 +137,16 @@
 .legal-section {
   padding: $spacing-huge;
   margin-bottom: $spacing-huge;
-  transition: $transition-normal;
+  transition: $transition-fast;
   position: relative;
-  cursor: pointer;
-  box-shadow: $shadow-card;
-  @include bg-gradient(#0F0F0F, $dark);
-  @include border-all(1px, solid, $gray);
-  @include border-radius($radius-xl);
-  @include overflow-hidden;
-
-  &::before {
-    content: '';
-    transition: $transition-opacity;
-    pointer-events: none;
-    z-index: 1;
-    @include absolute-cover;
-    @include bg-gradient($overlay-subtle, transparent);
-    @include transparent;
-  }
+  background: $bg-secondary;
+  @include border-all($border-thin, solid, $border-primary);
+  @include border-radius(8px);
 
   &:hover {
     border-color: $border-secondary;
-    box-shadow: $shadow-card-hover;
-    @include hover-lift(-8px);
-    @include scale(1.02);
-
-    &::before {
-      @include opaque;
-    }
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
   }
 
   &:last-child {
@@ -228,7 +213,7 @@
     &::before {
       content: '';
       left: $spacing-md;
-      background: $text-muted;
+      background: $border-secondary;
       @include absolute-center-y;
       @include circle(4px);
     }
@@ -242,130 +227,6 @@
   }
 }
 
-.legal-footer {
-  margin-top: auto;
-  position: relative;
-  @include bg-gradient(rgba(18, 18, 18, 0.8), rgba($dark, 0.9));
-  @include border-top(1px, solid, $border-primary);
-}
-
-.legal-footer-content {
-  padding: $spacing-massive $spacing-massive $spacing-huge;
-  @include container-layout;
-  @include grid-equal(2, $spacing-massive);
-
-  @include responsive(tablet) {
-    & {
-      padding: $spacing-huge $spacing-xxxl $spacing-xxxl;
-    }
-    @include grid-equal(1, $spacing-huge);
-  }
-
-  @include responsive(mobile) {
-    & {
-      padding: $spacing-xxxl $spacing-xl $spacing-xxxl;
-      gap: $spacing-xxxl;
-    }
-  }
-}
-
-.legal-contact,
-.legal-nav {
-  h3 {
-    margin: 0 0 $spacing-xl 0;
-    font-size: $font-large;
-    font-weight: 600;
-    color: $text-primary;
-    font-family: $font-primary;
-  }
-
-  p {
-    margin: 0 0 $spacing-xl 0;
-    font-size: $font-xl;
-    color: $text-secondary;
-    line-height: 1.6;
-  }
-}
-
-.legal-contact-links,
-.legal-nav-links {
-  gap: $spacing-md;
-  @include flex-column;
-}
-
-.legal-contact-btn,
-.legal-nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-lg;
-  padding: $spacing-xl $spacing-xxl;
-  background: $overlay-faint;
-  color: $text-muted;
-  text-decoration: none;
-  font-size: $font-xl;
-  font-weight: 500;
-  font-family: $font-primary;
-  transition: $transition-normal;
-  @include border-all(1px, solid, $overlay-light);
-  @include border-radius($radius-sm);
-
-  &:hover {
-    background: $overlay-soft;
-    border-color: $overlay-medium;
-    color: $text-primary;
-    @include hover-lift;
-  }
-
-  i {
-    font-size: $font-large;
-    color: $social-discord;
-    width: 18px;
-    text-align: center;
-    transition: $transition-color;
-  }
-
-  &:hover i {
-    color: #7289DA;
-  }
-
-  @include responsive(mobile) {
-    & {
-      padding: $spacing-lg $spacing-xl;
-      font-size: $font-lg;
-    }
-  }
-}
-
-.legal-copyright {
-  padding: $spacing-xxxl $spacing-massive $spacing-huge;
-  @include container-layout;
-  @include border-top(1px, solid, $border-primary);
-
-  p {
-    font-size: $font-xl;
-    color: $text-weak;
-    text-align: center;
-    font-family: $font-primary;
-    @include no-spacing;
-  }
-
-  @include responsive(tablet) {
-    & {
-      padding: $spacing-xxl $spacing-xxxl $spacing-xxxl;
-    }
-  }
-
-  @include responsive(mobile) {
-    & {
-      padding: $spacing-xl $spacing-xl $spacing-xxxl;
-    }
-
-    p {
-      font-size: $font-md;
-      line-height: 1.4;
-    }
-  }
-}
 
 @include print-only {
   .legal-container {
@@ -399,17 +260,5 @@
   .legal-section .section-header {
     color: $black !important;
     border-bottom: 1px solid $black !important;
-  }
-
-  .legal-footer {
-    background: $white !important;
-    border-top: 2px solid $black !important;
-  }
-
-  .legal-contact-btn,
-  .legal-nav-link {
-    border: 1px solid $black !important;
-    background: $white !important;
-    color: $black !important;
   }
 }
