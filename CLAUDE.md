@@ -87,6 +87,102 @@ The server uses middleware for authentication, rate limiting, and request render
 - **NEVER ADD COMMENTS TO CODE**: Do not add any comments to JavaScript, CSS, SCSS, HTML, or any other code files. Write clean, self-documenting code without explanatory comments.
 - **NEVER RUN THE SERVER**: Do not use commands like `npm start`, `npm run dev`, or any server startup commands. Only use build commands when necessary.
 
+### MINIMALIST DESIGN IMPLEMENTATION GUIDE
+
+#### Core Design Philosophy
+The codebase follows a **minimalist, flat design system** inspired by Epic Games Store and other modern gaming platforms. This approach prioritizes:
+- **Clarity over decoration** - Every element serves a purpose
+- **Performance through simplicity** - Less visual complexity means better performance
+- **Professional aesthetic** - Clean, enterprise-level polish
+- **Consistency** - Unified design language across all pages
+
+#### Design Principles to Follow
+
+##### 1. **NO GRADIENTS**
+- ❌ Never use `linear-gradient`, `radial-gradient`, or any gradient effects
+- ✅ Use solid, flat colors from the variables file
+- ✅ Create depth through subtle borders and minimal shadows
+
+##### 2. **FLAT COLOR SYSTEM**
+- Use pure blacks and grays for backgrounds:
+  - `$bg-primary` (#000000) - Main background
+  - `$bg-secondary` (#0A0A0A) - Secondary surfaces
+  - `$bg-tertiary` (#1A1A1A) - Elevated surfaces
+  - `$bg-quaternary` (#2A2A2A) - Highest elevation
+- White as primary accent:
+  - Pure white (`$white`) for primary actions
+  - White with opacity for hover states
+
+##### 3. **MINIMAL SHADOWS**
+- Only use shadows for functional elevation
+- Keep shadows subtle: `$shadow-sm`, `$shadow-md`
+- Avoid decorative shadows or glows
+
+##### 4. **CLEAN INTERACTIONS**
+- Simple hover states:
+  - Background color change
+  - Subtle transform: `translateY(-1px)`
+  - Border color change
+- Fast transitions: `$transition-fast` (0.15s)
+- No complex animations or effects
+
+##### 5. **BUTTON HIERARCHY**
+- **Primary buttons**: White background, black text, no border
+- **Secondary buttons**: Transparent with border
+- **Hover states**: Subtle opacity change (0.9)
+
+##### 6. **BORDER USAGE**
+- Thin borders for separation: `$border-thin` (1px)
+- Medium borders for emphasis: `$border-medium` (2px)
+- Use border colors from variables: `$border-primary`, `$border-secondary`
+
+##### 7. **TYPOGRAPHY**
+- Clean hierarchy through size and weight, not effects
+- No text shadows or glows
+- Use `$font-brand` (Audiowide) only for brand name
+- Use `$font-primary` (Inter) for all other text
+
+#### Implementation Examples
+
+**Card Component (Correct):**
+```scss
+.card {
+  background: $bg-secondary;
+  border: $border-thin $border-primary;
+  border-radius: 8px;
+  transition: $transition-fast;
+
+  &:hover {
+    border-color: $border-secondary;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+}
+```
+
+**Button (Correct):**
+```scss
+.button-primary {
+  background: $white;
+  color: $black;
+  border: none;
+  font-weight: 700;
+  transition: $transition-fast;
+
+  &:hover {
+    background: rgba($white, 0.9);
+    box-shadow: $shadow-sm;
+  }
+}
+```
+
+#### Pages Following This Design
+- ✅ Store page (`_store.scss`)
+- ✅ Menu (`_menu.scss`)
+- ✅ Create/Add Post page (`_add-post-page.scss`)
+
+When updating other pages, follow these same principles for consistency.
+
 ### CSS/SCSS Best Practices
 - **ALWAYS USE VARIABLE COLORS FROM `src/scss/_variables.scss`**: Never hardcode colors like #000000, #FFFFFF, #1A1A1A, etc. Always use the predefined variables ($bg-primary, $bg-secondary, $text-primary, $border-primary, etc.) from the variables file to maintain consistency and make theme changes easier. The variables file contains the complete color system following RSPWN brand guidelines.
 - **Always check existing CSS rules when modifying collapsed/hidden states**: The menu system has specific rules for collapsed states that may hide elements with broad selectors (e.g., `div { display: none }`). Always inspect the full CSS context before adding new elements.
