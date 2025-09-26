@@ -1,0 +1,39 @@
+<!-- Legal Page Template for VAPR Template Engine -->
+<template data-vapr="legal-page">
+    <section id="{{page-id}}" class="page-container legal-container" style="display:none;">
+        <button id="legal_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="page-header">
+            <div class="page-header-content">
+                <button class="legal-back-btn" onclick="{{close-function}}()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="page-header-title-section">
+                    <h1 class="page-header-title">{{page-title}}</h1>
+                    <p class="page-header-subtitle">{{last-updated}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-body">
+            <div class="legal-content">
+                <slot></slot>
+            </div>
+        </div>
+    </section>
+</template>
+
+<template data-vapr="legal-section">
+    <div class="legal-section">
+        <h2 class="section-header">{{title}}</h2>
+        <slot></slot>
+    </div>
+</template>
+
+<template data-vapr="legal-list">
+    <ul class="legal-list">
+        <slot></slot>
+    </ul>
+</template>

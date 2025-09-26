@@ -1,34 +1,11 @@
 @use '../variables' as *;
 @use '../mixins' as *;
 
-// Legal Page - Uses unified mixins with legal-specific class names
+// Legal Page - Specific overrides and additions to unified page styles
 
 .legal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  font-family: $font-primary;
+  // Legal pages need higher z-index than regular pages
   z-index: $z-index-modal;
-  overflow-y: auto;
-  background: $bg-primary;
-  @include flex-column;
-
-  // Desktop adjustments for sidebar menu
-  @media (min-width: 769px) {
-    left: 400px;
-    width: calc(100% - 400px);
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: left, width;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-
-    main.menu-collapsed & {
-      left: 62px;
-      width: calc(100% - 62px);
-    }
-  }
 
   // Menu button visibility
   @media (min-width: 769px) {
@@ -50,42 +27,29 @@
       z-index: $z-index-dropdown;
     }
   }
-}
 
-.legal-header {
-  @include page-header;
-}
+  // Legal-specific overrides for unified classes
+  .page-header-content {
+    @include responsive(mobile) {
+      padding: 0 $spacing-xl 0 60px;
+    }
+  }
 
-.legal-header-content {
-  @include page-header-content;
+  .page-header-title {
+    & {
+      margin: 0;
+    }
+  }
 
-  @include responsive(mobile) {
-    padding: 0 $spacing-xl 0 60px;
+  .page-header-subtitle {
+    & {
+      margin: $spacing-md 0 0 0;
+    }
   }
 }
 
 .legal-back-btn {
   @include hide;
-}
-
-.legal-title-section {
-  @include page-title-section;
-}
-
-.legal-title {
-  @include page-title;
-
-  & {
-    margin: 0;
-  }
-}
-
-.legal-subtitle {
-  @include section-subtitle;
-
-  & {
-    margin: $spacing-md 0 0 0;
-  }
 }
 
 .legal-body {
@@ -212,7 +176,7 @@
     height: auto !important;
   }
 
-  .legal-header {
+  .page-header {
     background: $white !important;
     border-bottom: 2px solid $black !important;
   }
@@ -221,11 +185,11 @@
     @include hide;
   }
 
-  .legal-title {
+  .page-header-title {
     color: $black !important;
   }
 
-  .legal-subtitle {
+  .page-header-subtitle {
     color: #666 !important;
   }
 

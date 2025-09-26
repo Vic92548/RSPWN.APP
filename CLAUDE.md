@@ -40,7 +40,52 @@ VAPR is a gamified social platform where creators share content through a swipe-
 - `public/` - Generated build output
 
 ### Template System
+
+#### Build-Time Template System
 The project uses a custom template engine where `[[filename]]` includes content from `src/components/`. The build process processes these includes and generates the final HTML.
+
+#### Runtime Template System - VAPR Template Engine
+**IMPORTANT**: For all client-side dynamic content and navigation, you MUST use the VAPR Template Engine (`src/js/$_vapr-template-engine.js`). Never create HTML strings directly in JavaScript.
+
+The VAPR Template Engine provides:
+- Dynamic component rendering with data binding
+- Template definitions using `<template data-vapr="component-name">` syntax
+- Slot-based content injection with `<slot></slot>`
+- Data interpolation with `{{variable}}` syntax
+
+**Usage Requirements:**
+1. **Define templates in HTML files** under `src/components/templates/`
+2. **Include templates in index.html** using the `[[template]]` syntax
+3. **Use `window.VAPR.createElement()`** for dynamic component creation
+4. **Process with `window.VAPR.render()`** to apply template transformations
+
+**Example - Correct Dynamic Page Creation:**
+```javascript
+// CORRECT: Using VAPR Template Engine
+const page = window.VAPR.createElement('legal-page', {
+    'page-id': 'terms',
+    'page-title': 'Terms of Service',
+    'last-updated': 'January 2025'
+});
+page.innerHTML = content;
+window.VAPR.render(page);
+```
+
+**Example - INCORRECT:**
+```javascript
+// WRONG: Never create HTML strings directly
+const page = `<section id="${pageId}" class="page-container">...</section>`;
+```
+
+**Template Definition Example:**
+```html
+<template data-vapr="legal-page">
+    <section id="{{page-id}}" class="page-container legal-container">
+        <h1>{{page-title}}</h1>
+        <slot></slot>
+    </section>
+</template>
+```
 
 
 ### Server Module Organization

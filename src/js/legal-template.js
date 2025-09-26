@@ -1,4 +1,4 @@
-// Legal Page Template Helper Functions
+// Legal Page Template Helper Functions using VAPR Template Engine
 
 function createLegalPage(config) {
     const {
@@ -10,27 +10,25 @@ function createLegalPage(config) {
         content
     } = config;
 
-    return `
-    <section id="${pageId}" class="legal-container" style="display:none;">
-        <button id="legal_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
-        <div class="legal-header">
-            <div class="legal-header-content">
-                <button class="legal-back-btn" onclick="${closeFunction}()">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <div class="legal-title-section">
-                    <h1 class="legal-title">${pageTitle}</h1>
-                    <p class="legal-subtitle">${lastUpdated}</p>
-                </div>
-            </div>
-        </div>
+    // Create the legal page element using VAPR template engine
+    const legalPage = window.VAPR.createElement('legal-page', {
+        'page-id': pageId,
+        'page-title': pageTitle,
+        'last-updated': lastUpdated,
+        'close-function': closeFunction
+    });
 
-        <div class="legal-body">
-            <div class="legal-content">
-                ${content}
-            </div>
-        </div>
-    </section>`;
+    // Set the content
+    legalPage.innerHTML = content;
+
+    // Get the HTML string from the element
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(legalPage);
+
+    // Process the element through the template engine
+    window.VAPR.render(legalPage);
+
+    return wrapper.innerHTML;
 }
 
 function createLegalSection(title, content) {
