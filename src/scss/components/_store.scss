@@ -14,14 +14,20 @@
   overflow-y: auto;
   @include bg-gradient($bg-primary, $bg-secondary);
   @include flex-column;
-  @include transition(left, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
-  @include transition(width, 0.5s, cubic-bezier(0.23, 1, 0.32, 1));
 
   // Desktop adjustments
   @media (min-width: 769px) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
     left: 400px;
     width: calc(100% - 400px);
     height: 100vh;
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: left, width;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 
     main.menu-collapsed & {
       left: 62px;
@@ -51,9 +57,27 @@
 
 .store-header {
   flex: 0 0 auto;
-  background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
+  background: $bg-tertiary;
   border-bottom: $border-thin $border-primary;
   padding: $spacing-xxl 0;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, $bg-tertiary 0%, $bg-primary 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  & {
+    will-change: auto;
+    contain: layout style paint;
+  }
 
   @include responsive(mobile) {
     padding: $spacing-xl 0;
@@ -168,6 +192,13 @@
   padding: 40px 0;
   @include scrollbar-style;
 
+  & {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: auto;
+    contain: layout style;
+  }
+
   @include responsive(tablet) {
     padding: 32px 0;
   }
@@ -181,6 +212,9 @@
   max-width: $width-max;
   margin: 0 auto;
   padding: 0 $spacing-massive;
+  will-change: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 
   @include responsive(tablet) {
     padding: 0 $spacing-xxxl;
@@ -204,11 +238,26 @@
   .featured-carousel {
     display: flex;
     height: 400px;
-    background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
+    background: $bg-primary;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: $shadow-featured;
     border: $border-thin $border-primary;
+    will-change: auto;
+    contain: layout style paint;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, $bg-primary 0%, $bg-secondary 100%);
+      opacity: 1;
+      z-index: 0;
+      pointer-events: none;
+    }
 
     @include responsive(tablet) {
       flex-direction: column;
@@ -250,7 +299,11 @@
   .featured-main-bg {
     @include absolute-cover;
     @include bg-cover;
-    @include transition(all, 0.8s);
+    @include transition(transform, 0.8s);
+
+    & {
+      will-change: transform;
+    }
   }
 
   .featured-main-overlay {
@@ -757,17 +810,35 @@
 
 .store-grid {
   @include responsive-grid;
+
+  & {
+    will-change: auto;
+    contain: layout style;
+  }
 }
 
 .store-item {
-  background: linear-gradient(145deg, $bg-quaternary 0%, $bg-primary 100%);
+  background: $bg-quaternary;
   border: 2px solid #1A1A1A;
   border-radius: 16px;
   overflow: hidden;
-  transition: all $duration-normal $ease-smooth;
+  transition: transform $duration-normal $ease-smooth, box-shadow $duration-normal $ease-smooth;
   cursor: pointer;
   position: relative;
   box-shadow: $shadow-card;
+  will-change: transform;
+  backface-visibility: hidden;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, $bg-quaternary 0%, $bg-primary 100%);
+    opacity: 1;
+    z-index: -1;
+    pointer-events: none;
+  }
 
   &::before {
     content: '';
