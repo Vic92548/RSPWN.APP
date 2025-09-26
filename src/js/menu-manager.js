@@ -81,6 +81,9 @@ class MenuManager {
         // Add data attribute for collapsed visibility
         const showWhenCollapsed = item.visibility?.showWhenCollapsed ? ' data-show-collapsed="true"' : '';
 
+        // Add data attribute for route matching
+        const dataRoute = item.route ? ` data-route="${item.route}"` : '';
+
         let badgeHtml = '';
         if (item.badge) {
             badgeHtml = `<span class="menu-badge${badgeClass}"${badgeId}>${item.badge}</span>`;
@@ -92,7 +95,7 @@ class MenuManager {
         }
 
         return `
-            <li class="menu-item glass-secondary glass-shimmer" onclick="${item.action}"${elementId}${showWhenCollapsed}>
+            <li class="menu-item glass-secondary glass-shimmer" onclick="${item.action}"${elementId}${showWhenCollapsed}${dataRoute}>
                 <div class="menu-item-icon${iconClass}">
                     <i class="${item.icon}"></i>
                 </div>
@@ -147,6 +150,9 @@ class MenuManager {
 
         if (!menuNav || !this.menuConfig) return;
 
+        // Extract routes from actions before rendering
+        this.updateMenuItemsWithRoutes();
+
         const newContent = this.renderMenu(userContext);
 
         if (forceUpdate || this.currentMenuHTML !== newContent) {
@@ -154,6 +160,7 @@ class MenuManager {
             menuNav.innerHTML = newContent;
             this.initializeSpecialButtons();
             this.addMenuAnimations();
+            this.highlightActiveMenuItem();
             this.hasInitialized = true;
         }
     }
@@ -279,6 +286,55 @@ class MenuManager {
 
     getMenuConfig() {
         return this.menuConfig;
+    }
+
+    highlightActiveMenuItem() {
+        const menuItems = document.querySelectorAll('.menu-item');
+        const currentPath = window.location.pathname;
+
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+
+            const route = item.getAttribute('data-route');
+            if (!route) return;
+
+            // Check if current path matches the route
+            if (currentPath === route ||
+                (route === '/' && currentPath === '') ||
+                (route !== '/' && currentPath.startsWith(route))) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    extractRouteFromAction(action) {
+        if (!action) return null;
+
+        // Match patterns like router.navigate('/path', true)
+        const navigateMatch = action.match(/router\.navigate\s*\(\s*['"]([^'"]+)['"]/);
+        if (navigateMatch) {
+            return navigateMatch[1];
+        }
+
+        // Match patterns like window.location.href = '/path'
+        const hrefMatch = action.match(/window\.location\.href\s*=\s*['"]([^'"]+)['"]/);
+        if (hrefMatch) {
+            return hrefMatch[1];
+        }
+
+        return null;
+    }
+
+    updateMenuItemsWithRoutes() {
+        if (!this.menuConfig) return;
+
+        this.menuConfig.menuSections.forEach(section => {
+            section.items.forEach(item => {
+                if (item.action && !item.route) {
+                    item.route = this.extractRouteFromAction(item.action);
+                }
+            });
+        });
     }
 }
 

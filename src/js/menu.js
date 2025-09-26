@@ -55,6 +55,11 @@ function toggleMenuCollapse() {
     if (toggleButton) {
         toggleButton.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
     }
+
+    // Highlight active menu item after toggling collapse
+    if (window.menuManager) {
+        window.menuManager.highlightActiveMenuItem();
+    }
 }
 
 function updateMenuTooltips(isCollapsed) {
@@ -305,6 +310,11 @@ function openMenu() {
     }
 
     addMenuAnimations();
+
+    // Highlight active menu item when menu opens
+    if (window.menuManager) {
+        window.menuManager.highlightActiveMenuItem();
+    }
 }
 
 function hideMenu() {

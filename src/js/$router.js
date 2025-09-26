@@ -91,6 +91,11 @@ class VAPRRouter {
             } else {
                 console.log('No frontend handler for route');
             }
+
+            // Highlight active menu item when route changes
+            if (window.menuManager) {
+                window.menuManager.highlightActiveMenuItem();
+            }
             return;
         } else {
             console.log('No route match found for path:', path);

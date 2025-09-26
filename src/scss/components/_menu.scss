@@ -239,6 +239,39 @@
     transition: transform $duration-fast ease;
   }
 
+  &.active {
+    background: $bg-quaternary;
+    border-color: $white;
+
+    .menu-item-icon {
+      color: $white;
+      background: $white;
+
+      i {
+        color: $black;
+      }
+    }
+
+    .menu-item-title {
+      color: $white;
+      font-weight: 700;
+    }
+
+    .menu-item-desc {
+      color: $text-secondary;
+    }
+
+    .menu-item-arrow {
+      color: $white;
+    }
+
+    &:hover {
+      background: $bg-quaternary;
+      border-color: $white;
+      transform: none;
+    }
+  }
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -628,6 +661,63 @@
     &:hover::after,
     &:hover::before {
       opacity: 1;
+    }
+
+    // Active state in collapsed menu
+    &.active {
+      background: $bg-quaternary;
+      border: none;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 24px;
+        background: $white;
+        border-radius: 0 2px 2px 0;
+      }
+
+      .menu-item-icon {
+        background: $white;
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba($white, 0.2);
+
+        i {
+          color: $black;
+          transform: scale(1);
+        }
+      }
+
+      &:hover {
+        background: $bg-quaternary;
+        transform: scale(1);
+
+        .menu-item-icon {
+          background: $white;
+          transform: none;
+          box-shadow: 0 2px 8px rgba($white, 0.2);
+          animation: none; // Disable glow animation
+
+          i {
+            color: $black;
+            transform: scale(1) !important; // Force no rotation
+            animation: none; // Disable icon animations
+          }
+        }
+
+        // Disable tooltip for active items
+        &::after,
+        &::before {
+          display: none;
+        }
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
     }
   }
 
