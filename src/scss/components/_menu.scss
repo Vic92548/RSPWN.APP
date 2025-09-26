@@ -92,36 +92,42 @@
 }
 
 // RSPWN Store Design - Clean Menu Toggle Button (Epic Games inspired)
-.menu-toggle {
+.menu-toggle.glass-button {
   position: absolute;
   top: $spacing-xxl;
   right: 0;
-  width: $width-sm;
-  height: $width-sm;
-  background: $white;
-  border: none;
-  border-radius: 4px 0 0 4px;
+  width: 48px;
+  height: 48px;
+  background: $bg-tertiary !important;
+  border: $border-thin $border-secondary !important;
+  border-radius: 8px 0 0 8px !important;
   display: none;
   @include flex-center;
 
   & {
-    color: $black;
+    color: $text-secondary;
     cursor: pointer;
-    font-size: $font-large;
-    transition: $transition-fast;
+    font-size: 14px;
+    transition: all $transition-fast;
     z-index: $z-index-dropdown;
+    box-shadow: $shadow-sm;
   }
 
   &:hover {
-    background: rgba($white, 0.9);
+    background: $bg-quaternary !important;
+    border-color: $border-tertiary !important;
+    color: $text-primary;
+    box-shadow: $shadow-md;
   }
 
   &:active {
-    background: rgba($white, 0.8);
+    background: $bg-secondary !important;
+    transform: scale(0.95);
   }
 
   i {
     transition: transform $duration-fast $ease-in-out;
+    font-size: 18px;
   }
 
   @include responsive(desktop) {
@@ -601,10 +607,21 @@
   }
 
   .menu-toggle {
-    top: 6.665px;
+    top: 10px;
+    right: 0;
+    width: 32px;
+    height: 48px;
+    border-radius: 0 4px 4px 0;
+    background: $bg-secondary;
+    border-left: none;
+
+    &:hover {
+      background: $bg-tertiary;
+    }
 
     i {
       transform: rotate(180deg);
+      font-size: 14px;
     }
   }
 }
