@@ -35,6 +35,7 @@ VAPR is a gamified social platform where creators share content through a swipe-
 - `src/` - Frontend source code
   - `src/components/` - HTML templates with custom `[[template]]` inclusion syntax
   - `src/js/` - JavaScript modules (prefixed with `$` for core utilities)
+    - **`src/js/menu-config.json`** - Menu configuration file (NOTE: The actual menu config is here, NOT in public/)
   - `src/scss/` - Sass stylesheets with component-based architecture
 - `server_modules/` - Backend modules organized by feature
 - `public/` - Generated build output

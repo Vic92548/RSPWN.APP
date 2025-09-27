@@ -1,14 +1,31 @@
 {
   "menuSections": [
     {
-      "category": "Create & Share",
+      "category": "Social",
       "visibility": {
-        "requireAuth": true,
+        "requireAuth": false,
         "hideOnMobile": false,
         "hideOnDesktop": false,
         "hideOnWeb": false
       },
       "items": [
+        {
+          "title": "Feed",
+          "subtitle": "Browse content",
+          "icon": "fa-solid fa-home",
+          "iconClass": "",
+          "action": "router.navigate('/', true); hideMenu();",
+          "arrow": true,
+          "badge": null,
+          "badgeClass": "",
+          "visibility": {
+            "requireAuth": false,
+            "hideOnMobile": false,
+            "hideOnDesktop": false,
+            "hideOnWeb": false,
+            "showWhenCollapsed": true
+          }
+        },
         {
           "title": "Create Post",
           "subtitle": "Share your content",
