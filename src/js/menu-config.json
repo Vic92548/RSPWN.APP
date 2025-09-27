@@ -86,23 +86,6 @@
             "hideOnWeb": false,
             "showWhenCollapsed": true
           }
-        },
-        {
-          "title": "Downloads",
-          "subtitle": "Manage your downloads",
-          "icon": "fa-solid fa-download",
-          "iconClass": "downloads",
-          "action": "router.navigate('/downloads', true); hideMenu();",
-          "arrow": true,
-          "badge": null,
-          "badgeClass": "",
-          "visibility": {
-            "requireAuth": true,
-            "hideOnMobile": false,
-            "hideOnDesktop": false,
-            "hideOnWeb": false,
-            "showWhenCollapsed": true
-          }
         }
       ]
     },
@@ -206,34 +189,6 @@
             "requireAuth": false,
             "hideOnMobile": false,
             "hideOnDesktop": false,
-            "hideOnWeb": false
-          }
-        }
-      ]
-    },
-    {
-      "category": "Desktop App",
-      "visibility": {
-        "requireAuth": true,
-        "hideOnMobile": false,
-        "hideOnDesktop": true,
-        "hideOnWeb": false
-      },
-      "items": [
-        {
-          "title": "Download",
-          "subtitle": "Get the native app",
-          "icon": "fa-solid fa-download",
-          "iconClass": "download",
-          "action": "downloadDesktopApp()",
-          "arrow": false,
-          "badge": "<i class=\"fa-brands fa-windows\"></i> Windows",
-          "badgeClass": "glass-badge",
-          "elementId": "desktop-download-item",
-          "visibility": {
-            "requireAuth": true,
-            "hideOnMobile": false,
-            "hideOnDesktop": true,
             "hideOnWeb": false
           }
         }
