@@ -2,65 +2,43 @@ let analyticsData = null;
 let currentTimeRange = '7';
 let currentSortBy = 'views';
 let chartInstances = {};
-
-function createAnalyticsPage(content) {
-    return `
-    <section id="analytics-page" class="page-container analytics-page-container" style="display:none;">
-        <button id="analytics_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
-
-        <div class="page-header">
-            <div class="page-header-content">
-                <div class="page-header-title-section">
-                    <h1 class="page-header-title">Analytics</h1>
-                    <p class="page-header-subtitle">Track your performance and growth</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="analytics-body">
-            <div class="analytics-content">
-                ${content}
-            </div>
-        </div>
-    </section>`;
-}
+let analyticsPageElement = null;
 
 function openAnalyticsPage() {
     console.log('openAnalyticsPage called');
-    let analyticsPage = DOM.get('analytics-page');
     const feed = DOM.get('feed');
-    console.log('Analytics page element:', analyticsPage);
     console.log('Feed element:', feed);
 
-    // If analytics page doesn't exist, create it like other pages do
-    if (!analyticsPage) {
-        console.log('Creating analytics page...');
-        const analyticsContent = createAnalyticsContent();
-        const analyticsPageHTML = createAnalyticsPage(analyticsContent);
+    if (analyticsPageElement && analyticsPageElement.parentNode) {
+        analyticsPageElement.remove();
+        analyticsPageElement = null;
+    }
 
-        // Insert the page into the main element as a sibling to feed
-        const main = document.querySelector('main');
-        if (main) {
-            main.insertAdjacentHTML('beforeend', analyticsPageHTML);
-            analyticsPage = DOM.get('analytics-page');
-            console.log('Analytics page created:', analyticsPage);
+    console.log('Creating analytics page using VAPR template engine...');
 
-            // Initialize after adding to DOM
-            if (analyticsPage) {
-                setupTimeFilters();
-                setupSortButton();
-                loadAnalyticsData();
-            }
+    analyticsPageElement = window.VAPR.createElement('analytics-page');
+    analyticsPageElement.innerHTML = createAnalyticsContent();
+
+    const main = document.querySelector('main');
+    if (main) {
+        main.appendChild(analyticsPageElement);
+        window.VAPR.render(analyticsPageElement);
+
+        analyticsPageElement = DOM.get('analytics-page');
+        console.log('Analytics page created:', analyticsPageElement);
+
+        if (analyticsPageElement) {
+            setupTimeFilters();
+            setupSortButton();
+            loadAnalyticsData();
         }
     }
 
-    if (analyticsPage) {
+    if (analyticsPageElement) {
         console.log('Showing analytics page...');
 
-        // Hide all other pages
         if (feed) feed.style.display = 'none';
 
-        // Hide other page containers
         const pageContainers = document.querySelectorAll('.page-container');
         pageContainers.forEach(page => {
             if (page.id !== 'analytics-page') {
@@ -68,17 +46,14 @@ function openAnalyticsPage() {
             }
         });
 
-        // Show analytics page
-        analyticsPage.style.display = 'flex';
+        analyticsPageElement.style.display = 'flex';
         console.log('Analytics page display set to flex');
 
-        // Scroll to top
-        const analyticsBody = analyticsPage.querySelector('.analytics-body');
+        const analyticsBody = analyticsPageElement.querySelector('.analytics-body');
         if (analyticsBody) {
             analyticsBody.scrollTop = 0;
         }
 
-        // Don't update URL if we're called from router (it already did)
         const currentPath = window.location.pathname;
         if (currentPath !== '/analytics') {
             if (window.history && window.history.pushState) {
@@ -86,10 +61,8 @@ function openAnalyticsPage() {
             }
         }
 
-        // Update page title
         document.title = 'Analytics - RSPWN';
 
-        // Load data if page already existed
         if (!analyticsData) {
             loadAnalyticsData();
         }
@@ -99,22 +72,28 @@ function openAnalyticsPage() {
 }
 
 function closeAnalyticsPage() {
-    const analyticsPage = DOM.get('analytics-page');
-    const feed = DOM.get('feed');
+    if (analyticsPageElement && analyticsPageElement.parentNode) {
+        analyticsPageElement.remove();
+        analyticsPageElement = null;
 
-    if (analyticsPage && feed) {
-        // Hide analytics page and show feed (like other pages do)
-        analyticsPage.style.display = 'none';
-        feed.style.display = 'block';
-
-        // Update URL back to home
-        if (window.history && window.history.pushState) {
-            window.history.pushState({page: 'home'}, 'RSPWN', '/');
-        }
-
-        // Update page title back
-        document.title = 'RSPWN';
+        Object.values(chartInstances).forEach(chart => {
+            if (chart && typeof chart.destroy === 'function') {
+                chart.destroy();
+            }
+        });
+        chartInstances = {};
     }
+
+    const feed = DOM.get('feed');
+    if (feed) {
+        feed.style.display = 'block';
+    }
+
+    if (window.history && window.history.pushState) {
+        window.history.pushState({page: 'home'}, 'RSPWN', '/');
+    }
+
+    document.title = 'RSPWN';
 }
 
 function createAnalyticsContent() {
@@ -539,35 +518,32 @@ function renderTopPosts() {
     container.innerHTML = '';
 
     sortedPosts.forEach(post => {
-        const postHTML = `
-            <div class="post-item">
-                <div class="post-thumbnail">
-                    <img src="${post.media?.[0]?.url || '/assets/placeholder.jpg'}" alt="${post.content.substring(0, 50)}" />
-                </div>
-                <div class="post-details">
-                    <h3 class="post-title">${post.content.substring(0, 50) + (post.content.length > 50 ? '...' : '')}</h3>
-                    <div class="post-date">${formatDate(post.timestamp)}</div>
-                </div>
-                <div class="post-metrics">
-                    <div class="metric">
-                        <i class="fa-solid fa-eye"></i>
-                        <span>${formatNumber(post.metrics.views)}</span>
-                    </div>
-                    <div class="metric">
-                        <i class="fa-solid fa-heart"></i>
-                        <span>${formatNumber(post.metrics.likes)}</span>
-                    </div>
-                    <div class="metric">
-                        <i class="fa-solid fa-mouse-pointer"></i>
-                        <span>${formatNumber(post.metrics.clicks)}</span>
-                    </div>
-                    <div class="metric">
-                        <span class="engagement-badge">${post.metrics.engagement}%</span>
-                    </div>
-                </div>
+        const postItem = window.VAPR.createElement('analytics-post-item', {
+            thumbnail: post.media?.[0]?.url || '/assets/placeholder.jpg',
+            title: post.content.substring(0, 50) + (post.content.length > 50 ? '...' : ''),
+            date: formatDate(post.timestamp)
+        });
+
+        postItem.innerHTML = `
+            <div class="metric">
+                <i class="fa-solid fa-eye"></i>
+                <span>${formatNumber(post.metrics.views)}</span>
+            </div>
+            <div class="metric">
+                <i class="fa-solid fa-heart"></i>
+                <span>${formatNumber(post.metrics.likes)}</span>
+            </div>
+            <div class="metric">
+                <i class="fa-solid fa-mouse-pointer"></i>
+                <span>${formatNumber(post.metrics.clicks)}</span>
+            </div>
+            <div class="metric">
+                <span class="engagement-badge">${post.metrics.engagement}%</span>
             </div>
         `;
-        container.insertAdjacentHTML('beforeend', postHTML);
+
+        container.appendChild(postItem);
+        window.VAPR.render(postItem);
     });
 }
 
@@ -585,13 +561,13 @@ function renderReactionsSummary() {
         .slice(0, 8);
 
     sortedReactions.forEach(([emoji, count]) => {
-        const reactionHTML = `
-            <div class="reaction-item">
-                <span class="reaction-emoji">${emoji}</span>
-                <span class="reaction-count">${formatNumber(count)}</span>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', reactionHTML);
+        const reactionItem = window.VAPR.createElement('analytics-reaction-item', {
+            emoji: emoji,
+            count: formatNumber(count)
+        });
+
+        container.appendChild(reactionItem);
+        window.VAPR.render(reactionItem);
     });
 }
 
@@ -624,18 +600,15 @@ function formatDate(dateStr) {
     }
 }
 
-// Handle direct navigation to /analytics URL
 document.addEventListener('DOMContentLoaded', function() {
     const path = window.location.pathname;
     if (path === '/analytics') {
-        // Small delay to ensure DOM is ready
         setTimeout(() => {
             openAnalyticsPage();
         }, 100);
     }
 });
 
-// Export functions for global access
 if (typeof window !== 'undefined') {
     window.openAnalytics = openAnalyticsPage;
     window.openAnalyticsPage = openAnalyticsPage;

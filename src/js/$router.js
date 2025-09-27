@@ -128,11 +128,10 @@ class VAPRRouter {
     }
 
     hideAllLegalPages() {
-        const legalPages = ['privacy-page', 'terms-page', 'store-page'];
-        legalPages.forEach(pageId => {
-            const page = DOM.get(pageId);
-            if (page && page.style.display !== 'none') {
-                page.style.display = 'none';
+        const pageContainers = document.querySelectorAll('.page-container');
+        pageContainers.forEach(page => {
+            if (page.parentNode) {
+                page.remove();
             }
         });
     }

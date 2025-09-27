@@ -5,6 +5,11 @@ let post_seen = 0;
 let creators = {};
 
 function showInitialPost() {
+    const feed = DOM.get('feed');
+    if (feed) {
+        feed.style.display = 'block';
+    }
+
     const path = window.location.pathname.split('/');
     showPost();
     if(path.length < 3){
@@ -55,6 +60,11 @@ let current_post = undefined;
 function hidePost() {
     DOM.get("post_video").children[0].src = "";
     document.getElementsByClassName("post")[0].style.transform = "translateY(100vh)";
+
+    const feed = DOM.get('feed');
+    if (feed) {
+        feed.style.display = 'none';
+    }
 }
 
 // Legacy function for backwards compatibility

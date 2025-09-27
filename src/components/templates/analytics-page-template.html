@@ -1,0 +1,72 @@
+<!-- Analytics Page Template for VAPR Template Engine -->
+<template data-vapr="analytics-page">
+    <section id="analytics-page" class="page-container analytics-page-container" style="display:none;">
+        <button id="analytics_menu_btn" class="create-post-btn glass_bt" onclick="openMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="page-header">
+            <div class="page-header-content">
+                <div class="page-header-title-section">
+                    <h1 class="page-header-title">Analytics</h1>
+                    <p class="page-header-subtitle">Track your performance and growth</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-body">
+            <div class="analytics-content">
+                <slot></slot>
+            </div>
+        </div>
+    </section>
+</template>
+
+<template data-vapr="analytics-stat-card">
+    <div class="stat-card" id="{{card-id}}">
+        <div class="stat-header">
+            <span class="stat-label">{{label}}</span>
+            <span class="stat-trend" id="{{trend-id}}"></span>
+        </div>
+        <div class="stat-value" id="{{value-id}}">{{value}}</div>
+        <div class="stat-change" id="{{change-id}}"></div>
+    </div>
+</template>
+
+<template data-vapr="analytics-chart">
+    <div class="chart-container">
+        <div class="chart-header">
+            <h2 class="chart-title">{{title}}</h2>
+            {{#show-legend}}
+            <div class="chart-legend">
+                <slot name="legend"></slot>
+            </div>
+            {{/show-legend}}
+        </div>
+        <div class="chart-body">
+            <canvas id="{{chart-id}}"></canvas>
+        </div>
+    </div>
+</template>
+
+<template data-vapr="analytics-post-item">
+    <div class="post-item">
+        <div class="post-thumbnail">
+            <img src="{{thumbnail}}" alt="{{title}}" />
+        </div>
+        <div class="post-details">
+            <h3 class="post-title">{{title}}</h3>
+            <div class="post-date">{{date}}</div>
+        </div>
+        <div class="post-metrics">
+            <slot></slot>
+        </div>
+    </div>
+</template>
+
+<template data-vapr="analytics-reaction-item">
+    <div class="reaction-item">
+        <span class="reaction-emoji">{{emoji}}</span>
+        <span class="reaction-count">{{count}}</span>
+    </div>
+</template>
